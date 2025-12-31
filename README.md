@@ -1,14 +1,12 @@
-# Dideban Panel
+# 🛡️ Dideban Panel
 
-Dideban Panel is a SvelteKit-based web dashboard for monitoring and control.
-It uses Vite as the dev/build tool and Tailwind CSS for styling. The UI contains pages for Dashboard, Agents, Servers ,
-Login, and other operational sections.
+Dideban Panel is the official web dashboard for Dideban, a private, lightweight, and self-hosted monitoring system.
+It is built with SvelteKit and designed to be fast, minimal, and production-ready, serving as the primary UI for observing system health, checks, agents, and alerts.
 
 <p align="center">
   <img src="static/images/demo-dashboard.png" />
 </p>
 
----
 
 ## Key technologies
 
@@ -23,6 +21,26 @@ Login, and other operational sections.
 
 - Node.js (LTS)
 - npm (or pnpm / yarn/ bun)
+
+---
+
+## ✨ Features
+
+- 🟢 Real-time monitoring dashboard
+
+- 📊 Service & resource status overview
+
+- 🖥️ Agents & servers management UI
+
+- 🚨 Alert visualization (Telegram / Bale – MVP)
+
+- 🌗 Dark / Light theme support
+
+- ⚡ Fast UI with minimal overhead
+
+- 🔒 Private-by-default (self-hosted)
+
+- 🧩 Modular & extensible component structure
 
 ---
 
@@ -57,37 +75,92 @@ npm run preview
 
 ---
 
-## Project structure (high level)
+## Project structure
 
-- 📁  `src/` — application source
-  - 📁  `routes/` — SvelteKit routes (+layout.svelte, +page.svelte)
-  - 📁  `components/` — UI components
-    - 📁  `components/common` — Common components
-      - 📦 `components/common/Chart.svelte` — Performance overview chart component
-    - 📁  `components/global` — Global components
-      - 📦 `components/global/Topbar.svelte` — Topbar component ( Header of pages )
-      - 📦 `components/global/sidebar/Sidebar.svelte` — Sidebar component
-      - 📁 `components/global/sidebar/deps` — Deps components of Sidebar
-        - 📦 `components/global/sidebar/deps/Support.svelte` — Support component 
-    - 📁 `components/layouts` — layouts components
-      - 📦 `components/layouts/MainLayout.svelte` — MainLayout component
-    - 📁 `components/pages` — Components of each page
-      - 📁 `components/pages/dashboard` — Components of dashboard page
-        - 📦 `components/pages/dashboard/PerformanceOverview.svelte` — PerformanceOverview component
-        - 📦 `components/pages/dashboard/TopRight.svelte` — TopRight component
-        - 📁 `components/pages/dashboard/statusOverview` — statusOverview directory for StatusOverview component and it's deps components
-          - 📦 `components/pages/dashboard/statusOverview/StatusOverview.svelte` — StatusOverview  component
-          
+```bash
+frontend/
+├── src/
+│   ├── routes/
+│   │   ├── +layout.svelte
+│   │   └── +page.svelte
+│   │
+│   ├── components/
+│   │   ├── common/
+│   │   │   └── Chart.svelte
+│   │   │
+│   │   ├── global/
+│   │   │   ├── Topbar.svelte
+│   │   │   └── sidebar/
+│   │   │       ├── Sidebar.svelte
+│   │   │       └── deps/
+│   │   │           └── Support.svelte
+│   │   │
+│   │   ├── layouts/
+│   │   │   └── MainLayout.svelte
+│   │   │
+│   │   └── pages/
+│   │       └── dashboard/
+│   │           ├── PerformanceOverview.svelte
+│   │           ├── TopRight.svelte
+│   │           └── statusOverview/
+│   │               └── StatusOverview.svelte
+│   │
+│   ├── stores/
+│   │   └── theme.svelte.js
+│   │
+│   └── static/
+│       ├── images/
+│       ├── icons/
+│       └── fonts/
+│
+├── svelte.config.js
+├── vite.config.js
+└── package.json
+```
 
+## 🧠 Philosophy
 
+Dideban is built with these principles in mind:
 
-  - 📁 `stores/` — Svelte stores 
-    - 💾 `stores/theme.svelte.js` — Theme store for manage dark/light theme
-
-  - 📁 `static/` — Static directory (images / fonts /icons / etc.)
-
-- ⚙️ `svelte.config.js` — SvelteKit configuration
-- ⚙️ `vite.config.js` — Vite configuration (includes Tailwind plugin)
-- 🧱 `package.json` — scripts and deps
+* **Clear separation between core engine and UI**
+* **High readability and clean, understandable code**
+* **Clear and well-organized architecture**
+* **Long-Term Maintainability**
+* **Intentional simplicity — no unnecessary complexity**
+* **Standards-driven and aligned with best practices**
 
 ---
+
+## 🔔 Alerting (MVP)
+
+Supported in MVP:
+
+* Telegram Bot notifications
+* Bale.ai Bot notifications
+
+Planned:
+
+* Email
+* Webhook
+* Script execution
+* Alert grouping & throttling
+
+---
+
+## 📄 License
+
+MIT License
+
+---
+
+## ❤️ Name Origin
+
+**Dideban (دیدبان)** means *Watcher / Guardian* in Persian — a silent observer that keeps your systems safe.
+
+---
+
+## ⭐ Star the Project
+
+If you like the idea, consider giving the repo a star ⭐
+
+It helps the project grow and stay motivated.
