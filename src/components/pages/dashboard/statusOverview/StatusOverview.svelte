@@ -1,5 +1,4 @@
 <script>
-  import { AGENTS_DATA } from './constant.svelte';
   const { title, subtitle, data } = $props();
 </script>
 
@@ -17,7 +16,7 @@
   </div>
 
   <div class="w-full grid grid-cols-1 gap-6">
-    {#each AGENTS_DATA as item (item.id)}
+    {#each data as item (item.id)}
       <div class="w-full flex flex-col gap-4 justify-center items-start">
         <h3 class="text-white text-lg capitalize">{item.agent_id}</h3>
         <div class="w-full grid grid-cols-3 gap-6">

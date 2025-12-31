@@ -1,5 +1,5 @@
 <script>
-  import Topbar from '../global/sidebar/Topbar.svelte';
+  import Topbar from '../global/Topbar.svelte';
   let { children } = $props();
 </script>
 

@@ -1,5 +1,5 @@
 <script>
-    import Sidebar from '../../components/global/sidebar/index.svelte';
+    import Sidebar from '../../components/global/sidebar/Sidebar.svelte';
     import MainLayout from '../../components/layouts/MainLayout.svelte';
 
     let { children } = $props();

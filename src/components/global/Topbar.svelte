@@ -1,5 +1,5 @@
 <script>
-  import { theme } from '../../../stores/theme.svelte';
+  import { theme } from '../../stores/theme.svelte';
 </script>
 
 <div class="px-4 py-6">
