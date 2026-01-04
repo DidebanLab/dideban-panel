@@ -3,8 +3,9 @@
 </script>
 
 <div
-  class="w-full relative rounded-[14px]  bg-[#FFFFFF] dark:bg-[#0D0D0D] border border-[#0D0D0D]/5 dark:border-white/5">
-  <div class="sticky top-0 p-6 border-b border-[#0D0D0D]/5 dark:border-[#222222] bg-[#FFFFFF] dark:bg-[#0D0D0D]  w-full flex justify-between items-start">
+  class="w-full relative rounded-[14px] bg-[#FFFFFF] dark:bg-[#0D0D0D] border border-[#0D0D0D]/5 dark:border-white/5">
+  <div
+    class="sticky top-0 p-6 border-b border-[#0D0D0D]/5 dark:border-[#222222] bg-[#FFFFFF] dark:bg-[#0D0D0D] w-full flex justify-between items-start">
     <div class="flex flex-col gap-1">
       <span class="text-xl dark:text-white capitalize">{title}</span>
       <span class="text-sm text-[#99a1af] capitalize">{subtitle}</span>
