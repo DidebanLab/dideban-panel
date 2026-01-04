@@ -10,11 +10,11 @@
 
 <style>
   :global(.custom-scroll::-webkit-scrollbar) {
-    width: 5px;
+    width: 4px;
   }
 
   :global(.custom-scroll::-webkit-scrollbar-track) {
-    background: rgba(69, 74, 82, 0.3); 
+    background: rgba(69, 74, 82, 0.5); 
     border-radius: 9999px;
   }
 
