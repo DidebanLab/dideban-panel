@@ -4,7 +4,7 @@ Dideban Panel is the official web dashboard for Dideban, a private, lightweight,
 It is built with SvelteKit and designed to be fast, minimal, and production-ready, serving as the primary UI for observing system health, checks, agents, and alerts.
 
 <p align="center">
-  <img src="static/images/demo-dashboard.png" />
+  <img src="static/images/dashboard-demo.png" />
 </p>
 
 

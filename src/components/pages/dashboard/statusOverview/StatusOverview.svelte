@@ -47,6 +47,8 @@
   <div class="w-full grid grid-cols-3 gap-4 custom-scroll p-6">
     {#each data as item (item.id)}
       {@const last = getLast(item)}
+      {@const error = isError(last, item.status)}
+      {@const warn = !error && isWarn(last)}
       {@const statusLevel = getStatus(last, item.status)}
       <div
         class="relative h-32.75 border rounded-[14px] flex flex-col py-6 gap-7
