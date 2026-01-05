@@ -16,11 +16,11 @@
     </div>
 
     <StatusOverview
-      title="agents status"
+      type="agents"
       subtitle="Infrastructure Nodes & Cluster Health"
       data={AGENTS_DATA} />
     <StatusOverview
-      title="services status"
+      type="services"
       subtitle="Microservices Health & Availability"
       data={AGENTS_DATA} />
 
