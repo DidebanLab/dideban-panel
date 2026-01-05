@@ -20,7 +20,7 @@
       subtitle="Infrastructure Nodes & Cluster Health"
       data={AGENTS_DATA} />
     <StatusOverview
-      type="services"
+      type="checkers"
       subtitle="Microservices Health & Availability"
       data={AGENTS_DATA} />
 

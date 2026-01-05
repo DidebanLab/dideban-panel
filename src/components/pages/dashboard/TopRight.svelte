@@ -1,7 +1,7 @@
 <script>
   const MAIN_STATUS_BOARD = [
     { title: 'Agents', total: 15, up: 12, down: 2, warn: 1 },
-    { title: 'Services', total: 15, up: 8, down: 2, warn: 5 },
+    { title: 'Checkers', total: 15, up: 8, down: 2, warn: 5 },
   ];
 </script>
 
