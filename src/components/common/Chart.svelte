@@ -201,7 +201,7 @@
   :global(.apexcharts-tooltip) {
     background: rgba(0, 0, 0, 0.4) !important;
     color: #ffffff !important;
-    border-color: rgb(255, 255, 255, 0.2) !important;
+    border-color: #ffffff33 !important;
     box-shadow: 0 0px 10px rgba(168, 167, 167, 0.1) !important;
     border-radius: 12px !important;
     padding: 6px 2px !important;
