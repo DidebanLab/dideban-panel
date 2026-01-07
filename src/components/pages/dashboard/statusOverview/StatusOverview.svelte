@@ -1,6 +1,7 @@
 <script>
   import { opener } from '../../../../stores/modal.svelte.js';
   import { LIMITATIONS } from '../../../config.svelte.js';
+  import AddAgent from './AddAgent.svelte';
   import AddChecker from './AddChecker.svelte';
   const { subtitle, data, type } = $props();
 
@@ -61,8 +62,8 @@
     <button
       onclick={() => {
         opener({
-          id: 'create-agent',
-          content: AddChecker,
+          id: `create-${type}`,
+          content: type === 'agents' ? AddAgent : AddChecker,
         });
       }}
       class="w-12 h-10 flex justify-center items-center bg-[#22c55e]/10 rounded-lg text-xl text-[#10b981] cursor-pointer">

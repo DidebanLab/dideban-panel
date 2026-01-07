@@ -305,6 +305,11 @@
         </div>
       </div>
     {/if}
+    <button
+      type="button"
+      class=" me-auto w-fit px-10 text-sm text-[#10b981] h-8.5 flex justify-center items-center rounded-md cursor-pointer bg-[#22c55e]/10 hover:opacity-60 border border-[#00bc7d]/10">
+      Add Checker
+    </button>
   </div>
 </div>
 
