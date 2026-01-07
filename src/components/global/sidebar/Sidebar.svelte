@@ -4,7 +4,7 @@
 </script>
 
 <div
-    class="fixed start-0 top-0 h-screen w-[256px] bg-white dark:bg-[#0D0D0D] flex flex-col border-e border-[#0D0D0D]/5 dark:border-[#222222]">
+    class="h-screen w-[256px] bg-white dark:bg-[#0D0D0D] flex flex-col border-e border-[#0D0D0D]/5 dark:border-[#222222]">
     <div class="p-6 h-25.75 flex justify-start items-center border-b border-[#0D0D0D]/5 dark:border-[#222222]">
         <img src="/icons/torbu.png" alt="turbu" />
         <div class="flex flex-col ms-3 justify-center">

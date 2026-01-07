@@ -5,10 +5,10 @@
   ];
 </script>
 
-<div class="w-[35%] h-auto grid grid-cols-1 gap-7.75">
-  <div class="grid gap-4 grid-cols-1">
+<div class="w-full min-[1920px]:w-[35%] h-auto grid grid-cols-1 gap-7.75">
+  <div class="flex min-[1920px]:flex-col min-[1920px]:justify-between gap-4 w-full">
     {#each MAIN_STATUS_BOARD as item (item.title)}<div
-        class="p-6 flex flex-col gap-4 bg-white dark:bg-transparent border border-[#0D0D0D]/5 dark:border-white/5 rounded-[14px] relative overflow-hidden">
+        class="p-6 pt-5 w-full flex flex-col gap-4 bg-white dark:bg-transparent border border-[#0D0D0D]/5 dark:border-white/5 rounded-[14px] relative overflow-hidden">
         <div class="flex items-center gap-3 w-full">
           <span class="text-xl dark:text-white">{item.title}</span>
         </div>
@@ -32,7 +32,7 @@
               <span class="text-base text-black dark:text-white">Total</span>
             </div>
 
-            <span class="text-3xl text-[#3b82f6] px-2">{item.total}</span>
+            <span class="text-2xl 2xl:text-3xl p-2 text-[#3b82f6]">{item.total}</span>
             <img
               class="opacity-5 absolute bottom-0 end-0"
               width="70"
@@ -58,7 +58,7 @@
               <span class="text-base text-black dark:text-white">Up</span>
             </div>
 
-            <span class="text-3xl text-[#00bc7d] px-2">{item.up}</span>
+            <span class="text-2xl 2xl:text-3xl p-2 text-[#00bc7d]">{item.up}</span>
             <img
               class="opacity-5 absolute bottom-0 end-0"
               width="70"
@@ -78,7 +78,7 @@
               <img width="19" src="/icons/error.svg" alt="error" />
               <span class="text-base text-black dark:text-white">Down</span>
             </div>
-            <span class="text-3xl text-[#F87171] px-2">{item.down}</span>
+            <span class="text-2xl 2xl:text-3xl p-2 text-[#F87171]">{item.down}</span>
             <img
               class="opacity-5 absolute bottom-0 end-0"
               width="70"
@@ -102,7 +102,7 @@
                 alt="warning" />
               <span class="text-base text-black dark:text-white">Warn</span>
             </div>
-            <span class="text-3xl text-[#fdc700] px-2">{item.warn}</span>
+            <span class="text-2xl 2xl:text-3xl p-2 text-[#fdc700]">{item.warn}</span>
             <img
               class="opacity-5 absolute bottom-0 end-0"
               width="70"

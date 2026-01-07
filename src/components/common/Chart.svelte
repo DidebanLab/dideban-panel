@@ -195,7 +195,7 @@
   });
 </script>
 
-<div bind:this={chartEl} class="w-full"></div>
+<div bind:this={chartEl} class="w-full mt-auto"></div>
 
 <style>
   :global(.apexcharts-tooltip) {

@@ -1,21 +1,41 @@
 <script>
+  import { opener } from '../../../../stores/modal.svelte.js';
   import { LIMITATIONS } from '../../../config.svelte.js';
+  import AddChecker from './AddChecker.svelte';
   const { subtitle, data, type } = $props();
 
   const getLast = item => item.detail.at(-1);
+  let checkerEnabled = $state(true);
 
-  const isError = (last, status) =>
-    status === 'offline' ||
-    last.cpu.usage_percent > LIMITATIONS.cpu.error ||
-    last.memory.usage_percent > LIMITATIONS.memory.error ||
-    last.disk.usage_percent > LIMITATIONS.disk.error ||
-    last.collect_duration_ms > LIMITATIONS.collect_duration_ms.error;
+  const rules = {
+    agents: {
+      error: (last, status) => [
+        status === 'offline',
+        last.cpu.usage_percent > LIMITATIONS.cpu.error,
+        last.memory.usage_percent > LIMITATIONS.memory.error,
+        last.disk.usage_percent > LIMITATIONS.disk.error,
+        last.collect_duration_ms > LIMITATIONS.collect_duration_ms.error,
+      ],
+      warn: last => [
+        last.cpu.usage_percent > LIMITATIONS.cpu.warn,
+        last.memory.usage_percent > LIMITATIONS.memory.warn,
+        last.disk.usage_percent > LIMITATIONS.disk.warn,
+        last.collect_duration_ms > LIMITATIONS.collect_duration_ms.warn,
+      ],
+    },
 
-  const isWarn = last =>
-    last.cpu.usage_percent > LIMITATIONS.cpu.warn ||
-    last.memory.usage_percent > LIMITATIONS.memory.warn ||
-    last.disk.usage_percent > LIMITATIONS.disk.warn ||
-    last.collect_duration_ms > LIMITATIONS.collect_duration_ms.warn;
+    checkers: {
+      error: (last, status) => [
+        status === 'offline',
+        last.collect_duration_ms > LIMITATIONS.collect_duration_ms.error,
+      ],
+      warn: last => [last.collect_duration_ms > LIMITATIONS.collect_duration_ms.warn],
+    },
+  };
+
+  const isError = (last, status) => rules[type]?.error(last, status).some(Boolean) ?? false;
+
+  const isWarn = last => rules[type]?.warn(last).some(Boolean) ?? false;
 
   const STATUS_COLORS = {
     error: '#ef4444',
@@ -38,13 +58,19 @@
       <span class="text-xl dark:text-white capitalize">{type} status</span>
       <span class="text-sm text-[#99a1af] capitalize">{subtitle}</span>
     </div>
-    <div
+    <button
+      onclick={() => {
+        opener({
+          id: 'create-agent',
+          content: AddChecker,
+        });
+      }}
       class="w-12 h-10 flex justify-center items-center bg-[#22c55e]/10 rounded-lg text-xl text-[#10b981] cursor-pointer">
       +
-    </div>
+    </button>
   </div>
 
-  <div class="w-full grid grid-cols-3 gap-4 custom-scroll p-6">
+  <div class="w-full grid grid-cols-2 min-[1920px]:grid-cols-3 gap-4 custom-scroll p-6">
     {#each data as item (item.id)}
       {@const last = getLast(item)}
       {@const error = isError(last, item.status)}
@@ -143,25 +169,46 @@
             </div>
           </div>
         </div>
-        <div class="absolute z-10 bottom-6 w-full flex gap-1 justify-center items-end">
+        <div class="absolute z-10 bottom-6 w-full flex justify-between items-end px-4.25">
           {#each item.detail.slice(-53) as detail}
+            {@const hasAgentMetrics =
+              detail.cpu?.usage_percent ||
+              detail.memory?.usage_percent ||
+              detail.disk?.usage_percent}
+
+            {@const agentError =
+              detail.cpu.usage_percent > LIMITATIONS.cpu.error ||
+              detail.memory.usage_percent > LIMITATIONS.memory.error ||
+              detail.disk.usage_percent > LIMITATIONS.disk.error ||
+              detail.collect_duration_ms > LIMITATIONS.collect_duration_ms.error}
+
+            {@const agentWarn =
+              detail.cpu.usage_percent > LIMITATIONS.cpu.warn ||
+              detail.memory.usage_percent > LIMITATIONS.memory.warn ||
+              detail.disk.usage_percent > LIMITATIONS.disk.warn ||
+              detail.collect_duration_ms > LIMITATIONS.collect_duration_ms.warn}
+
+            {@const latencyError =
+              detail.collect_duration_ms > LIMITATIONS.collect_duration_ms.error}
+
+            {@const latencyWarn = detail.collect_duration_ms > LIMITATIONS.collect_duration_ms.warn}
             <div
-              class="w-1.25 h-1.25 rounded-[1px] hover:h-6 transition-all cursor-pointer relative group {detail
-                .cpu.usage_percent ||
-              detail.memory.usage_percent ||
-              detail.disk.usage_percent
-                ? detail.cpu.usage_percent > LIMITATIONS.cpu.error ||
-                  detail.memory.usage_percent > LIMITATIONS.memory.error ||
-                  detail.disk.usage_percent > LIMITATIONS.disk.error ||
-                  detail.collect_duration_ms > LIMITATIONS.collect_duration_ms.error
-                  ? 'bg-[#EF4444]'
-                  : detail.cpu.usage_percent > LIMITATIONS.cpu.warn ||
-                      detail.memory.usage_percent > LIMITATIONS.memory.warn ||
-                      detail.disk.usage_percent > LIMITATIONS.disk.warn ||
-                      detail.collect_duration_ms > LIMITATIONS.collect_duration_ms.warn
-                    ? 'bg-[#F97316]'
-                    : 'bg-green-700'
-                : 'bg-[#FFFFFF]/5'}">
+              class="w-1.25 h-1.25 rounded-[1px] hover:h-6 transition-all cursor-pointer relative group {type ===
+              'agents'
+                ? hasAgentMetrics
+                  ? agentError
+                    ? 'bg-[#EF4444]'
+                    : agentWarn
+                      ? 'bg-[#F97316]'
+                      : 'bg-green-700'
+                  : 'bg-[#FFFFFF]/5'
+                : detail.collect_duration_ms
+                  ? latencyError
+                    ? 'bg-[#EF4444]'
+                    : latencyWarn
+                      ? 'bg-[#F97316]'
+                      : 'bg-green-700'
+                  : 'bg-[#FFFFFF]/5'}">
               <div
                 class="absolute w-fit group-hover:flex hidden bottom-10 start-1/2 -translate-x-1/2 rounded-xl text-white bg-black/80 backdrop-blur-3xl border-[#0D0D0D]/5 border dark:border-white/10 px-3 py-2 flex-col justify-start items-start gap-2.5">
                 <div
