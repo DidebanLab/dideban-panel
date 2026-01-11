@@ -1,9 +1,9 @@
 <script>
-  import FormInput from '../../components/common/FormInput.svelte';
+  import FormInput from '../../../components/common/FormInput.svelte';
   import { onMount } from 'svelte';
   import { fade, fly } from 'svelte/transition';
-  import { http } from '../../services/http.svelte';
-  import { endpoints } from '../../endpoints.svelte';
+  import { http } from '../../../services/http.svelte';
+  import { endpoints } from '../../../endpoints.svelte';
 
   let mount = $state(false);
   let loading = $state(false);
@@ -42,7 +42,7 @@
 </script>
 
 {#if mount}
-  <div
+  <section
     in:fly={{ duration: 1000, y: -10 }}
     class="flex w-full h-full sm:h-fit select-none md:max-w-92.5 flex-col justify-center items-start absolute top-1/2 -translate-1/2 start-1/2 md:border md:border-[#e5e5e5] dark:bg-[#0D0D0D] bg-[#FFFFFF] md:dark:border-white/5 sm:shadow-xl px-6 py-8 md:rounded-xl">
     <h1 in:fade={{ duration: 1400 }} class="text-2xl dark:text-white mb-2 tracking-wider">
@@ -84,5 +84,5 @@
         Log In
       {/if}
     </button>
-  </div>
+  </section>
 {/if}

@@ -18,7 +18,8 @@
 
 <div class="w-full min-[1920px]:w-[35%] h-auto grid grid-cols-1 gap-7.75">
   <div class="flex min-[1920px]:flex-col min-[1920px]:justify-between gap-4 w-full">
-    {#each MAIN_STATUS_BOARD as item (item.title)}<div
+    {#each MAIN_STATUS_BOARD as item (item.title)}
+      <div
         class="p-6 pt-5 w-full flex flex-col gap-4 bg-white dark:bg-transparent border border-[#0D0D0D]/5 dark:border-white/5 rounded-[14px] relative overflow-hidden">
         <div class="flex items-center gap-3 w-full">
           <span class="text-xl dark:text-white">{item.title}</span>
@@ -121,6 +122,7 @@
               alt="error" />
           </div>
         </div>
-      </div>{/each}
+      </div>
+    {/each}
   </div>
 </div>

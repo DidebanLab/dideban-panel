@@ -154,7 +154,7 @@
           </div>
 
           <div class="flex flex-col justify-center items-start gap-1">
-            <span class="text-lg dark:text-white">{item.agent_id}</span>
+            <a href="/{type}/{item.agent_id}" class="text-lg dark:text-white">{item.agent_id}</a>
             <span
               class="text-xs {last.collect_duration_ms > LIMITATIONS.collect_duration_ms.error
                 ? 'text-[#F87171]'

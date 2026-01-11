@@ -1,115 +1,114 @@
 <script>
-    import { onMount, onDestroy } from 'svelte';
-    import ApexCharts from 'apexcharts';
-    const { title, value } = $props();
+  import { onMount, onDestroy } from 'svelte';
+  import ApexCharts from 'apexcharts';
+  import { theme } from '../../stores/theme.svelte';
+  const { title, value } = $props();
 
-    let chart;
-    let chartEl;
-    function getColor(val) {
-        if (val < 65) return '#22c55e'; // سبز
-        if (val <= 85) return '#eab308'; // زرد
-        return '#ef4444'; // قرمز
-    }
+  let chart;
+  let chartEl;
+  function getColor(val) {
+    if (val < 65) return '#22c55e';
+    if (val <= 85) return '#eab308';
+    return '#ef4444';
+  }
 
-    let options = {
-        chart: {
-            type: 'radialBar',
-            height: 350,
-            offsetY: -10,
-            fontFamily: 'IRANSans, sans-serif',
+  let options = {
+    chart: {
+      type: 'radialBar',
+      height: 350,
+      offsetY: -10,
+      fontFamily: 'IRANSans, sans-serif',
+    },
+
+    plotOptions: {
+      radialBar: {
+        startAngle: -135,
+        endAngle: 135,
+        hollow: {
+          size: '50%',
         },
+        track: {
+          background: $theme === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(13, 13, 13, 0.1)',
+        },
+        dataLabels: {
+          name: {
+            fontSize: '10px',
+            offsetY: 55,
+            color: 'rgba(153, 161, 175, 0.8)',
+          },
+          value: {
+            color: getColor(value),
+            offsetY: -8,
+            fontSize: '15px',
+            formatter: val => `${val}%`,
+          },
+        },
+      },
+    },
 
-        plotOptions: {
-            radialBar: {
-                startAngle: -135,
-                endAngle: 135,
-                hollow: {
-                    size: '50%',
-                },
+    stroke: {
+      dashArray: 4,
+    },
+  };
+
+  onMount(() => {
+    chart = new ApexCharts(chartEl, {
+      ...options,
+      labels: [title],
+      fill: {
+        type: 'gradient',
+        colors: [getColor(value)],
+      },
+      series: [value],
+      responsive: [
+        {
+          breakpoint: 768,
+          options: {
+            plotOptions: {
+              radialBar: {
                 dataLabels: {
-                    name: {
-                        fontSize: '14px',
-                        offsetY: 120,
-                        color: '#000000',
-                    },
-                    value: {
-                        color: getColor(value),
-                        offsetY: 76,
-                        fontSize: '22px',
-                        formatter: val => `${val}%`,
-                    },
+                  value: {
+                    color: getColor(value),
+                    offsetY: -12,
+                    fontSize: '15px',
+                    formatter: val => `${val}%`,
+                  },
                 },
+              },
             },
+          },
         },
-
-        stroke: {
-            dashArray: 4,
-        },
-    };
-
-    onMount(() => {
-        chart = new ApexCharts(chartEl, {
-            ...options,
-            labels: [title],
-            fill: {
-                type: 'gradient',
-                colors: [getColor(value)],
+        {
+          breakpoint: 1536,
+          options: {
+            chart: {
+              height: 50,
             },
-            series: [value],
-            responsive: [
-                {
-                    breakpoint: 768,
-                    options: {
-                        plotOptions: {
-                            radialBar: {
-                                dataLabels: {
-                                    name: {
-                                        fontSize: '10px',
-                                        offsetY: 55,
-                                        color: '#000000',
-                                    },
-                                    value: {
-                                        color: getColor(value),
-                                        offsetY: -12,
-                                        fontSize: '15px',
-                                        formatter: val => `${val}%`,
-                                    },
-                                },
-                            },
-                        },
-                    },
+            plotOptions: {
+              radialBar: {
+                hollow: { size: '50%' },
+                dataLabels: {
+                  name: {
+                    fontSize: '12px',
+                    offsetY: 10,
+                  },
+                  value: {
+                    fontSize: '18px',
+                    offsetY: 50,
+                  },
                 },
-                {
-                    breakpoint: 1536,
-                    options: {
-                        chart: {
-                            height: 120,
-                        },
-                        plotOptions: {
-                            radialBar: {
-                                hollow: { size: '45%' },
-                                dataLabels: {
-                                    name: {
-                                        fontSize: '12px',
-                                        offsetY: 90,
-                                    },
-                                    value: {
-                                        fontSize: '18px',
-                                        offsetY: 50,
-                                    },
-                                },
-                            },
-                        },
-                    },
-                },
-            ],
-        });
-        chart.render();
+              },
+            },
+          },
+        },
+      ],
     });
+    chart.render();
+  });
 
-    onDestroy(() => {
-        chart?.destroy();
-    });
+  onDestroy(() => {
+    chart?.destroy();
+  });
 </script>
 
-<div class="w-fit max-w-28 sm:max-w-47 xl:max-w-30 m-auto" bind:this={chartEl}></div>
+<div class="w-fit max-w-28 sm:max-w-47 xl:max-w-35" bind:this={chartEl}></div>

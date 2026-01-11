@@ -3,7 +3,7 @@
 </script>
 
 <div class="mt-4">
-  <div class="w-full h-full flex">
+  <div class="w-full h-full flex px-7.5 py-4">
     <div
       class="py-2 w-25.75 flex justify-center items-center gap-2 bg-[#0D0D0D]/5 dark:bg-white/5 border border-[#e5e7eb] dark:border-white/5 rounded-[14px]">
       <span class="text-xs text-[#99a1af]">
