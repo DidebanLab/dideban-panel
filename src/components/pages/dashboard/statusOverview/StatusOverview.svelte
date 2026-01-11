@@ -1,10 +1,14 @@
 <script>
+  import { onMount } from 'svelte';
   import { opener } from '../../../../stores/modal.svelte.js';
   import { LIMITATIONS } from '../../../config.svelte.js';
   import AddAgent from './AddAgent.svelte';
   import AddChecker from './AddChecker.svelte';
-  const { subtitle, data, type } = $props();
+  import { AGENTS_DATA } from './constant.svelte.js';
+  import { http } from '../../../../services/http.svelte.js';
+  import { endpoints } from '../../../../endpoints.svelte.js';
 
+  const { subtitle, type } = $props();
   const getLast = item => item.detail.at(-1);
   let checkerEnabled = $state(true);
 
@@ -49,6 +53,11 @@
     if (isWarn(last)) return 'warn';
     return 'ok';
   };
+
+  // let data = $state({});
+  // onMount(() => {
+  //   http.get(endpoints.statusOverview + type).then(res => (data = res.data));
+  // });
 </script>
 
 <div
@@ -72,7 +81,7 @@
   </div>
 
   <div class="w-full grid grid-cols-2 min-[1920px]:grid-cols-3 gap-4 custom-scroll p-6">
-    {#each data as item (item.id)}
+    {#each AGENTS_DATA as item (item.id)}
       {@const last = getLast(item)}
       {@const error = isError(last, item.status)}
       {@const warn = !error && isWarn(last)}

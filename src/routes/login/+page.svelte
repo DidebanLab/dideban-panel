@@ -3,7 +3,7 @@
   import { onMount } from 'svelte';
   import { fade, fly } from 'svelte/transition';
   import { http } from '../../services/http.svelte';
-  import { endpoints } from '../../endpints.svelte';
+  import { endpoints } from '../../endpoints.svelte';
 
   let mount = $state(false);
   let loading = $state(false);

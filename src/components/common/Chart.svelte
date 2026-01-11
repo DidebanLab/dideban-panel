@@ -1,7 +1,7 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
   import ApexCharts from 'apexcharts';
-  const { visibleSeries, data, isMobile } = $props();
+  const { data, isMobile } = $props();
 
   let chartEl;
   const hexToRgba = (hex, opacity) => {
@@ -169,17 +169,6 @@
     chart.render();
   });
 
-  $effect(() => {
-    if (chart && visibleSeries) {
-      Object.entries(visibleSeries).forEach(([name, isVisible]) => {
-        if (isVisible) {
-          chart.showSeries(name);
-        } else {
-          chart.hideSeries(name);
-        }
-      });
-    }
-  });
   $effect(() => {
     if (chart) {
       chart.updateOptions({

@@ -1,6 +1,8 @@
 <script>
   import Chart from '../../common/Chart.svelte';
   import { MACHINES } from '../../../routes/constant.svelte';
+  import { http } from '../../../services/http.svelte';
+  import { endpoints } from '../../../endpoints.svelte';
 
   const { theme } = $props();
 
@@ -32,6 +34,11 @@
       activeIndex = steps.length - 1;
     }
   };
+
+  // let data = $state({});
+  // $effect(() => {
+  //   http.post(endpoints.performanceOverview, { agent_id: isActive }).then(res => (data = res.data));
+  // });
 </script>
 
 <svelte:window bind:innerWidth={width} />
@@ -169,7 +176,6 @@
 
         <Chart
           {isMobile}
-          {visibleSeries}
           data={[
             {
               name: 'CPU',

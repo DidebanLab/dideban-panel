@@ -1,5 +1,5 @@
 <script>
-  import { endpoints } from '../../../../endpints.svelte';
+  import { endpoints } from '../../../../endpoints.svelte';
   import { http } from '../../../../services/http.svelte';
   import { closer } from '../../../../stores/modal.svelte';
   import Select from '../../../common/Select.svelte';

@@ -1,8 +1,19 @@
 <script>
+  import { onMount } from 'svelte';
+  import { http } from '../../../services/http.svelte';
+  import { endpoints } from '../../../endpoints.svelte';
+
   const MAIN_STATUS_BOARD = [
     { title: 'Agents', total: 15, up: 12, down: 2, warn: 1 },
     { title: 'Checkers', total: 15, up: 8, down: 2, warn: 5 },
   ];
+
+  // let data = $state({});
+  // onMount(() => {
+  //   http.get(endpoints.topRight).then(res => {
+  //     data = res.data;
+  //   });
+  // });
 </script>
 
 <div class="w-full min-[1920px]:w-[35%] h-auto grid grid-cols-1 gap-7.75">

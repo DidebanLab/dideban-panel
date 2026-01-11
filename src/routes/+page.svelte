@@ -20,10 +20,10 @@
     <StatusOverview
       type="agents"
       subtitle="Infrastructure Nodes & Cluster Health"
-      data={AGENTS_DATA} />
+       />
     <StatusOverview
       type="checkers"
       subtitle="Microservices Health & Availability"
-      data={AGENTS_DATA} />
+       />
   </div>
 </section>
