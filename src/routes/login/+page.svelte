@@ -1,5 +1,5 @@
 <script>
-  import FormInput from './../../components/common/FormInput.svelte';
+  import FormInput from '../../components/common/FormInput.svelte';
   import { onMount } from 'svelte';
   import { fade, fly } from 'svelte/transition';
   import { http } from '../../services/http.svelte';
