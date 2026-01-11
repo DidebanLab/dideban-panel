@@ -3,8 +3,7 @@
   import { MACHINES } from '../../../routes/constant.svelte';
   import { http } from '../../../services/http.svelte';
   import { endpoints } from '../../../endpoints.svelte';
-
-  const { theme } = $props();
+  import { theme } from '../../../stores/theme.svelte';
 
   let width = $state(0);
   let isMobile = $derived(width < 365);

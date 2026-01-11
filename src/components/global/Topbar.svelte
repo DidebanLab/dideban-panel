@@ -2,8 +2,8 @@
   import { theme } from '../../stores/theme.svelte';
 </script>
 
-<div class="px-4 py-6">
-  <div class="w-full h-full flex px-7">
+<div class="mt-4">
+  <div class="w-full h-full flex">
     <div
       class="py-2 w-25.75 flex justify-center items-center gap-2 bg-[#0D0D0D]/5 dark:bg-white/5 border border-[#e5e7eb] dark:border-white/5 rounded-[14px]">
       <span class="text-xs text-[#99a1af]">
