@@ -1,5 +1,6 @@
 <script>
   import StrokedGaugeChart from '../../../../components/common/StrokedGaugeChart.svelte';
+  import UptimeChart from '../../../../components/common/UptimeChart.svelte';
   import { LIMITATIONS } from '../../../../components/config.svelte';
   import PerformanceOverview from '../../../../components/pages/dashboard/PerformanceOverview.svelte';
   import { AGENTS_DATA } from '../../../../components/pages/dashboard/statusOverview/constant.svelte';
@@ -10,7 +11,7 @@
 <section class="w-full max-w-422.75 m-auto h-auto flex flex-col col-span-10">
   <!-- Content of dashboard page -->
   <div class="w-full flex flex-col gap-7.75 p-7.75 pt-3">
-    <div class="w-full flex flex-col gap-4">
+    <div class="w-full flex flex-col gap-6">
       <PerformanceOverview />
       <div class="w-full flex flex-col gap-4">
         <div class="w-full h-full flex flex-col relative">
@@ -118,7 +119,7 @@
 
                       <div
                         class="w-full flex justify-start items-center text-xs text-nowrap text-[#6a7282] text-center border-t-white/15 border-t pt-1.5">
-                        {new Date(detail.disk.timestamp_ms).toLocaleString('en-GB', {
+                        {new Date(detail.cpu.timestamp_ms).toLocaleString('en-GB', {
                           year: 'numeric',
                           month: '2-digit',
                           day: '2-digit',
@@ -203,15 +204,18 @@
                         <span
                           class="absolute top-1/2 start-1/2 -translate-1/2 text-[#2B7FFF] text-[11px]">
                           {Number(
-                            AGENTS_DATA[0].detail[AGENTS_DATA[0].detail.length - 1].memory.used_mb,
+                            AGENTS_DATA[0].detail[AGENTS_DATA[0].detail.length - 1].memory
+                              .total_mb -
+                              AGENTS_DATA[0].detail[AGENTS_DATA[0].detail.length - 1].memory
+                                .used_mb,
                           ).toLocaleString()}
                         </span>
                         <div
-                          style="height: {(72 *
+                          style="height: {((100 -
                             AGENTS_DATA[0].detail[AGENTS_DATA[0].detail.length - 1].memory
-                              .available_mb) /
-                            AGENTS_DATA[0].detail[AGENTS_DATA[0].detail.length - 1].memory
-                              .total_mb}px;"
+                              .usage_percent) *
+                            72) /
+                            100}px;"
                           class="absolute z-10 bottom-0 start-0 w-full bg-[#2B7FFF]/20 backdrop-blur-3xl">
                         </div>
                       </div>
@@ -334,12 +338,12 @@
                         <span
                           class="absolute top-1/2 start-1/2 -translate-1/2 text-[#2B7FFF] text-[11px]">
                           {Number(
-                            AGENTS_DATA[0].detail[AGENTS_DATA[0].detail.length - 1].memory.total_mb,
+                            AGENTS_DATA[0].detail[AGENTS_DATA[0].detail.length - 1].disk.total_gb,
                           ).toLocaleString()}
                         </span>
                       </div>
 
-                      <span class="text-[11px] text-[#99A1AF]">Total (mb)</span>
+                      <span class="text-[11px] text-[#99A1AF]">Total (gb)</span>
                     </div>
 
                     <div class="flex flex-col justify-end items-center mb-3 gap-3">
@@ -347,9 +351,7 @@
                         class="relative overflow-hidden flex items-center justify-center gap-2.5 bg-[#2B7FFF]/20 backdrop-blur-3xl size-16.5 rounded-full py-1">
                         <span
                           class="absolute top-1/2 start-1/2 -translate-1/2 text-[#2B7FFF] text-[11px]">
-                          {Number(
-                            AGENTS_DATA[0].detail[AGENTS_DATA[0].detail.length - 1].memory.used_mb,
-                          ).toLocaleString()}
+                          {AGENTS_DATA[0].detail[AGENTS_DATA[0].detail.length - 1].disk.used_gb}
                         </span>
                         <div
                           style="height: {(72 *
@@ -367,15 +369,16 @@
                         <span
                           class="absolute top-1/2 start-1/2 -translate-1/2 text-[#2B7FFF] text-[11px]">
                           {Number(
-                            AGENTS_DATA[0].detail[AGENTS_DATA[0].detail.length - 1].memory.used_mb,
+                            AGENTS_DATA[0].detail[AGENTS_DATA[0].detail.length - 1].disk.total_gb -
+                              AGENTS_DATA[0].detail[AGENTS_DATA[0].detail.length - 1].disk.used_gb,
                           ).toLocaleString()}
                         </span>
                         <div
-                          style="height: {(72 *
-                            AGENTS_DATA[0].detail[AGENTS_DATA[0].detail.length - 1].memory
-                              .available_mb) /
-                            AGENTS_DATA[0].detail[AGENTS_DATA[0].detail.length - 1].memory
-                              .total_mb}px;"
+                          style="height: {((100 -
+                            AGENTS_DATA[0].detail[AGENTS_DATA[0].detail.length - 1].disk
+                              .usage_percent) *
+                            72) /
+                            100}px;"
                           class="absolute z-10 bottom-0 start-0 w-full bg-[#2B7FFF]/20 backdrop-blur-3xl">
                         </div>
                       </div>
@@ -388,28 +391,12 @@
               <div
                 class="absolute z-10 bottom-6 start-0 w-full flex justify-between items-end px-6">
                 {#each AGENTS_DATA[0].detail.slice(-53) as detail}
-                  {@const hasAgentMetrics =
-                    detail.disk?.usage_percent ||
-                    detail.memory?.usage_percent ||
-                    detail.disk?.usage_percent}
+                  {@const hasAgentMetrics = detail.disk?.usage_percent}
 
-                  {@const agentError =
-                    detail.disk.usage_percent > LIMITATIONS.disk.error ||
-                    detail.memory.usage_percent > LIMITATIONS.memory.error ||
-                    detail.disk.usage_percent > LIMITATIONS.disk.error ||
-                    detail.collect_duration_ms > LIMITATIONS.collect_duration_ms.error}
+                  {@const agentError = detail.disk.usage_percent > LIMITATIONS.disk.error}
 
-                  {@const agentWarn =
-                    detail.disk.usage_percent > LIMITATIONS.disk.warn ||
-                    detail.memory.usage_percent > LIMITATIONS.memory.warn ||
-                    detail.disk.usage_percent > LIMITATIONS.disk.warn ||
-                    detail.collect_duration_ms > LIMITATIONS.collect_duration_ms.warn}
+                  {@const agentWarn = detail.disk.usage_percent > LIMITATIONS.disk.warn}
 
-                  {@const latencyError =
-                    detail.collect_duration_ms > LIMITATIONS.collect_duration_ms.error}
-
-                  {@const latencyWarn =
-                    detail.collect_duration_ms > LIMITATIONS.collect_duration_ms.warn}
                   <div
                     class="w-1.25 h-1.25 rounded-[1px] hover:h-6 transition-all cursor-pointer relative group {hasAgentMetrics
                       ? agentError
@@ -480,6 +467,10 @@
           </div>
         </div>
       </div>
+      <UptimeChart
+        height={260}
+        name="Uptime"
+        data={[1000, 220, 333, 4000, 2000, 10, 1500, 1000, 4300, 2000, 1000, 2000, 1434]} />
     </div>
   </div>
 </section>

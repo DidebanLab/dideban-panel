@@ -4,6 +4,7 @@
   import { http } from '../../../services/http.svelte';
   import { endpoints } from '../../../endpoints.svelte';
   import { theme } from '../../../stores/theme.svelte';
+  import UptimeChart from '../../common/UptimeChart.svelte';
 
   let width = $state(0);
   let isMobile = $derived(width < 365);
@@ -194,7 +195,10 @@
                 ? machine.disk.slice(-50).map(d => d.usage_percent ?? 0)
                 : machine.disk.map(d => d.usage_percent ?? 0),
             },
-          ]} />{/if}
+          ]} />
+
+
+      {/if}
     {/each}
   </div>
 </div>

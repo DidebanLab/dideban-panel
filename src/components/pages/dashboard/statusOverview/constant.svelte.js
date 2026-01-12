@@ -1380,7 +1380,7 @@ export const AGENTS_DATA = [
           usage_percent: 26,
           timestamp_ms: 1765882500000,
         },
-        disk: { total_gb: 118, used_gb: 118, usage_percent: 75, timestamp_ms: 1765882500000 },
+        disk: { total_gb: 100, used_gb:20, usage_percent: 20, timestamp_ms: 1765882500000 },
       },
     ],
   },
