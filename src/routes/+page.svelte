@@ -11,17 +11,14 @@
   <!-- Content of dashboard page -->
   <div class="w-full flex flex-col gap-7.75 p-7.75 pt-3">
     <div class="w-full flex flex-col-reverse min-[1920px]:flex-row gap-4">
-      <PerformanceOverview />
+      <div class="w-full min-[1920px]:w-[65%]">
+        <PerformanceOverview />
+      </div>
+
       <TopRight />
     </div>
 
-    <StatusOverview
-      type="agents"
-      subtitle="Infrastructure Nodes & Cluster Health"
-      />
-    <StatusOverview
-      type="checkers"
-      subtitle="Microservices Health & Availability"
-     />
+    <StatusOverview type="agents" subtitle="Infrastructure Nodes & Cluster Health" />
+    <StatusOverview type="checkers" subtitle="Microservices Health & Availability" />
   </div>
 </section>

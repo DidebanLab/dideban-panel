@@ -8,16 +8,16 @@
   let chartEl;
   function getColor(val) {
     if (val < 65) return '#22c55e';
-    if (val <= 85) return '#eab308';
-    return '#ef4444';
+    if (val <= 85) return '#F97316';
+    return '#F87171';
   }
 
   let options = {
     chart: {
       type: 'radialBar',
-      height: 350,
-      offsetY: -10,
+      height: 100,
       fontFamily: 'IRANSans, sans-serif',
+      width:100
     },
 
     plotOptions: {
@@ -25,10 +25,10 @@
         startAngle: -135,
         endAngle: 135,
         hollow: {
-          size: '50%',
+          size: '60%',
         },
         track: {
-          background: $theme === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(13, 13, 13, 0.1)',
+          background: $theme === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(13, 13, 13, 0.2)',
         },
         dataLabels: {
           name: {
@@ -47,7 +47,7 @@
     },
 
     stroke: {
-      dashArray: 4,
+      dashArray: 5,
     },
   };
 
@@ -86,7 +86,7 @@
             },
             plotOptions: {
               radialBar: {
-                hollow: { size: '50%' },
+                hollow: { size: '20%' },
                 dataLabels: {
                   name: {
                     fontSize: '12px',
@@ -111,4 +111,4 @@
   });
 </script>
 
-<div class="w-fit max-w-28 sm:max-w-47 xl:max-w-35" bind:this={chartEl}></div>
+<div  bind:this={chartEl}></div>

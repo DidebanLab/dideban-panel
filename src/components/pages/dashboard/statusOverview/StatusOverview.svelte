@@ -87,8 +87,7 @@
       {@const warn = !error && isWarn(last)}
       {@const statusLevel = getStatus(last, item.status)}
       <div
-        class="relative h-32.75 border rounded-[14px] flex flex-col py-6 gap-7
-              {error
+        class="relative h-32.75 border rounded-[14px] flex flex-col py-6 gap-7 {error
           ? 'bg-[#EF4444]/5 border-[#EF4444]/15'
           : warn
             ? 'border-[#0D0D0D]/5 dark:border-[#F97316]/15 bg-[#F97316]/5'
