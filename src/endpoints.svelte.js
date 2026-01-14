@@ -5,4 +5,5 @@ export const endpoints = {
   performanceOverview: '',
   topRight: '',
   statusOverview: '.../',
+  latency: '/',
 };

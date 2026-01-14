@@ -196,8 +196,6 @@
                 : machine.disk.map(d => d.usage_percent ?? 0),
             },
           ]} />
-
-
       {/if}
     {/each}
   </div>

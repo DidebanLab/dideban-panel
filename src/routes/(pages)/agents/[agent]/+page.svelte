@@ -1,6 +1,8 @@
 <script>
+  import Latency from '../../../../components/common/Latency.svelte';
   import StrokedGaugeChart from '../../../../components/common/StrokedGaugeChart.svelte';
   import UptimeChart from '../../../../components/common/UptimeChart.svelte';
+  import UptimeHistoryAll from '../../../../components/common/UptimeHistoryAll.svelte';
   import { LIMITATIONS } from '../../../../components/config.svelte';
   import PerformanceOverview from '../../../../components/pages/dashboard/PerformanceOverview.svelte';
   import { AGENTS_DATA } from '../../../../components/pages/dashboard/statusOverview/constant.svelte';
@@ -12,14 +14,13 @@
   <!-- Content of dashboard page -->
   <div class="w-full flex flex-col gap-7.75 p-7.75 pt-3">
     <div class="w-full flex flex-col gap-6">
-      <PerformanceOverview />
-      <div class="w-full flex flex-col gap-4">
-        <div class="w-full h-full flex flex-col relative">
+      <div class="w-full flex flex-col gap-4 relative">
+        <div class="w-full h-full flex flex-col">
           <div class="w-full h-auto flex justify-start gap-4 items-start">
             <div
               class="relative w-1/3 flex flex-col justify-center items-start border rounded-[14px] p-6 {AGENTS_DATA[0]
                 .detail[AGENTS_DATA[0].detail.length - 1].cpu.usage_percent < 65
-                ? 'border-[#0D0D0D]/5 dark:border-[#00bc7d]/10 bg-[#F9FAFB] dark:bg-[#121212]'
+                ? 'dark:bg-[#0D0D0D] bg-[#FFFFFF] border border-[#0D0D0D]/5 dark:border-white/5'
                 : AGENTS_DATA[0].detail[AGENTS_DATA[0].detail.length - 1].cpu.usage_percent < 85
                   ? 'border-[#0D0D0D]/5 dark:border-[#F97316]/15 bg-[#F97316]/5'
                   : 'bg-[#EF4444]/5 border-[#EF4444]/15'}">
@@ -135,7 +136,7 @@
             <div
               class="relative w-1/3 flex flex-col justify-center items-start border rounded-[14px] p-6 {AGENTS_DATA[0]
                 .detail[AGENTS_DATA[0].detail.length - 1].memory.usage_percent < 65
-                ? 'border-[#0D0D0D]/5 dark:border-[#00bc7d]/10 bg-[#F9FAFB] dark:bg-[#121212]'
+                ? 'dark:bg-[#0D0D0D] bg-[#FFFFFF] border border-[#0D0D0D]/5 dark:border-white/5'
                 : AGENTS_DATA[0].detail[AGENTS_DATA[0].detail.length - 1].memory.usage_percent < 85
                   ? 'border-[#0D0D0D]/5 dark:border-[#F97316]/15 bg-[#F97316]/5'
                   : 'bg-[#EF4444]/5 border-[#EF4444]/15'}">
@@ -302,7 +303,7 @@
             <div
               class="relative w-1/3 flex flex-col justify-center items-start border rounded-[14px] p-6 {AGENTS_DATA[0]
                 .detail[AGENTS_DATA[0].detail.length - 1].disk.usage_percent < 65
-                ? 'border-[#0D0D0D]/5 dark:border-[#00bc7d]/10 bg-[#F9FAFB] dark:bg-[#121212]'
+                ? 'dark:bg-[#0D0D0D] bg-[#FFFFFF] border border-[#0D0D0D]/5 dark:border-white/5'
                 : AGENTS_DATA[0].detail[AGENTS_DATA[0].detail.length - 1].disk.usage_percent < 85
                   ? 'border-[#0D0D0D]/5 dark:border-[#F97316]/15 bg-[#F97316]/5'
                   : 'bg-[#EF4444]/5 border-[#EF4444]/15'}">
@@ -467,10 +468,9 @@
           </div>
         </div>
       </div>
-      <UptimeChart
-        height={260}
-        name="Uptime"
-        data={[1000, 220, 333, 4000, 2000, 10, 1500, 1000, 4300, 2000, 1000, 2000, 1434]} />
+      <PerformanceOverview />
+      <Latency />
+      <UptimeHistoryAll />
     </div>
   </div>
 </section>
