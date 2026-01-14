@@ -7,9 +7,12 @@
   import PerformanceOverview from '../../../../components/pages/dashboard/PerformanceOverview.svelte';
   import StatusOverview from '../../../../components/pages/dashboard/statusOverview/StatusOverview.svelte';
   import TopRight from '../../../../components/pages/dashboard/TopRight.svelte';
-  import { opener } from '../../../../stores/modal.svelte.js';
-  import UptimeHistory from '../../../../components/pages/checker/UptimeHistory.svelte';
   import Latency from '../../../../components/common/Latency.svelte';
+
+  // let data = $state([]);
+  // $effect(() => {
+  //   http.post(endpoints.performanceOverview, { agent_id: isActive }).then(res => (data = res.data));
+  // });
 </script>
 
 <section class="w-full max-w-422.75 m-auto h-auto flex flex-col col-span-10">

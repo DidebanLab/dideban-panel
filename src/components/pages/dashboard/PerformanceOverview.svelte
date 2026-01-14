@@ -44,7 +44,7 @@
 <svelte:window bind:innerWidth={width} />
 
 <div
-  class="w-full h-auto p-6 pb-1.5 rounded-[14px] dark:bg-[#0D0D0D] bg-[#FFFFFF] border border-[#0D0D0D]/5 dark:border-white/5">
+  class="w-full h-auto p-6 pb-1.5 rounded-[14px] dark:bg-[#0D0D0D] bg-[#FFFFFF] border border-[#0D0D0D]/5 dark:border-white/5 ">
   <div class="flex flex-col gap-4 items-start justify-between w-full">
     {#each MACHINES as machine (machine.id)}
       {#if isActive === machine.agent_id}
@@ -196,6 +196,8 @@
                 : machine.disk.map(d => d.usage_percent ?? 0),
             },
           ]} />
+
+
       {/if}
     {/each}
   </div>
