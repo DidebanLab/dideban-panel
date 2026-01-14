@@ -6,6 +6,8 @@
   import PerformanceOverview from '../../../../components/pages/dashboard/PerformanceOverview.svelte';
   import StatusOverview from '../../../../components/pages/dashboard/statusOverview/StatusOverview.svelte';
   import TopRight from '../../../../components/pages/dashboard/TopRight.svelte';
+  import { opener } from '../../../../stores/modal.svelte.js';
+  import UptimeHistory from '../../../../components/pages/checker/UptimeHistory.svelte';
 
   const data = [
     1000, 5000, 2000, 2400, 1400, 2300, 1000, 5000, 2000, 2400, 1400, 2300, 1000, 5000, 2000, 2400,
@@ -119,7 +121,7 @@
 
             <span class="dark:text-white text-base">40%</span>
           </div>
-          <UptimeChart name="Latency" height={150} {data} />
+          <UptimeChart name="Latency" height={250} {data} />
         </div>
         <div class="w-[18%] gap-3 flex flex-col justify-start items-start mb-auto">
           <div
@@ -177,6 +179,545 @@
                 src="/icons/warning.svg"
                 alt="error" />
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="w-full flex flex-col justify-start items-start gap-4 border border-[#0D0D0D]/5 dark:border-white/5 p-6 rounded-xl">
+      <div class="flex flex-col gap-3">
+        <span class="text-white text-xl">Uptime</span><span class="text-sm text-[#99a1af]"
+          >History Of Uptime</span>
+      </div>
+
+      <div class="w-full grid grid-cols-7 text-white gap-4 relative">
+        <div class="absolute end-0 bottom-3 flex flex-col justify-center items-end gap-2">
+          <div class="flex justify-center items-center gap-2 text-white/40 text-sm">
+            <span> More than 80%</span>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-red-600/70"></div>
+          </div>
+          <div class="flex justify-center items-center gap-2 text-white/40 text-sm">
+            <span> {'50% < value < 80%'}</span>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-[#F97316]"></div>
+          </div>
+          <div class="flex justify-center items-center gap-2 text-white/40 text-sm">
+            <span>less Than 51 %</span>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+          </div>
+        </div>
+
+        <div
+          class="flex flex-col gap-4 p-4 pt-3 dark:bg-[#0D0D0D] bg-[#FFFFFF] border border-[#0D0D0D]/5 dark:border-white/5 rounded-lg">
+          <div
+            class="flex justify-between items-center text-sm border-b border-b-white/20 pb-2 text-white/40">
+            <span>September</span>
+            <span>90%</span>
+          </div>
+
+          <div
+            class="grid grid-cols-7 gap-2.5 justify-start items-start backdrop-blur-3xl rounded-lg">
+            <button
+              type="button"
+              aria-label="uptime history modal"
+              onclick={() => {
+                opener({
+                  id: `create-uptime`,
+                  content: UptimeHistory,
+                });
+              }}
+              class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-[#F97316]">
+            </button>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-red-600/70"></div>
+          </div>
+        </div>
+        <div
+          class="flex flex-col gap-4 p-4 pt-3 dark:bg-[#0D0D0D] bg-[#FFFFFF] border border-[#0D0D0D]/5 dark:border-white/5 rounded-lg">
+          <div
+            class="flex justify-between items-center text-sm border-b border-b-white/20 pb-2 text-white/40">
+            <span>September</span>
+            <span>90%</span>
+          </div>
+
+          <div
+            class="grid grid-cols-7 gap-2.5 justify-start items-start backdrop-blur-3xl rounded-lg">
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-[#F97316]"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-red-600/70"></div>
+          </div>
+        </div>
+        <div
+          class="flex flex-col gap-4 p-4 pt-3 dark:bg-[#0D0D0D] bg-[#FFFFFF] border border-[#0D0D0D]/5 dark:border-white/5 rounded-lg">
+          <div
+            class="flex justify-between items-center text-sm border-b border-b-white/20 pb-2 text-white/40">
+            <span>September</span>
+            <span>90%</span>
+          </div>
+
+          <div
+            class="grid grid-cols-7 gap-2.5 justify-start items-start backdrop-blur-3xl rounded-lg">
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-[#F97316]"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-red-600/70"></div>
+          </div>
+        </div>
+        <div
+          class="flex flex-col gap-4 p-4 pt-3 dark:bg-[#0D0D0D] bg-[#FFFFFF] border border-[#0D0D0D]/5 dark:border-white/5 rounded-lg">
+          <div
+            class="flex justify-between items-center text-sm border-b border-b-white/20 pb-2 text-white/40">
+            <span>September</span>
+            <span>90%</span>
+          </div>
+
+          <div
+            class="grid grid-cols-7 gap-2.5 justify-start items-start backdrop-blur-3xl rounded-lg">
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-[#F97316]"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-red-600/70"></div>
+          </div>
+        </div>
+        <div
+          class="flex flex-col gap-4 p-4 pt-3 dark:bg-[#0D0D0D] bg-[#FFFFFF] border border-[#0D0D0D]/5 dark:border-white/5 rounded-lg">
+          <div
+            class="flex justify-between items-center text-sm border-b border-b-white/20 pb-2 text-white/40">
+            <span>September</span>
+            <span>90%</span>
+          </div>
+
+          <div
+            class="grid grid-cols-7 gap-2.5 justify-start items-start backdrop-blur-3xl rounded-lg">
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-[#F97316]"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-red-600/70"></div>
+          </div>
+        </div>
+        <div
+          class="flex flex-col gap-4 p-4 pt-3 dark:bg-[#0D0D0D] bg-[#FFFFFF] border border-[#0D0D0D]/5 dark:border-white/5 rounded-lg">
+          <div
+            class="flex justify-between items-center text-sm border-b border-b-white/20 pb-2 text-white/40">
+            <span>September</span>
+            <span>90%</span>
+          </div>
+
+          <div
+            class="grid grid-cols-7 gap-2.5 justify-start items-start backdrop-blur-3xl rounded-lg">
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-[#F97316]"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-red-600/70"></div>
+          </div>
+        </div>
+        <div
+          class="flex flex-col gap-4 p-4 pt-3 dark:bg-[#0D0D0D] bg-[#FFFFFF] border border-[#0D0D0D]/5 dark:border-white/5 rounded-lg">
+          <div
+            class="flex justify-between items-center text-sm border-b border-b-white/20 pb-2 text-white/40">
+            <span>September</span>
+            <span>90%</span>
+          </div>
+
+          <div
+            class="grid grid-cols-7 gap-2.5 justify-start items-start backdrop-blur-3xl rounded-lg">
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-[#F97316]"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-red-600/70"></div>
+          </div>
+        </div>
+        <div
+          class="flex flex-col gap-4 p-4 pt-3 dark:bg-[#0D0D0D] bg-[#FFFFFF] border border-[#0D0D0D]/5 dark:border-white/5 rounded-lg">
+          <div
+            class="flex justify-between items-center text-sm border-b border-b-white/20 pb-2 text-white/40">
+            <span>September</span>
+            <span>90%</span>
+          </div>
+
+          <div
+            class="grid grid-cols-7 gap-2.5 justify-start items-start backdrop-blur-3xl rounded-lg">
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-[#F97316]"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-red-600/70"></div>
+          </div>
+        </div>
+        <div
+          class="flex flex-col gap-4 p-4 pt-3 dark:bg-[#0D0D0D] bg-[#FFFFFF] border border-[#0D0D0D]/5 dark:border-white/5 rounded-lg">
+          <div
+            class="flex justify-between items-center text-sm border-b border-b-white/20 pb-2 text-white/40">
+            <span>September</span>
+            <span>90%</span>
+          </div>
+
+          <div
+            class="grid grid-cols-7 gap-2.5 justify-start items-start backdrop-blur-3xl rounded-lg">
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-[#F97316]"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-red-600/70"></div>
+          </div>
+        </div>
+        <div
+          class="flex flex-col gap-4 p-4 pt-3 dark:bg-[#0D0D0D] bg-[#FFFFFF] border border-[#0D0D0D]/5 dark:border-white/5 rounded-lg">
+          <div
+            class="flex justify-between items-center text-sm border-b border-b-white/20 pb-2 text-white/40">
+            <span>September</span>
+            <span>90%</span>
+          </div>
+
+          <div
+            class="grid grid-cols-7 gap-2.5 justify-start items-start backdrop-blur-3xl rounded-lg">
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-[#F97316]"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-red-600/70"></div>
+          </div>
+        </div>
+        <div
+          class="flex flex-col gap-4 p-4 pt-3 dark:bg-[#0D0D0D] bg-[#FFFFFF] border border-[#0D0D0D]/5 dark:border-white/5 rounded-lg">
+          <div
+            class="flex justify-between items-center text-sm border-b border-b-white/20 pb-2 text-white/40">
+            <span>September</span>
+            <span>90%</span>
+          </div>
+
+          <div
+            class="grid grid-cols-7 gap-2.5 justify-start items-start backdrop-blur-3xl rounded-lg">
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-[#F97316]"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-red-600/70"></div>
+          </div>
+        </div>
+        <div
+          class="flex flex-col gap-4 p-4 pt-3 dark:bg-[#0D0D0D] bg-[#FFFFFF] border border-[#0D0D0D]/5 dark:border-white/5 rounded-lg">
+          <div
+            class="flex justify-between items-center text-sm border-b border-b-white/20 pb-2 text-white/40">
+            <span>September</span>
+            <span>90%</span>
+          </div>
+
+          <div
+            class="grid grid-cols-7 gap-2.5 justify-start items-start backdrop-blur-3xl rounded-lg">
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-[#F97316]"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-green-600/70"></div>
+            <div class="size-4 rounded-sm hover:animate-pulse cursor-pointer bg-red-600/70"></div>
           </div>
         </div>
       </div>
