@@ -7,7 +7,7 @@
 </script>
 
 <div
-  class="w-[70vw] flex flex-col gap-4 p-4 rounded-[14px] dark:bg-[#0D0D0D] bg-[#FFFFFF] border border-[#0D0D0D]/5 dark:border-white/5">
+  class="w-[60vw] flex flex-col gap-4 p-6 rounded-[14px] dark:bg-[#0D0D0D] bg-[#FFFFFF] border border-[#0D0D0D]/5 dark:border-white/5">
   <div class="w-full flex justify-between items-start">
     <div class="w-full flex flex-col justify-start items-start">
       <span class="text-xl dark:text-white">September</span>
