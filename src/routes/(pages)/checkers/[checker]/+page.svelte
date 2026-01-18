@@ -8,6 +8,8 @@
   import StatusOverview from '../../../../components/pages/dashboard/statusOverview/StatusOverview.svelte';
   import TopRight from '../../../../components/pages/dashboard/TopRight.svelte';
   import Latency from '../../../../components/common/Latency.svelte';
+  import { opener } from '../../../../stores/modal.svelte';
+  import EditChecker from '../../../../components/pages/dashboard/statusOverview/EditChecker.svelte';
 
   // let data = $state([]);
   // $effect(() => {
@@ -19,10 +21,11 @@
   <!-- Content of dashboard page -->
   <div class="w-full flex flex-col gap-7.75 p-7.75 py-2">
     <div
-      class="w-full flex flex-col justify-start items-start gap-4 border border-[#0D0D0D]/5 dark:border-white/5 p-6 rounded-xl">
+      class="w-full flex flex-col justify-start items-start gap-6 border border-[#0D0D0D]/5 dark:border-white/5 p-6 rounded-xl">
       <div class="w-full flex justify-between items-start">
         <div class="flex justify-start items-center gap-4">
-          <div class="flex justify-center items-center size-12 rounded-2xl bg-white/5">
+          <div
+            class="flex justify-center items-center size-12 rounded-2xl bg-[#0D0D0D]/5 dark:bg-white/5">
             <svg
               version="1.1"
               xmlns="http://www.w3.org/2000/svg"
@@ -76,7 +79,7 @@
             </svg>
           </div>
 
-          <span class="text-white text-xl">CheckerName</span>
+          <span class="text-black dark:text-white text-xl">CheckerName</span>
         </div>
 
         <div class="flex justify-end items-center gap-2 text-sm text-[#99a1af]">
@@ -85,65 +88,61 @@
             >Jan 13th, 08:54:22</span>
         </div>
       </div>
-      <div class=" w-full flex gap-4 justify-between items-center text-white text-base">
+      <div
+        class=" w-full flex 2xl:flex-row flex-col-reverse gap-4 justify-between items-center text-white text-base">
         <Latency />
-        <div class="w-[18%] gap-3 flex flex-col justify-start items-start mb-auto">
+        <div
+          class="relative w-full 2xl:w-[18%] gap-3 flex 2xl:flex-col justify-start items-start mb-auto">
           <div
-            class="flex w-full justify-between items-center overflow-hidden text-base text-white border border-[#0D0D0D]/5 dark:border-white/5 rounded-xl dark:bg-[#0D0D0D] bg-[#FFFFFF]">
-            <span
-              class="bg-[#121212] text-lg h-[47.5px] flex justify-center items-center px-3 text-white/20">
-              Target</span>
-            <span class="p-2 text-center w-full text-white"> https://darichetejarat.ir</span>
+            class="flex w-full flex-col justify-between items-center overflow-hidden text-base text-white border border-[#0D0D0D]/5 dark:border-white/5 rounded-xl dark:bg-[#0D0D0D] bg-[#FFFFFF]">
+            <span class="py-3 text-center w-full 2xl:text-sm text-[#99a1af] dark:text-white">
+              https://darichetejarat.ir</span>
           </div>
+          <div class="h-px w-full bg-[#0D0D0D]/5  dark:bg-white/5 hidden 2xl:block"></div>
+
           <div
             class="relative w-full flex justify-between items-center p-2 border border-[#0D0D0D]/5 dark:border-white/5 rounded-xl dark:bg-[#0D0D0D] bg-[#FFFFFF]">
-            <span class="flex justify-center items-center w-full text-xl text-white/20">Ping</span>
-            <span class="w-px h-7.5 bg-white/10"></span>
+            <span class="flex justify-center items-center w-full text-base dark:text-white/20 text-[#99a1af] "
+              >Ping</span>
+            <span class="w-px h-7.5 bg-[#0D0D0D]/5 dark:bg-white/5 border border-[#0D0D0D]/5 dark:border-white/5"></span>
             <span
-              class="w-full relative flex justify-center items-center text-xl tracking-wider text-[#3b82f6]"
-              >HTTP
+              class="w-full relative flex justify-center items-center text-base tracking-wider text-[#3b82f6]"
+              >Http
             </span>
           </div>
 
-          <div class="h-px w-full bg-white/5"></div>
-
-          <div class="w-full flex justify-between items-center gap-3">
-            <div
-              class=" border-[#F97316]/20 flex flex-col justify-between items-center p-1 rounded-[14px] border w-full h-full relative overflow-hidden group bg-linear-to-bl from-[#F0B100]/5">
-              <div
-                class="flex items-center justify-center gap-2.5 bg-[#F97316]/10 w-full rounded-xl py-1">
-                <div class="h-5 group flex justify-center items-center"></div>
-                <div class="absolute start-3 size-3 rounded-full bg-[#F97316]"></div>
-                <span class="text-base text-black dark:text-white">Uptime</span>
-              </div>
-              <span class="text-2xl p-2 text-[#F97316]">50 %</span>
-              <img
-                class="opacity-5 absolute bottom-0 end-0"
-                width="70"
-                src="/icons/warning.svg"
-                alt="error" />
-            </div>
-            <div
-              class="border-[#F97316]/20 flex flex-col justify-between items-center p-1 rounded-[14px] border w-full h-full relative overflow-hidden group bg-linear-to-bl from-[#F0B100]/5">
-              <div
-                class="absolute -top-5 end-0 size-0 rounded-full group-hover:top-5 group-hover:end-5 transition-all duration-700"
-                style="box-shadow: 0 0 100px 30px #F97316">
-                <div class="w-full h-full bg-white/5"></div>
-              </div>
-              <div
-                class="flex items-center justify-center gap-2.5 bg-[#F97316]/10 w-full rounded-xl py-1">
-                <div class="h-5 group flex justify-center items-center"></div>
-                <div class="absolute start-3 size-3 rounded-full bg-[#F97316]"></div>
-                <span class="text-base text-black dark:text-white">Status</span>
-              </div>
-              <span class="text-2xl p-2 text-[#F97316]">Up</span>
-              <img
-                class="opacity-5 absolute bottom-0 end-0"
-                width="70"
-                src="/icons/warning.svg"
-                alt="error" />
-            </div>
+          <div
+            class="relative w-full flex justify-between items-center p-2 border border-[#0D0D0D]/5 dark:border-white/5 rounded-xl dark:bg-[#0D0D0D] bg-[#FFFFFF]">
+            <span class="flex justify-center items-center w-full text-base dark:text-white/20 text-[#99a1af] "
+              >Uptime</span>
+            <span class="w-px h-7.5 bg-[#0D0D0D]/5 dark:bg-white/5 border border-[#0D0D0D]/5 dark:border-white/5"></span>
+            <span
+              class="w-full relative flex justify-center items-center text-base tracking-wider text-[#F97316]"
+              >50%
+            </span>
           </div>
+
+          <div
+            class="relative w-full flex justify-between items-center p-2 border border-[#0D0D0D]/5 dark:border-white/5 rounded-xl dark:bg-[#0D0D0D] bg-[#FFFFFF]">
+            <span class="flex justify-center items-center w-full text-base dark:text-white/20 text-[#99a1af] "
+              >Status</span>
+            <span class="w-px h-7.5 bg-[#0D0D0D]/5 dark:bg-white/5 border border-[#0D0D0D]/5 dark:border-white/5"></span>
+            <span
+              class="w-full relative flex justify-center items-center text-base tracking-wider text-[#F97316]"
+              >Up
+            </span>
+          </div>
+
+          <button
+            onclick={() => {
+              opener({
+                id: `create-editCheckers`,
+                content: EditChecker,
+              });
+            }}
+            class="absolute right-0 -top-6 2xl:static ms-auto me-1 text-white/20 text-sm cursor-pointer hover:text-white/30">
+            Edit
+          </button>
         </div>
       </div>
     </div>

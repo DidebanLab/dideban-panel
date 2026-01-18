@@ -10,7 +10,7 @@
   class="w-[60vw] flex flex-col gap-4 p-6 rounded-[14px] dark:bg-[#0D0D0D] bg-[#FFFFFF] border border-[#0D0D0D]/5 dark:border-white/5">
   <div class="w-full flex justify-between items-start">
     <div class="w-full flex flex-col justify-start items-start">
-      <span class="text-xl dark:text-white">September</span>
+      <span class="text-xl text-black dark:text-white">September 13th</span>
       <span class="text-sm text-[#99a1af]">History Of Uptime In Sep 13th</span>
     </div>
 
@@ -23,7 +23,7 @@
           >Average Uptime Of Month :</span>
       </div>
 
-      <span class="dark:text-white text-base">50%</span>
+      <span class="text-black dark:text-white text-base">50%</span>
     </div>
   </div>
 

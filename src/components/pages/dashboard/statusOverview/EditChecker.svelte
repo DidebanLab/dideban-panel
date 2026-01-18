@@ -1,9 +1,13 @@
 <script>
+  import { onMount } from 'svelte';
   import { endpoints } from '../../../../endpoints.svelte';
   import { http } from '../../../../services/http.svelte';
   import { closer } from '../../../../stores/modal.svelte';
   import Select from '../../../common/Select.svelte';
   import { AGENT_LIMIT, CHECK_LIMIT } from '../../../config.svelte';
+  import { page } from '$app/stores';
+
+  let data = $state('');
 
   let body = $state('');
   let httpConfig = $state({
@@ -24,10 +28,24 @@
     type: 'http',
   });
 
+  onMount(() => {
+    http.get(endpoints.checkers + $page.params.checker).then(res => {
+      data = res.data;
+      form = data.form;
+
+      if (form.type === 'http') {
+        httpConfig = data.config;
+        body = data.body;
+      } else if (form.type === 'ping') {
+        pingConfig = data.config;
+      }
+    });
+  });
+
   function addCheckerHandler() {
     let detail = { ...form };
     if (form.type === 'http') {
-      if (form.method === 'PUT' || form.method === 'POST') {
+      if (form.method === 'PATCH') {
         detail = { ...detail, config: { ...httpConfig, body } };
       } else {
         detail = { ...detail, config: httpConfig };
@@ -37,7 +55,7 @@
     } else {
       return;
     }
-    http.post(endpoints.checkers, detail);
+    http.patch(endpoints.checkers + id, detail);
   }
 </script>
 
@@ -45,8 +63,7 @@
   class="bg-[#F9FAFB] dark:bg-[#121212] backdrop-blur-3xl border border-[#0D0D0D]/5 dark:border-white/10 rounded-xl w-150 flex flex-col">
   <div
     class="relative text-black dark:text-white border-b py-2 border-b-[#0D0D0D]/5 dark:border-b-white/10 flex justify-center items-center text-base capitalize">
-    add new check
-
+    Edit checker
     <div class="absolute end-3 top-2">
       <div class="flex justify-around items-center gap-2">
         <span class="text-xs w-[47.5px] {form.enabled ? 'text-[#00bc7d]' : 'text-[#6a7282]'}">
@@ -86,7 +103,8 @@
           options={[{ name: 'http' }, { name: 'ping' }]} />
       </div>
       <div class="flex flex-col justify-start items-start gap-1.5 w-full">
-        <span class="text-sm text-black dark:text-white {form.type ? '' : 'opacity-20'}">Target</span>
+        <span class="text-sm text-black dark:text-white {form.type ? '' : 'opacity-20'}"
+          >Target</span>
         <input
           bind:value={form.target}
           disabled={!form.type}
@@ -377,12 +395,12 @@
       onclick={() => {
         addCheckerHandler();
         closer({
-          id: 'create-addCheckers',
+          id: 'create-editCheckers',
         });
       }}
       type="button"
       class="mt-10 me-auto w-fit px-10 text-sm text-[#10b981] h-8.5 flex justify-center items-center rounded-md cursor-pointer bg-[#22c55e]/10 hover:opacity-60 border border-[#00bc7d]/10 disabled:dark:opacity-30 disabled:opacity-50 disabled:cursor-not-allowed">
-      Add Checker
+      Edit Checker
     </button>
   </div>
 </div>

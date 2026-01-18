@@ -1,5 +1,13 @@
 <script>
+  import { onMount } from 'svelte';
+  import { endpoints } from '../../endpoints.svelte';
+  import { http } from '../../services/http.svelte';
   import { theme } from '../../stores/theme.svelte';
+  let alerts = $state([]);
+
+  onMount(() => {
+    http.get(endpoints.alerts).then(res => (alerts = res.data));
+  });
 </script>
 
 <div class="mt-4">
@@ -37,7 +45,9 @@
           </div>
           <span
             class="hover:animate-pulse hover:[text-shadow:0_0_100px_#F87171,0_0_150px_#F87171,0_0_200px_#F87171,0_0_250px_#F87171,0_0_300px_#F87171]">
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Deserunt, ducimus?</span>
+            {alerts[0] ||
+              'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Deserunt, ducimus?'}
+          </span>
         </div>
         <div
           class="w-fit bg-[#ff6467]/10 rounded-full text-[#ff6467]/80 text-xs flex justify-center items-center gap-2">
@@ -46,7 +56,8 @@
           </div>
           <span
             class="hover:animate-pulse hover:[text-shadow:0_0_100px_#F87171,0_0_150px_#F87171,0_0_200px_#F87171,0_0_250px_#F87171,0_0_300px_#F87171]">
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Deserunt, ducimus?</span>
+            {alerts[1] ||
+              'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Deserunt, ducimus?'}</span>
         </div>
       </div>
 
