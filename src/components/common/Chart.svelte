@@ -1,7 +1,7 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
   import ApexCharts from 'apexcharts';
-  const { data, isMobile } = $props();
+  const { data } = $props();
 
   let chartEl;
   const hexToRgba = (hex, opacity) => {
@@ -167,16 +167,6 @@
       },
     });
     chart.render();
-  });
-
-  $effect(() => {
-    if (chart) {
-      chart.updateOptions({
-        chart: {
-          height: isMobile ? 300 : 200,
-        },
-      });
-    }
   });
 
   onDestroy(() => {

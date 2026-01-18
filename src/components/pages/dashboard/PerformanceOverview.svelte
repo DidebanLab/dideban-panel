@@ -4,19 +4,9 @@
   import { http } from '../../../services/http.svelte';
   import { endpoints } from '../../../endpoints.svelte';
   import { theme } from '../../../stores/theme.svelte';
-  import UptimeChart from '../../common/UptimeChart.svelte';
 
-  let width = $state(0);
-  let isMobile = $derived(width < 365);
-  let isTablet = $derived(width > 1279 && width < 1536);
-  let visibleSeries = $state({
-    CPU: true,
-    Memory: true,
-    Disk: true,
-  });
   const steps = ['Beta', 'Main', 'Development'];
   let activeIndex = $state(1);
-
   const isActive = $derived(steps[activeIndex]);
 
   const next = () => {
@@ -41,10 +31,8 @@
   // });
 </script>
 
-<svelte:window bind:innerWidth={width} />
-
 <div
-  class="w-full h-auto p-6 pb-1.5 rounded-[14px] dark:bg-[#0D0D0D] bg-[#FFFFFF] border border-[#0D0D0D]/5 dark:border-white/5 ">
+  class="w-full h-auto p-6 pb-1.5 rounded-[14px] dark:bg-[#0D0D0D] bg-[#FFFFFF] border border-[#0D0D0D]/5 dark:border-white/5">
   <div class="flex flex-col gap-4 items-start justify-between w-full">
     {#each MACHINES as machine (machine.id)}
       {#if isActive === machine.agent_id}
@@ -175,29 +163,20 @@
         </div>
 
         <Chart
-          {isMobile}
           data={[
             {
               name: 'CPU',
-              data: isMobile
-                ? machine.cpu.slice(-50).map(d => d.usage_percent ?? 0)
-                : machine.cpu.map(d => d.usage_percent ?? 0),
+              data: machine.cpu.map(d => d.usage_percent ?? 0),
             },
             {
               name: 'Memory',
-              data: isMobile
-                ? machine.memory.slice(-50).map(d => d.usage_percent ?? 0)
-                : machine.memory.map(d => d.usage_percent ?? 0),
+              data: machine.memory.map(d => d.usage_percent ?? 0),
             },
             {
               name: 'Disk',
-              data: isMobile
-                ? machine.disk.slice(-50).map(d => d.usage_percent ?? 0)
-                : machine.disk.map(d => d.usage_percent ?? 0),
+              data: machine.disk.map(d => d.usage_percent ?? 0),
             },
           ]} />
-
-
       {/if}
     {/each}
   </div>

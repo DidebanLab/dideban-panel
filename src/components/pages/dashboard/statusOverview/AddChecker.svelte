@@ -70,23 +70,23 @@
   </div>
   <div class="flex flex-col justify-start items-start p-6 gap-6">
     <div class="flex flex-col justify-start items-start gap-1.5 w-full">
-      <span class="text-white text-sm">Name</span>
+      <span class="text-black dark:text-white text-sm">Name</span>
       <input
         bind:value={form.name}
         placeholder="Please enter the checker name"
-        class="px-3 h-9 w-full bg-white/5 backdrop-blur-sm rounded-lg placeholder:text-gray-400/40 text-gray-400 text-sm outline-none tracking-wide"
+        class="px-3 h-9 w-full bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-lg placeholder:text-gray-400/40 text-gray-400 text-sm outline-none tracking-wide"
         type="text" />
     </div>
     <div class="w-full flex justify-between items-start gap-6 z-11">
       <div class="flex flex-col justify-start items-start gap-1.5 w-full">
-        <span class="text-white text-sm">Type</span>
+        <span class="text-black dark:text-white text-sm">Type</span>
         <Select
           bind:value={form.type}
           title="Select type"
           options={[{ name: 'http' }, { name: 'ping' }]} />
       </div>
       <div class="flex flex-col justify-start items-start gap-1.5 w-full">
-        <span class="text-sm text-white {form.type ? '' : 'opacity-20'}">Target</span>
+        <span class="text-sm text-black dark:text-white {form.type ? '' : 'opacity-20'}">Target</span>
         <input
           bind:value={form.target}
           disabled={!form.type}
@@ -95,7 +95,7 @@
             : form.type === 'ping'
               ? 'Please enter the hostname'
               : 'Please select a type first'}
-          class="px-3 h-9 w-full bg-white/5 disabled:opacity-50 disabled:cursor-not-allowed backdrop-blur-sm rounded-lg placeholder:text-gray-400/40 text-gray-400 text-sm outline-none tracking-wide"
+          class="px-3 h-9 w-full bg-[#0D0D0D]/5 dark:bg-white/5 disabled:opacity-50 disabled:cursor-not-allowed backdrop-blur-sm rounded-lg placeholder:text-gray-400/40 text-gray-400 text-sm outline-none tracking-wide"
           type="text" />
       </div>
     </div>
@@ -106,7 +106,7 @@
           <div
             class="border-b border-b-[#0D0D0D]/5 dark:border-b-white/10 h-9 flex justify-center items-center w-full relative">
             <span
-              class="flex justify-center items-center capitalize text-sm tracking-wide text-white px-3"
+              class="flex justify-center items-center capitalize text-sm tracking-wide text-black dark:text-white px-3"
               >{form.type} setting</span>
 
             {#if form.type === 'http'}
@@ -122,7 +122,7 @@
                 ]} />
             {/if}
           </div>
-          <div class="p-4 w-full h-full flex flex-col max-h-100 overflow-y-auto custom-scroll">
+          <div class="p-4 w-full h-full flex flex-col max-h-70 overflow-y-auto custom-scroll">
             {#if form.type === 'http'}
               <div class="flex flex-col gap-1.5 justify-start items-start w-full">
                 <span class="text-gray-400 text-sm">Header</span>
@@ -133,12 +133,12 @@
                       <input
                         bind:value={httpConfig.headers[i].key}
                         placeholder="Key"
-                        class="px-3 h-9 w-1/4 bg-white/5 backdrop-blur-sm rounded-md placeholder:text-gray-400/40 text-gray-400 text-sm outline-none tracking-wide"
+                        class="px-3 h-9 w-1/4 bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-md placeholder:text-gray-400/40 text-gray-400 text-sm outline-none tracking-wide"
                         type="text" />
                       <input
                         bind:value={httpConfig.headers[i].value}
                         placeholder="Value"
-                        class="px-3 h-9 w-3/4 bg-white/5 backdrop-blur-sm rounded-md placeholder:text-gray-400/40 text-gray-400 text-sm outline-none tracking-wide"
+                        class="px-3 h-9 w-3/4 bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-md placeholder:text-gray-400/40 text-gray-400 text-sm outline-none tracking-wide"
                         type="text" />
                       {#if header === httpConfig.headers[httpConfig.headers.length - 1] && header !== httpConfig.headers[0]}
                         <button
@@ -168,7 +168,7 @@
                   <textarea
                     bind:value={body}
                     placeholder="Enter your body"
-                    class="p-3 h-30 w-full bg-white/5 backdrop-blur-sm resize-none placeholder:text-gray-400/40 text-gray-400 text-sm outline-none tracking-wide rounded-md"
+                    class="p-3 h-30 w-full bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm resize-none placeholder:text-gray-400/40 text-gray-400 text-sm outline-none tracking-wide rounded-md"
                     name="body"
                     id="body">
                   </textarea>
@@ -197,7 +197,7 @@
                     else if (value > CHECK_LIMIT.timeoutSeconds.max)
                       form.timeoutSeconds = CHECK_LIMIT.timeoutSeconds.max;
                   }}
-                  class="px-3 h-6.5 w-full bg-white/5 backdrop-blur-sm rounded-md text-gray-400 text-sm outline-none tracking-wide appearance-none text-center" />
+                  class="px-3 h-6.5 w-full bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-md text-gray-400 text-sm outline-none tracking-wide appearance-none text-center" />
 
                 <!-- Custom Arrows -->
                 <div
@@ -243,7 +243,7 @@
                     else if (value > AGENT_LIMIT.intervalSeconds.max)
                       form.intervalSeconds = AGENT_LIMIT.intervalSeconds.max;
                   }}
-                  class="px-3 h-6.5 w-full bg-white/5 backdrop-blur-sm rounded-md text-gray-400 text-sm outline-none tracking-wide appearance-none text-center" />
+                  class="px-3 h-6.5 w-full bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-md text-gray-400 text-sm outline-none tracking-wide appearance-none text-center" />
 
                 <!-- Custom Arrows -->
                 <div
@@ -275,7 +275,7 @@
 
                 <input
                   bind:value={httpConfig.expected_status}
-                  class="px-3 h-6.5 w-15 bg-white/5 backdrop-blur-sm rounded-md placeholder:text-gray-400/40 text-gray-400 text-sm outline-none tracking-wide text-center"
+                  class="px-3 h-6.5 w-15 bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-md placeholder:text-gray-400/40 text-gray-400 text-sm outline-none tracking-wide text-center"
                   type="text" />
               </div>
 
@@ -289,7 +289,7 @@
                 <textarea
                   bind:value={httpConfig.expected_content}
                   placeholder="Enter expected content (optional)"
-                  class="p-3 h-30 w-full bg-white/5 backdrop-blur-sm resize-none placeholder:text-gray-400/40 text-gray-400 text-sm outline-none tracking-wide rounded-md"
+                  class="p-3 h-30 w-full bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm resize-none placeholder:text-gray-400/40 text-gray-400 text-sm outline-none tracking-wide rounded-md"
                   name="expected_content"
                   id="expected_content">
                 </textarea>
@@ -338,7 +338,7 @@
                   <input
                     bind:value={pingConfig.count}
                     type="number"
-                    class="px-3 h-6.5 w-full bg-white/5 backdrop-blur-sm rounded-md text-gray-400 text-sm outline-none tracking-wide appearance-none text-center" />
+                    class="px-3 h-6.5 w-full bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-md text-gray-400 text-sm outline-none tracking-wide appearance-none text-center" />
 
                   <!-- Custom Arrows -->
                   <div
@@ -364,7 +364,7 @@
 
                 <input
                   bind:value={pingConfig.packet_size}
-                  class="px-3 h-6.5 w-15 bg-white/5 backdrop-blur-sm rounded-md placeholder:text-gray-400/40 text-gray-400 text-sm outline-none tracking-wide text-center"
+                  class="px-3 h-6.5 w-15 bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-md placeholder:text-gray-400/40 text-gray-400 text-sm outline-none tracking-wide text-center"
                   type="text" />
               </div>
             {/if}
@@ -381,7 +381,7 @@
         });
       }}
       type="button"
-      class="mt-10 me-auto w-fit px-10 text-sm text-[#10b981] h-8.5 flex justify-center items-center rounded-md cursor-pointer bg-[#22c55e]/10 hover:opacity-60 border border-[#00bc7d]/10 disabled:opacity-30 disabled:cursor-not-allowed">
+      class="mt-10 me-auto w-fit px-10 text-sm text-[#10b981] h-8.5 flex justify-center items-center rounded-md cursor-pointer bg-[#22c55e]/10 hover:opacity-60 border border-[#00bc7d]/10 disabled:dark:opacity-30 disabled:opacity-50 disabled:cursor-not-allowed">
       Add Checker
     </button>
   </div>

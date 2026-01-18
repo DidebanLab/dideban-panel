@@ -41,7 +41,7 @@
   type="button"
   bind:this={selectRef}
   onclick={toggle}
-  class={`relative cursor-pointer flex justify-between items-center text-gray-400 text-sm outline-none gap-1.5 px-3 h-9 w-full bg-white/5 backdrop-blur-sm rounded-lg ${className}`}>
+  class={`relative cursor-pointer flex justify-between items-center text-gray-400 text-sm outline-none gap-1.5 px-3 h-9 w-full bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-lg ${className}`}>
   <span class="tracking-wide {value ? 'text-gray-400' : 'text-gray-400/40'}">
     {value || title}
   </span>
@@ -54,13 +54,18 @@
     <ul
       bind:this={optionsRef}
       class="absolute bg-[#F9FAFB] dark:bg-[#121212] backdrop-blur-3xl border border-[#0D0D0D]/5 dark:border-white/10 rounded-xl w-full min-w-20 start-0 mt-1 top-full max-h-60 z-20 overflow-y-auto p-1.5 space-y-1.5 text-[#919191] custom-scroll
-             [&_li]:px-3 [&_li]:h-9 [&_li]:w-full [&_li]:bg-white/5 [&_li]:rounded-lg [&_li]:flex [&_li]:capitalize [&_li]:justify-center [&_li]:tracking-wider [&_li]:items-center [&_li]:text-gray-400 [&_li]:text-sm [&_li:hover]:bg-white/10">
+             [&_li]:px-3 [&_li]:h-9 [&_li]:w-full [&_li]:bg-white/5 [&_li]:rounded-lg [&_li]:flex [&_li]:capitalize [&_li]:justify-center [&_li]:tracking-wider [&_li]:items-center [&_li]:text-gray-400 [&_li]:text-sm [&_li:hover]:dark:bg-white/10 [&_li:hover]:bg-[#0D0D0D]/5">
       {#if value}
         <li onclick={() => selectOption(null)}>---</li>
       {/if}
 
       {#each options as item}
-        <li class={item.name === value ? 'bg-white/15!' : ''} onclick={() => selectOption(item.name)}>
+        <li
+          class={item.name === value ? 'bg-[#0D0D0D]/5! cursor-not-allowed dark:bg-white/15!' : ''}
+          onclick={() => {
+            if (item.name === value) return;
+            selectOption(item.name);
+          }}>
           {item.name}
         </li>
       {/each}
