@@ -283,7 +283,7 @@
                 props: { name },
               });
             }}
-            class="absolute right-0 -top-6 2xl:static ms-auto me-1 text-white/20 text-sm cursor-pointer hover:text-white/30">
+            class="absolute right-0 -top-6 2xl:static ms-auto me-1 text-[#99a1af] dark:text-white/20 text-sm cursor-pointer hover:text-white/30">
             Edit
           </button>
         </div>

@@ -50,7 +50,7 @@
         >Last ( LTC ) :</span>
     </div>
 
-    <span class="dark:text-white text-base text-nowrap">{data[data.length - 1]} ms</span>
+    <span class="text-black dark:text-white text-base text-nowrap">{data[data.length - 1]} ms</span>
   </div>
   <UptimeChart name="Latency" height={250} data={[...data]} unit="ms" />
 </div>

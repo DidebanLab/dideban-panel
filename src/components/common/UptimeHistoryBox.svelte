@@ -9,7 +9,7 @@
   class="flex flex-col gap-3 p-4 pt-3 dark:bg-[#0D0D0D] bg-[#FFFFFF] border border-[#0D0D0D]/5 dark:border-white/5 rounded-lg">
   <div
     class="flex justify-between items-center text-sm border-b border-b-white/20 pb-2 text-white/40">
-    <span class="text-black dark:text-white">{month}</span>
+    <span class="text-black dark:text-[#99a1af]/50">{month}</span>
     <span
       class={average < 70 ? 'text-red-700/70' : average < 80 ? 'text-[#c0590f]' : 'text-green-700'}
       >{average}%</span>
