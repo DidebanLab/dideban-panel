@@ -21,7 +21,7 @@
 </script>
 
 <div
-  class="w-full flex flex-col gap-4 px-3 py-4 rounded-[14px] dark:bg-[#0D0D0D] bg-[#FFFFFF] border border-[#0D0D0D]/5 dark:border-white/5">
+  class="w-full flex flex-col gap-4 px-3 pt-4 rounded-[14px] dark:bg-[#0D0D0D] bg-[#FFFFFF] border border-[#0D0D0D]/5 dark:border-white/5">
   <div class="w-full flex justify-between items-start px-2">
     <div class="w-full flex flex-col justify-start items-start">
       <div class=""></div>

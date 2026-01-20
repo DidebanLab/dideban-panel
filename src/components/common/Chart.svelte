@@ -133,9 +133,6 @@
 
     colors: ['#3b82f6', '#a855f7', '#10b981'],
 
-    theme: {
-      mode: 'light',
-    },
   };
   onMount(() => {
     chart = new ApexCharts(chartEl, {

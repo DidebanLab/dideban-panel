@@ -1,5 +1,5 @@
 export const endpoints = {
-  agents: '',
+  agents: '/agents/',
   checkers: '/checkers/',
   login: '',
   performanceOverview: '',

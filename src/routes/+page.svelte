@@ -4,6 +4,31 @@
   import { AGENTS_DATA } from '../components/pages/dashboard/statusOverview/constant.svelte';
   import StatusOverview from '../components/pages/dashboard/statusOverview/StatusOverview.svelte';
   import TopRight from '../components/pages/dashboard/TopRight.svelte';
+
+  const steps = ['Beta', 'Main', 'Development'];
+  let activeIndex = $state(1);
+  const isActive = $derived(steps[activeIndex]);
+
+  const next = () => {
+    if (activeIndex < steps.length - 1) {
+      activeIndex++;
+    } else {
+      activeIndex = 0;
+    }
+  };
+
+  const prev = () => {
+    if (activeIndex > 0) {
+      activeIndex--;
+    } else {
+      activeIndex = steps.length - 1;
+    }
+  };
+
+  // let data = $state({});
+  // $effect(() => {
+  //   http.post(endpoints.performanceOverview, { agent_id: isActive }).then(res => (data = res.data));
+  // });
 </script>
 
 <section class="w-full max-w-422.75 m-auto h-auto flex flex-col col-span-10">
