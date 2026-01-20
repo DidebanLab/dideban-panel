@@ -1,6 +1,7 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
   import ApexCharts from 'apexcharts';
+  import { theme } from '../../stores/theme.svelte';
 
   const { data, name, height, unit } = $props();
 
@@ -98,13 +99,31 @@
   });
 </script>
 
-<div class="w-full text-black" bind:this={chartEl}></div>
+<div bind:this={chartEl} class="w-full {$theme === 'dark' ? 'theme-dark' : 'theme-light'}"></div>
+
 <style>
-  :global(.apexcharts-tooltip) {
+  :global(.theme-dark .apexcharts-tooltip) {
     background: rgba(0, 0, 0, 0.4) !important;
     color: #ffffff !important;
     border-color: #ffffff33 !important;
-    box-shadow: 0 0px 10px rgba(168, 167, 167, 0.1) !important;
+  }
+
+  :global(.theme-dark .apexcharts-tooltip-text) {
+    color: #ffffff !important;
+  }
+
+  :global(.theme-light .apexcharts-tooltip) {
+    background: #ffffff !important;
+    color: #111827 !important;
+    border-color: #e5e7eb !important;
+  }
+
+  :global(.theme-light .apexcharts-tooltip-text) {
+    color: #111827 !important;
+  }
+
+  :global(.apexcharts-tooltip) {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08) !important;
     border-radius: 12px !important;
     padding: 6px 2px !important;
     backdrop-filter: blur(10px);
@@ -114,9 +133,5 @@
 
   :global(.apexcharts-tooltip-title) {
     display: none;
-  }
-
-  :global(.apexcharts-tooltip-text) {
-    color: #ffffff !important;
   }
 </style>

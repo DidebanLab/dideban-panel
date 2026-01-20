@@ -1,6 +1,7 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
   import ApexCharts from 'apexcharts';
+  import { theme } from '../../stores/theme.svelte';
   const { data } = $props();
 
   let chartEl;
@@ -132,7 +133,6 @@
     },
 
     colors: ['#3b82f6', '#a855f7', '#10b981'],
-
   };
   onMount(() => {
     chart = new ApexCharts(chartEl, {
@@ -171,13 +171,33 @@
   });
 </script>
 
-<div bind:this={chartEl} class="w-full mt-auto"></div>
+<div bind:this={chartEl} class="w-full mt-auto {$theme === 'dark' ? 'theme-dark' : 'theme-light'}">
+</div>
 
 <style>
-  :global(.apexcharts-tooltip) {
+  /* Dark */
+  :global(.theme-dark .apexcharts-tooltip) {
     background: rgba(0, 0, 0, 0.4) !important;
+    border-color: #e5e7eb !important;
     color: #ffffff !important;
-    border-color: #ffffff33 !important;
+  }
+
+  :global(.theme-dark .apexcharts-tooltip-text) {
+    color: #ffffff !important;
+  }
+
+  /* Light */
+  :global(.theme-light .apexcharts-tooltip) {
+    border-color: #e6e6e6 !important;
+    background: rgba(255, 255, 255, 0.6) !important;
+    color: #111827 !important;
+  }
+
+  :global(.theme-light .apexcharts-tooltip-text) {
+    color: #111827 !important;
+  }
+
+  :global(.apexcharts-tooltip) {
     box-shadow: 0 0px 10px rgba(168, 167, 167, 0.1) !important;
     border-radius: 12px !important;
     padding: 6px 2px !important;
@@ -188,9 +208,5 @@
 
   :global(.apexcharts-tooltip-title) {
     display: none;
-  }
-
-  :global(.apexcharts-tooltip-text) {
-    color: #ffffff !important;
   }
 </style>

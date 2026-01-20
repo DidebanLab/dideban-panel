@@ -34,7 +34,7 @@
           onclick={() => (activeTimeline = item)}
           class="flex justify-center items-center rounded-lg size-6 text-xs cursor-pointer transition-all border {activeTimeline ===
           item
-            ? 'text-[#2B7FFF] dark:bg-white/10  border-[#2B7FFF]/20 bg-[#2B7FFF]/5'
+            ? 'text-[#2B7FFF]  border-[#2B7FFF]/20 bg-[#2B7FFF]/20'
             : 'bg-[#0D0D0D]/5 dark:bg-white/5 border-white/5 text-[#99a1af] dark:text-white/30'}">
           {item}
         </button>
