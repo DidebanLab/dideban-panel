@@ -1,17 +1,41 @@
 <script>
+  import { onMount } from 'svelte';
   import UptimeChart from '../../common/UptimeChart.svelte';
+  import { http } from '../../../services/http.svelte';
+  import { endpoints } from '../../../endpoints.svelte';
 
-  const data = [
-    10, 50, 20, 24, 14, 23, 10, 50, 20, 24, 14, 23, 10, 50, 20, 24, 14, 23, 10, 50, 20, 24, 14, 23,
-  ];
+  const { name, month, day } = $props();
+
+  let data = $state({
+    title: 'september 13th',
+    subtitle: 'History Of Uptime In Sep 13th',
+    history: [
+      10, 50, 20, 24, 14, 23, 10, 50, 20, 24, 14, 23, 10, 50, 20, 24, 14, 23, 10, 50, 20, 24, 14,
+      23,
+    ],
+    average: 59,
+  });
+
+  onMount(() => {
+    http
+      .get(endpoints.uptimeHistory + name, {
+        params: {
+          month,
+          day,
+        },
+      })
+      .then(res => {
+        data = res.data;
+      });
+  });
 </script>
 
 <div
   class="w-[60vw] flex flex-col gap-4 p-6 rounded-[14px] dark:bg-[#0D0D0D] bg-[#FFFFFF] border border-[#0D0D0D]/5 dark:border-white/5">
   <div class="w-full flex justify-between items-start">
     <div class="w-full flex flex-col justify-start items-start">
-      <span class="text-xl text-black dark:text-white">September 13th</span>
-      <span class="text-sm text-[#99a1af]">History Of Uptime In Sep 13th</span>
+      <span class="text-xl text-black dark:text-white capitalize">{data.title}</span>
+      <span class="text-sm text-[#99a1af]"> {data.subtitle}</span>
     </div>
 
     <div
@@ -23,9 +47,9 @@
           >Average Uptime Of Month :</span>
       </div>
 
-      <span class="text-black dark:text-white text-base">50%</span>
+      <span class="text-black dark:text-white text-base">{data.average}%</span>
     </div>
   </div>
 
-  <UptimeChart name="Latency" height={250} {data} />
+  <UptimeChart name="َUptime" height={250} data={data.history} unit="%" />
 </div>

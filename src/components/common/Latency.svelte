@@ -6,23 +6,22 @@
 
   let activeTimeline = $state('d');
 
+  const { name = 'checker1' } = $props();
+
   const timeline = ['d', 'm', 'y'];
-  const name = 'checker1';
 
   let data = $state([
     1000, 5000, 2000, 2400, 1400, 2300, 1000, 5000, 2000, 2400, 1400, 2300, 1000, 5000, 2000, 2400,
     1400, 2300, 1000, 5000, 2000, 2400, 1400, 2300,
   ]);
 
-  $effect(() => {
-    http
-      .post(endpoints.latency, { name: name, timeline: activeTimeline })
-      .then(res => (data = res.data));
-  });
+  // $effect(() => {
+  //   http.post(endpoints.latency, { name, timeline: activeTimeline }).then(res => (data = res.data));
+  // });
 </script>
 
 <div
-  class="w-full flex flex-col gap-4 px-3  py-4 rounded-[14px] dark:bg-[#0D0D0D] bg-[#FFFFFF] border border-[#0D0D0D]/5 dark:border-white/5">
+  class="w-full flex flex-col gap-4 px-3 py-4 rounded-[14px] dark:bg-[#0D0D0D] bg-[#FFFFFF] border border-[#0D0D0D]/5 dark:border-white/5">
   <div class="w-full flex justify-between items-start px-2">
     <div class="w-full flex flex-col justify-start items-start">
       <div class=""></div>
@@ -53,5 +52,5 @@
 
     <span class="dark:text-white text-base text-nowrap">{data[data.length - 1]} ms</span>
   </div>
-  <UptimeChart name="Latency" height={250} {data} />
+  <UptimeChart name="Latency" height={250} data={[...data]} unit="ms" />
 </div>

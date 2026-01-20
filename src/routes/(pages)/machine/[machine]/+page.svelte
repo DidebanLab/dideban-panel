@@ -294,6 +294,7 @@
   </div>
 
   <UptimeChart
+    unit="ms"
     height={260}
     name="Uptime"
     data={isMobile

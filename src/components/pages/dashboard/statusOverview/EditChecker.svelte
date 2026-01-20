@@ -7,8 +7,8 @@
   import { AGENT_LIMIT, CHECK_LIMIT } from '../../../config.svelte';
   import { page } from '$app/stores';
 
+  const { name } = $props();
   let data = $state('');
-
   let body = $state('');
   let httpConfig = $state({
     method: 'GET',
@@ -29,7 +29,7 @@
   });
 
   onMount(() => {
-    http.get(endpoints.checkers + $page.params.checker).then(res => {
+    http.get(endpoints.checkers + name).then(res => {
       data = res.data;
       form = data.form;
 

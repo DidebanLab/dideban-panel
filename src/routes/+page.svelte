@@ -4,7 +4,6 @@
   import { AGENTS_DATA } from '../components/pages/dashboard/statusOverview/constant.svelte';
   import StatusOverview from '../components/pages/dashboard/statusOverview/StatusOverview.svelte';
   import TopRight from '../components/pages/dashboard/TopRight.svelte';
-  import { MACHINE } from './(pages)/machine/[machine]/constant.svelte';
 </script>
 
 <section class="w-full max-w-422.75 m-auto h-auto flex flex-col col-span-10">

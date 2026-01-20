@@ -2,7 +2,7 @@
   import { opener } from '../../stores/modal.svelte';
   import UptimeHistory from '../pages/checker/UptimeHistory.svelte';
 
-  let { data, month, average } = $props();
+  let { data, month, average, name } = $props();
 </script>
 
 <div
@@ -10,7 +10,8 @@
   <div
     class="flex justify-between items-center text-sm border-b border-b-white/20 pb-2 text-white/40">
     <span class="text-black dark:text-white">{month}</span>
-    <span class={average < 70 ? 'text-red-700/70' : average < 80 ? 'text-[#c0590f]' : 'text-green-700'}
+    <span
+      class={average < 70 ? 'text-red-700/70' : average < 80 ? 'text-[#c0590f]' : 'text-green-700'}
       >{average}%</span>
   </div>
 
@@ -23,6 +24,11 @@
           opener({
             id: `create-uptime`,
             content: UptimeHistory,
+            props: {
+              name: '',
+              month: '',
+              day: 12,
+            },
           });
         }}
         class="size-3.5 rounded-sm hover:animate-pulse cursor-pointer {item < 70

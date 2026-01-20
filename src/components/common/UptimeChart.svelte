@@ -2,7 +2,7 @@
   import { onMount, onDestroy } from 'svelte';
   import ApexCharts from 'apexcharts';
 
-  const { data, name, height } = $props();
+  const { data, name, height, unit } = $props();
 
   let chartEl;
   let chart;
@@ -26,7 +26,7 @@
 
       dataLabels: {
         enabled: true,
-        formatter: val => `${val} ms`,
+        formatter: val => `${val} ${unit}`,
         offsetY: -10,
         style: {
           fontSize: '10px',
@@ -50,12 +50,23 @@
           opacityTo: 0.1,
         },
       },
+      tooltip: {
+        enabled: true,
+        x: {
+          show: false,
+        },
+        y: {
+          formatter: val => `${val} ${unit}`,
+          title: {
+            formatter: () => `${name} :`,
+          },
+        },
+      },
 
       xaxis: {
         show: false,
         axisBorder: { show: false },
         axisTicks: { show: false },
-        floating: true, // این خط اضافه شد
         labels: {
           show: false,
         },
@@ -87,4 +98,25 @@
   });
 </script>
 
-<div class="w-full" bind:this={chartEl}></div>
+<div class="w-full text-black" bind:this={chartEl}></div>
+<style>
+  :global(.apexcharts-tooltip) {
+    background: rgba(0, 0, 0, 0.4) !important;
+    color: #ffffff !important;
+    border-color: #ffffff33 !important;
+    box-shadow: 0 0px 10px rgba(168, 167, 167, 0.1) !important;
+    border-radius: 12px !important;
+    padding: 6px 2px !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    line-height: 1.2 !important;
+  }
+
+  :global(.apexcharts-tooltip-title) {
+    display: none;
+  }
+
+  :global(.apexcharts-tooltip-text) {
+    color: #ffffff !important;
+  }
+</style>

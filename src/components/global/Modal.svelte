@@ -1,7 +1,5 @@
 <script>
   import { modals, closer } from '../../stores/modal.svelte';
-
-  modals;
 </script>
 
 {#each $modals as modal (modal.id)}
@@ -19,7 +17,7 @@
       {#if typeof modal.content === 'string'}
         {@html modal.content}
       {:else}
-        <svelte:component this={modal.content} />
+        <svelte:component this={modal.content} {...modal.props} />
       {/if}
     </div>
   </button>

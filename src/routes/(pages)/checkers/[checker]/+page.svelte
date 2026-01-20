@@ -1,20 +1,146 @@
 <script>
   import UptimeHistoryAll from './../../../../components/common/UptimeHistoryAll.svelte';
-  import { AGENTS_DATA } from './../../../../components/pages/dashboard/statusOverview/constant.svelte.js';
-  import StrokedGaugeChart from '../../../../components/common/StrokedGaugeChart.svelte';
-  import UptimeChart from '../../../../components/common/UptimeChart.svelte';
-  import { LIMITATIONS } from '../../../../components/config.svelte';
-  import PerformanceOverview from '../../../../components/pages/dashboard/PerformanceOverview.svelte';
-  import StatusOverview from '../../../../components/pages/dashboard/statusOverview/StatusOverview.svelte';
-  import TopRight from '../../../../components/pages/dashboard/TopRight.svelte';
   import Latency from '../../../../components/common/Latency.svelte';
   import { opener } from '../../../../stores/modal.svelte';
+  import { page } from '$app/stores';
   import EditChecker from '../../../../components/pages/dashboard/statusOverview/EditChecker.svelte';
+  import { onMount } from 'svelte';
+  import { http } from '../../../../services/http.svelte';
+  import { endpoints } from '../../../../endpoints.svelte';
+  import UptimeHistoryBox from '../../../../components/common/UptimeHistoryBox.svelte';
 
-  // let data = $state([]);
-  // $effect(() => {
-  //   http.post(endpoints.performanceOverview, { agent_id: isActive }).then(res => (data = res.data));
+  const name = $page.params.checker;
+  let data = $state({
+    type: 'http',
+    target: 'https://darichetejarat.ir',
+    uptime: 50,
+    status: 'up',
+  });
+
+  let uptimeData = $state([
+    {
+      month: 'January',
+      average: 90,
+      uptime: [
+        100, 98, 96, 94, 98, 100, 100, 90, 50, 30, 53, 78, 90, 98, 96, 94, 98, 100, 100, 90, 50, 30,
+        53, 78, 90, 98, 96, 94, 98, 100, 100,
+      ],
+    },
+    {
+      month: 'February',
+      average: 95,
+      uptime: [
+        100, 98, 96, 94, 98, 100, 100, 90, 50, 30, 53, 78, 90, 98, 96, 94, 98, 100, 100, 90, 50, 30,
+        53, 78, 90, 98, 96, 94,
+      ],
+    },
+    {
+      month: 'March',
+      average: 98,
+      uptime: [
+        100, 98, 96, 94, 98, 100, 100, 90, 50, 30, 53, 78, 90, 98, 96, 94, 98, 100, 100, 90, 50, 30,
+        53, 78, 90, 98, 96, 94, 98, 100, 100,
+      ],
+    },
+    {
+      month: 'April',
+      average: 98,
+      uptime: [
+        100, 98, 96, 94, 98, 100, 100, 90, 50, 30, 53, 78, 90, 98, 96, 98, 100, 100, 90, 50, 30, 53,
+        78, 90, 98, 96, 94, 98, 100, 100,
+      ],
+    },
+    {
+      month: 'May',
+      average: 98,
+      uptime: [
+        100, 98, 96, 94, 98, 100, 100, 90, 50, 30, 53, 78, 90, 98, 96, 94, 98, 100, 100, 90, 50, 30,
+        53, 78, 90, 98, 96, 94, 98, 100, 100,
+      ],
+    },
+    {
+      month: 'June',
+      average: 98,
+      uptime: [
+        100, 98, 96, 94, 98, 100, 100, 90, 50, 53, 78, 90, 98, 96, 94, 98, 100, 100, 90, 50, 30, 53,
+        78, 90, 98, 96, 94, 98, 100, 100,
+      ],
+    },
+    {
+      month: 'July',
+      average: 98,
+      uptime: [
+        100, 98, 96, 94, 98, 100, 100, 90, 50, 30, 53, 78, 90, 98, 96, 94, 98, 100, 100, 90, 50, 30,
+        53, 78, 90, 98, 96, 94, 98, 100, 100,
+      ],
+    },
+    {
+      month: 'August',
+      average: 98,
+      uptime: [
+        100, 98, 96, 94, 98, 100, 100, 90, 50, 30, 53, 78, 90, 98, 96, 94, 98, 100, 100, 90, 50, 30,
+        53, 78, 90, 98, 96, 94, 98, 100, 100,
+      ],
+    },
+    {
+      month: 'September',
+      average: 98,
+      uptime: [
+        100, 98, 96, 94, 98, 100, 100, 90, 50, 53, 78, 90, 98, 96, 94, 98, 100, 100, 90, 50, 30, 53,
+        78, 90, 98, 96, 94, 98, 100, 100,
+      ],
+    },
+    {
+      month: 'October',
+      average: 98,
+      uptime: [
+        100, 98, 96, 94, 98, 100, 100, 90, 50, 30, 53, 78, 90, 98, 96, 94, 98, 100, 100, 90, 50, 30,
+        53, 78, 90, 98, 96, 94, 98, 100, 100,
+      ],
+    },
+    {
+      month: 'November',
+      average: 98,
+      uptime: [
+        100, 98, 96, 94, 98, 100, 100, 90, 50, 53, 78, 90, 98, 96, 94, 98, 100, 100, 90, 50, 30, 53,
+        78, 90, 98, 96, 94, 98, 100, 100,
+      ],
+    },
+    {
+      month: 'December',
+      average: 98,
+      uptime: [
+        100, 98, 96, 94, 98, 100, 100, 90, 50, 30, 53, 78, 90, 98, 96, 94, 98, 100, 100, 90, 50, 30,
+        53, 78, 90, 98, 96, 94, 98, 100, 100,
+      ],
+    },
+  ]);
+
+  // onMount(() => {
+  //   http.get(endpoints.uptimeHistory + name).then(res => {
+  //     uptimeData = res.data;
+  //   });
   // });
+
+  // $effect(() => {
+  //   http.post(endpoints.performanceOverview, { agent_id: $page.params.checker }).then(res => (data = res.data));
+  // });
+
+  const statusColorHandler = status => {
+    switch (status) {
+      case 'up':
+        return 'text-[#00bc7d]';
+
+      case 'down':
+        return 'text-[#F87171]';
+
+      case 'error':
+        return 'text-[#F87171]';
+
+      case 'warn':
+        return 'text-[#F97316]';
+    }
+  };
 </script>
 
 <section class="w-full max-w-422.75 m-auto h-auto flex flex-col col-span-10">
@@ -79,57 +205,73 @@
             </svg>
           </div>
 
-          <span class="text-black dark:text-white text-xl">CheckerName</span>
+          <span class="text-black dark:text-white text-xl capitalize">{name}</span>
         </div>
 
         <div class="flex justify-end items-center gap-2 text-sm text-[#99a1af]">
           <span class="flex justify-center items-center text-nowrap">Last Check :</span>
           <span class="flex justify-center items-center text-nowrap tracking-wider"
-            >Jan 13th, 08:54:22</span>
+            >{data.last_check || 'Jan 13th, 08:54:22'}</span>
         </div>
       </div>
       <div
         class=" w-full flex 2xl:flex-row flex-col-reverse gap-4 justify-between items-center text-white text-base">
-        <Latency />
+        <Latency {name} />
         <div
           class="relative w-full 2xl:w-[18%] gap-3 flex 2xl:flex-col justify-start items-start mb-auto">
           <div
             class="flex w-full flex-col justify-between items-center overflow-hidden text-base text-white border border-[#0D0D0D]/5 dark:border-white/5 rounded-xl dark:bg-[#0D0D0D] bg-[#FFFFFF]">
             <span class="py-3 text-center w-full 2xl:text-sm text-[#99a1af] dark:text-white">
-              https://darichetejarat.ir</span>
+              {data.target}</span>
           </div>
-          <div class="h-px w-full bg-[#0D0D0D]/5  dark:bg-white/5 hidden 2xl:block"></div>
+          <div class="h-px w-full bg-[#0D0D0D]/5 dark:bg-white/5 hidden 2xl:block"></div>
 
           <div
             class="relative w-full flex justify-between items-center p-2 border border-[#0D0D0D]/5 dark:border-white/5 rounded-xl dark:bg-[#0D0D0D] bg-[#FFFFFF]">
-            <span class="flex justify-center items-center w-full text-base dark:text-white/20 text-[#99a1af] "
-              >Ping</span>
-            <span class="w-px h-7.5 bg-[#0D0D0D]/5 dark:bg-white/5 border border-[#0D0D0D]/5 dark:border-white/5"></span>
             <span
-              class="w-full relative flex justify-center items-center text-base tracking-wider text-[#3b82f6]"
+              class="w-full relative flex justify-center items-center text-base tracking-wider {data.type ===
+              'ping'
+                ? 'text-[#3b82f6]'
+                : 'dark:text-white/20 text-[#99a1af]'}">Ping</span>
+            <span
+              class="w-px h-7.5 bg-[#0D0D0D]/5 dark:bg-white/5 border border-[#0D0D0D]/5 dark:border-white/5"
+            ></span>
+            <span
+              class="w-full relative flex justify-center items-center text-base tracking-wider {data.type ===
+              'http'
+                ? 'text-[#3b82f6]'
+                : 'dark:text-white/20 text-[#99a1af]'}"
               >Http
             </span>
           </div>
 
           <div
             class="relative w-full flex justify-between items-center p-2 border border-[#0D0D0D]/5 dark:border-white/5 rounded-xl dark:bg-[#0D0D0D] bg-[#FFFFFF]">
-            <span class="flex justify-center items-center w-full text-base dark:text-white/20 text-[#99a1af] "
+            <span
+              class="flex justify-center items-center w-full text-base dark:text-white/20 text-[#99a1af]"
               >Uptime</span>
-            <span class="w-px h-7.5 bg-[#0D0D0D]/5 dark:bg-white/5 border border-[#0D0D0D]/5 dark:border-white/5"></span>
+            <span
+              class="w-px h-7.5 bg-[#0D0D0D]/5 dark:bg-white/5 border border-[#0D0D0D]/5 dark:border-white/5"
+            ></span>
             <span
               class="w-full relative flex justify-center items-center text-base tracking-wider text-[#F97316]"
-              >50%
+              >{data.uptime}%
             </span>
           </div>
 
           <div
             class="relative w-full flex justify-between items-center p-2 border border-[#0D0D0D]/5 dark:border-white/5 rounded-xl dark:bg-[#0D0D0D] bg-[#FFFFFF]">
-            <span class="flex justify-center items-center w-full text-base dark:text-white/20 text-[#99a1af] "
-              >Status</span>
-            <span class="w-px h-7.5 bg-[#0D0D0D]/5 dark:bg-white/5 border border-[#0D0D0D]/5 dark:border-white/5"></span>
             <span
-              class="w-full relative flex justify-center items-center text-base tracking-wider text-[#F97316]"
-              >Up
+              class="flex justify-center items-center w-full text-base dark:text-white/20 text-[#99a1af]"
+              >Status</span>
+            <span
+              class="w-px h-7.5 bg-[#0D0D0D]/5 dark:bg-white/5 border border-[#0D0D0D]/5 dark:border-white/5"
+            ></span>
+            <span
+              class="w-full relative flex justify-center items-center text-base tracking-wider capitalize {statusColorHandler(
+                data.status,
+              )}"
+              >{data.status}
             </span>
           </div>
 
@@ -138,6 +280,7 @@
               opener({
                 id: `create-editCheckers`,
                 content: EditChecker,
+                props: { name },
               });
             }}
             class="absolute right-0 -top-6 2xl:static ms-auto me-1 text-white/20 text-sm cursor-pointer hover:text-white/30">
@@ -147,6 +290,33 @@
       </div>
     </div>
 
-    <UptimeHistoryAll />
+    <div
+      class="w-full flex flex-col justify-start items-start gap-4 border border-[#0D0D0D]/5 dark:border-white/5 p-6 rounded-xl">
+      <div class="flex flex-col">
+        <span class="text-white text-xl">Uptime</span><span class="text-sm text-[#99a1af]"
+          >History Of Uptime</span>
+      </div>
+
+      <div class="w-full grid grid-cols-5 2xl:grid-cols-7 text-white gap-4 relative">
+        <div class="absolute end-0 bottom-0 flex flex-col justify-center items-end gap-2">
+          <div class="flex justify-center items-center gap-2 text-white/40 text-sm">
+            <span> More than 80%</span>
+            <div class="size-3.5 rounded-sm bg-red-600/70"></div>
+          </div>
+          <div class="flex justify-center items-center gap-2 text-white/40 text-sm">
+            <span> {'50% < value < 80%'}</span>
+            <div class="size-3.5 rounded-sm bg-[#F97316]"></div>
+          </div>
+          <div class="flex justify-center items-center gap-2 text-white/40 text-sm">
+            <span>less Than 51 %</span>
+            <div class="size-3.5 rounded-sm bg-green-700"></div>
+          </div>
+        </div>
+
+        {#each uptimeData as item (item.month)}
+          <UptimeHistoryBox {name} month={item.month} average={item.average} data={item.uptime} />
+        {/each}
+      </div>
+    </div>
   </div>
 </section>

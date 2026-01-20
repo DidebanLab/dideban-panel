@@ -7,4 +7,5 @@ export const endpoints = {
   statusOverview: '.../',
   latency: '/',
   alerts: '/',
+  uptimeHistory: '/uptime/',
 };
