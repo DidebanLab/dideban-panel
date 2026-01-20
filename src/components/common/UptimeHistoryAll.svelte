@@ -108,11 +108,11 @@
       >History Of Uptime</span>
   </div>
 
-  <div class="w-full grid grid-cols-5 2xl:grid-cols-7 text-white gap-4 relative">
+  <div class="w-full grid grid-cols-5 2xl:grid-cols-6 3xl:grid-cols-7 text-white gap-4 relative">
     <div class="absolute end-0 bottom-0 flex flex-col justify-center items-end gap-2">
       <div class="flex justify-center items-center gap-2 text-white/40 text-sm">
         <span> More than 80%</span>
-        <div class="size-3.5 rounded-sm bg-red-600/70"></div>
+        <div class="size-3.5 rounded-sm bg-red-700"></div>
       </div>
       <div class="flex justify-center items-center gap-2 text-white/40 text-sm">
         <span> {'50% < value < 80%'}</span>
@@ -125,6 +125,7 @@
     </div>
 
     {#each data as item (item.month)}
-      <UptimeHistoryBox month={item.month} average={item.average} data={item.uptime} />{/each}
+      <UptimeHistoryBox month={item.month} average={item.average} data={item.uptime} />
+    {/each}
   </div>
 </div>
