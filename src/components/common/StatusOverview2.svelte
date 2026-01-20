@@ -1,4 +1,4 @@
-<script>
+<!-- <script>
   import { MACHINE } from '../../routes/(pages)/machine/[machine]/constant.svelte';
 
   const { theme } = $props();
@@ -278,4 +278,4 @@
       </div>
     </div>
   </div>
-</div>
+</div> -->
