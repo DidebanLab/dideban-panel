@@ -104,7 +104,7 @@
 <div
   class="w-full flex flex-col justify-start items-start gap-4 border border-[#0D0D0D]/5 dark:border-white/5 p-6 rounded-xl">
   <div class="flex flex-col">
-    <span class="text-white text-xl">Uptime</span><span class="text-sm text-[#99a1af]"
+    <span class="text-black dark:text-white text-xl">Uptime</span><span class="text-sm text-[#99a1af]"
       >History Of Uptime</span>
   </div>
 

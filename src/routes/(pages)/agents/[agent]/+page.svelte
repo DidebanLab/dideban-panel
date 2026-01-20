@@ -37,7 +37,7 @@
                 .cpu[data.cpu.length - 1].usage_percent < 65
                 ? 'dark:bg-[#0D0D0D] bg-[#FFFFFF] border border-[#0D0D0D]/5 dark:border-white/5'
                 : data.cpu[data.cpu.length - 1].usage_percent < 85
-                  ? 'border-[#0D0D0D]/5 dark:border-[#F97316]/15 bg-[#F97316]/5'
+                  ? 'border-[#F97316]/15 bg-[#F97316]/5'
                   : 'bg-[#EF4444]/5 border-[#EF4444]/15'}">
               <div class="flex justify-between items-center w-full">
                 <span class="text-xl dark:text-white">CPU</span>
@@ -150,7 +150,7 @@
                 .memory[data.memory.length - 1].usage_percent < 65
                 ? 'dark:bg-[#0D0D0D] bg-[#FFFFFF] border border-[#0D0D0D]/5 dark:border-white/5'
                 : data.memory[data.memory.length - 1].usage_percent < 85
-                  ? 'border-[#0D0D0D]/5 dark:border-[#F97316]/15 bg-[#F97316]/5'
+                  ? 'border-[#F97316]/15 bg-[#F97316]/5'
                   : 'bg-[#EF4444]/5 border-[#EF4444]/15'}">
               <div class="flex justify-between items-center w-full">
                 <span class="text-xl dark:text-white">Memory</span>
@@ -304,7 +304,7 @@
                 .disk[data.disk.length - 1].usage_percent < 65
                 ? 'dark:bg-[#0D0D0D] bg-[#FFFFFF] border border-[#0D0D0D]/5 dark:border-white/5'
                 : data.disk[data.disk.length - 1].usage_percent < 85
-                  ? 'border-[#0D0D0D]/5 dark:border-[#F97316]/15 bg-[#F97316]/5'
+                  ? 'border-[#F97316]/15 bg-[#F97316]/5'
                   : 'bg-[#EF4444]/5 border-[#EF4444]/15'}">
               <div class="flex justify-between items-center w-full">
                 <span class="text-xl dark:text-white">Disk</span>

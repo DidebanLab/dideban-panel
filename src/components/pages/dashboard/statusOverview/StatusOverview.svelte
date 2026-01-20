@@ -219,7 +219,7 @@
                       : 'bg-green-700'
                   : 'bg-[#FFFFFF]/5'}">
               <div
-                class="absolute w-fit group-hover:flex hidden bottom-10 start-1/2 -translate-x-1/2 rounded-xl text-white bg-black/80 backdrop-blur-3xl border-[#0D0D0D]/5 border dark:border-white/10 px-3 py-2 flex-col justify-start items-start gap-2.5">
+                class="absolute w-fit group-hover:flex hidden bottom-10 start-1/2 -translate-x-1/2 rounded-xl text-white bg-white/40 dark:bg-black/80 backdrop-blur-md dark:backdrop-blur-3xl border-[#0D0D0D]/5 border dark:border-white/10 px-3 py-2 flex-col justify-start items-start gap-2.5">
                 <div
                   class="w-full flex justify-between items-center gap-2.5 border-b border-b-[#0D0D0D]/10 dark:border-b-white/15 pb-1.5">
                   <span class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
@@ -252,7 +252,7 @@
                                 : 'text-green-700'}">{detail.cpu.usage_percent}%</span>
                         </div>
                       </div>
-                      <div class="w-full h-0.5 rounded-full bg-white/10">
+                      <div class="w-full h-0.5 rounded-full bg-black/10 dark:bg-white/10">
                         <div
                           class="h-full rounded-full {detail.cpu.usage_percent >
                           LIMITATIONS.cpu.error
@@ -292,7 +292,7 @@
                                 : 'text-green-700'}">{detail.memory.usage_percent}%</span>
                         </div>
                       </div>
-                      <div class="w-full h-0.5 rounded-full bg-white/10">
+                      <div class="w-full h-0.5 rounded-full bg-black/10 dark:bg-white/10">
                         <div
                           class="h-full rounded-full {detail.memory.usage_percent >
                           LIMITATIONS.memory.error
@@ -332,7 +332,7 @@
                                 : 'text-green-700'}">{detail.disk.usage_percent}%</span>
                         </div>
                       </div>
-                      <div class="w-full h-0.5 rounded-full bg-white/10">
+                      <div class="w-full h-0.5 rounded-full bg-black/10 dark:bg-white/10">
                         <div
                           class="h-full rounded-full {detail.disk.usage_percent >
                           LIMITATIONS.disk.error
@@ -358,7 +358,7 @@
                 <div
                   class="w-full flex justify-start items-center text-sm text-[#6a7282] text-center {type ===
                   'agents'
-                    ? 'border-t-white/15 border-t pt-1.5'
+                    ? 'border-t-black/10 dark:border-t-white/15 border-t pt-1.5'
                     : ''}">
                   {new Date(detail.disk.timestamp_ms).toLocaleString('en-GB', {
                     year: 'numeric',

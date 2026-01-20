@@ -178,7 +178,7 @@
   /* Dark */
   :global(.theme-dark .apexcharts-tooltip) {
     background: rgba(0, 0, 0, 0.4) !important;
-    border-color: #e5e7eb !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
     color: #ffffff !important;
   }
 
