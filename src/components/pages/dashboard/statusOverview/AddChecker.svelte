@@ -46,29 +46,8 @@
   <div
     class="relative text-black dark:text-white border-b py-2 border-b-[#0D0D0D]/5 dark:border-b-white/10 flex justify-center items-center text-base capitalize">
     add new check
-
-    <div class="absolute end-3 top-2">
-      <div class="flex justify-around items-center gap-2">
-        <span class="text-xs w-[47.5px] {form.enabled ? 'text-[#00bc7d]' : 'text-[#6a7282]'}">
-          {form.enabled ? 'Enabled' : 'Disabled'}
-        </span>
-        <button
-          aria-label="status toggle"
-          onclick={() => (form.enabled = !form.enabled)}
-          class="w-11 h-6 rounded-full relative cursor-pointer {form.enabled
-            ? 'bg-[#00bc7d]/20 border border-[#00bc7d]/30'
-            : 'bg-[#6a7282]/10 border border-[#6a7282]/20 '}">
-          <div
-            style={form.enabled ? 'box-shadow: 0 0 5px 0.5px #00bc7d' : ''}
-            class="absolute top-1/2 -translate-y-1/2 left-px size-5 rounded-full transition-transform duration-300 ease-in-out {form.enabled
-              ? 'translate-x-5 bg-[#00bc7d]'
-              : 'translate-x-0 bg-[#4d4d4d]'}">
-          </div>
-        </button>
-      </div>
-    </div>
   </div>
-  <div class="flex flex-col justify-start items-start p-6 gap-6">
+  <div class="relative flex flex-col justify-start items-start p-6 gap-6">
     <div class="flex flex-col justify-start items-start gap-1.5 w-full">
       <span class="text-black dark:text-white text-sm">Name</span>
       <input
@@ -86,7 +65,8 @@
           options={[{ name: 'http' }, { name: 'ping' }]} />
       </div>
       <div class="flex flex-col justify-start items-start gap-1.5 w-full">
-        <span class="text-sm text-black dark:text-white {form.type ? '' : 'opacity-20'}">Target</span>
+        <span class="text-sm text-black dark:text-white {form.type ? '' : 'opacity-20'}"
+          >Target</span>
         <input
           bind:value={form.target}
           disabled={!form.type}
@@ -113,7 +93,6 @@
               <Select
                 className="w-[131.5px]! justify-end! bg-transparent! px-1.5! rounded-xl! h-6! z-2 absolute! end-1 "
                 bind:value={httpConfig.method}
-                title="Method"
                 options={[
                   { name: 'GET' },
                   { name: 'PUT' },
@@ -384,6 +363,26 @@
       class="mt-10 me-auto w-fit px-10 text-sm text-[#10b981] h-8.5 flex justify-center items-center rounded-md cursor-pointer bg-[#22c55e]/10 hover:opacity-60 border border-[#00bc7d]/10 disabled:dark:opacity-30 disabled:opacity-50 disabled:cursor-not-allowed">
       Add Checker
     </button>
+    <div class="absolute end-6 bottom-6">
+      <div class="flex justify-around items-center gap-3">
+        <span class="text-sm w-[47.5px] {form.enabled ? 'text-[#00bc7d]' : 'text-[#6a7282]'}">
+          {form.enabled ? 'Enabled' : 'Disabled'}
+        </span>
+        <button
+          aria-label="status toggle"
+          onclick={() => (form.enabled = !form.enabled)}
+          class="w-11 h-6 rounded-full relative cursor-pointer {form.enabled
+            ? 'bg-[#00bc7d]/20 border border-[#00bc7d]/30'
+            : 'bg-[#6a7282]/10 border border-[#6a7282]/20 '}">
+          <div
+            style={form.enabled ? 'box-shadow: 0 0 5px 0.5px #00bc7d' : ''}
+            class="absolute top-1/2 -translate-y-1/2 left-px size-5 rounded-full transition-transform duration-300 ease-in-out {form.enabled
+              ? 'translate-x-5 bg-[#00bc7d]'
+              : 'translate-x-0 bg-[#4d4d4d]'}">
+          </div>
+        </button>
+      </div>
+    </div>
   </div>
 </div>
 

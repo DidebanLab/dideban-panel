@@ -23,30 +23,10 @@
 <div
   class="bg-[#F9FAFB] dark:bg-[#121212] backdrop-blur-3xl border border-[#0D0D0D]/5 dark:border-white/10 rounded-xl w-150 flex flex-col">
   <div
-    class="relative text-black dark:text-white border-b py-2 border-b-[#0D0D0D]/5 dark:border-b-white/10 flex justify-center items-center text-base capitalize">
+    class=" text-black dark:text-white border-b py-2 border-b-[#0D0D0D]/5 dark:border-b-white/10 flex justify-center items-center text-base capitalize">
     add new agent
-    <div class="absolute end-3 top-2">
-      <div class="flex justify-around items-center gap-2">
-        <span class="text-xs w-[47.5px] {form.enabled ? 'text-[#00bc7d]' : 'text-[#6a7282]'}">
-          {form.enabled ? 'Enabled' : 'Disabled'}
-        </span>
-        <button
-          aria-label="status toggle"
-          onclick={() => (form.enabled = !form.enabled)}
-          class="w-11 h-6 rounded-full relative cursor-pointer {form.enabled
-            ? 'bg-[#00bc7d]/20 border border-[#00bc7d]/30'
-            : 'bg-[#6a7282]/10 border border-[#6a7282]/20 '}">
-          <div
-            style={form.enabled ? 'box-shadow: 0 0 5px 0.5px #00bc7d' : ''}
-            class="absolute top-1/2 -translate-y-1/2 left-px size-5 rounded-full transition-transform duration-300 ease-in-out {form.enabled
-              ? 'translate-x-5 bg-[#00bc7d]'
-              : 'translate-x-0 bg-[#4d4d4d]'}">
-          </div>
-        </button>
-      </div>
-    </div>
   </div>
-  <div class="flex flex-col justify-start items-start p-6 gap-6">
+  <div class="relative flex flex-col justify-start items-start p-6 gap-6">
     <div class="flex flex-col justify-start items-start gap-1.5 w-full">
       <span class="text-black dark:text-white text-sm">Name</span>
       <input
@@ -85,7 +65,8 @@
               const value = Number(e.target.value);
               if (Number.isNaN(value) || value < AGENT_LIMIT.timeoutSeconds.min)
                 form.timeout = AGENT_LIMIT.timeoutSeconds.min;
-              else if (value > AGENT_LIMIT.timeoutSeconds.max) form.timeout = AGENT_LIMIT.timeoutSeconds.max;
+              else if (value > AGENT_LIMIT.timeoutSeconds.max)
+                form.timeout = AGENT_LIMIT.timeoutSeconds.max;
             }}
             class="px-3 h-6.5 w-full bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-md
            text-gray-400 text-sm outline-none tracking-wide appearance-none text-center" />
@@ -114,7 +95,8 @@
       </div>
       <div class="flex justify-between items-center text-sm pt-2">
         <div class="flex justify-start items-center gap-1">
-          <span class="flex justify-center items-center mr-1 text-black dark:text-white">Interval</span>
+          <span class="flex justify-center items-center mr-1 text-black dark:text-white"
+            >Interval</span>
           <span class="flex justify-center items-center text-gray-400/40">(seconds)</span>
         </div>
 
@@ -129,7 +111,8 @@
               const value = Number(e.target.value);
               if (Number.isNaN(value) || value < AGENT_LIMIT.intervalSeconds.min)
                 form.interval = AGENT_LIMIT.intervalSeconds.min;
-              else if (value > AGENT_LIMIT.intervalSeconds.max) form.interval = AGENT_LIMIT.intervalSeconds.max;
+              else if (value > AGENT_LIMIT.intervalSeconds.max)
+                form.interval = AGENT_LIMIT.intervalSeconds.max;
             }}
             class="px-3 h-6.5 w-full bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-md
            text-gray-400 text-sm outline-none tracking-wide appearance-none text-center" />
@@ -140,7 +123,8 @@
            flex flex-col justify-center items-center gap-2.5 h-full">
             <button
               type="button"
-              onclick={() => form.interval < AGENT_LIMIT.intervalSeconds.max && (form.interval += 1)}
+              onclick={() =>
+                form.interval < AGENT_LIMIT.intervalSeconds.max && (form.interval += 1)}
               class="size-0.5 flex items-center justify-center
              text-gray-500 hover:text-gray-300 scale-75 cursor-pointer">
               ▲
@@ -148,7 +132,8 @@
 
             <button
               type="button"
-              onclick={() => form.interval > AGENT_LIMIT.intervalSeconds.min && (form.interval -= 1)}
+              onclick={() =>
+                form.interval > AGENT_LIMIT.intervalSeconds.min && (form.interval -= 1)}
               class="size-0.5 flex items-center justify-center
              text-gray-500 hover:text-gray-300 scale-75 cursor-pointer">
               ▼
@@ -170,6 +155,27 @@
       class="mt-10 me-auto w-fit px-10 text-sm text-[#10b981] h-8.5 flex justify-center items-center rounded-md cursor-pointer bg-[#22c55e]/10 hover:opacity-60 border border-[#00bc7d]/10 disabled:opacity-50 disabled:dark:opacity-30 disabled:cursor-not-allowed">
       Add Agent
     </button>
+
+    <div class="absolute end-6 bottom-7">
+      <div class="flex justify-around items-center gap-3">
+        <span class="text-sm w-[47.5px] {form.enabled ? 'text-[#00bc7d]' : 'text-[#6a7282]'}">
+          {form.enabled ? 'Enabled' : 'Disabled'}
+        </span>
+        <button
+          aria-label="status toggle"
+          onclick={() => (form.enabled = !form.enabled)}
+          class="w-11 h-6 rounded-full relative cursor-pointer {form.enabled
+            ? 'bg-[#00bc7d]/20 border border-[#00bc7d]/30'
+            : 'bg-[#6a7282]/10 border border-[#6a7282]/20 '}">
+          <div
+            style={form.enabled ? 'box-shadow: 0 0 5px 0.5px #00bc7d' : ''}
+            class="absolute top-1/2 -translate-y-1/2 left-px size-5 rounded-full transition-transform duration-300 ease-in-out {form.enabled
+              ? 'translate-x-5 bg-[#00bc7d]'
+              : 'translate-x-0 bg-[#4d4d4d]'}">
+          </div>
+        </button>
+      </div>
+    </div>
   </div>
 </div>
 

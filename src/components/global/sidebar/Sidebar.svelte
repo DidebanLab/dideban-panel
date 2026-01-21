@@ -14,8 +14,7 @@
     </div>
   </div>
 
-  <div class="p-4 flex flex-col gap-4">
-    <span class="text-[#6a7282] text-sm">MAIN</span>
+  <div class="p-6 flex flex-col gap-4">
     <ul class="flex flex-col items-start justify-start gap-2">
       <li class="w-full rounded-[14px]">
         <a

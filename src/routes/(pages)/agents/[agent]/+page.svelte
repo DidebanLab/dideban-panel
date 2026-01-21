@@ -25,7 +25,7 @@
   // });
 </script>
 
-<section class="w-full max-w-422.75 m-auto h-auto flex flex-col col-span-10">
+<section class="w-full m-auto h-auto flex flex-col col-span-10">
   <!-- Content of dashboard page -->
   <div class="w-full flex flex-col gap-7.75 p-7.75 pt-3">
     <div class="w-full flex flex-col gap-6">
