@@ -5,27 +5,26 @@
   const { data } = $props();
 
   let chartEl;
+  let chart;
+
+  // 🔹 درصد ارتفاع نسبت به viewport (مثلاً 30vh)
+  const VH_PERCENT = 23;
+  const getChartHeight = () =>
+    Math.round((window.innerHeight * VH_PERCENT) / 100);
+
   const hexToRgba = (hex, opacity) => {
     const r = parseInt(hex.slice(1, 3), 16);
     const g = parseInt(hex.slice(3, 5), 16);
     const b = parseInt(hex.slice(5, 7), 16);
     return `rgba(${r}, ${g}, ${b}, ${opacity})`;
   };
-  let chart;
 
   const options = {
     chart: {
-      height: 221,
+      height: getChartHeight(), // ✅ فقط این خط تغییر کرده
       type: 'area',
-      zoom: {
-        enabled: false,
-      },
-      padding: {
-        top: 0,
-        right: 0,
-        bottom: 0,
-        left: 0,
-      },
+      zoom: { enabled: false },
+      padding: { top: 0, right: 0, bottom: 0, left: 0 },
       background: 'transparent',
       toolbar: {
         show: false,
@@ -39,25 +38,14 @@
           reset: false,
         },
         export: {
-          csv: {
-            enabled: true,
-            filename: 'machine-main-csv',
-          },
-          svg: {
-            enabled: true,
-            filename: 'machine-main-svg',
-          },
-          png: {
-            enabled: true,
-            filename: 'machine-main-png',
-          },
+          csv: { enabled: true, filename: 'machine-main-csv' },
+          svg: { enabled: true, filename: 'machine-main-svg' },
+          png: { enabled: true, filename: 'machine-main-png' },
         },
       },
     },
 
-    dataLabels: {
-      enabled: false,
-    },
+    dataLabels: { enabled: false },
 
     stroke: {
       curve: 'smooth',
@@ -80,17 +68,10 @@
 
     grid: {
       show: false,
-      padding: {
-        top: 0,
-        right: 0,
-        bottom: 0,
-        left: 0,
-      },
+      padding: { top: 0, right: 0, bottom: 0, left: 0 },
     },
 
-    legend: {
-      show: false,
-    },
+    legend: { show: false },
 
     xaxis: {
       show: false,
@@ -98,42 +79,37 @@
       type: 'numeric',
       tickAmount: 5,
       labels: { show: false },
-
-      axisBorder: {
-        show: false,
-        color: 'rgba(153, 161, 175, 0.3)',
-      },
-
-      axisTicks: {
-        show: false,
-        color: 'rgba(153, 161, 175, 0.5)',
-        height: 4,
-      },
+      axisBorder: { show: false },
+      axisTicks: { show: false },
     },
+
     yaxis: {
       show: false,
       floating: true,
       min: 0,
       max: 100,
-      labels: {
-        formatter: val => Math.round(val),
-      },
+      labels: { formatter: val => Math.round(val) },
     },
 
     tooltip: {
       enabled: true,
       shared: true,
       intersect: false,
-      x: {
-        format: 'dd/MM/yy HH:mm',
-      },
-      y: {
-        formatter: val => (val ? `${val} %` : `-`),
-      },
+      x: { format: 'dd/MM/yy HH:mm' },
+      y: { formatter: val => (val ? `${val} %` : '-') },
     },
 
     colors: ['#3b82f6', '#a855f7', '#10b981'],
   };
+
+  const handleResize = () => {
+    chart?.updateOptions({
+      chart: {
+        height: getChartHeight(), // ✅ فقط height آپدیت می‌شود
+      },
+    });
+  };
+
   onMount(() => {
     chart = new ApexCharts(chartEl, {
       ...options,
@@ -159,54 +135,22 @@
                 },
               };
             })
-            .filter(Boolean),
+            .filter(Boolean)
         ),
       },
     });
+
     chart.render();
+    window.addEventListener('resize', handleResize);
   });
 
   onDestroy(() => {
+    window.removeEventListener('resize', handleResize);
     chart?.destroy();
   });
 </script>
 
-<div bind:this={chartEl} class="w-full mt-auto {$theme === 'dark' ? 'theme-dark' : 'theme-light'}">
+<div
+  bind:this={chartEl}
+  class="w-full mt-auto {$theme === 'dark' ? 'theme-dark' : 'theme-light'}">
 </div>
-
-<style>
-  /* Dark */
-  :global(.theme-dark .apexcharts-tooltip) {
-    background: rgba(0, 0, 0, 0.4) !important;
-    border-color: rgba(255, 255, 255, 0.1) !important;
-    color: #ffffff !important;
-  }
-
-  :global(.theme-dark .apexcharts-tooltip-text) {
-    color: #ffffff !important;
-  }
-
-  /* Light */
-  :global(.theme-light .apexcharts-tooltip) {
-    border-color: #e6e6e6 !important;
-    background: rgba(255, 255, 255, 0.6) !important;
-    color: #111827 !important;
-  }
-
-  :global(.theme-light .apexcharts-tooltip-text) {
-    color: #111827 !important;
-  }
-
-  :global(.apexcharts-tooltip) {
-    box-shadow: 0 0px 10px rgba(168, 167, 167, 0.1) !important;
-    border-radius: 12px !important;
-    padding: 6px 2px !important;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    line-height: 1.2 !important;
-  }
-
-  :global(.apexcharts-tooltip-title) {
-    display: none;
-  }
-</style>

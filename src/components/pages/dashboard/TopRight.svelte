@@ -20,7 +20,7 @@
   <div class="flex min-[1920px]:flex-col min-[1920px]:justify-between gap-4 w-full">
     {#each MAIN_STATUS_BOARD as item (item.title)}
       <div
-        class="p-6 pt-5 w-full flex flex-col gap-4 bg-white dark:bg-transparent border border-[#0D0D0D]/5 dark:border-white/5 rounded-[14px] relative overflow-hidden">
+        class="p-6 pt-5 w-full flex flex-col gap-4 bg-white dark:bg-transparent border border-[#0D0D0D]/5 dark:border-white/5 rounded-[14px] relative overflow-hidden h-full">
         <div class="flex items-center gap-3 w-full">
           <span class="text-xl dark:text-white">{item.title}</span>
         </div>
@@ -34,8 +34,8 @@
               <div class="w-full h-full bg-white/5"></div>
             </div>
             <div
-              class="relative flex items-center justify-center gap-2.5 bg-[#2B7FFF]/10 w-full rounded-xl py-1">
-              <div class="h-5 group flex justify-center items-center"></div>
+              class="relative flex items-center justify-center gap-2.5 bg-[#2B7FFF]/10 w-full rounded-xl h-[3.5vh]">
+              
               <img
                 class="absolute top-1/2 -translate-y-1/2 start-2"
                 width="18"
@@ -60,10 +60,10 @@
               <div class="w-full h-full bg-white/5"></div>
             </div>
             <div
-              class="flex items-center justify-center gap-2.5 bg-[#00bc7d]/10 w-full rounded-xl py-1 relative">
-              <div class="h-5 group flex justify-center items-center"></div>
+              class="flex items-center justify-center gap-2.5 bg-[#00bc7d]/10 w-full rounded-xl h-[3.5vh] relative">
+              
               <img
-                class="absolute top-1/2 -translate-y-1/2 start-2"
+                class="absolute top-1/2 -translate-y-1/2 start-2 "
                 width="18"
                 src="/icons/tick.svg"
                 alt="tick" />
@@ -85,9 +85,9 @@
               <div class="w-full h-full bg-white/5"></div>
             </div>
             <div
-              class="flex items-center justify-start gap-2.5 bg-[#F87171]/10 w-full rounded-xl py-1">
-              <div class="h-5 group flex justify-center items-center"></div>
-              <img width="19" src="/icons/error.svg" alt="error" />
+              class="relative flex items-center justify-center bg-[#F87171]/10 w-full rounded-xl h-[3.5vh]">
+              
+              <img class="absolute top-1/2 -translate-y-1/2 start-2 size-[2vh]" width="19" src="/icons/error.svg" alt="error" />
               <span class="text-base text-black dark:text-white">Down</span>
             </div>
             <span class="text-2xl 2xl:text-3xl p-2 text-[#F87171]">{item.down}</span>
@@ -105,10 +105,10 @@
               <div class="w-full h-full bg-white/5"></div>
             </div>
             <div
-              class="relative flex items-center justify-center gap-2.5 bg-[#F87171]/10 w-full rounded-xl py-1">
-              <div class="h-5 group flex justify-center items-center"></div>
+              class="relative flex items-center justify-center gap-2.5 bg-[#F87171]/10 w-full rounded-xl h-[3.5vh]">
+              
               <img
-                class="absolute top-1/2 -translate-y-1/2 start-2"
+                class="absolute top-1/2 -translate-y-1/2 start-2 size-[2vh]"
                 width="19"
                 src="/icons/warning.svg"
                 alt="warning" />

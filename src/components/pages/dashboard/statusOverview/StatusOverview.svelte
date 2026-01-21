@@ -178,7 +178,7 @@
             </div>
           </div>
         </div>
-        <div class="absolute z-10 bottom-6 w-full flex justify-between items-end px-4.25">
+        <div class="absolute z-10 bottom-6 w-full flex gap-1 justify-between items-end px-4.25">
           {#each item.detail.slice(-53) as detail}
             {@const hasAgentMetrics =
               detail.cpu?.usage_percent ||
@@ -202,7 +202,7 @@
 
             {@const latencyWarn = detail.collect_duration_ms > LIMITATIONS.collect_duration_ms.warn}
             <div
-              class="w-1.25 h-1.25 rounded-[1px] hover:h-6 transition-all cursor-pointer relative group {type ===
+              class="w-4 h-4 rounded-[1px] hover:h-6 transition-all cursor-pointer relative group {type ===
               'agents'
                 ? hasAgentMetrics
                   ? agentError
