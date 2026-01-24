@@ -49,10 +49,10 @@
       Login to your account
     </h1>
 
-    <p in:fade={{ duration: 1500 }} class="text-[#99a1af] text-sm mb-7">Enter your username</p>
+    <p in:fade={{ duration: 1500 }} class="text-[#99a1af] text-[0.7vw] mb-7">Enter your username</p>
 
     <label class="w-full mb-4">
-      <span class="text-sm cursor-pointer dark:text-white text-black">Username</span>
+      <span class="text-[0.7vw] cursor-pointer dark:text-white text-black">Username</span>
 
       <FormInput
         type="text"
@@ -62,7 +62,7 @@
     </label>
 
     <label class="w-full mb-6">
-      <span class="text-sm cursor-pointer dark:text-white text-black">Password</span>
+      <span class="text-[0.7vw] cursor-pointer dark:text-white text-black">Password</span>
 
       <FormInput
         type="password"

@@ -27,7 +27,7 @@
 
 <section class="w-full m-auto h-auto flex flex-col col-span-10">
   <!-- Content of dashboard page -->
-  <div class="w-full flex flex-col gap-7.75 p-7.75 pt-3">
+  <div class="w-full flex flex-col gap-[1.7vw] p-[1.7vw] pt-3">
     <div class="w-full flex flex-col gap-6">
       <div class="w-full flex flex-col gap-4 relative">
         <div class="w-full h-full flex flex-col">
@@ -40,10 +40,10 @@
                   ? 'border-[#F97316]/15 bg-[#F97316]/5'
                   : 'bg-[#EF4444]/5 border-[#EF4444]/15'}">
               <div class="flex justify-between items-center w-full">
-                <span class="text-xl dark:text-white">CPU</span>
-                <div class="ms-auto flex gap-2 justify-center items-start text-sm">
+                <span class="text-[0.94vw] dark:text-white">CPU</span>
+                <div class="ms-auto flex gap-2 justify-center items-start text-[0.7vw]">
                   <span
-                    class="text-xl {data.cpu[data.cpu.length - 1].usage_percent
+                    class="text-[0.94vw] {data.cpu[data.cpu.length - 1].usage_percent
                       ? data.cpu[data.cpu.length - 1].usage_percent < 65
                         ? 'text-[#22c55e]'
                         : data.cpu[data.cpu.length - 1].usage_percent < 85
@@ -97,10 +97,10 @@
                               class="size-1.5 rounded-full bg-[#ad46ff]"></span>
                             <div class="flex-1 flex justify-between items-center gap-2.5">
                               <span
-                                class="flex justify-center items-center text-xs text-nowrap text-[#6a7282]"
+                                class="flex justify-center items-center text-[0.63vw] text-nowrap text-[#6a7282]"
                                 >Cpu :</span>
                               <span
-                                class="flex justify-center items-center text-xs text-nowrap {detail.usage_percent >
+                                class="flex justify-center items-center text-[0.63vw] text-nowrap {detail.usage_percent >
                                 LIMITATIONS.cpu.error
                                   ? 'text-[#F87171]'
                                   : detail.usage_percent > LIMITATIONS.cpu.warn
@@ -131,7 +131,7 @@
                       {/if}
 
                       <div
-                        class="w-full flex justify-start items-center text-xs text-nowrap text-[#6a7282] text-center border-t-white/15 border-t pt-1.5">
+                        class="w-full flex justify-start items-center text-[0.63vw] text-nowrap text-[#6a7282] text-center border-t-white/15 border-t pt-1.5">
                         {new Date(detail.timestamp_ms).toLocaleString('en-GB', {
                           year: 'numeric',
                           month: '2-digit',
@@ -153,10 +153,10 @@
                   ? 'border-[#F97316]/15 bg-[#F97316]/5'
                   : 'bg-[#EF4444]/5 border-[#EF4444]/15'}">
               <div class="flex justify-between items-center w-full">
-                <span class="text-xl dark:text-white">Memory</span>
-                <div class="ms-auto flex gap-2 justify-center items-start text-sm">
+                <span class="text-[0.94vw] dark:text-white">Memory</span>
+                <div class="ms-auto flex gap-2 justify-center items-start text-[0.7vw]">
                   <span
-                    class="text-xl {data.memory[data.memory.length - 1].usage_percent
+                    class="text-[0.94vw] {data.memory[data.memory.length - 1].usage_percent
                       ? data.memory[data.memory.length - 1].usage_percent < 65
                         ? 'text-[#22c55e]'
                         : data.memory[data.memory.length - 1].usage_percent < 85
@@ -251,10 +251,10 @@
                               class="size-1.5 rounded-full bg-[#2b7fff]"></span>
                             <div class="flex-1 flex justify-between items-center gap-2.5">
                               <span
-                                class="flex justify-center items-center text-xs text-nowrap text-[#6a7282]"
+                                class="flex justify-center items-center text-[0.63vw] text-nowrap text-[#6a7282]"
                                 >Memory :</span>
                               <span
-                                class="flex justify-center items-center text-xs text-nowrap {detail.usage_percent >
+                                class="flex justify-center items-center text-[0.63vw] text-nowrap {detail.usage_percent >
                                 LIMITATIONS.memory.error
                                   ? 'text-[#F87171]'
                                   : detail.usage_percent > LIMITATIONS.memory.warn
@@ -285,7 +285,7 @@
                       {/if}
 
                       <div
-                        class="w-full flex justify-start items-center text-xs text-[#6a7282] text-center border-t-white/15 border-t pt-1.5">
+                        class="w-full flex justify-start items-center text-[0.63vw] text-[#6a7282] text-center border-t-white/15 border-t pt-1.5">
                         {new Date(detail.timestamp_ms).toLocaleString('en-GB', {
                           year: 'numeric',
                           month: '2-digit',
@@ -307,10 +307,10 @@
                   ? 'border-[#F97316]/15 bg-[#F97316]/5'
                   : 'bg-[#EF4444]/5 border-[#EF4444]/15'}">
               <div class="flex justify-between items-center w-full">
-                <span class="text-xl dark:text-white">Disk</span>
-                <div class="ms-auto flex gap-2 justify-center items-start text-sm">
+                <span class="text-[0.94vw] dark:text-white">Disk</span>
+                <div class="ms-auto flex gap-2 justify-center items-start text-[0.7vw]">
                   <span
-                    class="text-xl {data.disk[data.disk.length - 1].usage_percent
+                    class="text-[0.94vw] {data.disk[data.disk.length - 1].usage_percent
                       ? data.disk[data.disk.length - 1].usage_percent < 65
                         ? 'text-[#22c55e]'
                         : data.disk[data.disk.length - 1].usage_percent < 85
@@ -404,10 +404,10 @@
                               class="size-1.5 rounded-full bg-[#00bc7d]"></span>
                             <div class="flex-1 flex justify-between items-center gap-2.5">
                               <span
-                                class="flex justify-center items-center text-xs text-nowrap text-[#6a7282]"
+                                class="flex justify-center items-center text-[0.63vw] text-nowrap text-[#6a7282]"
                                 >Disk :</span>
                               <span
-                                class="flex justify-center items-center text-xs text-nowrap {detail.usage_percent >
+                                class="flex justify-center items-center text-[0.63vw] text-nowrap {detail.usage_percent >
                                 LIMITATIONS.disk.error
                                   ? 'text-[#F87171]'
                                   : detail.usage_percent > LIMITATIONS.disk.warn
@@ -438,7 +438,7 @@
                       {/if}
 
                       <div
-                        class="w-full flex justify-start items-center text-xs text-nowrap text-[#6a7282] text-center border-t-white/15 border-t pt-1.5">
+                        class="w-full flex justify-start items-center text-[0.63vw] text-nowrap text-[#6a7282] text-center border-t-white/15 border-t pt-1.5">
                         {new Date(detail.timestamp_ms).toLocaleString('en-GB', {
                           year: 'numeric',
                           month: '2-digit',
@@ -460,8 +460,8 @@
         <div class="flex flex-col gap-4 items-start justify-between w-full">
           <div class="w-full flex justify-between items-baseline">
             <div class="w-full flex flex-col justify-start items-start">
-              <span class="text-xl dark:text-white">{data.agent_id} Performance Overview</span>
-              <span class="text-sm text-[#99a1af]">System resource latest utilization trends</span>
+              <span class="text-[0.94vw] dark:text-white">{data.agent_id} Performance Overview</span>
+              <span class="text-[0.7vw] text-[#99a1af]">System resource latest utilization trends</span>
             </div>
           </div>
 
@@ -472,7 +472,7 @@
                 <span
                   style="box-shadow: 0 0 10px 1px #ad46ff;"
                   class="size-2.5 rounded-full bg-[#ad46ff]"></span>
-                <span class="flex justify-center items-center text-sm text-[#6a7282] text-nowrap"
+                <span class="flex justify-center items-center text-[0.7vw] text-[#6a7282] text-nowrap"
                   >Average CPU Usage :</span>
               </div>
 
@@ -485,7 +485,7 @@
                 <span
                   style="box-shadow: 0 0 10px 1px #2b7fff;"
                   class="size-2.5 rounded-full bg-[#2b7fff]"></span>
-                <span class="flex justify-center items-center text-sm text-[#6a7282] text-nowrap"
+                <span class="flex justify-center items-center text-[0.7vw] text-[#6a7282] text-nowrap"
                   >Average Memory Usage :</span>
               </div>
 
@@ -498,7 +498,7 @@
                 <span
                   style="box-shadow: 0 0 10px 1px #22c55e;"
                   class="size-2.5 rounded-full bg-[#00bc7d]"></span>
-                <span class="flex justify-center items-center text-sm text-[#6a7282] text-nowrap"
+                <span class="flex justify-center items-center text-[0.7vw] text-[#6a7282] text-nowrap"
                   >Average Disk Usage :</span>
               </div>
 

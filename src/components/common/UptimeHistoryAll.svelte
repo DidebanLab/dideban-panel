@@ -102,23 +102,23 @@
 </script>
 
 <div
-  class="w-full flex flex-col justify-start items-start gap-4 border border-[#0D0D0D]/5 dark:border-white/5 p-6 rounded-xl">
+  class="w-full flex flex-col justify-start items-start gap-4 border border-[#0D0D0D]/5 dark:border-white/5 p-[1.2vw] rounded-xl">
   <div class="flex flex-col">
-    <span class="text-black dark:text-white text-xl">Uptime</span><span class="text-sm text-[#99a1af]"
-      >History Of Uptime</span>
+    <span class="text-black dark:text-white text-[0.94vw]">Uptime</span><span
+      class="text-[0.7vw] text-[#99a1af]">History Of Uptime</span>
   </div>
 
   <div class="w-full grid grid-cols-5 2xl:grid-cols-6 3xl:grid-cols-7 text-white gap-4 relative">
     <div class="absolute end-0 bottom-0 flex flex-col justify-center items-end gap-2">
-      <div class="flex justify-center items-center gap-2 text-white/40 text-sm">
+      <div class="flex justify-center items-center gap-2 text-white/40 text-[0.7vw]">
         <span> More than 80%</span>
         <div class="size-3.5 rounded-sm bg-red-700"></div>
       </div>
-      <div class="flex justify-center items-center gap-2 text-white/40 text-sm">
+      <div class="flex justify-center items-center gap-2 text-white/40 text-[0.7vw]">
         <span> {'50% < value < 80%'}</span>
         <div class="size-3.5 rounded-sm bg-[#F97316]"></div>
       </div>
-      <div class="flex justify-center items-center gap-2 text-white/40 text-sm">
+      <div class="flex justify-center items-center gap-2 text-white/40 text-[0.7vw]">
         <span>less Than 51 %</span>
         <div class="size-3.5 rounded-sm bg-green-700"></div>
       </div>

@@ -4,28 +4,29 @@
 </script>
 
 <div
-  class="w-[256px] bg-white dark:bg-[#0D0D0D] flex flex-col border-e border-[#0D0D0D]/5 dark:border-[#222222]">
+  class="w-[15vw] bg-white dark:bg-[#0D0D0D] flex flex-col border-e border-[#0D0D0D]/5 dark:border-[#222222]">
   <div
-    class="p-6 h-25.75 flex justify-start items-center border-b border-[#0D0D0D]/5 dark:border-[#222222]">
-    <img src="/icons/torbu.png" alt="turbu" />
-    <div class="flex flex-col ms-3 justify-center">
-      <h2 class="dark:text-white font-semibold tracking-wider">Dideban</h2>
-      <span class="text-[#00bc7d] text-sm">V 1.0.0</span>
+    class="p-[1.2vw] h-[5.4vw] flex justify-start items-center border-b border-[#0D0D0D]/5 dark:border-[#222222]">
+    <img class="size-[2.2vw]" src="/icons/torbu.png" alt="turbu" />
+    <div class="flex flex-col ms-[0.5vw] justify-center">
+      <h2 class="dark:text-white font-semibold tracking-wider text-[0.8vw]">Dideban</h2>
+      <span class="text-[#00bc7d] text-[0.7vw]">V 1.0.0</span>
     </div>
   </div>
 
-  <div class="p-6 flex flex-col gap-4">
-    <ul class="flex flex-col items-start justify-start gap-2">
+  <div class="p-[1.2vw] flex flex-col gap-4">
+    <ul class="flex flex-col items-start justify-start gap-[0.5vw]">
       <li class="w-full rounded-[14px]">
         <a
-          class="flex w-full justify-start items-center gap-3 py-2 px-2.5 rounded-[14px] {$page.url
-            .pathname === '/'
+          class="flex w-full justify-start items-center gap-[0.6vw] h-[1.8vw] px-[0.5vw] rounded-[14px] {$page
+            .url.pathname === '/'
             ? 'outline outline-[#00d492]/15 outline-offset-1 bg-[#00d492]/10 cursor-default'
             : 'cursor-pointer'}"
           href="/">
           <svg
-            width="20"
-            height="20"
+            class="size-[1vw]"
+            width="30"
+            height="30"
             viewBox="0 0 20 20"
             fill="none"
             xmlns="http://www.w3.org/2000/svg">
@@ -42,7 +43,8 @@
               stroke-linecap="round"
               stroke-linejoin="round" />
           </svg>
-          <span class="text-sm {$page.url.pathname === '/' ? 'text-[#00d492]' : 'text-[#99a1af]'}"
+          <span
+            class="text-[0.7vw] {$page.url.pathname === '/' ? 'text-[#00d492]' : 'text-[#99a1af]'}"
             >Dashboard</span
           ></a>
       </li>
@@ -79,7 +81,7 @@
                             stroke-linecap="round"
                             stroke-linejoin="round" />
                     </svg>
-                    <span class="text-sm {$page.url.pathname === '/servers' ? 'text-[#00d492]' : 'text-[#99a1af]'}"
+                    <span class="text-[0.7vw] {$page.url.pathname === '/servers' ? 'text-[#00d492]' : 'text-[#99a1af]'}"
                         >Servers</span>
                 </a>
             </li>
@@ -122,7 +124,7 @@
                             stroke-linecap="round"
                             stroke-linejoin="round" />
                     </svg>
-                    <span class="text-sm {$page.url.pathname === '/network' ? 'text-[#00d492]' : 'text-[#99a1af]'}"
+                    <span class="text-[0.7vw] {$page.url.pathname === '/network' ? 'text-[#00d492]' : 'text-[#99a1af]'}"
                         >Network</span
                     ></a>
             </li>
@@ -153,7 +155,7 @@
                             stroke-linecap="round"
                             stroke-linejoin="round" />
                     </svg>
-                    <span class="text-sm {$page.url.pathname === '/database' ? 'text-[#00d492]' : 'text-[#99a1af]'}"
+                    <span class="text-[0.7vw] {$page.url.pathname === '/database' ? 'text-[#00d492]' : 'text-[#99a1af]'}"
                         >Database</span
                     ></a>
             </li>
@@ -190,7 +192,7 @@
                             stroke-linecap="round"
                             stroke-linejoin="round" />
                     </svg>
-                    <span class="text-sm {$page.url.pathname === '/analytics' ? 'text-[#00d492]' : 'text-[#99a1af]'}"
+                    <span class="text-[0.7vw] {$page.url.pathname === '/analytics' ? 'text-[#00d492]' : 'text-[#99a1af]'}"
                         >Analytics</span
                     ></a>
             </li>
@@ -210,7 +212,7 @@
                             stroke-linecap="round"
                             stroke-linejoin="round" />
                     </svg>
-                    <span class="text-sm {$page.url.pathname === '/security' ? 'text-[#00d492]' : 'text-[#99a1af]'}"
+                    <span class="text-[0.7vw] {$page.url.pathname === '/security' ? 'text-[#00d492]' : 'text-[#99a1af]'}"
                         >Security</span
                     ></a>
             </li>
@@ -229,20 +231,21 @@
                             stroke-linecap="round"
                             stroke-linejoin="round" />
                     </svg>
-                    <span class="text-sm {$page.url.pathname === '/optimize' ? 'text-[#00d492]' : 'text-[#99a1af]'}"
+                    <span class="text-[0.7vw] {$page.url.pathname === '/optimize' ? 'text-[#00d492]' : 'text-[#99a1af]'}"
                         >Optimize</span>
                 </a>
             </li> -->
       <li class="w-full">
         <a
           href="/settings"
-          class="flex w-full justify-start items-center gap-3 py-2 px-2.5 rounded-[14px] {$page.url
-            .pathname === '/setting'
+          class="flex w-full justify-start items-center gap-[0.6vw] h-[1.8vw] px-[0.5vw] rounded-[14px] {$page
+            .url.pathname === '/setting'
             ? 'outline outline-[#00d492]/15 outline-offset-1 bg-[#00d492]/10 cursor-default'
             : 'cursor-pointer'}">
           <svg
-            width="20"
-            height="20"
+            class="size-[1vw]"
+            width="30"
+            height="30"
             viewBox="0 0 20 20"
             fill="none"
             xmlns="http://www.w3.org/2000/svg">
@@ -260,7 +263,7 @@
               stroke-linejoin="round" />
           </svg>
           <span
-            class="text-sm {$page.url.pathname === '/settings'
+            class="text-[0.7vw] {$page.url.pathname === '/settings'
               ? 'text-[#00d492]'
               : 'text-[#99a1af]'}">Settings</span
           ></a>

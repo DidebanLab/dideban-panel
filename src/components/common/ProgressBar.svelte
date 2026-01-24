@@ -22,7 +22,7 @@
     <!-- label -->
     {#if showValue}
         <div
-            class="text-sm font-medium text-right"
+            class="text-[0.7vw] font-medium text-right"
             class:text-green-600={safeValue < 65}
             class:text-yellow-600={safeValue >= 65 && safeValue <= 85}
             class:text-red-600={safeValue > 85}>

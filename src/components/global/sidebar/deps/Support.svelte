@@ -7,13 +7,13 @@
                 <div class="size-8 bg-[#00bc7d]/20 flex justify-center items-center rounded-[10px]">
                     <img src="/icons/question-mark.png" alt="question-mark" />
                 </div>
-                <div class="flex flex-col gap-1 items-start justify-center text-sm">
+                <div class="flex flex-col gap-1 items-start justify-center text-[0.7vw]">
                     <span class="dark:text-white">Need help?</span>
-                    <span class="text-[#99a1af] text-xs">24/7 assistance available</span>
+                    <span class="text-[#99a1af] text-[0.63vw]">24/7 assistance available</span>
                 </div>
             </div>
 
-            <div class="w-47.25 h-8 bg-white/5 flex justify-center items-center text-[#00d492] text-sm rounded-[10px]">
+            <div class="w-47.25 h-8 bg-white/5 flex justify-center items-center text-[#00d492] text-[0.7vw] rounded-[10px]">
                 Contact Support
             </div>
         </div>
