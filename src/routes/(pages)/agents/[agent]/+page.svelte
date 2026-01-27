@@ -181,13 +181,14 @@
               </div>
               <div class="w-full h-auto flex justify-between items-center">
                 <div class="flex flex-col sm:flex-row justify-between items-center mb-6 w-full">
-                  <div class="flex justify-start items-center max-sm:scale-110  max-sm:pt-5">
+                  <div class="flex justify-start items-center max-sm:scale-110">
                     <StrokedGaugeChart
                       value={data.memory[data.memory.length - 1].usage_percent}
                       title="Usage Percent" />
                   </div>
 
-                  <div class="flex justify-between sm:justify-center items-center gap-4 max-sm:w-full max-sm:px-[1.5px] 2xl:mt-1 mb-0.5 2xl:mb-0 3xl:mb-0.5">
+                  <div
+                    class="flex justify-between sm:justify-center items-center gap-4 max-sm:w-full max-sm:px-[1.5px] 2xl:mt-1 max-sm:mb-4 mb-0.5 2xl:mb-0 3xl:mb-0.5">
                     <div class="flex flex-col justify-end items-center gap-3">
                       <div
                         class="relative flex items-center justify-center gap-2.5 bg-[#2B7FFF]/20 backdrop-blur-3xl size-19 sm:size-16.5 rounded-full py-1">
@@ -240,7 +241,7 @@
               </div>
 
               <div
-                class="absolute z-10 bottom-4 start-0 w-full flex justify-between items-end px-4 gap-0.5 ">
+                class="absolute z-10 bottom-4 start-0 w-full flex justify-between items-end px-4 gap-0.5">
                 {#each data.memory.slice(isMobile ? -31 : -53) as detail}
                   {@const hasAgentMetrics = detail.usage_percent}
                   {@const agentError = detail.usage_percent > LIMITATIONS.memory.error}
@@ -315,9 +316,9 @@
             </div>
             <div
               class="relative w-full flex flex-col justify-center items-start border rounded-[14px] p-4 gap-px {data
-                .disk[data.disk.length - 1].usage_percent < 65
+                .disk[data.disk.length - 1].usage_percent < LIMITATIONS.disk.warn
                 ? 'dark:bg-[#0D0D0D] bg-[#FFFFFF] border border-[#0D0D0D]/5 dark:border-white/5'
-                : data.disk[data.disk.length - 1].usage_percent < 85
+                : data.disk[data.disk.length - 1].usage_percent < LIMITATIONS.disk.error
                   ? 'border-[#F97316]/15 bg-[#F97316]/5'
                   : 'bg-[#EF4444]/5 border-[#EF4444]/15'}">
               <div class="flex justify-between items-center w-full">
@@ -325,9 +326,9 @@
                 <div class="ms-auto flex gap-2 justify-center items-start text-sm">
                   <span
                     class="text-lg sm:text-xl {data.disk[data.disk.length - 1].usage_percent
-                      ? data.disk[data.disk.length - 1].usage_percent < 65
+                      ? data.disk[data.disk.length - 1].usage_percent < LIMITATIONS.disk.warn
                         ? 'text-[#22c55e]'
-                        : data.disk[data.disk.length - 1].usage_percent < 85
+                        : data.disk[data.disk.length - 1].usage_percent < LIMITATIONS.disk.error
                           ? 'text-[#F97316]'
                           : 'text-[#F87171]'
                       : 'bg-black/20'}">
@@ -337,17 +338,18 @@
                 </div>
               </div>
               <div class="w-full h-auto flex justify-between items-center">
-                <div class="flex justify-between items-center mb-6 w-full">
+                <div class="flex flex-col sm:flex-row justify-between items-center mb-6 w-full">
                   <div class="flex justify-start items-center max-sm:scale-110">
                     <StrokedGaugeChart
                       value={data.disk[data.disk.length - 1].usage_percent}
                       title="Usage Percent" />
                   </div>
 
-                  <div class="flex justify-center items-center gap-4 2xl:mt-1 mb-0.5 2xl:mb-0 3xl:mb-0.5">
+                  <div
+                    class="flex justify-between sm:justify-center items-center gap-4 max-sm:w-full max-sm:px-[1.5px] 2xl:mt-1 max-sm:mb-4 mb-0.5 2xl:mb-0 3xl:mb-0.5">
                     <div class="flex flex-col justify-end items-center gap-3">
                       <div
-                        class="relative flex items-center justify-center gap-2.5 bg-[#2B7FFF]/20 backdrop-blur-3xl size-16.5 rounded-full py-1">
+                        class="relative flex items-center justify-center gap-2.5 bg-[#2B7FFF]/20 backdrop-blur-3xl size-19 sm:size-16.5 rounded-full py-1">
                         <span
                           class="absolute top-1/2 start-1/2 -translate-1/2 text-[#2B7FFF] text-[11px]">
                           {Number(data.disk[data.disk.length - 1].total_gb).toLocaleString()}
@@ -359,10 +361,10 @@
 
                     <div class="flex flex-col justify-end items-center gap-3">
                       <div
-                        class="relative overflow-hidden flex items-center justify-center gap-2.5 bg-[#2B7FFF]/20 backdrop-blur-3xl size-16.5 rounded-full py-1">
+                        class="relative overflow-hidden flex items-center justify-center gap-2.5 bg-[#2B7FFF]/20 backdrop-blur-3xl size-19 sm:size-16.5 rounded-full py-1">
                         <span
                           class="absolute top-1/2 start-1/2 -translate-1/2 text-[#2B7FFF] text-[11px]">
-                          {data.disk[data.disk.length - 1].used_gb}
+                          {Number(data.disk[data.disk.length - 1].used_gb).toLocaleString()}
                         </span>
                         <div
                           style="height: {(72 * data.disk[data.disk.length - 1].usage_percent) /
@@ -370,11 +372,11 @@
                           class="absolute z-10 bottom-0 start-0 w-full bg-[#2B7FFF]/20 backdrop-blur-3xl">
                         </div>
                       </div>
-                      <span class="text-[11px] text-[#99A1AF]">Used (mb)</span>
+                      <span class="text-[11px] text-[#99A1AF]">Used (gb)</span>
                     </div>
                     <div class="flex flex-col justify-end items-center gap-3">
                       <div
-                        class="relative overflow-hidden flex items-center justify-center gap-2.5 bg-[#2B7FFF]/20 backdrop-blur-3xl size-16.5 rounded-full py-1">
+                        class="relative overflow-hidden flex items-center justify-center gap-2.5 bg-[#2B7FFF]/20 backdrop-blur-3xl size-19 sm:size-16.5 rounded-full py-1">
                         <span
                           class="absolute top-1/2 start-1/2 -translate-1/2 text-[#2B7FFF] text-[11px]">
                           {Number(
@@ -389,12 +391,11 @@
                           class="absolute z-10 bottom-0 start-0 w-full bg-[#2B7FFF]/20 backdrop-blur-3xl">
                         </div>
                       </div>
-                      <span class="text-[11px] text-[#99A1AF]">Available (mb)</span>
+                      <span class="text-[11px] text-[#99A1AF]">Available (gb)</span>
                     </div>
                   </div>
                 </div>
               </div>
-
               <div
                 class="absolute z-10 bottom-4 start-0 w-full flex justify-between items-end px-4 gap-0.5">
                 {#each data.disk.slice(isMobile ? -31 : -53) as detail}
@@ -417,8 +418,8 @@
                         <div class="flex flex-col items-center w-full gap-1">
                           <div class="w-full flex justify-start items-center gap-2.5">
                             <span
-                              style="box-shadow: 0 0 10px 1px #22c55e;"
-                              class="size-1.5 rounded-full bg-[#00bc7d]"></span>
+                              style="box-shadow: 0 0 10px 1px #ad46ff;"
+                              class="size-1.5 rounded-full bg-[#ad46ff]"></span>
                             <div class="flex-1 flex justify-between items-center gap-2.5">
                               <span
                                 class="flex justify-center items-center text-xs text-nowrap text-[#6a7282]"
