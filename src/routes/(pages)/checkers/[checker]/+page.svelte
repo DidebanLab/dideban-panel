@@ -145,7 +145,7 @@
 
 <section class="w-full m-auto h-auto flex flex-col col-span-10">
   <!-- Content of dashboard page -->
-  <div class="w-full flex flex-col gap-[1.7vw] p-[1.7vw] py-2">
+  <div class="w-full flex flex-col gap-7.75 p-7.75 py-2">
     <div
       class="w-full flex flex-col justify-start items-start gap-6 border border-[#0D0D0D]/5 dark:border-white/5 p-6 rounded-xl">
       <div class="w-full flex justify-between items-start">
@@ -205,10 +205,10 @@
             </svg>
           </div>
 
-          <span class="text-black dark:text-white text-[0.94vw] capitalize">{name}</span>
+          <span class="text-black dark:text-white text-xl capitalize">{name}</span>
         </div>
 
-        <div class="flex justify-end items-center gap-2 text-[0.7vw] text-[#99a1af]">
+        <div class="flex justify-end items-center gap-2 text-sm text-[#99a1af]">
           <span class="flex justify-center items-center text-nowrap">Last Check :</span>
           <span class="flex justify-center items-center text-nowrap tracking-wider"
             >{data.last_check || 'Jan 13th, 08:54:22'}</span>
@@ -221,7 +221,7 @@
           class="relative w-full 2xl:w-[18%] gap-3 flex 2xl:flex-col justify-start items-start mb-auto">
           <div
             class="flex w-full flex-col justify-between items-center overflow-hidden text-base text-white border border-[#0D0D0D]/5 dark:border-white/5 rounded-xl dark:bg-[#0D0D0D] bg-[#FFFFFF]">
-            <span class="py-3 text-center w-full 2xl:text-[0.7vw] text-[#99a1af] dark:text-white">
+            <span class="py-3 text-center w-full 2xl:text-sm text-[#99a1af] dark:text-white">
               {data.target}</span>
           </div>
           <div class="h-px w-full bg-[#0D0D0D]/5 dark:bg-white/5 hidden 2xl:block"></div>
@@ -283,7 +283,7 @@
                 props: { name },
               });
             }}
-            class="absolute right-0 -top-6 2xl:static ms-auto me-1 text-[#99a1af] dark:text-white/20 text-[0.7vw] cursor-pointer hover:text-white/30">
+            class="absolute right-0 -top-6 2xl:static ms-auto me-1 text-[#99a1af] dark:text-white/20 text-sm cursor-pointer hover:text-white/30">
             Edit
           </button>
         </div>
@@ -293,21 +293,21 @@
     <div
       class="w-full flex flex-col justify-start items-start gap-4 border border-[#0D0D0D]/5 dark:border-white/5 p-6 rounded-xl">
       <div class="flex flex-col">
-        <span class="text-black dark:text-white text-[0.94vw]">Uptime</span><span class="text-[0.7vw] text-[#99a1af]"
+        <span class="text-black dark:text-white text-xl">Uptime</span><span class="text-sm text-[#99a1af]"
           >History Of Uptime</span>
       </div>
 
       <div class="w-full grid grid-cols-5 2xl:grid-cols-7 text-white gap-4 relative">
         <div class="absolute end-0 bottom-0 flex flex-col justify-center items-end gap-2">
-          <div class="flex justify-center items-center gap-2 text-black dark:text-white/40 text-[0.7vw]">
+          <div class="flex justify-center items-center gap-2 text-black dark:text-white/40 text-sm">
             <span> More than 80%</span>
             <div class="size-3.5 rounded-sm bg-red-600/70"></div>
           </div>
-          <div class="flex justify-center items-center gap-2 text-black dark:text-white/40 text-[0.7vw]">
+          <div class="flex justify-center items-center gap-2 text-black dark:text-white/40 text-sm">
             <span> {'50% < value < 80%'}</span>
             <div class="size-3.5 rounded-sm bg-[#F97316]"></div>
           </div>
-          <div class="flex justify-center items-center gap-2 text-black dark:text-white/40 text-[0.7vw]">
+          <div class="flex justify-center items-center gap-2 text-black dark:text-white/40 text-sm">
             <span>less Than 51 %</span>
             <div class="size-3.5 rounded-sm bg-green-700"></div>
           </div>

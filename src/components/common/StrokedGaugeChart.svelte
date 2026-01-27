@@ -17,7 +17,7 @@
       type: 'radialBar',
       height: 100,
       fontFamily: 'IRANSans, sans-serif',
-      width:100
+      width: 100,
     },
 
     plotOptions: {
@@ -62,6 +62,23 @@
       series: [value],
       responsive: [
         {
+          breakpoint: 375,
+          options: {
+            plotOptions: {
+              radialBar: {
+                dataLabels: {
+                  value: {
+                    color: getColor(value),
+                    offsetY: -12,
+                    fontSize: '13px',
+                    formatter: val => `${val}%`,
+                  },
+                },
+              },
+            },
+          },
+        },
+        {
           breakpoint: 768,
           options: {
             plotOptions: {
@@ -82,19 +99,19 @@
           breakpoint: 1536,
           options: {
             chart: {
-              height: 50,
+              height: 100,
             },
             plotOptions: {
               radialBar: {
-                hollow: { size: '20%' },
+                hollow: { size: '60%' },
                 dataLabels: {
                   name: {
-                    fontSize: '12px',
-                    offsetY: 10,
+                    fontSize: '10px',
+                    offsetY: 50,
                   },
                   value: {
-                    fontSize: '18px',
-                    offsetY: 50,
+                    fontSize: '15px',
+                    offsetY: -10,
                   },
                 },
               },
@@ -111,4 +128,4 @@
   });
 </script>
 
-<div  bind:this={chartEl}></div>
+<div bind:this={chartEl}></div>

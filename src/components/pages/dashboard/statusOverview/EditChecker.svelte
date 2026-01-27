@@ -65,25 +65,25 @@
     class=" text-black dark:text-white border-b py-2 border-b-[#0D0D0D]/5 dark:border-b-white/10 flex justify-center items-center text-base capitalize">
     Edit checker
   </div>
-  <div class="relative flex flex-col justify-start items-start p-[1.7vw] gap-[1.7vw]">
+  <div class="relative flex flex-col justify-start items-start p-6 gap-6">
     <div class="flex flex-col justify-start items-start gap-1.5 w-full">
-      <span class="text-black dark:text-white text-[0.7vw]">Name</span>
+      <span class="text-black dark:text-white text-sm">Name</span>
       <input
         bind:value={form.name}
         placeholder="Please enter the checker name"
-        class="px-3 h-9 w-full bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-lg placeholder:text-gray-400/40 text-gray-400 text-[0.7vw] outline-none tracking-wide"
+        class="px-3 h-9 w-full bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-lg placeholder:text-gray-400/40 text-gray-400 text-sm outline-none tracking-wide"
         type="text" />
     </div>
-    <div class="w-full flex justify-between items-start gap-[1.7vw] z-11">
+    <div class="w-full flex justify-between items-start gap-6 z-11">
       <div class="flex flex-col justify-start items-start gap-1.5 w-full">
-        <span class="text-black dark:text-white text-[0.7vw]">Type</span>
+        <span class="text-black dark:text-white text-sm">Type</span>
         <Select
           bind:value={form.type}
           title="Select type"
           options={[{ name: 'http' }, { name: 'ping' }]} />
       </div>
       <div class="flex flex-col justify-start items-start gap-1.5 w-full">
-        <span class="text-[0.7vw] text-black dark:text-white {form.type ? '' : 'opacity-20'}"
+        <span class="text-sm text-black dark:text-white {form.type ? '' : 'opacity-20'}"
           >Target</span>
         <input
           bind:value={form.target}
@@ -93,7 +93,7 @@
             : form.type === 'ping'
               ? 'Please enter the hostname'
               : 'Please select a type first'}
-          class="px-3 h-9 w-full bg-[#0D0D0D]/5 dark:bg-white/5 disabled:opacity-50 disabled:cursor-not-allowed backdrop-blur-sm rounded-lg placeholder:text-gray-400/40 text-gray-400 text-[0.7vw] outline-none tracking-wide"
+          class="px-3 h-9 w-full bg-[#0D0D0D]/5 dark:bg-white/5 disabled:opacity-50 disabled:cursor-not-allowed backdrop-blur-sm rounded-lg placeholder:text-gray-400/40 text-gray-400 text-sm outline-none tracking-wide"
           type="text" />
       </div>
     </div>
@@ -104,12 +104,12 @@
           <div
             class="border-b border-b-[#0D0D0D]/5 dark:border-b-white/10 h-9 flex justify-center items-center w-full relative">
             <span
-              class="flex justify-center items-center capitalize text-[0.7vw] tracking-wide text-black dark:text-white px-3"
+              class="flex justify-center items-center capitalize text-sm tracking-wide text-black dark:text-white px-3"
               >{form.type} setting</span>
 
             {#if form.type === 'http'}
               <Select
-                className="w-[131.5px]! justify-end! bg-transparent! px-1.5! rounded-xl! h-[1.7vw]! z-2 absolute! end-1 "
+                className="w-[131.5px]! justify-end! bg-transparent! px-1.5! rounded-xl! h-6! z-2 absolute! end-1 "
                 bind:value={httpConfig.method}
                 title="Method"
                 options={[
@@ -123,7 +123,7 @@
           <div class="p-4 w-full h-full flex flex-col max-h-70 overflow-y-auto custom-scroll">
             {#if form.type === 'http'}
               <div class="flex flex-col gap-1.5 justify-start items-start w-full">
-                <span class="text-gray-400 text-[0.7vw]">Header</span>
+                <span class="text-gray-400 text-sm">Header</span>
                 <div
                   class="w-full overflow-y-auto custom-scroll h-fit max-h-32 flex flex-col gap-1.5">
                   {#each httpConfig.headers as header, i}
@@ -131,12 +131,12 @@
                       <input
                         bind:value={httpConfig.headers[i].key}
                         placeholder="Key"
-                        class="px-3 h-9 w-1/4 bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-md placeholder:text-gray-400/40 text-gray-400 text-[0.7vw] outline-none tracking-wide"
+                        class="px-3 h-9 w-1/4 bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-md placeholder:text-gray-400/40 text-gray-400 text-sm outline-none tracking-wide"
                         type="text" />
                       <input
                         bind:value={httpConfig.headers[i].value}
                         placeholder="Value"
-                        class="px-3 h-9 w-3/4 bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-md placeholder:text-gray-400/40 text-gray-400 text-[0.7vw] outline-none tracking-wide"
+                        class="px-3 h-9 w-3/4 bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-md placeholder:text-gray-400/40 text-gray-400 text-sm outline-none tracking-wide"
                         type="text" />
                       {#if header === httpConfig.headers[httpConfig.headers.length - 1] && header !== httpConfig.headers[0]}
                         <button
@@ -144,7 +144,7 @@
                             httpConfig.headers.pop();
                           }}
                           type="button"
-                          class="absolute start-0 -bottom-[1.7vw] w-[1.7vw] h-4 rounded-md bg-[#EF4444]/10 text-[#ef4444] flex justify-center items-center text-base cursor-pointer hover:bg-[#EF4444]/20">
+                          class="absolute start-0 -bottom-6 w-6 h-4 rounded-md bg-[#EF4444]/10 text-[#ef4444] flex justify-center items-center text-base cursor-pointer hover:bg-[#EF4444]/20">
                           -
                         </button>
                       {/if}
@@ -161,12 +161,12 @@
               </button>
 
               {#if form.type === 'http' && (httpConfig.method === 'POST' || httpConfig.method === 'PUT')}
-                <div class="flex flex-col gap-1.5 w-full justify-start items-start mb-[1.7vw]">
-                  <span class="text-[0.7vw] text-gray-400 capitalize">Body</span>
+                <div class="flex flex-col gap-1.5 w-full justify-start items-start mb-6">
+                  <span class="text-sm text-gray-400 capitalize">Body</span>
                   <textarea
                     bind:value={body}
                     placeholder="Enter your body"
-                    class="p-3 h-30 w-full bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm resize-none placeholder:text-gray-400/40 text-gray-400 text-[0.7vw] outline-none tracking-wide rounded-md"
+                    class="p-3 h-30 w-full bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm resize-none placeholder:text-gray-400/40 text-gray-400 text-sm outline-none tracking-wide rounded-md"
                     name="body"
                     id="body">
                   </textarea>
@@ -175,7 +175,7 @@
             {/if}
 
             <div
-              class="flex justify-between items-center text-[0.7vw] text-gray-400 border-b pb-2 border-b-[#0D0D0D]/5 dark:border-b-white/10">
+              class="flex justify-between items-center text-sm text-gray-400 border-b pb-2 border-b-[#0D0D0D]/5 dark:border-b-white/10">
               <div class="flex justify-start items-center gap-1">
                 <span class="flex justify-center items-center">timeout</span>
                 <span class="flex justify-center items-center text-gray-400/40">(seconds)</span>
@@ -195,7 +195,7 @@
                     else if (value > CHECK_LIMIT.timeoutSeconds.max)
                       form.timeoutSeconds = CHECK_LIMIT.timeoutSeconds.max;
                   }}
-                  class="px-3 h-6.5 w-full bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-md text-gray-400 text-[0.7vw] outline-none tracking-wide appearance-none text-center" />
+                  class="px-3 h-6.5 w-full bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-md text-gray-400 text-sm outline-none tracking-wide appearance-none text-center" />
 
                 <!-- Custom Arrows -->
                 <div
@@ -221,7 +221,7 @@
               </div>
             </div>
             <div
-              class="flex justify-between items-center text-[0.7vw] text-gray-400 border-b py-2 border-b-[#0D0D0D]/5 dark:border-b-white/10">
+              class="flex justify-between items-center text-sm text-gray-400 border-b py-2 border-b-[#0D0D0D]/5 dark:border-b-white/10">
               <div class="flex justify-start items-center gap-1">
                 <span class="flex justify-center items-center mr-1">Interval</span>
                 <span class="flex justify-center items-center text-gray-400/40">(seconds)</span>
@@ -241,7 +241,7 @@
                     else if (value > AGENT_LIMIT.intervalSeconds.max)
                       form.intervalSeconds = AGENT_LIMIT.intervalSeconds.max;
                   }}
-                  class="px-3 h-6.5 w-full bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-md text-gray-400 text-[0.7vw] outline-none tracking-wide appearance-none text-center" />
+                  class="px-3 h-6.5 w-full bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-md text-gray-400 text-sm outline-none tracking-wide appearance-none text-center" />
 
                 <!-- Custom Arrows -->
                 <div
@@ -268,18 +268,18 @@
             </div>
             {#if form.type === 'http'}
               <div
-                class="flex justify-between items-center text-[0.7vw] text-gray-400 py-2 border-b border-b-[#0D0D0D]/5 dark:border-b-white/10">
+                class="flex justify-between items-center text-sm text-gray-400 py-2 border-b border-b-[#0D0D0D]/5 dark:border-b-white/10">
                 <span class="flex justify-center items-center">Expected status code</span>
 
                 <input
                   bind:value={httpConfig.expected_status}
-                  class="px-3 h-6.5 w-15 bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-md placeholder:text-gray-400/40 text-gray-400 text-[0.7vw] outline-none tracking-wide text-center"
+                  class="px-3 h-6.5 w-15 bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-md placeholder:text-gray-400/40 text-gray-400 text-sm outline-none tracking-wide text-center"
                   type="text" />
               </div>
 
               <div
                 class="flex flex-col gap-2.75 w-full justify-start items-start pt-2.5 pb-3.75 border-b border-b-[#0D0D0D]/5 dark:border-b-white/10">
-                <div class="flex justify-start items-center gap-1 text-[0.7vw]">
+                <div class="flex justify-start items-center gap-1 text-sm">
                   <span class="flex justify-center items-center text-gray-400"
                     >Expected content</span>
                   <span class="flex justify-center items-center text-gray-400/40">(optional)</span>
@@ -287,19 +287,19 @@
                 <textarea
                   bind:value={httpConfig.expected_content}
                   placeholder="Enter expected content (optional)"
-                  class="p-3 h-30 w-full bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm resize-none placeholder:text-gray-400/40 text-gray-400 text-[0.7vw] outline-none tracking-wide rounded-md"
+                  class="p-3 h-30 w-full bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm resize-none placeholder:text-gray-400/40 text-gray-400 text-sm outline-none tracking-wide rounded-md"
                   name="expected_content"
                   id="expected_content">
                 </textarea>
               </div>
               <div
-                class="flex justify-between items-center text-[0.7vw] text-gray-400 py-2 border-b border-b-[#0D0D0D]/5 dark:border-b-white/10">
+                class="flex justify-between items-center text-sm text-gray-400 py-2 border-b border-b-[#0D0D0D]/5 dark:border-b-white/10">
                 <span class="flex justify-center items-center">Follow HTTP Redirects</span>
 
                 <button
                   aria-label="status toggle"
                   onclick={() => (httpConfig.follow_redirects = !httpConfig.follow_redirects)}
-                  class="w-11 h-[1.7vw] rounded-full relative cursor-pointer {httpConfig.follow_redirects
+                  class="w-11 h-6 rounded-full relative cursor-pointer {httpConfig.follow_redirects
                     ? 'bg-[#00bc7d]/20 border border-[#00bc7d]/30'
                     : 'bg-[#6a7282]/10 border border-[#6a7282]/20 '}">
                   <div
@@ -310,13 +310,13 @@
                   </div>
                 </button>
               </div>
-              <div class="flex justify-between items-center text-[0.7vw] text-gray-400 pt-1.5">
+              <div class="flex justify-between items-center text-sm text-gray-400 pt-1.5">
                 <span class="flex justify-center items-center">Verify SSL Certificates</span>
 
                 <button
                   aria-label="status toggle"
                   onclick={() => (httpConfig.verify_ssl = !httpConfig.verify_ssl)}
-                  class="w-11 h-[1.7vw] rounded-full relative cursor-pointer {httpConfig.verify_ssl
+                  class="w-11 h-6 rounded-full relative cursor-pointer {httpConfig.verify_ssl
                     ? 'bg-[#00bc7d]/20 border border-[#00bc7d]/30'
                     : 'bg-[#6a7282]/10 border border-[#6a7282]/20 '}">
                   <div
@@ -329,14 +329,14 @@
               </div>
             {:else}
               <div
-                class="flex justify-between items-center text-[0.7vw] text-gray-400 py-2 border-b border-b-[#0D0D0D]/5 dark:border-b-white/10">
+                class="flex justify-between items-center text-sm text-gray-400 py-2 border-b border-b-[#0D0D0D]/5 dark:border-b-white/10">
                 <span class="flex justify-center items-center">Ping count</span>
 
                 <div class="relative w-15 flex">
                   <input
                     bind:value={pingConfig.count}
                     type="number"
-                    class="px-3 h-6.5 w-full bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-md text-gray-400 text-[0.7vw] outline-none tracking-wide appearance-none text-center" />
+                    class="px-3 h-6.5 w-full bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-md text-gray-400 text-sm outline-none tracking-wide appearance-none text-center" />
 
                   <!-- Custom Arrows -->
                   <div
@@ -354,15 +354,15 @@
                   </div>
                 </div>
               </div>
-              <div class="flex justify-between items-center text-[0.7vw] text-gray-400 pt-2">
-                <div class="flex justify-start items-center gap-1 text-[0.7vw]">
+              <div class="flex justify-between items-center text-sm text-gray-400 pt-2">
+                <div class="flex justify-start items-center gap-1 text-sm">
                   <span class="flex justify-center items-center text-gray-400">Packet size</span>
                   <span class="flex justify-center items-center text-gray-400/40">(bytes)</span>
                 </div>
 
                 <input
                   bind:value={pingConfig.packet_size}
-                  class="px-3 h-6.5 w-15 bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-md placeholder:text-gray-400/40 text-gray-400 text-[0.7vw] outline-none tracking-wide text-center"
+                  class="px-3 h-6.5 w-15 bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-md placeholder:text-gray-400/40 text-gray-400 text-sm outline-none tracking-wide text-center"
                   type="text" />
               </div>
             {/if}
@@ -379,13 +379,13 @@
         });
       }}
       type="button"
-      class="mt-10 me-auto w-fit px-10 text-[0.7vw] text-[#10b981] h-8.5 flex justify-center items-center rounded-md cursor-pointer bg-[#22c55e]/10 hover:opacity-60 border border-[#00bc7d]/10 disabled:dark:opacity-30 disabled:opacity-50 disabled:cursor-not-allowed">
+      class="mt-10 me-auto w-fit px-10 text-sm text-[#10b981] h-8.5 flex justify-center items-center rounded-md cursor-pointer bg-[#22c55e]/10 hover:opacity-60 border border-[#00bc7d]/10 disabled:dark:opacity-30 disabled:opacity-50 disabled:cursor-not-allowed">
       Edit Checker
     </button>
 
     <div class="absolute end-6 bottom-6">
       <div class="flex justify-around items-center gap-3">
-        <span class="text-[0.7vw] w-[47.5px] {form.enabled ? 'text-[#00bc7d]' : 'text-[#6a7282]'}">
+        <span class="text-sm w-[47.5px] {form.enabled ? 'text-[#00bc7d]' : 'text-[#6a7282]'}">
           {form.enabled ? 'Enabled' : 'Disabled'}
         </span>
         <button

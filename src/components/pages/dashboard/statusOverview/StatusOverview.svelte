@@ -8,6 +8,7 @@
   import { http } from '../../../../services/http.svelte.js';
   import { endpoints } from '../../../../endpoints.svelte.js';
 
+  let isMobile = $state(innerWidth < 640);
   const { subtitle, type } = $props();
   const getLast = item => item.detail.at(-1);
   let checkerEnabled = $state(true);
@@ -61,12 +62,12 @@
 </script>
 
 <div
-  class="w-full relative rounded-[14px] bg-[#FFFFFF] dark:bg-[#0D0D0D] border border-[#0D0D0D]/5 dark:border-white/5">
+  class="w-full relative rounded-[14px] bg-[#FFFFFF] dark:bg-[#0D0D0D] sm:border border-[#0D0D0D]/5 dark:border-white/5 mt-6 sm:mt-0">
   <div
-    class="p-6 border-b border-[#0D0D0D]/5 dark:border-[#222222] bg-[#FFFFFF] dark:bg-[#0D0D0D] w-full flex justify-between items-start">
+    class="px-6 sm:py-6 sm:border-b border-[#0D0D0D]/5 dark:border-[#222222] bg-[#FFFFFF] dark:bg-[#0D0D0D] w-full flex justify-between items-start">
     <div class="flex flex-col gap-1">
-      <span class="text-[0.94vw] dark:text-white capitalize">{type} status</span>
-      <span class="text-[0.7vw] text-[#99a1af] capitalize">{subtitle}</span>
+      <span class="text-lg sm:text-xl dark:text-white capitalize">{type} status</span>
+      <span class="text-sm text-[#99a1af] capitalize">{subtitle}</span>
     </div>
     <button
       onclick={() => {
@@ -75,19 +76,21 @@
           content: type === 'agents' ? AddAgent : AddChecker,
         });
       }}
-      class="w-12 h-10 flex justify-center items-center bg-[#22c55e]/10 rounded-lg text-[0.94vw] text-[#10b981] cursor-pointer">
+      class="w-12 sm:w-fit h-10 flex justify-center gap-2 px-4 items-center bg-[#22c55e]/10 rounded-lg text-xl text-[#10b981] cursor-pointer">
+      <span class="text-nowrap text-sm hidden sm:flex justify-center items-center">{type === 'agents' ? 'Add Agent' : 'Add Checker'}</span>
       +
     </button>
   </div>
 
-  <div class="w-full grid grid-cols-2 min-[1920px]:grid-cols-3 gap-4 custom-scroll p-6">
+  <div
+    class="w-full grid grid-cols-1 xl:grid-cols-2 3xl:grid-cols-3 gap-4 custom-scroll p-6">
     {#each AGENTS_DATA as item (item.id)}
       {@const last = getLast(item)}
       {@const error = isError(last, item.status)}
       {@const warn = !error && isWarn(last)}
       {@const statusLevel = getStatus(last, item.status)}
       <div
-        class="relative h-32.75 border rounded-[14px] flex flex-col py-6 gap-7 {error
+        class="relative h-32.75 border rounded-[14px] flex flex-col py-4 xl:py-6 gap-7 {error
           ? 'bg-[#EF4444]/5 border-[#EF4444]/15'
           : warn
             ? 'border-[#0D0D0D]/5 dark:border-[#F97316]/15 bg-[#F97316]/5'
@@ -155,17 +158,17 @@
           <div class="flex flex-col justify-center items-start gap-1">
             <a href="/{type}/{item.agent_id}" class="text-lg dark:text-white">{item.agent_id}</a>
             <span
-              class="text-[0.63vw] {last.collect_duration_ms > LIMITATIONS.collect_duration_ms.error
+              class="text-xs {last.collect_duration_ms > LIMITATIONS.collect_duration_ms.error
                 ? 'text-[#F87171]'
                 : last.collect_duration_ms > LIMITATIONS.collect_duration_ms.warn
                   ? 'text-[#F97316]'
                   : 'text-green-700'}">Latency: {last.collect_duration_ms} ms</span>
           </div>
-          <div class="flex justify-center items-center gap-2 ms-auto mb-auto mt-2">
+          <div class="flex justify-center items-center gap-2 ms-auto mb-auto">
             {#if item.status === 'offline'}
-              <span class="text-[#F87171] text-[0.63vw] tracking-wider">Offline </span>
+              <span class="text-[#F87171] text-xs tracking-wider">Offline </span>
             {:else}
-              <span class="text-[0.63vw] tracking-wider {warn ? 'text-[#f97316]' : 'text-green-700'}"
+              <span class="text-xs tracking-wider {warn ? 'text-[#f97316]' : 'text-green-700'}"
                 >Online
               </span>
             {/if}
@@ -178,8 +181,9 @@
             </div>
           </div>
         </div>
-        <div class="absolute z-10 bottom-6 w-full flex gap-1 justify-between items-end px-4.25">
-          {#each item.detail.slice(-53) as detail}
+        <div
+          class="absolute z-10 bottom-4 xl:bottom-6 w-full flex gap-0.5 justify-between items-end px-4.25">
+          {#each item.detail.slice(isMobile ? -31 : -53) as detail}
             {@const hasAgentMetrics =
               detail.cpu?.usage_percent ||
               detail.memory?.usage_percent ||
@@ -222,10 +226,10 @@
                 class="absolute w-fit group-hover:flex hidden bottom-10 start-1/2 -translate-x-1/2 rounded-xl text-white bg-white/40 dark:bg-black/80 backdrop-blur-md dark:backdrop-blur-3xl border-[#0D0D0D]/5 border dark:border-white/10 px-3 py-2 flex-col justify-start items-start gap-2.5">
                 <div
                   class="w-full flex justify-between items-center gap-2.5 border-b border-b-[#0D0D0D]/10 dark:border-b-white/15 pb-1.5">
-                  <span class="flex justify-center items-center text-[0.7vw] text-nowrap text-[#6a7282]"
+                  <span class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
                     >Latency :</span>
                   <span
-                    class="flex justify-center items-center text-[0.7vw] text-nowrap {detail.collect_duration_ms >
+                    class="flex justify-center items-center text-sm text-nowrap {detail.collect_duration_ms >
                     LIMITATIONS.collect_duration_ms.error
                       ? 'text-[#F87171]'
                       : detail.collect_duration_ms > LIMITATIONS.collect_duration_ms.warn
@@ -241,10 +245,10 @@
                           class="size-1.5 rounded-full bg-[#ad46ff]"></span>
                         <div class="flex-1 flex justify-between items-center gap-2.5">
                           <span
-                            class="flex justify-center items-center text-[0.7vw] text-nowrap text-[#6a7282]"
+                            class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
                             >Cpu :</span>
                           <span
-                            class="flex justify-center items-center text-[0.7vw] text-nowrap {detail.cpu
+                            class="flex justify-center items-center text-sm text-nowrap {detail.cpu
                               .usage_percent > LIMITATIONS.cpu.error
                               ? 'text-[#F87171]'
                               : detail.cpu.usage_percent > LIMITATIONS.cpu.warn
@@ -281,10 +285,10 @@
                           class="size-1.5 rounded-full bg-[#2b7fff]"></span>
                         <div class="flex-1 flex justify-between items-center gap-2.5">
                           <span
-                            class="flex justify-center items-center text-[0.7vw] text-nowrap text-[#6a7282]"
+                            class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
                             >Memory :</span>
                           <span
-                            class="flex justify-center items-center text-[0.7vw] text-nowrap {detail
+                            class="flex justify-center items-center text-sm text-nowrap {detail
                               .memory.usage_percent > LIMITATIONS.memory.error
                               ? 'text-[#F87171]'
                               : detail.memory.usage_percent > LIMITATIONS.memory.warn
@@ -321,10 +325,10 @@
                           class="size-1.5 rounded-full bg-[#00bc7d]"></span>
                         <div class="flex-1 flex justify-between items-center gap-2.5">
                           <span
-                            class="flex justify-center items-center text-[0.7vw] text-nowrap text-[#6a7282]"
+                            class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
                             >Disk :</span>
                           <span
-                            class="flex justify-center items-center text-[0.7vw] text-nowrap {detail.disk
+                            class="flex justify-center items-center text-sm text-nowrap {detail.disk
                               .usage_percent > LIMITATIONS.disk.error
                               ? 'text-[#F87171]'
                               : detail.disk.usage_percent > LIMITATIONS.disk.warn
@@ -356,7 +360,7 @@
                 {/if}
 
                 <div
-                  class="w-full flex justify-start items-center text-[0.7vw] text-[#6a7282] text-center {type ===
+                  class="w-full flex justify-start items-center text-sm text-[#6a7282] text-center {type ===
                   'agents'
                     ? 'border-t-black/10 dark:border-t-white/15 border-t pt-1.5'
                     : ''}">

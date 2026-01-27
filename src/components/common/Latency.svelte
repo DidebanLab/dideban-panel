@@ -25,14 +25,14 @@
   <div class="w-full flex justify-between items-start px-2">
     <div class="w-full flex flex-col justify-start items-start">
       <div class=""></div>
-      <span class="text-[0.94vw] text-black dark:text-white"> Latency</span>
-      <span class="text-[0.7vw] text-[#99a1af]">Total Time For Request Response</span>
+      <span class="text-xl text-black dark:text-white"> Latency</span>
+      <span class="text-sm text-[#99a1af]">Total Time For Request Response</span>
     </div>
     <div class="h-full flex justify-center items-center gap-1">
       {#each timeline as item}
         <button
           onclick={() => (activeTimeline = item)}
-          class="flex justify-center items-center rounded-lg size-[1.2vw] text-[0.63vw] cursor-pointer transition-all border {activeTimeline ===
+          class="flex justify-center items-center rounded-lg size-6 text-xs cursor-pointer transition-all border {activeTimeline ===
           item
             ? 'text-[#2B7FFF]  border-[#2B7FFF]/20 bg-[#2B7FFF]/20'
             : 'bg-[#0D0D0D]/5 dark:bg-white/5 border-white/5 text-[#99a1af] dark:text-white/30'}">
@@ -42,7 +42,7 @@
     </div>
   </div>
   <div
-    class="h-full ms-2 mb-[1.2vw] w-fit flex justify-center items-center gap-4 px-4 py-2 rounded-[10px] bg-[#F9FAFB] dark:bg-[#121212] border border-[#0D0D0D]/5 dark:border-white/5">
+    class="h-full ms-2 mb-6 w-fit flex justify-center items-center gap-4 px-4 py-2 rounded-[10px] bg-[#F9FAFB] dark:bg-[#121212] border border-[#0D0D0D]/5 dark:border-white/5">
     <div class="w-full flex justify-start items-center gap-2.5">
       <span style="box-shadow: 0 0 10px 1px #2b7fff;" class="size-2.5 rounded-full bg-[#2b7fff]"
       ></span>

@@ -5,7 +5,7 @@
 {#each $modals as modal (modal.id)}
   <button
     type="button"
-    class="fixed inset-0 z-100 bg-black/10 backdrop-blur-sm flex justify-center items-center"
+    class="fixed inset-0 z-110 bg-black/10 backdrop-blur-sm flex justify-center items-center"
     aria-label="Close modal"
     onclick={e => {
       e.stopPropagation();

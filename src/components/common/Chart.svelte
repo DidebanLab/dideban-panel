@@ -7,11 +7,6 @@
   let chartEl;
   let chart;
 
-  // 🔹 درصد ارتفاع نسبت به viewport (مثلاً 30vh)
-  const VH_PERCENT = 23;
-  const getChartHeight = () =>
-    Math.round((window.innerHeight * VH_PERCENT) / 100);
-
   const hexToRgba = (hex, opacity) => {
     const r = parseInt(hex.slice(1, 3), 16);
     const g = parseInt(hex.slice(3, 5), 16);
@@ -21,7 +16,7 @@
 
   const options = {
     chart: {
-      height: getChartHeight(), // ✅ فقط این خط تغییر کرده
+      height: 210, // ✅ فقط این خط تغییر کرده
       type: 'area',
       zoom: { enabled: false },
       padding: { top: 0, right: 0, bottom: 0, left: 0 },
@@ -102,14 +97,6 @@
     colors: ['#3b82f6', '#a855f7', '#10b981'],
   };
 
-  const handleResize = () => {
-    chart?.updateOptions({
-      chart: {
-        height: getChartHeight(), // ✅ فقط height آپدیت می‌شود
-      },
-    });
-  };
-
   onMount(() => {
     chart = new ApexCharts(chartEl, {
       ...options,
@@ -135,22 +122,52 @@
                 },
               };
             })
-            .filter(Boolean)
+            .filter(Boolean),
         ),
       },
     });
 
     chart.render();
-    window.addEventListener('resize', handleResize);
   });
 
   onDestroy(() => {
-    window.removeEventListener('resize', handleResize);
     chart?.destroy();
   });
 </script>
 
-<div
-  bind:this={chartEl}
-  class="w-full mt-auto {$theme === 'dark' ? 'theme-dark' : 'theme-light'}">
+<div bind:this={chartEl} class="w-full mt-auto {$theme === 'dark' ? 'theme-dark' : 'theme-light'}">
 </div>
+<style>
+  :global(.theme-dark .apexcharts-tooltip) {
+    background: rgba(0, 0, 0, 0.4) !important;
+    color: #ffffff !important;
+    border-color: #ffffff33 !important;
+  }
+
+  :global(.theme-dark .apexcharts-tooltip-text) {
+    color: #ffffff !important;
+  }
+
+  :global(.theme-light .apexcharts-tooltip) {
+    background: #ffffff !important;
+    color: #111827 !important;
+    border-color: #e5e7eb !important;
+  }
+
+  :global(.theme-light .apexcharts-tooltip-text) {
+    color: #111827 !important;
+  }
+
+  :global(.apexcharts-tooltip) {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08) !important;
+    border-radius: 12px !important;
+    padding: 6px 2px !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    line-height: 1.2 !important;
+  }
+
+  :global(.apexcharts-tooltip-title) {
+    display: none;
+  }
+</style>

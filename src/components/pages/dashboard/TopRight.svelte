@@ -16,16 +16,17 @@
   // });
 </script>
 
-<div class="w-full min-[1920px]:w-[35%] h-auto grid grid-cols-1 gap-[1.7vw]">
-  <div class="flex min-[1920px]:flex-col min-[1920px]:justify-between gap-4 w-full">
+<div class="w-full min-[1920px]:w-[35%] h-auto grid grid-cols-1 gap-7.75">
+  <div class="flex flex-col lg:flex-row 3xl:flex-col min-[1920px]:flex-col min-[1920px]:justify-between gap-6 sm:gap-4 w-full">
     {#each MAIN_STATUS_BOARD as item (item.title)}
       <div
-        class="p-[1.7vw] pt-5 w-full flex flex-col gap-4 bg-white dark:bg-transparent border border-[#0D0D0D]/5 dark:border-white/5 rounded-[14px] relative overflow-hidden h-full">
+        class="px-6 sm:pb-6 pt-1 sm:pt-5 w-full flex flex-col gap-4 bg-white dark:bg-transparent sm:border border-[#0D0D0D]/5 dark:border-white/5 rounded-[14px] relative overflow-hidden h-full">
         <div class="flex items-center gap-3 w-full">
-          <span class="text-[0.94vw] dark:text-white">{item.title}</span>
+          <span class="text-lg sm:text-xl dark:text-white">{item.title}</span>
         </div>
 
-        <div class="grid grid-cols-4 grid-rows-1 h-auto gap-3 w-full flex-1">
+        <div
+          class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 lg:grid-rows-2 xl:grid-cols-4 xl:grid-rows-1 h-auto gap-3 w-full flex-1">
           <div
             class="border-[#2B7FFF]/20 flex flex-col justify-between items-center p-1 rounded-[14px] border w-full h-full relative overflow-hidden group">
             <div
@@ -34,17 +35,16 @@
               <div class="w-full h-full bg-white/5"></div>
             </div>
             <div
-              class="relative flex items-center justify-center gap-2.5 bg-[#2B7FFF]/10 w-full rounded-xl h-[3.5vh]">
-              
+              class="relative flex items-center justify-center gap-2.5 bg-[#2B7FFF]/10 w-full rounded-xl h-full py-px">
               <img
-                class="absolute top-1/2 -translate-y-1/2 start-2"
+                class="absolute top-1/2 -translate-y-1/2 start-1.5"
                 width="18"
                 src="/icons/total.svg"
                 alt="total" />
               <span class="text-base text-black dark:text-white">Total</span>
             </div>
 
-            <span class="text-2xl 2xl:text-3xl p-2 text-[#3b82f6]">{item.total}</span>
+            <span class="text-4xl xl:text-2xl 2xl:text-3xl p-4 xl:p-3 2xl:p-2.5 text-[#3b82f6]">{item.total}</span>
             <img
               class="opacity-5 absolute bottom-0 end-0"
               width="70"
@@ -60,17 +60,16 @@
               <div class="w-full h-full bg-white/5"></div>
             </div>
             <div
-              class="flex items-center justify-center gap-2.5 bg-[#00bc7d]/10 w-full rounded-xl h-[3.5vh] relative">
-              
+              class="flex items-center justify-center gap-2.5 bg-[#00bc7d]/10 w-full rounded-xl h-full py-px relative">
               <img
-                class="absolute top-1/2 -translate-y-1/2 start-2 "
+                class="absolute top-1/2 -translate-y-1/2 start-1"
                 width="18"
                 src="/icons/tick.svg"
                 alt="tick" />
               <span class="text-base text-black dark:text-white">Up</span>
             </div>
 
-            <span class="text-2xl 2xl:text-3xl p-2 text-[#00bc7d]">{item.up}</span>
+            <span class="text-4xl xl:text-2xl 2xl:text-3xl p-4 xl:p-3 2xl:p-2.5 text-[#00bc7d]">{item.up}</span>
             <img
               class="opacity-5 absolute bottom-0 end-0"
               width="70"
@@ -85,12 +84,15 @@
               <div class="w-full h-full bg-white/5"></div>
             </div>
             <div
-              class="relative flex items-center justify-center bg-[#F87171]/10 w-full rounded-xl h-[3.5vh]">
-              
-              <img class="absolute top-1/2 -translate-y-1/2 start-2 size-[2vh]" width="19" src="/icons/error.svg" alt="error" />
+              class="relative flex items-center justify-center bg-[#F87171]/10 w-full rounded-xl h-full py-px">
+              <img
+                class="absolute top-1/2 -translate-y-1/2 start-1 size-4.5"
+                width="19"
+                src="/icons/error.svg"
+                alt="error" />
               <span class="text-base text-black dark:text-white">Down</span>
             </div>
-            <span class="text-2xl 2xl:text-3xl p-2 text-[#F87171]">{item.down}</span>
+            <span class="text-4xl xl:text-2xl 2xl:text-3xl p-4 xl:p-3 2xl:p-2.5 text-[#F87171]">{item.down}</span>
             <img
               class="opacity-5 absolute bottom-0 end-0"
               width="70"
@@ -105,16 +107,15 @@
               <div class="w-full h-full bg-white/5"></div>
             </div>
             <div
-              class="relative flex items-center justify-center gap-2.5 bg-[#F87171]/10 w-full rounded-xl h-[3.5vh]">
-              
+              class="relative flex items-center justify-center gap-2.5 bg-[#F87171]/10 w-full rounded-xl h-full py-px">
               <img
-                class="absolute top-1/2 -translate-y-1/2 start-2 size-[2vh]"
+                class="absolute top-1/2 -translate-y-1/2 start-1 size-4"
                 width="19"
                 src="/icons/warning.svg"
                 alt="warning" />
               <span class="text-base text-black dark:text-white">Warn</span>
             </div>
-            <span class="text-2xl 2xl:text-3xl p-2 text-[#fdc700]">{item.warn}</span>
+            <span class="text-4xl xl:text-2xl 2xl:text-3xl p-4 xl:p-3 2xl:p-2.5 text-[#fdc700]">{item.warn}</span>
             <img
               class="opacity-5 absolute bottom-0 end-0"
               width="70"

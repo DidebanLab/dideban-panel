@@ -32,17 +32,19 @@
 </script>
 
 <div
-  class="w-full h-auto p-[1.7vw] pb-1.5 rounded-[14px] dark:bg-[#0D0D0D] bg-[#FFFFFF] border border-[#0D0D0D]/5 dark:border-white/5">
-  <div class="flex flex-col gap-4 items-start justify-between w-full">
+  class="w-full h-auto px-6 sm:pt-6 sm:pb-1.5 rounded-[14px] dark:bg-[#0D0D0D] bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
+  <div class="flex relative flex-col gap-4 items-start justify-between w-full">
     {#each MACHINES as machine (machine.id)}
       {#if isActive === machine.agent_id}
-        <div class="w-full flex justify-between items-baseline">
+        <div
+          class="w-full flex flex-col sm:flex-row justify-center items-start sm:justify-between sm:items-baseline">
           <div class="w-full flex flex-col justify-start items-start">
-            <span class="text-[0.94vw] dark:text-white">{machine.agent_id} Performance Overview</span>
-            <span class="text-[0.7vw] text-[#99a1af]">System resource latest utilization trends</span>
+            <span class="text-lg sm:text-xl dark:text-white"
+              >{machine.agent_id} Performance Overview</span>
+            <span class="text-sm text-[#99a1af]">System resource latest utilization trends</span>
           </div>
 
-          <div class="flex justify- items-center gap-3">
+          <div class="flex justify-start items-center gap-3 w-fit absolute sm:static max-sm:-bottom-6 max-sm:start-1/2 max-sm:-translate-x-1/2">
             <button class="cursor-pointer" onclick={prev} aria-label="prev slide" type="button">
               <svg
                 class="rotate-180"
@@ -69,7 +71,7 @@
                     ? 'box-shadow: 0 0 20px 1px rgba(0, 180, 120, 1);'
                     : ''} "
                   class=" transition-all rounded-full h-0.5 {isActive === 'Beta'
-                    ? 'w-[1.7vw] bg-[#00b478]'
+                    ? 'w-6 bg-[#00b478]'
                     : 'w-5 bg-[#0D0D0D]/30 dark:bg-white/20 group-hover:bg-[#00b478]/50'}">
                 </div>
               </button>
@@ -84,7 +86,7 @@
                     ? 'box-shadow: 0 0 20px 1px rgba(0, 180, 120, 1);'
                     : ''} "
                   class=" transition-all rounded-full h-0.5 {isActive === 'Main'
-                    ? 'w-[1.7vw] bg-[#00b478]'
+                    ? 'w-6 bg-[#00b478]'
                     : 'w-5 bg-[#0D0D0D]/30 dark:bg-white/20 group-hover:bg-[#00b478]/50'}">
                 </div>
               </button>
@@ -100,7 +102,7 @@
                     ? 'box-shadow: 0 0 20px 1px rgba(0, 180, 120, 1);'
                     : ''} "
                   class=" transition-all rounded-full h-0.5 {isActive === 'Development'
-                    ? 'w-[1.7vw] bg-[#00b478]'
+                    ? 'w-6 bg-[#00b478]'
                     : 'w-5 bg-[#0D0D0D]/30 dark:bg-white/20 group-hover:bg-[#00b478]/50'}">
                 </div>
               </button>
@@ -120,44 +122,48 @@
           </div>
         </div>
 
-        <div class="w-full flex justify-start items-center gap-3">
+        <div
+          class="w-full flex flex-col md:flex-row justify-start md:justify-between lg:justify-start md:items-center gap-1 md:gap-10">
           <div
-            class="h-full w-fit flex justify-center items-center gap-4 px-4 py-3 rounded-[10px] bg-[#F9FAFB] dark:bg-[#121212] border border-[#0D0D0D]/5 dark:border-white/5">
+            class="h-full w-50 md:w-fit xl:w-fit flex justify-center items-center gap-4 xl:px-4 xl:py-3 rounded-[10px] xl:bg-[#F9FAFB] dark:xl:bg-[#121212] xl:border border-[#0D0D0D]/5 dark:border-white/5">
             <div class="w-full flex justify-start items-center gap-2.5">
               <span
                 style="box-shadow: 0 0 10px 1px #ad46ff;"
                 class="size-2.5 rounded-full bg-[#ad46ff]"></span>
-              <span class="flex justify-center items-center text-[0.7vw] text-[#6a7282] text-nowrap"
+              <span
+                class="flex justify-center items-center text-xs xl:text-sm text-[#6a7282] text-nowrap"
                 >Average CPU Usage :</span>
             </div>
 
-            <span class="dark:text-white text-lg"
+            <span class="dark:text-white text-xs md:text-sm xl:text-base 2xl:text-lg"
               >{machine.cpu[machine.cpu.length - 1].usage_percent}%</span>
           </div>
           <div
-            class="h-full w-fit flex justify-center items-center gap-4 px-4 py-3 rounded-[10px] bg-[#F9FAFB] dark:bg-[#121212] border border-[#0D0D0D]/5 dark:border-white/5">
+            class="h-full w-50 md:w-fit xl:w-fit flex justify-center items-center gap-4 xl:px-4 xl:py-3 rounded-[10px] xl:bg-[#F9FAFB] dark:xl:bg-[#121212] xl:border border-[#0D0D0D]/5 dark:border-white/5">
             <div class="w-full flex justify-start items-center gap-2.5">
               <span
                 style="box-shadow: 0 0 10px 1px #2b7fff;"
                 class="size-2.5 rounded-full bg-[#2b7fff]"></span>
-              <span class="flex justify-center items-center text-[0.7vw] text-[#6a7282] text-nowrap"
+              <span
+                class="flex justify-center items-center text-xs xl:text-sm text-[#6a7282] text-nowrap"
                 >Average Memory Usage :</span>
             </div>
 
-            <span class="dark:text-white text-lg"
+            <span class="dark:text-white text-xs md:text-sm xl:text-base 2xl:text-lg"
               >{machine.memory[machine.memory.length - 1].usage_percent}%</span>
           </div>
           <div
-            class="h-full w-fit flex justify-center items-center gap-4 px-4 py-3 rounded-[10px] bg-[#F9FAFB] dark:bg-[#121212] border border-[#0D0D0D]/5 dark:border-white/5">
+            class="h-full w-50 md:w-fit xl:w-fit flex justify-center items-center gap-4 xl:px-4 xl:py-3 rounded-[10px] xl:bg-[#F9FAFB] dark:xl:bg-[#121212] xl:border border-[#0D0D0D]/5 dark:border-white/5">
             <div class="w-full flex justify-start items-center gap-2.5">
               <span
                 style="box-shadow: 0 0 10px 1px #22c55e;"
                 class="size-2.5 rounded-full bg-[#00bc7d]"></span>
-              <span class="flex justify-center items-center text-[0.7vw] text-[#6a7282] text-nowrap"
+              <span
+                class="flex justify-center items-center text-xs xl:text-sm text-[#6a7282] text-nowrap"
                 >Average Disk Usage :</span>
             </div>
 
-            <span class="dark:text-white text-lg"
+            <span class="dark:text-white text-xs md:text-sm xl:text-base 2xl:text-lg"
               >{machine.disk[machine.disk.length - 1].usage_percent}%</span>
           </div>
         </div>

@@ -31,11 +31,11 @@
   // });
 </script>
 
-<section class="w-full m-auto h-auto flex flex-col col-span-10">
+<section class="w-full m-auto h-auto flex flex-col">
   <!-- Content of dashboard page -->
-  <div class="w-full flex flex-col gap-[1.7vw] p-[1.7vw] pt-[0.7vw]">
-    <div class="w-full flex flex-col-reverse min-[1920px]:flex-row gap-4">
-      <div class="w-full min-[1920px]:w-[65%]">
+  <div class="w-full flex flex-col gap-7.75 sm:p-7.75 sm:pt-2.5">
+    <div class="w-full flex flex-col-reverse 3xl:flex-row gap-8 xl:gap-4">
+      <div class="w-full 3xl:w-[65%]">
         <PerformanceOverview />
       </div>
 
