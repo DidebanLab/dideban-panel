@@ -59,7 +59,7 @@
               </div>
 
               <div
-                class="w-full grid grid-cols-2 sm:flex xl:grid xl:grid-cols-4 sm:place-items-center mb-3">
+                class="w-full grid grid-cols-2 sm:flex xl:grid xl:grid-cols-4 sm:place-items-center mb-6">
                 <div class="sm:me-auto flex justify-start items-center max-sm:scale-110">
                   <StrokedGaugeChart
                     value={data.cpu[data.cpu.length - 1].usage_percent}
@@ -180,15 +180,15 @@
                 </div>
               </div>
               <div class="w-full h-auto flex justify-between items-center">
-                <div class="flex flex-col sm:flex-row justify-between items-center mb-3 w-full">
-                  <div class="flex justify-start items-center max-sm:scale-110  pt-5">
+                <div class="flex flex-col sm:flex-row justify-between items-center mb-6 w-full">
+                  <div class="flex justify-start items-center max-sm:scale-110  max-sm:pt-5">
                     <StrokedGaugeChart
                       value={data.memory[data.memory.length - 1].usage_percent}
                       title="Usage Percent" />
                   </div>
 
-                  <div class="flex justify-between sm:justify-center items-center gap-4 mt-1 max-sm:w-full max-sm:px-[1.5px] max-sm:mb-4.5">
-                    <div class="flex flex-col justify-end items-center mb-3 gap-3">
+                  <div class="flex justify-between sm:justify-center items-center gap-4 max-sm:w-full max-sm:px-[1.5px] 2xl:mt-1 mb-0.5 2xl:mb-0 3xl:mb-0.5">
+                    <div class="flex flex-col justify-end items-center gap-3">
                       <div
                         class="relative flex items-center justify-center gap-2.5 bg-[#2B7FFF]/20 backdrop-blur-3xl size-19 sm:size-16.5 rounded-full py-1">
                         <span
@@ -200,7 +200,7 @@
                       <span class="text-[11px] text-[#99A1AF]">Total (mb)</span>
                     </div>
 
-                    <div class="flex flex-col justify-end items-center mb-3 gap-3">
+                    <div class="flex flex-col justify-end items-center gap-3">
                       <div
                         class="relative overflow-hidden flex items-center justify-center gap-2.5 bg-[#2B7FFF]/20 backdrop-blur-3xl size-19 sm:size-16.5 rounded-full py-1">
                         <span
@@ -215,7 +215,7 @@
                       </div>
                       <span class="text-[11px] text-[#99A1AF]">Used (mb)</span>
                     </div>
-                    <div class="flex flex-col justify-end items-center mb-3 gap-3">
+                    <div class="flex flex-col justify-end items-center gap-3">
                       <div
                         class="relative overflow-hidden flex items-center justify-center gap-2.5 bg-[#2B7FFF]/20 backdrop-blur-3xl size-19 sm:size-16.5 rounded-full py-1">
                         <span
@@ -337,15 +337,15 @@
                 </div>
               </div>
               <div class="w-full h-auto flex justify-between items-center">
-                <div class="flex justify-between items-center mb-3 w-full">
+                <div class="flex justify-between items-center mb-6 w-full">
                   <div class="flex justify-start items-center max-sm:scale-110">
                     <StrokedGaugeChart
                       value={data.disk[data.disk.length - 1].usage_percent}
                       title="Usage Percent" />
                   </div>
 
-                  <div class="flex justify-center items-center gap-4 mt-1">
-                    <div class="flex flex-col justify-end items-center mb-3 gap-3">
+                  <div class="flex justify-center items-center gap-4 2xl:mt-1 mb-0.5 2xl:mb-0 3xl:mb-0.5">
+                    <div class="flex flex-col justify-end items-center gap-3">
                       <div
                         class="relative flex items-center justify-center gap-2.5 bg-[#2B7FFF]/20 backdrop-blur-3xl size-16.5 rounded-full py-1">
                         <span
@@ -357,7 +357,7 @@
                       <span class="text-[11px] text-[#99A1AF]">Total (gb)</span>
                     </div>
 
-                    <div class="flex flex-col justify-end items-center mb-3 gap-3">
+                    <div class="flex flex-col justify-end items-center gap-3">
                       <div
                         class="relative overflow-hidden flex items-center justify-center gap-2.5 bg-[#2B7FFF]/20 backdrop-blur-3xl size-16.5 rounded-full py-1">
                         <span
@@ -372,7 +372,7 @@
                       </div>
                       <span class="text-[11px] text-[#99A1AF]">Used (mb)</span>
                     </div>
-                    <div class="flex flex-col justify-end items-center mb-3 gap-3">
+                    <div class="flex flex-col justify-end items-center gap-3">
                       <div
                         class="relative overflow-hidden flex items-center justify-center gap-2.5 bg-[#2B7FFF]/20 backdrop-blur-3xl size-16.5 rounded-full py-1">
                         <span
