@@ -195,7 +195,7 @@
       <span class="text-black dark:text-white text-xl">Alerts History</span>
     </div>
 
-    <div class="w-full flex flex-col justify-start items-center gap-9">
+    <div class="w-full flex flex-col justify-start items-center gap-2">
       <div
         class="w-full flex flex-col justify-start items-start gap-2 border p-3 border-[#0D0D0D]/5 dark:border-white/5 rounded-lg">
         <span class="text-sm text-black dark:text-white">Filter</span>
@@ -270,7 +270,7 @@
                 filter.id === ''}
               onclick={filterHandler}
               type="button"
-              class="w-fit px-10 sm:px-7 md:px-10 ms-auto text-sm text-[#10b981] h-8.5 flex justify-center items-center rounded-md cursor-pointer bg-[#22c55e]/10 hover:opacity-60 border border-[#00bc7d]/10 disabled:opacity-50 disabled:dark:opacity-30 disabled:cursor-not-allowed">
+              class="w-fit px-9 sm:px-7 md:px-10 ms-auto text-sm text-[#10b981] h-8.5 flex justify-center items-center rounded-md cursor-pointer bg-[#22c55e]/10 hover:opacity-60 border border-[#00bc7d]/10 disabled:opacity-50 disabled:dark:opacity-30 disabled:cursor-not-allowed">
               Filter
             </button>
           </div>
@@ -315,7 +315,7 @@
               class="flex justify-center items-center p-2.5 md:p-3 lg:bg-[#EF4444]/10 rounded-xl">
               {@html iconSelector(result.type, error)}
             </div>
-            <div class=" h-full w-20 sm:w-22 md:w-25 xl:w-45 flex items-center justify-center">
+            <div class=" h-full w-19 sm:w-22 md:w-25 xl:w-45 flex items-center justify-center">
               <span class="text-xs md:text-sm xl:text-lg capitalize">{result.id}</span>
             </div>
             <div class=" h-full w-14 sm:w-15 lg:w-18 xl:w-25 flex items-center justify-center">
@@ -350,7 +350,7 @@
               </p>
             </div>
             <div
-              class="max-md:flex-1 md:w-78 lg:w-45 xl:w-62 flex justify-center items-center h-full rounded-md mt-4 scale-x-105">
+              class="hidden sm:w-45 ms-auto md:w-78 lg:w-45 xl:w-62 sm:flex justify-center items-center h-full rounded-md mt-4 scale-x-105">
               <UptimeChart
                 name="Latency"
                 height={isMobile ? 65 : 70}
