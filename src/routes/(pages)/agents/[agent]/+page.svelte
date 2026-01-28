@@ -23,7 +23,7 @@
     return '#F87171';
   }
 
-  const isMobile = $state(innerWidth < 640);
+  const isMobile = $state(innerWidth < 645);
   let data = $state(MACHINES[0]);
 
   // onMount(() => {
@@ -35,7 +35,7 @@
 
 <section class="w-full m-auto h-auto flex flex-col col-span-10">
   <!-- Content of dashboard page -->
-  <div class="w-full flex flex-col gap-7.75 p-7.75 pt-2.5">
+  <div class="w-full flex flex-col gap-7.75 px-6 md:p-7.75 pt-2.5">
     <div class="w-full flex flex-col gap-6">
       <div class="w-full flex flex-col gap-4 relative">
         <div class="w-full h-full flex flex-col">
@@ -43,15 +43,15 @@
             <div
               class="relative w-full flex flex-col justify-center items-start border rounded-[14px] p-4 gap-0.5 {data
                 .cpu[data.cpu.length - 1].usage_percent < 65
-                ? 'dark:bg-[#0D0D0D] bg-[#FFFFFF] border border-[#0D0D0D]/5 dark:border-white/5'
+                ? ' border bg-[#00724c]/5 border-[#00bc7d]/10'
                 : data.cpu[data.cpu.length - 1].usage_percent < 85
                   ? 'border-[#F97316]/15 bg-[#F97316]/5'
                   : 'bg-[#EF4444]/5 border-[#EF4444]/15'}">
               <div class="flex justify-between items-center w-full">
-                <span class="text-lg sm:text-xl dark:text-white">CPU</span>
+                <span class="text-lg md:text-xl dark:text-white">CPU</span>
                 <div class="ms-auto flex gap-2 justify-center items-start text-sm">
                   <span
-                    class="text-lg sm:text-xl {data.cpu[data.cpu.length - 1].usage_percent
+                    class="text-lg md:text-xl {data.cpu[data.cpu.length - 1].usage_percent
                       ? data.cpu[data.cpu.length - 1].usage_percent < 65
                         ? 'text-[#22c55e]'
                         : data.cpu[data.cpu.length - 1].usage_percent < 85
@@ -190,10 +190,10 @@
                   ? 'border-[#F97316]/15 bg-[#F97316]/5'
                   : 'bg-[#EF4444]/5 border-[#EF4444]/15'}">
               <div class="flex justify-between items-center w-full">
-                <span class="text-lg sm:text-xl dark:text-white">Memory</span>
+                <span class="text-lg md:text-xl dark:text-white">Memory</span>
                 <div class="ms-auto flex gap-2 justify-center items-start text-sm">
                   <span
-                    class="text-lg sm:text-xl {data.memory[data.memory.length - 1].usage_percent
+                    class="text-lg md:text-xl {data.memory[data.memory.length - 1].usage_percent
                       ? data.memory[data.memory.length - 1].usage_percent < 65
                         ? 'text-[#22c55e]'
                         : data.memory[data.memory.length - 1].usage_percent < 85
@@ -353,10 +353,10 @@
                   ? 'border-[#F97316]/15 bg-[#F97316]/5'
                   : 'bg-[#EF4444]/5 border-[#EF4444]/15'}">
               <div class="flex justify-between items-center w-full">
-                <span class="text-lg sm:text-xl dark:text-white">Disk</span>
+                <span class="text-lg md:text-xl dark:text-white">Disk</span>
                 <div class="ms-auto flex gap-2 justify-center items-start text-sm">
                   <span
-                    class="text-lg sm:text-xl {data.disk[data.disk.length - 1].usage_percent
+                    class="text-lg md:text-xl {data.disk[data.disk.length - 1].usage_percent
                       ? data.disk[data.disk.length - 1].usage_percent < LIMITATIONS.disk.warn
                         ? 'text-[#22c55e]'
                         : data.disk[data.disk.length - 1].usage_percent < LIMITATIONS.disk.error
@@ -510,54 +510,58 @@
         </div>
       </div>
       <div
-        class="w-full h-auto p-6 pb-1.5 rounded-[14px] dark:bg-[#0D0D0D] bg-[#FFFFFF] border border-[#0D0D0D]/5 dark:border-white/5">
-        <div class="flex flex-col gap-4 items-start justify-between w-full">
+        class="w-full h-auto sm:px-4 sm:pt-4 md:p-4 2xl:p-6 pb-0 sm:pb-0 md:pb-0 2xl:pb-1.5 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
+        <div class="flex flex-col md:gap-4 items-start justify-between w-full">
           <div class="w-full flex justify-between items-baseline">
             <div class="w-full flex flex-col sm:justify-start sm:items-start">
-              <span class="text-lg sm:text-xl dark:text-white"
+              <span class="text-lg md:text-xl dark:text-white"
                 >{data.agent_id} Performance Overview</span>
               <span class="text-sm text-[#99a1af]">System resource latest utilization trends</span>
             </div>
           </div>
 
-          <div class="w-full flex justify-start items-center gap-3">
+          <div
+            class="w-full flex flex-col md:flex-row justify-start md:justify-between lg:justify-start md:items-center gap-1 md:gap-10 max-md:mt-6">
             <div
-              class="h-full w-fit flex justify-center items-center gap-4 px-4 py-3 rounded-[10px] bg-[#F9FAFB] dark:bg-[#121212] border border-[#0D0D0D]/5 dark:border-white/5">
+              class="h-full w-50 md:w-fit xl:w-fit flex justify-center items-center gap-4 xl:px-4 xl:py-3 rounded-[10px] xl:bg-[#F9FAFB] dark:xl:bg-[#121212] xl:border border-[#0D0D0D]/5 dark:border-white/5">
               <div class="w-full flex justify-start items-center gap-2.5">
                 <span
                   style="box-shadow: 0 0 10px 1px #ad46ff;"
                   class="size-2.5 rounded-full bg-[#ad46ff]"></span>
-                <span class="flex justify-center items-center text-sm text-[#6a7282] text-nowrap"
+                <span
+                  class="flex justify-center items-center text-xs xl:text-sm text-[#6a7282] text-nowrap"
                   >Average CPU Usage :</span>
               </div>
 
-              <span class="dark:text-white text-lg"
+              <span class="dark:text-white text-xs md:text-sm xl:text-base 2xl:text-lg"
                 >{data.cpu[data.cpu.length - 1].usage_percent}%</span>
             </div>
             <div
-              class="h-full w-fit flex justify-center items-center gap-4 px-4 py-3 rounded-[10px] bg-[#F9FAFB] dark:bg-[#121212] border border-[#0D0D0D]/5 dark:border-white/5">
+              class="h-full w-50 md:w-fit xl:w-fit flex justify-center items-center gap-4 xl:px-4 xl:py-3 rounded-[10px] xl:bg-[#F9FAFB] dark:xl:bg-[#121212] xl:border border-[#0D0D0D]/5 dark:border-white/5">
               <div class="w-full flex justify-start items-center gap-2.5">
                 <span
                   style="box-shadow: 0 0 10px 1px #2b7fff;"
                   class="size-2.5 rounded-full bg-[#2b7fff]"></span>
-                <span class="flex justify-center items-center text-sm text-[#6a7282] text-nowrap"
+                <span
+                  class="flex justify-center items-center text-xs xl:text-sm text-[#6a7282] text-nowrap"
                   >Average Memory Usage :</span>
               </div>
 
-              <span class="dark:text-white text-lg"
+              <span class="dark:text-white text-xs md:text-sm xl:text-base 2xl:text-lg"
                 >{data.memory[data.memory.length - 1].usage_percent}%</span>
             </div>
             <div
-              class="h-full w-fit flex justify-center items-center gap-4 px-4 py-3 rounded-[10px] bg-[#F9FAFB] dark:bg-[#121212] border border-[#0D0D0D]/5 dark:border-white/5">
+              class="h-full w-50 md:w-fit xl:w-fit flex justify-center items-center gap-4 xl:px-4 xl:py-3 rounded-[10px] xl:bg-[#F9FAFB] dark:xl:bg-[#121212] xl:border border-[#0D0D0D]/5 dark:border-white/5">
               <div class="w-full flex justify-start items-center gap-2.5">
                 <span
                   style="box-shadow: 0 0 10px 1px #22c55e;"
                   class="size-2.5 rounded-full bg-[#00bc7d]"></span>
-                <span class="flex justify-center items-center text-sm text-[#6a7282] text-nowrap"
+                <span
+                  class="flex justify-center items-center text-xs xl:text-sm text-[#6a7282] text-nowrap"
                   >Average Disk Usage :</span>
               </div>
 
-              <span class="dark:text-white text-lg"
+              <span class="dark:text-white text-xs md:text-sm xl:text-base 2xl:text-lg"
                 >{data.disk[data.disk.length - 1].usage_percent}%</span>
             </div>
           </div>
@@ -566,15 +570,15 @@
             data={[
               {
                 name: 'CPU',
-                data: data.cpu.map(d => d.usage_percent ?? 0),
+                data: data.cpu.slice( isMobile ? -10 : -53).map(d => d.usage_percent ?? 0),
               },
               {
                 name: 'Memory',
-                data: data.memory.map(d => d.usage_percent ?? 0),
+                data: data.memory.slice( isMobile ? -10 : -53).map(d => d.usage_percent ?? 0),
               },
               {
                 name: 'Disk',
-                data: data.disk.map(d => d.usage_percent ?? 0),
+                data: data.disk.slice( isMobile ? -10 : -53).map(d => d.usage_percent ?? 0),
               },
             ]} />
         </div>
