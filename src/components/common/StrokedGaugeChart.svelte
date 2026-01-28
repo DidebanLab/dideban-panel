@@ -2,15 +2,10 @@
   import { onMount, onDestroy } from 'svelte';
   import ApexCharts from 'apexcharts';
   import { theme } from '../../stores/theme.svelte';
-  const { title, value } = $props();
+  const { title, value, chartColor } = $props();
 
   let chart;
   let chartEl;
-  function getColor(val) {
-    if (val < 65) return '#22c55e';
-    if (val <= 85) return '#F97316';
-    return '#F87171';
-  }
 
   let options = {
     chart: {
@@ -37,7 +32,7 @@
             color: 'rgba(153, 161, 175, 0.8)',
           },
           value: {
-            color: getColor(value),
+            color: chartColor,
             offsetY: -8,
             fontSize: '15px',
             formatter: val => `${val}%`,
@@ -57,7 +52,7 @@
       labels: [title],
       fill: {
         type: 'gradient',
-        colors: [getColor(value)],
+        colors: [chartColor],
       },
       series: [value],
       responsive: [
@@ -68,7 +63,7 @@
               radialBar: {
                 dataLabels: {
                   value: {
-                    color: getColor(value),
+                    color: chartColor,
                     offsetY: -12,
                     fontSize: '13px',
                     formatter: val => `${val}%`,
@@ -85,7 +80,7 @@
               radialBar: {
                 dataLabels: {
                   value: {
-                    color: getColor(value),
+                    color: chartColor,
                     offsetY: -12,
                     fontSize: '15px',
                     formatter: val => `${val}%`,

@@ -17,6 +17,12 @@
   import { endpoints } from '../../../../endpoints.svelte.js';
   const name = $page.params.agent;
 
+  function getColor(warnLimit, errorLimit, val) {
+    if (val < warnLimit) return '#22c55e';
+    if (val <= errorLimit) return '#F97316';
+    return '#F87171';
+  }
+
   const isMobile = $state(innerWidth < 640);
   let data = $state(MACHINES[0]);
 
@@ -62,22 +68,42 @@
                 class="w-full grid grid-cols-2 sm:flex xl:grid xl:grid-cols-4 sm:place-items-center mb-6">
                 <div class="sm:me-auto flex justify-start items-center max-sm:scale-110">
                   <StrokedGaugeChart
+                    chartColor={getColor(
+                      LIMITATIONS.cpu.warn,
+                      LIMITATIONS.cpu.error,
+                      data.cpu[data.cpu.length - 1].usage_percent,
+                    )}
                     value={data.cpu[data.cpu.length - 1].usage_percent}
                     title="Usage Percent" />
                 </div>
                 <div class="flex justify-end items-center max-sm:scale-110">
                   <StrokedGaugeChart
+                    chartColor={getColor(
+                      LIMITATIONS.cpu.warn,
+                      LIMITATIONS.cpu.error,
+                      data.cpu[data.cpu.length - 1].usage_percent,
+                    )}
                     value={data.cpu[data.cpu.length - 1].load_1}
                     title="Load Avg (5m)" />
                 </div>
                 <div class="flex justify-start items-center max-sm:scale-110">
                   <StrokedGaugeChart
+                    chartColor={getColor(
+                      LIMITATIONS.cpu.warn,
+                      LIMITATIONS.cpu.error,
+                      data.cpu[data.cpu.length - 1].usage_percent,
+                    )}
                     value={data.cpu[data.cpu.length - 1].load_5}
                     title="Load Avg (5m)" />
                 </div>
 
                 <div class="flex justify-end items-center max-sm:scale-110">
                   <StrokedGaugeChart
+                    chartColor={getColor(
+                      LIMITATIONS.cpu.warn,
+                      LIMITATIONS.cpu.error,
+                      data.cpu[data.cpu.length - 1].usage_percent,
+                    )}
                     value={data.cpu[data.cpu.length - 1].load_15}
                     title="Load Avg (15m)" />
                 </div>
@@ -183,6 +209,11 @@
                 <div class="flex flex-col sm:flex-row justify-between items-center mb-6 w-full">
                   <div class="flex justify-start items-center max-sm:scale-110">
                     <StrokedGaugeChart
+                      chartColor={getColor(
+                        LIMITATIONS.memory.warn,
+                        LIMITATIONS.memory.error,
+                        data.memory[data.memory.length - 1].usage_percent,
+                      )}
                       value={data.memory[data.memory.length - 1].usage_percent}
                       title="Usage Percent" />
                   </div>
@@ -341,6 +372,11 @@
                 <div class="flex flex-col sm:flex-row justify-between items-center mb-6 w-full">
                   <div class="flex justify-start items-center max-sm:scale-110">
                     <StrokedGaugeChart
+                      chartColor={getColor(
+                        LIMITATIONS.disk.warn,
+                        LIMITATIONS.disk.error,
+                        data.disk[data.disk.length - 1].usage_percent,
+                      )}
                       value={data.disk[data.disk.length - 1].usage_percent}
                       title="Usage Percent" />
                   </div>
