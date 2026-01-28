@@ -35,7 +35,7 @@
 
 <section class="w-full m-auto h-auto flex flex-col col-span-10">
   <!-- Content of dashboard page -->
-  <div class="w-full flex flex-col gap-7.75 px-6 md:p-7.75 pt-2.5">
+  <div class="w-full flex flex-col gap-7.75 px-6 pb-6 md:p-7.75 pt-2.5">
     <div class="w-full flex flex-col gap-6">
       <div class="w-full flex flex-col gap-4 relative">
         <div class="w-full h-full flex flex-col">
