@@ -60,7 +60,7 @@
                       : 'bg-black/20'}">
                     {data.cpu[data.cpu.length - 1].usage_percent} %
                   </span>
-                  <img class="size-6" width="40" height="40" src="/icons/chart.png" alt="chart" />
+                  
                 </div>
               </div>
 
@@ -202,7 +202,7 @@
                       : 'bg-black/20'}">
                     {data.memory[data.memory.length - 1].usage_percent} %
                   </span>
-                  <img class="size-6" width="40" height="40" src="/icons/chart.png" alt="chart" />
+                  
                 </div>
               </div>
               <div class="w-full h-auto flex justify-between items-center">
@@ -365,7 +365,7 @@
                       : 'bg-black/20'}">
                     {data.disk[data.disk.length - 1].usage_percent} %
                   </span>
-                  <img class="size-6" width="40" height="40" src="/icons/chart.png" alt="chart" />
+                  
                 </div>
               </div>
               <div class="w-full h-auto flex justify-between items-center">
@@ -521,9 +521,9 @@
           </div>
 
           <div
-            class="w-full flex flex-col md:flex-row justify-start md:justify-between lg:justify-start md:items-center gap-1 md:gap-10 max-md:mt-6">
+            class="w-full flex flex-col lg:flex-row justify-start lg:justify-start lg:items-center gap-1 lg:gap-4 2xl:gap-5 max-md:mt-6">
             <div
-              class="h-full w-50 md:w-fit xl:w-fit flex justify-center items-center gap-4 xl:px-4 xl:py-3 rounded-[10px] xl:bg-[#F9FAFB] dark:xl:bg-[#121212] xl:border border-[#0D0D0D]/5 dark:border-white/5">
+              class="h-full w-50 md:w-fit lg:w-fit flex justify-center items-center gap-4 lg:px-4 lg:py-3 rounded-[10px] lg:bg-[#F9FAFB] dark:lg:bg-[#121212] lg:border border-[#0D0D0D]/5 dark:border-white/5">
               <div class="w-full flex justify-start items-center gap-2.5">
                 <span
                   style="box-shadow: 0 0 10px 1px #ad46ff;"
@@ -537,7 +537,7 @@
                 >{data.cpu[data.cpu.length - 1].usage_percent}%</span>
             </div>
             <div
-              class="h-full w-50 md:w-fit xl:w-fit flex justify-center items-center gap-4 xl:px-4 xl:py-3 rounded-[10px] xl:bg-[#F9FAFB] dark:xl:bg-[#121212] xl:border border-[#0D0D0D]/5 dark:border-white/5">
+              class="h-full w-50 md:w-fit lg:w-fit flex justify-center items-center gap-4 lg:px-4 lg:py-3 rounded-[10px] lg:bg-[#F9FAFB] dark:lg:bg-[#121212] lg:border border-[#0D0D0D]/5 dark:border-white/5">
               <div class="w-full flex justify-start items-center gap-2.5">
                 <span
                   style="box-shadow: 0 0 10px 1px #2b7fff;"
@@ -551,7 +551,7 @@
                 >{data.memory[data.memory.length - 1].usage_percent}%</span>
             </div>
             <div
-              class="h-full w-50 md:w-fit xl:w-fit flex justify-center items-center gap-4 xl:px-4 xl:py-3 rounded-[10px] xl:bg-[#F9FAFB] dark:xl:bg-[#121212] xl:border border-[#0D0D0D]/5 dark:border-white/5">
+              class="h-full w-50 md:w-fit lg:w-fit flex justify-center items-center gap-4 lg:px-4 lg:py-3 rounded-[10px] lg:bg-[#F9FAFB] dark:lg:bg-[#121212] lg:border border-[#0D0D0D]/5 dark:border-white/5">
               <div class="w-full flex justify-start items-center gap-2.5">
                 <span
                   style="box-shadow: 0 0 10px 1px #22c55e;"

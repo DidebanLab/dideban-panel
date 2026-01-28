@@ -44,7 +44,7 @@
   </div>
 
   <div
-    class="w-fit max-sm:mb-5 sm:w-50 md:w-fit xl:w-fit flex justify-center items-center gap-4 xl:px-4 xl:py-3 rounded-[10px] xl:bg-[#F9FAFB] dark:xl:bg-[#121212] xl:border border-[#0D0D0D]/5 dark:border-white/5">
+    class="w-fit mb-5 sm:w-50 md:w-fit xl:w-fit flex justify-center items-center gap-4 sm:px-4 sm:py-3 rounded-[10px] sm:bg-[#F9FAFB] dark:sm:bg-[#121212] sm:border border-[#0D0D0D]/5 dark:border-white/5">
     <div class="w-full flex justify-start items-center gap-2.5">
       <span style="box-shadow: 0 0 10px 1px #2b7fff;;" class="size-2.5 rounded-full bg-[#2b7fff]"
       ></span>
