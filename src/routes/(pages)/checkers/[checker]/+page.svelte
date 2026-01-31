@@ -189,27 +189,33 @@
   }
 
   function preDate(data, year, month, day) {
-    const maxDayPreMonth = Object.keys(
-      data.filter(item => Number(item.month) === Number(month - 1))[0].history,
-    ).length;
     let perDay = Number(day);
     let perMonth = Number(month);
     let perYear = Number(year);
-    if (Number(day) === 1) {
-      perDay = maxDayPreMonth;
+
+    if (perDay === 1) {
       if (perMonth === 1) {
         perMonth = 12;
         perYear = perYear - 1;
       } else {
-        perMonth - 1;
+        perMonth = perMonth - 1;
+      }
+      const prevMonthData = data.find(
+        item => Number(item.year) === perYear && Number(item.month) === perMonth,
+      );
+
+      if (prevMonthData && prevMonthData.history) {
+        const daysInMonth = Math.max(...Object.keys(prevMonthData.history).map(Number));
+        perDay = daysInMonth;
+      } else {
+        return;
       }
     } else {
       perDay = perDay - 1;
     }
 
-    goto(`/checkers/${id}?year=${nextYear}&month=${nextMonth}&day=${nextDay}`);
+    goto(`/checkers/${id}?year=${perYear}&month=${perMonth}&day=${perDay}`);
   }
-
   $effect(() => {
     const year = $page.url.searchParams.get('year');
     let month = $page.url.searchParams.get('month');
@@ -249,53 +255,65 @@
             class="flex justify-center items-center text-nowrap tracking-wider text-white/40 text-sm"
             >{data?.target}</span>
         </div>
+        {#if date}
+          <div
+            class="flex items-center justify-between px-3 gap-4 bg-white/5 text-sm absolute top-0 rounded-md start-1/2 -translate-x-1/2 min-w-40 h-9.5 shadow-sm shadow-[#3b82f6]/50">
+            <!-- Prev -->
 
-        <div
-          class="flex items-center justify-between px-3 gap-4 bg-white/5 text-sm absolute top-0 rounded-md start-1/2 -translate-x-1/2 min-w-40 h-9.5 shadow-sm shadow-[#3b82f6]/50">
-          <!-- Prev -->
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="w-4 h-4 hover:opacity-65 cursor-pointer"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="white">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M15 19l-7-7 7-7" />
-          </svg>
+            <button
+              aria-label="prev date"
+              onclick={() => {
+                preDate(
+                  summary,
+                  $page.url.searchParams.get('year'),
+                  $page.url.searchParams.get('month'),
+                  $page.url.searchParams.get('day'),
+                );
+              }}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-4 h-4 hover:opacity-65 cursor-pointer"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="white">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 19l-7-7 7-7" />
+              </svg></button>
 
-          <!-- Date -->
-          <div class="px-4 py-1.5 rounded-lg tracking-wide text-nowrap text-[#3b82f6]">
-            {getMonthName($page.url.searchParams.get('month'))}
-            {$page.url.searchParams.get('day')} , {$page.url.searchParams.get('year')}
+            <!-- Date -->
+            <div class="px-4 py-1.5 rounded-lg tracking-wide text-nowrap text-[#3b82f6]">
+              {getMonthName($page.url.searchParams.get('month'))}
+              {$page.url.searchParams.get('day')} , {$page.url.searchParams.get('year')}
+            </div>
+
+            <!-- Next -->
+            <button
+              aria-label="next date"
+              onclick={() => {
+                nextDate(
+                  summary,
+                  $page.url.searchParams.get('year'),
+                  $page.url.searchParams.get('month'),
+                  $page.url.searchParams.get('day'),
+                );
+              }}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-4 h-4 hover:opacity-65 cursor-pointer"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="white">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 5l7 7-7 7" />
+              </svg></button>
           </div>
-
-          <!-- Next -->
-          <button
-            aria-label="next date"
-            onclick={() => {
-              nextDate(
-                summary,
-                $page.url.searchParams.get('year'),
-                $page.url.searchParams.get('month'),
-                $page.url.searchParams.get('day'),
-              );
-            }}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="w-4 h-4 hover:opacity-65 cursor-pointer"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="white">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9 5l7 7-7 7" />
-            </svg></button>
-        </div>
+        {/if}
 
         {#if date}
           <button
