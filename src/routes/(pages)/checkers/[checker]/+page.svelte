@@ -1,5 +1,4 @@
 <script>
-  import UptimeHistoryAll from './../../../../components/common/UptimeHistoryAll.svelte';
   import Latency from '../../../../components/common/Latency.svelte';
   import { opener } from '../../../../stores/modal.svelte';
   import { page } from '$app/stores';
@@ -7,7 +6,6 @@
   import { onMount } from 'svelte';
   import { http } from '../../../../services/http.svelte';
   import { endpoints } from '../../../../endpoints.svelte';
-  import UptimeHistoryBox from '../../../../components/common/UptimeHistoryBox.svelte';
   import DeleteChecker from '../../../../components/pages/checker/DeleteChecker.svelte';
   import responseTimeColor from '../../../../utils/responseTimeColor';
   import ConfirmEditConfig from '../../../../components/pages/checker/ConfirmEditConfig.svelte';
