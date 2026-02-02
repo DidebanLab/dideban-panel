@@ -12,56 +12,397 @@
   import { alertStore } from '../../../../stores/alert.svelte.js';
   import { goto } from '$app/navigation';
   import { LIMITATIONS } from '../../../../components/config.svelte.js';
+  import Chart from '../../../../components/pages/agent/Chart.svelte';
 
   const REQUIRED_COUNT = $state(innerWidth < 640 ? 31 : 96);
   const id = $page.params.agent;
   let data = $state();
-  let metrics = $state({
-    avg_cpu_usage: 34,
-    avg_memory_usage: 49,
-    cpu: [
-      13, 18, 52, 19, 21, 47, 58, 44, 16, 17, 59, 28, 11, 20, 26, 43, 20, 32, 26, 50, 51, 50, 15,
-      36, 47, 23, 17, 53, 15, 13, 25, 55, 52, 25, 22, 15, 60, 25, 50, 15, 28, 38, 59, 21, 28, 22,
-      53, 15, 62, 20, 84, 68, 12, 15, 91, 29, 44, 49, 18, 26, 12, 31, 22, 11, 30, 48, 95, 43, 49,
-      31, 19, 36, 45, 44, 38, 12, 18, 13, 15, 10, 12, 12, 44, 54, 11, 13, 11, 34, 22, 40, 12, 35,
-      15, 35, 18, 37, 20, 26, 21, 21, 20, 16, 53, 12, 59, 20, 41, 35, 58, 27, 29, 41, 57, 32, 13,
-      57, 10, 13, 15, 20, 49, 13, 16, 27, 36, 30, 10, 18, 92, 48, 19, 34, 15, 46, 34, 21, 23, 10,
-      59, 52, 46, 53, 27, 42, 23, 49, 94, 13, 52, 31, 64, 18, 12, 15, 13, 19, 56, 20, 20, 23, 14,
-      11, 79, 17, 56, 52, 44, 11, 10, 40, 18, 29, 47, 11, 37, 60, 19, 72, 37, 17, 18, 12, 14, 60,
-      34, 12, 23, 45, 21, 87, 59, 52, 56, 92, 11, 18, 22, 81, 48, 58, 33, 25, 38, 27, 12, 23, 12,
-      15, 55, 45, 42, 19, 32, 56, 52, 49, 54, 13, 15, 50, 14, 46, 16, 34, 54, 56, 14, 20, 41, 46,
-      50, 38, 37, 47, 59, 20, 47, 80, 49, 28, 32, 58, 49, 14, 41, 48, 44, 18, 56, 45, 17, 26, 56,
-      16, 49, 36, 17, 58, 15, 20, 44, 13, 55, 13, 62, 12, 23, 34, 47, 27, 42, 51, 36, 28, 21, 20,
-      33, 45, 32, 50, 20, 43, 44, 19, 24, 28, 42, 43, 39, 14, 41, 11, 16, 35, 47, 35, 28, 84, 39,
-      48, 31, 20, 17, 15, 38, 46, 24, 19, 13, 35, 28, 35, 41, 37, 59, 58, 17, 38, 23, 19, 46, 17,
-      13, 32, 14, 58, 12, 15, 12, 53, 19, 25, 39, 13, 34, 59, 33, 58, 31, 56, 18, 91, 19, 56, 58,
-      55, 11, 31, 47, 17, 21, 21, 45, 20, 12, 28, 45, 51, 58, 20,
-    ],
-    latest_disk_usage: 31,
-    memory: [
-      59, 67, 58, 39, 39, 62, 58, 20, 46, 33, 36, 53, 46, 59, 69, 56, 37, 36, 45, 52, 57, 66, 65,
-      15, 35, 65, 17, 63, 51, 48, 69, 63, 25, 65, 39, 64, 66, 61, 60, 67, 37, 16, 50, 60, 26, 51,
-      25, 52, 36, 69, 27, 53, 32, 18, 23, 35, 56, 34, 58, 51, 13, 23, 33, 73, 57, 45, 66, 50, 35,
-      60, 32, 38, 38, 51, 37, 45, 80, 63, 42, 45, 35, 48, 90, 40, 56, 44, 64, 39, 20, 64, 57, 43,
-      48, 61, 25, 70, 54, 33, 59, 33, 60, 47, 61, 49, 66, 63, 48, 61, 76, 37, 32, 51, 54, 66, 52,
-      48, 79, 40, 24, 67, 41, 69, 32, 67, 18, 35, 49, 37, 44, 50, 30, 68, 64, 32, 19, 57, 60, 26,
-      24, 60, 30, 73, 44, 54, 45, 53, 41, 45, 37, 24, 37, 46, 55, 53, 20, 36, 55, 34, 53, 48, 69,
-      61, 46, 40, 68, 77, 49, 67, 64, 49, 55, 64, 59, 68, 44, 65, 55, 54, 51, 56, 12, 31, 63, 35,
-      66, 67, 51, 82, 60, 58, 52, 68, 50, 30, 33, 39, 60, 69, 24, 18, 61, 54, 86, 53, 34, 52, 60,
-      51, 41, 64, 64, 33, 68, 31, 15, 53, 37, 28, 36, 37, 41, 56, 60, 56, 54, 40, 52, 64, 65, 29,
-      14, 17, 68, 48, 31, 28, 67, 31, 70, 48, 70, 32, 54, 42, 49, 12, 30, 31, 46, 60, 58, 61, 61,
-      24, 50, 37, 45, 87, 31, 66, 54, 42, 61, 84, 34, 30, 56, 33, 83, 91, 61, 31, 55, 14, 66, 29,
-      54, 58, 24, 56, 54, 48, 38, 36, 33, 65, 40, 65, 56, 38, 33, 31, 59, 24, 55, 64, 67, 47, 52,
-      53, 60, 43, 19, 68, 31, 37, 15, 86, 62, 68, 50, 57, 25, 34, 92, 41, 73, 68, 27, 56, 49, 56,
-      51, 54, 25, 11, 22, 56, 85, 24, 35, 38, 57, 46, 44, 31, 36, 16, 62, 43, 31, 39, 48, 64, 35,
-      37, 67, 62, 51, 70, 43, 53, 47, 49, 64, 49, 79, 28, 33, 36,
-    ],
-    record_count: 1999,
+  let chart = $state({
     time_range: {
-      from: '2026-01-30T18:09:23+03:30',
+      from: '2026-02-01T13:31:12.1004363+03:30',
+      to: '2026-02-02T13:31:12.1004363+03:30',
       hours: 24,
       max_points: 360,
-      to: '2026-01-31T18:09:23+03:30',
+    },
+    points: [
+      [259753, 0, 0],
+      [518950, 26, 50],
+      [518944, 0, 0],
+      [518938, 32, 35],
+      [518932, 51, 41],
+      [518926, 20, 55],
+      [518920, 60, 33],
+      [518914, 60, 56],
+      [518908, 38, 69],
+      [518902, 22, 36],
+      [518896, 51, 22],
+      [518890, 48, 51],
+      [518884, 40, 22],
+      [518878, 20, 57],
+      [518872, 20, 47],
+      [518866, 33, 67],
+      [518860, 31, 67],
+      [518854, 41, 36],
+      [518848, 39, 43],
+      [518842, 30, 45],
+      [518836, 22, 61],
+      [518830, 11, 20],
+      [518824, 35, 43],
+      [518818, 11, 56],
+      [518812, 31, 45],
+      [518806, 59, 48],
+      [518800, 0, 0],
+      [518794, 60, 60],
+      [518788, 26, 45],
+      [518782, 41, 36],
+      [518776, 33, 73],
+      [518770, 48, 44],
+      [518764, 58, 70],
+      [518758, 45, 37],
+      [518752, 33, 11],
+      [518746, 31, 63],
+      [518740, 22, 59],
+      [518734, 20, 56],
+      [518728, 20, 61],
+      [518722, 32, 57],
+      [518716, 42, 37],
+      [518710, 56, 41],
+      [518704, 19, 61],
+      [518698, 44, 34],
+      [518692, 56, 59],
+      [518686, 40, 40],
+      [518680, 28, 48],
+      [518674, 22, 62],
+      [518668, 22, 53],
+      [518662, 14, 54],
+      [518656, 20, 47],
+      [518650, 13, 42],
+      [518644, 12, 51],
+      [518638, 85, 48],
+      [518632, 52, 21],
+      [518626, 12, 47],
+      [518620, 14, 28],
+      [518614, 11, 63],
+      [518608, 12, 45],
+      [518602, 0, 0],
+      [518596, 16, 51],
+      [518590, 82, 67],
+      [518584, 14, 52],
+      [518578, 43, 66],
+      [518572, 12, 64],
+      [518566, 41, 58],
+      [518560, 48, 39],
+      [518554, 27, 54],
+      [518548, 29, 56],
+      [518542, 76, 23],
+      [518536, 45, 27],
+      [518530, 58, 69],
+      [518524, 42, 39],
+      [518518, 11, 20],
+      [518512, 34, 70],
+      [518506, 55, 52],
+      [518500, 36, 31],
+      [518494, 29, 35],
+      [518488, 43, 59],
+      [518482, 50, 42],
+      [518476, 0, 0],
+      [518470, 44, 70],
+      [518464, 41, 20],
+      [518458, 31, 59],
+      [518452, 37, 35],
+      [518446, 14, 66],
+      [518440, 15, 41],
+      [518434, 59, 33],
+      [518428, 21, 62],
+      [518422, 26, 54],
+      [518416, 57, 15],
+      [518410, 52, 59],
+      [518404, 22, 85],
+      [518398, 28, 40],
+      [518392, 0, 0],
+      [518386, 41, 63],
+      [518380, 14, 60],
+      [518374, 25, 31],
+      [518368, 50, 19],
+      [518362, 52, 54],
+      [518356, 47, 75],
+      [518350, 43, 33],
+      [518344, 22, 48],
+      [518338, 12, 95],
+      [518332, 54, 86],
+      [518326, 49, 36],
+      [518320, 92, 52],
+      [518314, 53, 86],
+      [518308, 19, 53],
+      [518302, 11, 48],
+      [518296, 35, 65],
+      [518290, 25, 30],
+      [518284, 43, 48],
+      [518278, 48, 68],
+      [518272, 16, 57],
+      [518266, 13, 36],
+      [518260, 53, 45],
+      [518254, 11, 54],
+      [518248, 54, 64],
+      [518242, 46, 63],
+      [518236, 10, 57],
+      [518230, 24, 53],
+      [518224, 59, 58],
+      [518218, 19, 44],
+      [518212, 73, 46],
+      [518206, 46, 93],
+      [518200, 33, 30],
+      [518194, 59, 59],
+      [518188, 24, 68],
+      [518182, 21, 31],
+      [518176, 20, 36],
+      [518170, 20, 61],
+      [518164, 60, 54],
+      [518158, 40, 53],
+      [518152, 22, 35],
+      [518146, 0, 0],
+      [518140, 58, 54],
+      [518135, 27, 66],
+      [518130, 12, 38],
+      [518124, 26, 40],
+      [518118, 19, 47],
+      [518112, 12, 51],
+      [518106, 16, 27],
+      [518100, 14, 45],
+      [518094, 55, 24],
+      [518088, 53, 61],
+      [518082, 21, 55],
+      [518076, 15, 45],
+      [518070, 19, 68],
+      [518064, 0, 0],
+      [518058, 18, 36],
+      [518052, 24, 58],
+      [518046, 47, 61],
+      [518040, 33, 40],
+      [518034, 51, 42],
+      [518028, 60, 53],
+      [518022, 30, 64],
+      [518016, 48, 42],
+      [518010, 13, 33],
+      [518004, 13, 32],
+      [517998, 40, 64],
+      [517992, 31, 77],
+      [517986, 31, 57],
+      [517980, 13, 34],
+      [517974, 12, 45],
+      [259748, 0, 0],
+      [259745, 0, 0],
+      [259742, 0, 0],
+      [259739, 0, 0],
+      [259736, 0, 0],
+      [259733, 0, 0],
+      [259730, 0, 0],
+      [259727, 0, 0],
+      [259724, 0, 0],
+      [259721, 0, 0],
+      [259718, 0, 0],
+      [259715, 0, 0],
+      [259712, 0, 0],
+      [259709, 0, 0],
+      [259706, 0, 0],
+      [259703, 0, 0],
+      [259700, 0, 0],
+      [259697, 0, 0],
+      [259694, 0, 0],
+      [259691, 0, 0],
+      [259688, 0, 0],
+      [259685, 0, 0],
+      [259682, 0, 0],
+      [259679, 0, 0],
+      [259676, 0, 0],
+      [259673, 0, 0],
+      [259670, 0, 0],
+      [259667, 0, 0],
+      [259664, 0, 0],
+      [259661, 0, 0],
+      [259658, 0, 0],
+      [259655, 0, 0],
+      [259652, 0, 0],
+      [259649, 0, 0],
+      [259646, 0, 0],
+      [259643, 0, 0],
+      [259640, 0, 0],
+      [517856, 33, 32],
+      [517850, 11, 26],
+      [517844, 15, 50],
+      [517838, 42, 47],
+      [517832, 43, 62],
+      [517826, 15, 83],
+      [517820, 39, 63],
+      [517814, 0, 0],
+      [517808, 18, 64],
+      [517802, 19, 31],
+      [517796, 21, 56],
+      [517790, 55, 66],
+      [517784, 20, 64],
+      [517778, 36, 53],
+      [517772, 29, 38],
+      [517766, 44, 43],
+      [517760, 35, 49],
+      [517754, 44, 62],
+      [517748, 38, 40],
+      [517742, 44, 41],
+      [517736, 32, 70],
+      [517730, 49, 59],
+      [517724, 27, 33],
+      [517718, 12, 71],
+      [517712, 22, 92],
+      [517706, 58, 33],
+      [517700, 26, 93],
+      [517694, 0, 0],
+      [517688, 54, 58],
+      [517682, 58, 43],
+      [517676, 11, 18],
+      [517670, 47, 60],
+      [517664, 0, 0],
+      [517658, 26, 53],
+      [517652, 49, 62],
+      [517646, 10, 57],
+      [517640, 55, 66],
+      [517634, 51, 47],
+      [517628, 29, 46],
+      [517622, 55, 53],
+      [517616, 12, 53],
+      [517610, 49, 68],
+      [517604, 49, 29],
+      [517598, 0, 0],
+      [517592, 37, 60],
+      [517586, 18, 62],
+      [517580, 36, 47],
+      [517574, 60, 44],
+      [517568, 33, 65],
+      [517562, 31, 21],
+      [517556, 79, 37],
+      [517550, 0, 0],
+      [517544, 36, 15],
+      [517538, 21, 69],
+      [517532, 19, 60],
+      [517526, 25, 37],
+      [517520, 39, 68],
+      [517514, 60, 50],
+      [517508, 33, 16],
+      [517502, 59, 43],
+      [517496, 56, 55],
+      [517490, 54, 64],
+      [517484, 56, 49],
+      [517478, 42, 58],
+      [517472, 53, 10],
+      [517466, 12, 67],
+      [517460, 0, 0],
+      [517454, 53, 59],
+      [517448, 11, 33],
+      [517442, 29, 61],
+      [517436, 21, 47],
+      [517430, 52, 45],
+      [517424, 30, 54],
+      [517418, 0, 0],
+      [517412, 42, 56],
+      [517406, 50, 60],
+      [517400, 16, 39],
+      [517394, 11, 64],
+      [517388, 40, 56],
+      [517382, 19, 44],
+      [517376, 14, 28],
+      [517370, 26, 31],
+      [517364, 60, 57],
+      [517358, 45, 38],
+      [517352, 0, 0],
+      [517346, 32, 51],
+      [517340, 12, 53],
+      [517334, 11, 31],
+      [517328, 23, 59],
+      [517322, 18, 61],
+      [517316, 56, 55],
+      [517310, 35, 51],
+      [517304, 23, 66],
+      [517298, 31, 46],
+      [517292, 41, 51],
+      [517286, 15, 41],
+      [517280, 21, 36],
+      [517274, 0, 0],
+      [517268, 33, 44],
+      [517262, 51, 32],
+      [517256, 22, 53],
+      [517250, 41, 69],
+      [517244, 22, 40],
+      [517238, 38, 45],
+      [517232, 19, 69],
+      [517226, 13, 32],
+      [517220, 19, 57],
+      [517214, 23, 59],
+      [517208, 41, 48],
+      [517202, 11, 31],
+      [517196, 58, 61],
+      [517190, 43, 33],
+      [517184, 30, 50],
+      [517178, 12, 37],
+      [517172, 35, 68],
+      [517166, 25, 38],
+      [517160, 13, 59],
+      [517154, 58, 54],
+      [517148, 21, 35],
+      [517142, 11, 66],
+      [517136, 25, 26],
+      [517130, 25, 39],
+      [517124, 16, 67],
+      [517118, 28, 32],
+      [517112, 42, 47],
+      [517106, 35, 41],
+      [517100, 45, 16],
+      [517094, 48, 35],
+      [517088, 14, 47],
+      [517082, 55, 74],
+      [517076, 13, 23],
+      [517070, 92, 46],
+      [517064, 27, 50],
+      [517058, 59, 47],
+      [517052, 39, 51],
+      [517046, 43, 42],
+      [517040, 50, 32],
+      [517034, 33, 61],
+      [517028, 0, 0],
+      [517022, 45, 55],
+      [517016, 56, 32],
+      [517010, 41, 43],
+      [517004, 13, 33],
+      [516998, 31, 16],
+      [516992, 40, 36],
+      [516986, 48, 49],
+      [516980, 52, 39],
+      [516974, 54, 17],
+      [516968, 22, 67],
+      [516962, 39, 61],
+      [516956, 36, 33],
+      [516950, 21, 49],
+      [516944, 43, 48],
+      [516938, 79, 54],
+      [516932, 13, 35],
+      [516926, 36, 42],
+      [516920, 26, 52],
+      [516914, 24, 12],
+    ],
+    last_history: {
+      id: 259753,
+      agent_id: 1,
+      is_offline: true,
+      collect_duration_ms: 0,
+      cpu_load_1: 10,
+      cpu_load_5: 50,
+      cpu_load_15: 90,
+      cpu_usage_percent: 60,
+      memory_total_mb: 40,
+      memory_used_mb: 90,
+      memory_available_mb: 10,
+      memory_usage_percent: 10,
+      disk_total_gb: 10,
+      disk_used_gb: 10,
+      disk_usage_percent: 10,
+      collected_at: '2026-02-02T08:21:02.9225951+03:30',
     },
   });
 
@@ -101,8 +442,6 @@
         })
         .then(res => {
           history = { ...res.data, data: res.data?.data.slice(-REQUIRED_COUNT) };
-
-          console.log(history);
         });
 
       http.get(endpoints.agentCollectDuration(id)).then(res => (collectDuration = res.data?.data));
@@ -111,6 +450,8 @@
         data = res.data?.data;
         enabled = res.data?.data.enabled;
       });
+
+      // http.get(endpoints.agents + `/${id}/chart`).then(res => (chart = res.data?.data));
     }
 
     http.get(endpoints.checks + `/${id}/summary/yearly`).then(res => (summary = res.data?.data));
@@ -858,38 +1199,246 @@
         </div>
       </div>
 
-      <div class="grid grid-cols-12 gap-6 w-full h-100">
-        <div class="col-span-9 border border-[#0D0D0D]/5 dark:border-white/5 p-6 rounded-xl"></div>
+      <div class="grid grid-cols-12 gap-6 w-full">
         <div
-          class="col-span-3 border border-[#0D0D0D]/5 dark:border-white/5 p-6 rounded-xl grid grid-cols-1 grid-rows-3 gap-1">
+          class="w-full col-span-9 border flex flex-col sm:p-4 md:pb-0 sm:gap-4 md:pt-4 2xl:p-6 2xl:pb-1 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
+          <div class="w-full flex justify-between items-start">
+            <div class="w-full flex gap-1 flex-col justify-start items-start">
+              <span class="text-lg md:text-xl text-black dark:text-white">Metrics</span>
+              <div class="flex justify-end items-center gap-2 text-xs text-white/40">
+                <span class="flex justify-center items-center text-nowrap">Collect at :</span>
+
+                <span class="flex justify-center items-center text-nowrap tracking-wider">
+                  {new Date(chart?.last_history?.collected_at).toLocaleString('en-CA', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: false,
+                  })}
+                </span>
+              </div>
+            </div>
+
+            <div
+              class="text-sm py-2 px-3 rounded-full border text-white border-white/5 text-nowrap">
+              <span class="text-white/40 me-1">Collect Duration : </span>
+              <span class={responseTimeColor(chart?.last_history?.collect_duration_ms)}
+                >{chart?.last_history?.collect_duration_ms} ms</span>
+            </div>
+          </div>
+          {#if chart}
+            <Chart
+              points={[...chart.points.slice(-100).map(item => item[0])]}
+              data={[
+                {
+                  name: 'CPU',
+                  data: [...chart.points.slice(-100).map(item => item[1])],
+                },
+                {
+                  name: 'Memory',
+                  data: [...chart.points.slice(-100).map(item => item[2])],
+                },
+              ]} />
+          {/if}
+        </div>
+        <div
+          class="col-span-3 border border-[#0D0D0D]/5 dark:border-white/5 p-6 rounded-xl grid grid-cols-1 gap-4 dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF]">
           <div class="flex flex-col justify-start items-start gap-4">
             <div class="flex justify-start items-start gap-2">
-              <span class="h-full w-0.5 bg-blue-600 rounded-full"></span>
+              <span class="h-full w-0.5 bg-[#a855f7] rounded-full"></span>
               <span class="text-lg text-black dark:text-white">CPU</span>
             </div>
 
-            <div class="w-full grid grid-cols-2 grid-rows-2 gap-y-4 gap-x-10">
+            <div class="w-full grid grid-cols-2 grid-rows-2 gap-y-2 gap-x-4">
               <div class="w-full flex justify-between items-start gap-1">
-                <span class="text-white/40 text-xs">AV CPU : </span>
-                <span class="text-white/40 text-xs">{metrics?.avg_cpu_usage}%</span>
+                <span class="text-white/40 text-xs">Usage: </span>
+                <span
+                  class="text-xs {chart?.last_history?.cpu_usage_percent > LIMITATIONS.cpu.error
+                    ? 'text-[#F87171]'
+                    : chart.last_history?.cpu_usage_percent > LIMITATIONS.cpu.warn
+                      ? 'text-[#F97316]'
+                      : 'text-green-700'}">{chart.last_history?.cpu_usage_percent}%</span>
               </div>
               <div class="w-full flex justify-between items-start gap-1">
-                <span class="text-white/40 text-xs">AV CPU : </span>
-                <span class="text-white/40 text-xs">{metrics?.avg_cpu_usage}%</span>
+                <span class="text-white/40 text-xs">Av (1m): </span>
+                <span
+                  class="text-xs {chart.last_history?.cpu_load_1 > LIMITATIONS.cpu.error
+                    ? 'text-[#F87171]'
+                    : chart?.last_history?.cpu_load_1 > LIMITATIONS.cpu.warn
+                      ? 'text-[#F97316]'
+                      : 'text-green-700'}">{chart?.last_history?.cpu_load_1}%</span>
               </div>
               <div class="w-full flex justify-between items-start gap-1">
-                <span class="text-white/40 text-xs">AV CPU : </span>
-                <span class="text-white/40 text-xs">{metrics?.avg_cpu_usage}%</span>
+                <span class="text-white/40 text-xs">Av (5m): </span>
+                <span
+                  class="text-xs {chart?.last_history?.cpu_load_5 > LIMITATIONS.cpu.error
+                    ? 'text-[#F87171]'
+                    : chart?.last_history?.cpu_load_5 > LIMITATIONS.cpu.warn
+                      ? 'text-[#F97316]'
+                      : 'text-green-700'}">{chart?.last_history?.cpu_load_5}%</span>
               </div>
               <div class="w-full flex justify-between items-start gap-1">
-                <span class="text-white/40 text-xs">AV CPU : </span>
-                <span class="text-white/40 text-xs">{metrics?.avg_cpu_usage}%</span>
+                <span class="text-white/40 text-xs">Av (15m) : </span>
+                <span
+                  class="text-xs {chart.last_history?.cpu_load_15 > LIMITATIONS.cpu.error
+                    ? 'text-[#F87171]'
+                    : chart.last_history?.cpu_load_15 > LIMITATIONS.cpu.warn
+                      ? 'text-[#F97316]'
+                      : 'text-green-700'}">{chart.last_history?.cpu_load_15}%</span>
+              </div>
+            </div>
+
+            <div
+              class="w-full rounded-md relative h-6 flex justify-start items-center overflow-hidden bg-white/5">
+              <div
+                style="box-shadow: 0 0 5px 1px {chart?.last_history?.cpu_usage_percent >
+                LIMITATIONS.cpu.error
+                  ? 'rgba(248, 113, 113, 0.5)'
+                  : chart?.last_history?.cpu_usage_percent > LIMITATIONS.cpu.warn
+                    ? 'rgba(249, 115, 22, 0.5)'
+                    : 'rgba(0, 130, 54, 0.5)'}; width:{chart.last_history?.cpu_usage_percent}%;"
+                class="h-full rounded-s-md {chart?.last_history?.cpu_usage_percent === 100
+                  ? 'rounded-e-md'
+                  : ''} {chart?.last_history?.cpu_usage_percent > LIMITATIONS.cpu.error
+                  ? 'bg-[#EF4444]'
+                  : chart?.last_history?.cpu_usage_percent > LIMITATIONS.cpu.warn
+                    ? 'bg-[#F97316]'
+                    : 'bg-green-700'}">
+              </div>
+
+              <div
+                class="absolute z-10 flex justify-center items-center rounded-full end-2 top-1/2 -translate-y-1/2 text-sm text-white">
+                {chart.last_history?.cpu_usage_percent}%
+              </div>
+            </div>
+          </div>
+          <div class="w-full h-0.5 bg-[#0D0D0D]/5 dark:bg-white/5 rounded-full"></div>
+
+          <div class="flex flex-col justify-start items-start gap-4">
+            <div class="flex justify-start items-start gap-2">
+              <span class="h-full w-0.5 bg-[#3b82f6] rounded-full"></span>
+              <span class="text-lg text-black dark:text-white">Memory</span>
+            </div>
+
+            <div class="w-full grid grid-cols-2 grid-rows-2 gap-y-2 gap-x-4">
+              <div class="w-full flex justify-between items-start gap-1">
+                <span class="text-white/40 text-xs">Usage: </span>
+                <span
+                  class="text-xs {chart?.last_history?.memory_usage_percent >
+                  LIMITATIONS.memory.error
+                    ? 'text-[#F87171]'
+                    : chart.last_history?.memory_usage_percent > LIMITATIONS.memory.warn
+                      ? 'text-[#F97316]'
+                      : 'text-green-700'}">{chart.last_history?.memory_usage_percent}%</span>
+              </div>
+              <div class="w-full flex justify-between items-start gap-1">
+                <span class="text-white/40 text-xs">Total: </span>
+                <span class="text-xs text-white"
+                  >{chart.last_history?.memory_total_mb}
+
+                  <sub class="text-white/40">Mb</sub>
+                </span>
+              </div>
+              <div class="w-full flex justify-between items-start gap-1">
+                <span class="text-white/40 text-xs">Used: </span>
+                <span class="text-xs text-white"
+                  >{chart.last_history?.memory_used_mb}
+                  <sub class="text-white/40">Mb</sub>
+                </span>
+              </div>
+              <div class="w-full flex justify-between items-start gap-1">
+                <span class="text-white/40 text-xs">Available: </span>
+                <span class="text-xs text-white"
+                  >{chart.last_history?.memory_available_mb}
+                  <sub class="text-white/40">Mb</sub>
+                </span>
+              </div>
+            </div>
+
+            <div
+              class="w-full rounded-md relative h-6 flex justify-start items-center overflow-hidden bg-white/5">
+              <div
+                style="box-shadow: 0 0 5px 1px {chart.last_history?.memory_usage_percent >
+                LIMITATIONS.memory.error
+                  ? 'rgba(248, 113, 113, 0.5)'
+                  : chart.last_history?.memory_usage_percent > LIMITATIONS.memory.warn
+                    ? 'rgba(249, 115, 22, 0.5)'
+                    : 'rgba(0, 130, 54, 0.5)'}; width:{chart.last_history?.memory_usage_percent}%;"
+                class="h-full rounded-s-md {chart.last_history?.memory_usage_percent === 100
+                  ? 'rounded-e-md'
+                  : ''} {chart.last_history?.memory_usage_percent > LIMITATIONS.memory.error
+                  ? 'bg-[#EF4444]'
+                  : chart.last_history?.memory_usage_percent > LIMITATIONS.memory.warn
+                    ? 'bg-[#F97316]'
+                    : 'bg-green-700'}">
+              </div>
+
+              <div
+                class="absolute z-10 flex justify-center items-center rounded-full end-2 top-1/2 -translate-y-1/2 text-sm text-white">
+                {chart.last_history?.memory_usage_percent}%
               </div>
             </div>
           </div>
 
-          <div></div>
-          <div></div>
+          <div class="h-px w-full bg-white/10"></div>
+          <div class="flex flex-col justify-start items-start gap-4">
+            <div class="flex justify-start items-start gap-2">
+              <span class="h-full w-0.5 bg-[#10b981] rounded-full"></span>
+              <span class="text-lg text-black dark:text-white">Disk</span>
+            </div>
+
+            <div class="w-full grid grid-cols-2 grid-rows-2 gap-y-2 gap-x-4">
+              <div class="w-full flex justify-between items-start gap-1">
+                <span class="text-white/40 text-xs">Usage: </span>
+                <span
+                  class="text-xs {chart.last_history?.disk_usage_percent > LIMITATIONS.disk.error
+                    ? 'text-[#F87171]'
+                    : chart.last_history?.disk_usage_percent > LIMITATIONS.disk.warn
+                      ? 'text-[#F97316]'
+                      : 'text-green-700'}">{chart.last_history?.disk_usage_percent}%</span>
+              </div>
+              <div class="w-full flex justify-between items-start gap-1">
+                <span class="text-white/40 text-xs">Total: </span>
+                <span class="text-xs text-white"
+                  >{chart.last_history?.disk_total_gb}
+                  <sub class="text-white/40">Gb</sub></span>
+              </div>
+              <div class="w-full flex justify-between items-start gap-1">
+                <span class="text-white/40 text-xs">Used: </span>
+                <span class="text-xs text-white"
+                  >{chart.last_history?.disk_used_gb}
+                  <sub class="text-white/40"> Gb</sub></span>
+              </div>
+              <div class="w-full flex justify-between items-start gap-1">
+                <span class="text-white/40 text-xs">Available: </span>
+                <span class="text-xs text-white"
+                  >{chart.last_history?.disk_total_gb - chart.last_history?.disk_used_gb}
+                  <sub class="text-white/40"> Gb</sub></span>
+              </div>
+            </div>
+
+            <div
+              class="w-full rounded-md relative h-6 flex justify-start items-center overflow-hidden bg-white/5">
+              <div
+                style="width:{chart.last_history?.disk_usage_percent}%;"
+                class="h-full rounded-s-md {chart.last_history?.disk_usage_percent === 100
+                  ? 'rounded-e-md'
+                  : ''} {chart.last_history?.disk_usage_percent > LIMITATIONS.disk.error
+                  ? 'bg-[#EF4444]'
+                  : chart.last_history?.disk_usage_percent > LIMITATIONS.disk.warn
+                    ? 'bg-[#F97316]'
+                    : 'bg-green-700'}">
+              </div>
+
+              <div
+                class="absolute z-10 flex justify-center items-center rounded-full end-2 top-1/2 -translate-y-1/2 text-sm text-white">
+                {chart.last_history?.disk_usage_percent}%
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
