@@ -738,7 +738,7 @@
                     : detail?.rate?.toLowerCase() === 'poor'
                       ? 'bg-[#F97316] border-t-[#c25e17] hover:bg-[#cf5600]'
                       : 'bg-[#F87171] border-t-[#ba4646] hover:bg-[#ff5757]'}">
-              {#if i !== 0 && i % (date ? 1 : 3) === 0}
+              {#if i !== 0 && i % (date ? 1 : 4) === 0}
                 <div class="absolute -bottom-3 start-0 h-2 w-px bg-white/10">
                   <div class="relative">
                     <div
