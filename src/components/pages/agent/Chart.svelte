@@ -41,7 +41,7 @@
 
     stroke: {
       curve: 'smooth',
-      width: 0.5,
+      width: 2,
     },
 
     fill: {
@@ -53,7 +53,7 @@
         shadeIntensity: 0.5,
         gradientToColors: ['#a855f7', '#3b82f6', '#10b981'],
         opacityFrom: 0.5,
-        opacityTo: 0.1,
+        opacityTo: 0.0,
         stops: [0, 90, 100],
       },
     },
