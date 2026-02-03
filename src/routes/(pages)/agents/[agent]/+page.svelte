@@ -67,7 +67,13 @@
         enabled = res.data?.data.enabled;
       });
 
-      http.get(endpoints.agents + `/${id}/chart`).then(res => (chart = res.data?.data));
+      http
+        .get(endpoints.agents + `/${id}/chart`, {
+          params: {
+            max_points: 60,
+          },
+        })
+        .then(res => (chart = res.data?.data));
     }
 
     http.get(endpoints.checks + `/${id}/summary/yearly`).then(res => (summary = res.data?.data));
@@ -875,15 +881,15 @@
             <Chart
               bind:isMouseInside
               bind:pointIndexHoverd
-              points={[...chart?.points?.slice(-100).map(item => item?.[0])]}
+              points={[...chart?.points?.map(item => item?.[0])]}
               data={[
                 {
                   name: 'CPU',
-                  data: [...chart?.points?.slice(-100).map(item => item?.[1])],
+                  data: [...chart?.points?.map(item => item?.[1])],
                 },
                 {
                   name: 'Memory',
-                  data: [...chart?.points?.slice(-100).map(item => item?.[2])],
+                  data: [...chart?.points?.map(item => item?.[2])],
                 },
               ]} />
           {/if}
