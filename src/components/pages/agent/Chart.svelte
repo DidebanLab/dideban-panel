@@ -101,7 +101,7 @@
     tooltip: {
       custom: function ({ dataPointIndex }) {
         pointIndexHoverd = points[dataPointIndex];
-        return `<div class="hidden"></div>`;
+        return `<div></div>`;
       },
     },
 
@@ -187,6 +187,10 @@
   }
 
   :global(.apexcharts-tooltip-title, .apexcharts-yaxis, .apexcharts-datalabels-group) {
+    display: none;
+  }
+
+  :global(.apexcharts-tooltip.apexcharts-theme-light.apexcharts-active) {
     display: none;
   }
 </style>

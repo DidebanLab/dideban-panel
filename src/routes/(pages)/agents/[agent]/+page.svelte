@@ -76,7 +76,7 @@
         .then(res => (chart = res.data?.data));
     }
 
-    http.get(endpoints.checks + `/${id}/summary/yearly`).then(res => (summary = res.data?.data));
+    http.get(endpoints.agents + `/${id}/summary/yearly`).then(res => (summary = res.data?.data));
   });
 
   function nextDate(data, year, month, day) {
@@ -1257,22 +1257,19 @@
               <span class="text-sm text-white"> {getMonthName(item.month)}</span>
               <div class="flex flex-col">
                 <div
-                  class="text-xs items-center justify-end gap-1 flex {item?.apdex_rate?.toLowerCase() ===
-                  'excellent'
-                    ? 'text-green-500'
-                    : item?.apdex_rate?.toLowerCase() === 'good'
+                  class="text-xs items-center justify-end gap-1 flex {item?.uptime >= 90
+                    ? 'text-[#008236]'
+                    : item?.uptime >= 80
                       ? 'text-[#00D492]'
-                      : item?.apdex_rate?.toLowerCase() === 'fair'
+                      : item?.uptime >= 70
                         ? 'text-[#FDC700]'
-                        : item?.apdex_rate?.toLowerCase() === 'poor'
+                        : item?.uptime >= 50
                           ? 'text-[#F97316]'
-                          : 'text-[#F87171]'}">
-                  {#if item?.apdex_score === 0}
+                          : 'text-[#EF4444]'}">
+                  {#if item?.uptime === 0}
                     <span class="text-white/20 text-xs">No Data</span>
                   {:else}
-                    <span class="opacity-50"> {item?.apdex_rate}</span>
-                    <span class="bg-white/15 w-px h-4"></span>
-                    <span> {item?.apdex_score}%</span>
+                    <span> {item?.uptime}%</span>
                   {/if}
                 </div>
               </div>
@@ -1304,7 +1301,7 @@
                         value >= 90
                           ? 'rgba(0, 130, 54, 0.4)'
                           : value >= 80
-                            ? 'rgba(0, 212, 146, 0.4)'
+                            ? '#00863864'
                             : value >= 70
                               ? 'rgba(253, 199, 0, 0.4)'
                               : value >= 50
@@ -1317,7 +1314,7 @@
                     : 'cursor-pointer'} {value >= 90
                     ? 'bg-[#008236]'
                     : value >= 80
-                      ? 'bg-[#00D492]'
+                      ? 'bg-[#00863864]'
                       : value >= 70
                         ? 'bg-[#FDC700]'
                         : value >= 50
