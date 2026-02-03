@@ -2,7 +2,9 @@
   import { onMount, onDestroy } from 'svelte';
   import ApexCharts from 'apexcharts';
   import { theme } from '../../../stores/theme.svelte';
-  const { data } = $props();
+  import { http } from '../../../services/http.svelte';
+  import { endpoints } from '../../../endpoints.svelte';
+  let { data, pointIndexHoverd = $bindable() } = $props();
 
   let chartEl;
   let chart;
@@ -84,11 +86,10 @@
     },
 
     tooltip: {
-      enabled: true,
-      shared: true,
-      intersect: false,
-      x: { format: 'dd/MM/yy HH:mm' },
-      y: { formatter: val => (val ? `${val} %` : '-') },
+      custom: function ({ dataPointIndex }) {
+        pointIndexHoverd = dataPointIndex + 1;
+        return `<div class="hidden"></div>`;
+      },
     },
 
     colors: ['#a855f7', '#3b82f6', '#10b981'],

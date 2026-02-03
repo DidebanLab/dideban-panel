@@ -99,7 +99,7 @@
         },
         axisTicks: {
           show: true,
-          color: 'rgba(250,250,250,0.1)', // رنگ تیک‌ها هم قرمز بشه
+          color: 'rgba(250,250,250,0.1)',
           height: 7,
           offsetY: 2,
         },
