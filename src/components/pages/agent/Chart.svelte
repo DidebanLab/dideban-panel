@@ -4,7 +4,7 @@
   import { theme } from '../../../stores/theme.svelte';
   import { http } from '../../../services/http.svelte';
   import { endpoints } from '../../../endpoints.svelte';
-  let { data, pointIndexHoverd = $bindable() } = $props();
+  let { data, pointIndexHoverd = $bindable(), points, isMouseInside = $bindable() } = $props();
 
   let chartEl;
   let chart;
@@ -20,12 +20,12 @@
     chart: {
       height: 380, // ✅ فقط این خط تغییر کرده
       type: 'area',
-      zoom: { enabled: true },
+      zoom: { enabled: false },
       padding: { top: 0, right: 0, bottom: 0, left: 0 },
       background: 'transparent',
 
       toolbar: {
-        show: true,
+        show: false,
         tools: {
           download: false,
           selection: true,
@@ -36,6 +36,19 @@
           reset: true, // دکمه بازگردانی به حالت اولیه
         },
         autoSelected: 'zoom', // حالت پیش‌فرض فعال روی زوم
+      },
+      events: {
+        mouseMove: (event, chartContext, config) => {
+          // ✅ اگر موس قبلاً وارد نشده بود، پیام را چاپ کن
+          if (!isMouseInside) {
+            console.log('سلام');
+            isMouseInside = true; // ✅ تغییر وضعیت به "داخل نمودار"
+          }
+        },
+        mouseLeave: (event, chartContext, config) => {
+          console.log('خداحافظ');
+          isMouseInside = false; // ✅ بازنشانی وضعیت برای دفعه بعد
+        },
       },
     },
 
@@ -87,7 +100,7 @@
 
     tooltip: {
       custom: function ({ dataPointIndex }) {
-        pointIndexHoverd = dataPointIndex + 1;
+        pointIndexHoverd = points[dataPointIndex];
         return `<div class="hidden"></div>`;
       },
     },
@@ -173,7 +186,7 @@
     line-height: 1.2 !important;
   }
 
-  :global(.apexcharts-tooltip-title) {
+  :global(.apexcharts-tooltip-title, .apexcharts-yaxis, .apexcharts-datalabels-group) {
     display: none;
   }
 </style>

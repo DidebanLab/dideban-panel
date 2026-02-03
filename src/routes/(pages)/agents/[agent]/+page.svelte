@@ -19,6 +19,8 @@
   let data = $state();
   let chart = $state();
   let pointIndexHoverd = $state();
+  let metricPointDetail = $state();
+  let isMouseInside = $state(false);
 
   let enabled = $state();
   let date = $state(null);
@@ -140,6 +142,14 @@
     } else {
       date = null;
     }
+    //-------------
+
+    if (pointIndexHoverd && id) {
+      http
+        .get(endpoints.agentHistoryDetail(id, pointIndexHoverd))
+        .then(res => (metricPointDetail = res.data?.data));
+    }
+    //---
   });
 </script>
 
@@ -823,15 +833,27 @@
                 <span class="flex justify-center items-center text-nowrap">Collect at :</span>
 
                 <span class="flex justify-center items-center text-nowrap tracking-wider">
-                  {new Date(chart?.last_history?.collected_at).toLocaleString('en-CA', {
-                    year: 'numeric',
-                    month: '2-digit',
-                    day: '2-digit',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    second: '2-digit',
-                    hour12: false,
-                  })}
+                  {#if isMouseInside}
+                    {new Date(metricPointDetail?.collected_at).toLocaleString('en-CA', {
+                      year: 'numeric',
+                      month: '2-digit',
+                      day: '2-digit',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                      second: '2-digit',
+                      hour12: false,
+                    })}
+                  {:else}
+                    {new Date(chart?.last_history?.collected_at).toLocaleString('en-CA', {
+                      year: 'numeric',
+                      month: '2-digit',
+                      day: '2-digit',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                      second: '2-digit',
+                      hour12: false,
+                    })}
+                  {/if}
                 </span>
               </div>
             </div>
@@ -839,12 +861,19 @@
             <div
               class="text-sm py-2 px-3 rounded-full border text-white border-white/5 text-nowrap">
               <span class="text-white/40 me-1">Collect Duration : </span>
-              <span class={responseTimeColor(chart?.last_history?.collect_duration_ms)}
-                >{chart?.last_history?.collect_duration_ms} ms</span>
+
+              {#if isMouseInside}
+                <span class={responseTimeColor(metricPointDetail?.collect_duration_ms)}
+                  >{metricPointDetail?.collect_duration_ms} ms</span>
+              {:else}
+                <span class={responseTimeColor(chart?.last_history?.collect_duration_ms)}
+                  >{chart?.last_history?.collect_duration_ms} ms</span>
+              {/if}
             </div>
           </div>
           {#if chart}
             <Chart
+              bind:isMouseInside
               bind:pointIndexHoverd
               points={[...chart?.points?.slice(-100).map(item => item?.[0])]}
               data={[
@@ -870,64 +899,118 @@
             <div class="w-full grid grid-cols-2 grid-rows-2 gap-y-2 gap-x-4">
               <div class="w-full flex justify-between items-start gap-1">
                 <span class="text-white/40 text-xs">Usage: </span>
-                <span
-                  class="text-xs {chart?.last_history?.cpu_usage_percent > LIMITATIONS.cpu.error
-                    ? 'text-[#F87171]'
-                    : chart?.last_history?.cpu_usage_percent > LIMITATIONS.cpu.warn
-                      ? 'text-[#F97316]'
-                      : 'text-green-700'}">{chart?.last_history?.cpu_usage_percent}%</span>
+                {#if isMouseInside}
+                  <span
+                    class="text-xs {metricPointDetail?.cpu_usage_percent > LIMITATIONS.cpu.error
+                      ? 'text-[#F87171]'
+                      : metricPointDetail?.cpu_usage_percent > LIMITATIONS.cpu.warn
+                        ? 'text-[#F97316]'
+                        : 'text-green-700'}">{metricPointDetail?.cpu_usage_percent}%</span>
+                {:else}
+                  <span
+                    class="text-xs {chart?.last_history?.cpu_usage_percent > LIMITATIONS.cpu.error
+                      ? 'text-[#F87171]'
+                      : chart?.last_history?.cpu_usage_percent > LIMITATIONS.cpu.warn
+                        ? 'text-[#F97316]'
+                        : 'text-green-700'}">{chart?.last_history?.cpu_usage_percent}%</span>
+                {/if}
               </div>
               <div class="w-full flex justify-between items-start gap-1">
                 <span class="text-white/40 text-xs">Av (1m): </span>
-                <span
-                  class="text-xs {chart?.last_history?.cpu_load_1 > LIMITATIONS.cpu.error
-                    ? 'text-[#F87171]'
-                    : chart?.last_history?.cpu_load_1 > LIMITATIONS.cpu.warn
-                      ? 'text-[#F97316]'
-                      : 'text-green-700'}">{chart?.last_history?.cpu_load_1}%</span>
+
+                {#if isMouseInside}
+                  <span
+                    class="text-xs {metricPointDetail?.cpu_load_1 > LIMITATIONS.cpu.error
+                      ? 'text-[#F87171]'
+                      : metricPointDetail?.cpu_load_1 > LIMITATIONS.cpu.warn
+                        ? 'text-[#F97316]'
+                        : 'text-green-700'}">{metricPointDetail?.cpu_load_1}%</span>
+                {:else}
+                  <span
+                    class="text-xs {chart?.last_history?.cpu_load_1 > LIMITATIONS.cpu.error
+                      ? 'text-[#F87171]'
+                      : chart?.last_history?.cpu_load_1 > LIMITATIONS.cpu.warn
+                        ? 'text-[#F97316]'
+                        : 'text-green-700'}">{chart?.last_history?.cpu_load_1}%</span>
+                {/if}
               </div>
               <div class="w-full flex justify-between items-start gap-1">
                 <span class="text-white/40 text-xs">Av (5m): </span>
-                <span
-                  class="text-xs {chart?.last_history?.cpu_load_5 > LIMITATIONS.cpu.error
-                    ? 'text-[#F87171]'
-                    : chart?.last_history?.cpu_load_5 > LIMITATIONS.cpu.warn
-                      ? 'text-[#F97316]'
-                      : 'text-green-700'}">{chart?.last_history?.cpu_load_5}%</span>
+
+                {#if isMouseInside}
+                  <span
+                    class="text-xs {metricPointDetail?.cpu_load_5 > LIMITATIONS.cpu.error
+                      ? 'text-[#F87171]'
+                      : metricPointDetail?.cpu_load_5 > LIMITATIONS.cpu.warn
+                        ? 'text-[#F97316]'
+                        : 'text-green-700'}">{metricPointDetail?.cpu_load_5}%</span>
+                {:else}
+                  <span
+                    class="text-xs {chart?.last_history?.cpu_load_5 > LIMITATIONS.cpu.error
+                      ? 'text-[#F87171]'
+                      : chart?.last_history?.cpu_load_5 > LIMITATIONS.cpu.warn
+                        ? 'text-[#F97316]'
+                        : 'text-green-700'}">{chart?.last_history?.cpu_load_5}%</span>
+                {/if}
               </div>
               <div class="w-full flex justify-between items-start gap-1">
                 <span class="text-white/40 text-xs">Av (15m) : </span>
-                <span
-                  class="text-xs {chart?.last_history?.cpu_load_15 > LIMITATIONS.cpu.error
-                    ? 'text-[#F87171]'
-                    : chart?.last_history?.cpu_load_15 > LIMITATIONS.cpu.warn
-                      ? 'text-[#F97316]'
-                      : 'text-green-700'}">{chart?.last_history?.cpu_load_15}%</span>
+
+                {#if isMouseInside}
+                  <span
+                    class="text-xs {metricPointDetail?.cpu_load_15 > LIMITATIONS.cpu.error
+                      ? 'text-[#F87171]'
+                      : metricPointDetail?.cpu_load_15 > LIMITATIONS.cpu.warn
+                        ? 'text-[#F97316]'
+                        : 'text-green-700'}">{metricPointDetail?.cpu_load_15}%</span>
+                {:else}
+                  <span
+                    class="text-xs {chart?.last_history?.cpu_load_15 > LIMITATIONS.cpu.error
+                      ? 'text-[#F87171]'
+                      : chart?.last_history?.cpu_load_15 > LIMITATIONS.cpu.warn
+                        ? 'text-[#F97316]'
+                        : 'text-green-700'}">{chart?.last_history?.cpu_load_15}%</span>
+                {/if}
               </div>
             </div>
 
             <div
               class="w-full rounded-md relative h-6 flex justify-start items-center overflow-hidden bg-white/5">
-              <div
-                style="box-shadow: 0 0 5px 1px {chart?.last_history?.cpu_usage_percent >
-                LIMITATIONS.cpu.error
-                  ? 'rgba(248, 113, 113, 0.5)'
-                  : chart?.last_history?.cpu_usage_percent > LIMITATIONS.cpu.warn
-                    ? 'rgba(249, 115, 22, 0.5)'
-                    : 'rgba(0, 130, 54, 0.5)'}; width:{chart?.last_history?.cpu_usage_percent}%;"
-                class="h-full rounded-s-md {chart?.last_history?.cpu_usage_percent === 100
-                  ? 'rounded-e-md'
-                  : ''} {chart?.last_history?.cpu_usage_percent > LIMITATIONS.cpu.error
-                  ? 'bg-[#EF4444]'
-                  : chart?.last_history?.cpu_usage_percent > LIMITATIONS.cpu.warn
-                    ? 'bg-[#F97316]'
-                    : 'bg-green-700'}">
-              </div>
+              {#if isMouseInside}
+                <div
+                  style="width:{metricPointDetail?.cpu_usage_percent}%;"
+                  class="h-full rounded-s-md transition-all {metricPointDetail?.cpu_usage_percent ===
+                  100
+                    ? 'rounded-e-md'
+                    : ''} {metricPointDetail?.cpu_usage_percent > LIMITATIONS.cpu.error
+                    ? 'bg-[#EF4444]'
+                    : metricPointDetail?.cpu_usage_percent > LIMITATIONS.cpu.warn
+                      ? 'bg-[#F97316]'
+                      : 'bg-green-700'}">
+                </div>
 
-              <div
-                class="absolute z-10 flex justify-center items-center rounded-full end-2 top-1/2 -translate-y-1/2 text-sm text-white">
-                {chart?.last_history?.cpu_usage_percent}%
-              </div>
+                <div
+                  class="absolute z-10 flex justify-center items-center rounded-full end-2 top-1/2 -translate-y-1/2 text-xs text-white">
+                  {metricPointDetail?.cpu_usage_percent}%
+                </div>
+              {:else}
+                <div
+                  style="width:{chart?.last_history?.cpu_usage_percent}%;"
+                  class="h-full rounded-s-md transition-all {chart?.last_history
+                    ?.cpu_usage_percent === 100
+                    ? 'rounded-e-md'
+                    : ''} {chart?.last_history?.cpu_usage_percent > LIMITATIONS.cpu.error
+                    ? 'bg-[#EF4444]'
+                    : chart?.last_history?.cpu_usage_percent > LIMITATIONS.cpu.warn
+                      ? 'bg-[#F97316]'
+                      : 'bg-green-700'}">
+                </div>
+
+                <div
+                  class="absolute z-10 flex justify-center items-center rounded-full end-2 top-1/2 -translate-y-1/2 text-xs text-white">
+                  {chart?.last_history?.cpu_usage_percent}%
+                </div>
+              {/if}
             </div>
           </div>
           <div class="w-full h-0.5 bg-[#0D0D0D]/5 dark:bg-white/5 rounded-full"></div>
@@ -941,60 +1024,111 @@
             <div class="w-full grid grid-cols-2 grid-rows-2 gap-y-2 gap-x-4">
               <div class="w-full flex justify-between items-start gap-1">
                 <span class="text-white/40 text-xs">Usage: </span>
-                <span
-                  class="text-xs {chart?.last_history?.memory_usage_percent >
-                  LIMITATIONS.memory.error
-                    ? 'text-[#F87171]'
-                    : chart?.last_history?.memory_usage_percent > LIMITATIONS.memory.warn
-                      ? 'text-[#F97316]'
-                      : 'text-green-700'}">{chart?.last_history?.memory_usage_percent}%</span>
+
+                {#if isMouseInside}
+                  <span
+                    class="text-xs {metricPointDetail?.memory_usage_percent >
+                    LIMITATIONS.memory.error
+                      ? 'text-[#F87171]'
+                      : metricPointDetail?.memory_usage_percent > LIMITATIONS.memory.warn
+                        ? 'text-[#F97316]'
+                        : 'text-green-700'}">{metricPointDetail?.memory_usage_percent}%</span>
+                {:else}
+                  <span
+                    class="text-xs {chart?.last_history?.memory_usage_percent >
+                    LIMITATIONS.memory.error
+                      ? 'text-[#F87171]'
+                      : chart?.last_history?.memory_usage_percent > LIMITATIONS.memory.warn
+                        ? 'text-[#F97316]'
+                        : 'text-green-700'}">{chart?.last_history?.memory_usage_percent}%</span>
+                {/if}
               </div>
               <div class="w-full flex justify-between items-start gap-1">
                 <span class="text-white/40 text-xs">Total: </span>
-                <span class="text-xs text-white"
-                  >{chart?.last_history?.memory_total_mb}
 
-                  <sub class="text-white/40">Mb</sub>
-                </span>
+                {#if isMouseInside}
+                  <span class="text-xs text-white"
+                    >{metricPointDetail?.memory_total_mb}
+
+                    <sub class="text-white/40">Mb</sub>
+                  </span>
+                {:else}
+                  <span class="text-xs text-white"
+                    >{chart?.last_history?.memory_total_mb}
+
+                    <sub class="text-white/40">Mb</sub>
+                  </span>
+                {/if}
               </div>
               <div class="w-full flex justify-between items-start gap-1">
                 <span class="text-white/40 text-xs">Used: </span>
-                <span class="text-xs text-white"
-                  >{chart?.last_history?.memory_used_mb}
-                  <sub class="text-white/40">Mb</sub>
-                </span>
+
+                {#if isMouseInside}
+                  <span class="text-xs text-white"
+                    >{metricPointDetail?.memory_used_mb}
+                    <sub class="text-white/40">Mb</sub>
+                  </span>
+                {:else}
+                  <span class="text-xs text-white"
+                    >{chart?.last_history?.memory_used_mb}
+                    <sub class="text-white/40">Mb</sub>
+                  </span>
+                {/if}
               </div>
               <div class="w-full flex justify-between items-start gap-1">
                 <span class="text-white/40 text-xs">Available: </span>
-                <span class="text-xs text-white"
-                  >{chart?.last_history?.memory_available_mb}
-                  <sub class="text-white/40">Mb</sub>
-                </span>
+
+                {#if isMouseInside}
+                  <span class="text-xs text-white"
+                    >{metricPointDetail?.memory_available_mb}
+                    <sub class="text-white/40">Mb</sub>
+                  </span>
+                {:else}
+                  <span class="text-xs text-white"
+                    >{chart?.last_history?.memory_available_mb}
+                    <sub class="text-white/40">Mb</sub>
+                  </span>
+                {/if}
               </div>
             </div>
 
             <div
               class="w-full rounded-md relative h-6 flex justify-start items-center overflow-hidden bg-white/5">
-              <div
-                style="box-shadow: 0 0 5px 1px {chart?.last_history?.memory_usage_percent >
-                LIMITATIONS.memory.error
-                  ? 'rgba(248, 113, 113, 0.5)'
-                  : chart?.last_history?.memory_usage_percent > LIMITATIONS.memory.warn
-                    ? 'rgba(249, 115, 22, 0.5)'
-                    : 'rgba(0, 130, 54, 0.5)'}; width:{chart?.last_history?.memory_usage_percent}%;"
-                class="h-full rounded-s-md {chart?.last_history?.memory_usage_percent === 100
-                  ? 'rounded-e-md'
-                  : ''} {chart?.last_history?.memory_usage_percent > LIMITATIONS.memory.error
-                  ? 'bg-[#EF4444]'
-                  : chart?.last_history?.memory_usage_percent > LIMITATIONS.memory.warn
-                    ? 'bg-[#F97316]'
-                    : 'bg-green-700'}">
-              </div>
+              {#if isMouseInside}
+                <div
+                  style="width:{metricPointDetail?.memory_usage_percent}%;"
+                  class="h-full rounded-s-md transition-all {metricPointDetail?.memory_usage_percent ===
+                  100
+                    ? 'rounded-e-md'
+                    : ''} {metricPointDetail?.memory_usage_percent > LIMITATIONS.memory.error
+                    ? 'bg-[#EF4444]'
+                    : metricPointDetail?.memory_usage_percent > LIMITATIONS.memory.warn
+                      ? 'bg-[#F97316]'
+                      : 'bg-green-700'}">
+                </div>
 
-              <div
-                class="absolute z-10 flex justify-center items-center rounded-full end-2 top-1/2 -translate-y-1/2 text-sm text-white">
-                {chart?.last_history?.memory_usage_percent}%
-              </div>
+                <div
+                  class="absolute z-10 flex justify-center items-center rounded-full end-2 top-1/2 -translate-y-1/2 text-xs text-white">
+                  {metricPointDetail?.memory_usage_percent}%
+                </div>
+              {:else}
+                <div
+                  style="width:{chart?.last_history?.memory_usage_percent}%;"
+                  class="h-full rounded-s-md transition-all {chart?.last_history
+                    ?.memory_usage_percent === 100
+                    ? 'rounded-e-md'
+                    : ''} {chart?.last_history?.memory_usage_percent > LIMITATIONS.memory.error
+                    ? 'bg-[#EF4444]'
+                    : chart?.last_history?.memory_usage_percent > LIMITATIONS.memory.warn
+                      ? 'bg-[#F97316]'
+                      : 'bg-green-700'}">
+                </div>
+
+                <div
+                  class="absolute z-10 flex justify-center items-center rounded-full end-2 top-1/2 -translate-y-1/2 text-xs text-white">
+                  {chart?.last_history?.memory_usage_percent}%
+                </div>
+              {/if}
             </div>
           </div>
 
@@ -1008,51 +1142,102 @@
             <div class="w-full grid grid-cols-2 grid-rows-2 gap-y-2 gap-x-4">
               <div class="w-full flex justify-between items-start gap-1">
                 <span class="text-white/40 text-xs">Usage: </span>
-                <span
-                  class="text-xs {chart?.last_history?.disk_usage_percent > LIMITATIONS.disk.error
-                    ? 'text-[#F87171]'
-                    : chart?.last_history?.disk_usage_percent > LIMITATIONS.disk.warn
-                      ? 'text-[#F97316]'
-                      : 'text-green-700'}">{chart?.last_history?.disk_usage_percent}%</span>
+
+                {#if isMouseInside}
+                  <span
+                    class="text-xs {metricPointDetail?.disk_usage_percent > LIMITATIONS.disk.error
+                      ? 'text-[#F87171]'
+                      : metricPointDetail?.disk_usage_percent > LIMITATIONS.disk.warn
+                        ? 'text-[#F97316]'
+                        : 'text-green-700'}">{metricPointDetail?.disk_usage_percent}%</span>
+                {:else}
+                  <span
+                    class="text-xs {chart?.last_history?.disk_usage_percent > LIMITATIONS.disk.error
+                      ? 'text-[#F87171]'
+                      : chart?.last_history?.disk_usage_percent > LIMITATIONS.disk.warn
+                        ? 'text-[#F97316]'
+                        : 'text-green-700'}">{chart?.last_history?.disk_usage_percent}%</span>
+                {/if}
               </div>
               <div class="w-full flex justify-between items-start gap-1">
                 <span class="text-white/40 text-xs">Total: </span>
-                <span class="text-xs text-white"
-                  >{chart?.last_history?.disk_total_gb}
-                  <sub class="text-white/40">Gb</sub></span>
+
+                {#if isMouseInside}
+                  <span class="text-xs text-white"
+                    >{metricPointDetail?.disk_total_gb}
+                    <sub class="text-white/40">Gb</sub></span>
+                {:else}
+                  <span class="text-xs text-white"
+                    >{chart?.last_history?.disk_total_gb}
+                    <sub class="text-white/40">Gb</sub></span>
+                {/if}
               </div>
               <div class="w-full flex justify-between items-start gap-1">
                 <span class="text-white/40 text-xs">Used: </span>
-                <span class="text-xs text-white"
-                  >{chart?.last_history?.disk_used_gb}
-                  <sub class="text-white/40"> Gb</sub></span>
+
+                {#if isMouseInside}
+                  <span class="text-xs text-white"
+                    >{metricPointDetail?.disk_used_gb}
+                    <sub class="text-white/40"> Gb</sub></span>
+                {:else}
+                  <span class="text-xs text-white"
+                    >{chart?.last_history?.disk_used_gb}
+                    <sub class="text-white/40"> Gb</sub></span>
+                {/if}
               </div>
               <div class="w-full flex justify-between items-start gap-1">
                 <span class="text-white/40 text-xs">Available: </span>
-                <span class="text-xs text-white"
-                  >{chart?.last_history?.disk_total_gb - chart?.last_history?.disk_used_gb}
-                  <sub class="text-white/40"> Gb</sub></span>
+                {#if isMouseInside}
+                  <span class="text-xs text-white"
+                    >{metricPointDetail?.disk_total_gb - metricPointDetail?.disk_used_gb}
+                    <sub class="text-white/40"> Gb</sub></span>
+                {:else}
+                  <span class="text-xs text-white"
+                    >{chart?.last_history?.disk_total_gb - chart?.last_history?.disk_used_gb}
+                    <sub class="text-white/40"> Gb</sub></span>
+                {/if}
               </div>
             </div>
-
-            <div
-              class="w-full rounded-md relative h-6 flex justify-start items-center overflow-hidden bg-white/5">
+            {#if isMouseInside}
               <div
-                style="width:{chart?.last_history?.disk_usage_percent}%;"
-                class="h-full rounded-s-md {chart?.last_history?.disk_usage_percent === 100
-                  ? 'rounded-e-md'
-                  : ''} {chart?.last_history?.disk_usage_percent > LIMITATIONS.disk.error
-                  ? 'bg-[#EF4444]'
-                  : chart?.last_history?.disk_usage_percent > LIMITATIONS.disk.warn
-                    ? 'bg-[#F97316]'
-                    : 'bg-green-700'}">
-              </div>
+                class="w-full rounded-md relative h-5 flex justify-start items-center overflow-hidden bg-white/5">
+                <div
+                  style="width:{metricPointDetail?.disk_usage_percent}%;"
+                  class="h-full rounded-s-md transition-all {metricPointDetail?.disk_usage_percent ===
+                  100
+                    ? 'rounded-e-md'
+                    : ''} {metricPointDetail?.disk_usage_percent > LIMITATIONS.disk.error
+                    ? 'bg-[#EF4444]'
+                    : metricPointDetail?.disk_usage_percent > LIMITATIONS.disk.warn
+                      ? 'bg-[#F97316]'
+                      : 'bg-green-700'}">
+                </div>
 
-              <div
-                class="absolute z-10 flex justify-center items-center rounded-full end-2 top-1/2 -translate-y-1/2 text-sm text-white">
-                {chart?.last_history?.disk_usage_percent}%
+                <div
+                  class="absolute z-10 flex justify-center items-center rounded-full end-2 top-1/2 -translate-y-1/2 text-xs text-white">
+                  {metricPointDetail?.disk_usage_percent}%
+                </div>
               </div>
-            </div>
+            {:else}
+              <div
+                class="w-full rounded-md relative h-6 flex justify-start items-center overflow-hidden bg-white/5">
+                <div
+                  style="width:{chart?.last_history?.disk_usage_percent}%;"
+                  class="h-full rounded-s-md transition-all {chart?.last_history
+                    ?.disk_usage_percent === 100
+                    ? 'rounded-e-md'
+                    : ''} {chart?.last_history?.disk_usage_percent > LIMITATIONS.disk.error
+                    ? 'bg-[#EF4444]'
+                    : chart?.last_history?.disk_usage_percent > LIMITATIONS.disk.warn
+                      ? 'bg-[#F97316]'
+                      : 'bg-green-700'}">
+                </div>
+
+                <div
+                  class="absolute z-10 flex justify-center items-center rounded-full end-2 top-1/2 -translate-y-1/2 text-xs text-white">
+                  {chart?.last_history?.disk_usage_percent}%
+                </div>
+              </div>{/if}
           </div>
         </div>
       </div>
