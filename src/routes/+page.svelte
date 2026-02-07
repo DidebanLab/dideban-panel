@@ -1,6 +1,7 @@
 <script>
   import StatusOverview2 from '../components/common/StatusOverview2.svelte';
   import PerformanceOverview from '../components/pages/dashboard/PerformanceOverview.svelte';
+  import ChecksStatusOverview from '../components/pages/dashboard/statusOverview/ChecksStatusOverview.svelte';
   import { AGENTS_DATA } from '../components/pages/dashboard/statusOverview/constant.svelte';
   import StatusOverview from '../components/pages/dashboard/statusOverview/StatusOverview.svelte';
   import TopRight from '../components/pages/dashboard/TopRight.svelte';
@@ -41,7 +42,7 @@
 
       <TopRight />
     </div>
-    <StatusOverview type="checkers" subtitle="Microservices Health & Availability" />
+    <ChecksStatusOverview />
 
     <StatusOverview type="agents" subtitle="Infrastructure Nodes & Cluster Health" />
   </div>

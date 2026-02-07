@@ -5,7 +5,6 @@ export const endpoints = {
   checks: '/checks',
   //---------------
 
-  checkers: '/checkers/',
   login: '',
   performanceOverview: '',
   topRight: '',
