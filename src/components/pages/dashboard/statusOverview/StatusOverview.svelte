@@ -11,7 +11,6 @@
   let isMobile = $state(innerWidth < 640);
   const { subtitle, type } = $props();
   const getLast = item => item.detail.at(-1);
-  let checkerEnabled = $state(true);
 
   const rules = {
     agents: {
@@ -77,13 +76,13 @@
         });
       }}
       class="w-12 sm:w-fit h-10 flex justify-center gap-2 px-4 items-center bg-[#22c55e]/10 rounded-lg text-xl text-[#10b981] cursor-pointer">
-      <span class="text-nowrap text-sm hidden sm:flex justify-center items-center">{type === 'agents' ? 'Add Agent' : 'Add Checker'}</span>
+      <span class="text-nowrap text-sm hidden sm:flex justify-center items-center"
+        >{type === 'agents' ? 'Add Agent' : 'Add Checker'}</span>
       +
     </button>
   </div>
 
-  <div
-    class="w-full grid grid-cols-1 xl:grid-cols-2 3xl:grid-cols-3 gap-4 custom-scroll p-6">
+  <div class="w-full grid grid-cols-1 xl:grid-cols-2 3xl:grid-cols-3 gap-4 custom-scroll p-6">
     {#each AGENTS_DATA as item (item.id)}
       {@const last = getLast(item)}
       {@const error = isError(last, item.status)}

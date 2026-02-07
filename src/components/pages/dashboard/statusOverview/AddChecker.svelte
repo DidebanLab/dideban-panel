@@ -3,7 +3,16 @@
   import { http } from '../../../../services/http.svelte';
   import { closer } from '../../../../stores/modal.svelte';
   import Select from '../../../common/Select.svelte';
-  import { AGENT_LIMIT, CHECK_LIMIT } from '../../../config.svelte';
+  import { CHECK_LIMIT } from '../../../config.svelte';
+
+  function normalizeHeaders(headersArray) {
+    return headersArray.reduce((acc, { key, value }) => {
+      if (key && value) {
+        acc[key] = value;
+      }
+      return acc;
+    }, {});
+  }
 
   let body = $state('');
   let httpConfig = $state({
@@ -14,30 +23,39 @@
     verify_ssl: true,
     headers: [{ key: '', value: '' }],
   });
-  let pingConfig = $state({ count: 3, packet_size: 200 });
+  let pingConfig = $state({ count: 3, size: 200, interval: 100 });
   let form = $state({
     name: '',
     target: '',
-    timeoutSeconds: 3,
-    intervalSeconds: 3,
+    timeout_seconds: 10,
+    interval_seconds: 20,
     enabled: true,
     type: 'http',
   });
 
   function addCheckerHandler() {
     let detail = { ...form };
+
     if (form.type === 'http') {
-      if (form.method === 'PUT' || form.method === 'POST') {
-        detail = { ...detail, config: { ...httpConfig, body } };
+      const normalizedHeaders = normalizeHeaders(httpConfig.headers);
+
+      const config = {
+        ...httpConfig,
+        headers: normalizedHeaders,
+      };
+
+      if (httpConfig.method === 'PUT' || httpConfig.method === 'POST') {
+        detail = { ...detail, config: { ...config, body } };
       } else {
-        detail = { ...detail, config: httpConfig };
+        detail = { ...detail, config };
       }
     } else if (form.type === 'ping') {
       detail = { ...detail, config: { ...pingConfig } };
     } else {
       return;
     }
-    http.post(endpoints.checkers, detail);
+
+    http.post(endpoints.checks, detail);
   }
 </script>
 
@@ -57,7 +75,8 @@
         class="px-3 h-9 w-full bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-lg placeholder:text-gray-400/40 text-gray-400 text-sm outline-none tracking-wide"
         type="text" />
     </div>
-    <div class="w-full flex flex-col sm:flex-row justify-start sm:justify-between items-start gap-6 z-11">
+    <div
+      class="w-full flex flex-col sm:flex-row justify-start sm:justify-between items-start gap-6 z-11">
       <div class="flex flex-col justify-start items-start gap-1.5 w-full">
         <span class="text-black dark:text-white text-sm">Type</span>
         <Select
@@ -166,16 +185,16 @@
               <div class="relative w-15 flex">
                 <input
                   type="number"
-                  value={form.timeoutSeconds}
+                  value={form.timeout_seconds}
                   oninput={e => {
-                    form.timeoutSeconds = Number(e.target.value);
+                    form.timeout_seconds = Number(e.target.value);
                   }}
                   onblur={e => {
                     const value = Number(e.target.value);
                     if (Number.isNaN(value) || value < CHECK_LIMIT.timeoutSeconds.min)
-                      form.timeoutSeconds = CHECK_LIMIT.timeoutSeconds.min;
+                      form.timeout_seconds = CHECK_LIMIT.timeoutSeconds.min;
                     else if (value > CHECK_LIMIT.timeoutSeconds.max)
-                      form.timeoutSeconds = CHECK_LIMIT.timeoutSeconds.max;
+                      form.timeout_seconds = CHECK_LIMIT.timeoutSeconds.max;
                   }}
                   class="px-3 h-6.5 w-full bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-md text-gray-400 text-sm outline-none tracking-wide appearance-none text-center" />
 
@@ -185,8 +204,8 @@
                   <button
                     type="button"
                     onclick={() =>
-                      form.timeoutSeconds < CHECK_LIMIT.timeoutSeconds.max &&
-                      (form.timeoutSeconds += 1)}
+                      form.timeout_seconds < CHECK_LIMIT.timeoutSeconds.max &&
+                      (form.timeout_seconds += 1)}
                     class="size-0.5 flex items-center justify-center text-gray-500 hover:text-gray-300 scale-75 cursor-pointer">
                     ▲
                   </button>
@@ -194,8 +213,8 @@
                   <button
                     type="button"
                     onclick={() =>
-                      form.timeoutSeconds > AGENT_LIMIT.timeoutSeconds.min &&
-                      (form.timeoutSeconds -= 1)}
+                      form.timeout_seconds > CHECK_LIMIT.timeoutSeconds.min &&
+                      (form.timeout_seconds -= 1)}
                     class="size-0.5 flex items-center justify-center text-gray-500 hover:text-gray-300 scale-75 cursor-pointer">
                     ▼
                   </button>
@@ -212,16 +231,16 @@
               <div class="relative w-15 flex">
                 <input
                   type="number"
-                  value={form.intervalSeconds}
+                  value={form.interval_seconds}
                   oninput={e => {
-                    form.intervalSeconds = Number(e.target.value);
+                    form.interval_seconds = Number(e.target.value);
                   }}
                   onblur={e => {
                     const value = Number(e.target.value);
-                    if (Number.isNaN(value) || value < AGENT_LIMIT.intervalSeconds.min)
-                      form.intervalSeconds = AGENT_LIMIT.intervalSeconds.min;
-                    else if (value > AGENT_LIMIT.intervalSeconds.max)
-                      form.intervalSeconds = AGENT_LIMIT.intervalSeconds.max;
+                    if (Number.isNaN(value) || value < CHECK_LIMIT.intervalSeconds.min)
+                      form.interval_seconds = CHECK_LIMIT.intervalSeconds.min;
+                    else if (value > CHECK_LIMIT.intervalSeconds.max)
+                      form.interval_seconds = CHECK_LIMIT.intervalSeconds.max;
                   }}
                   class="px-3 h-6.5 w-full bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-md text-gray-400 text-sm outline-none tracking-wide appearance-none text-center" />
 
@@ -231,8 +250,8 @@
                   <button
                     type="button"
                     onclick={() =>
-                      form.intervalSeconds < AGENT_LIMIT.intervalSeconds.max &&
-                      (form.intervalSeconds += 1)}
+                      form.interval_seconds < CHECK_LIMIT.intervalSeconds.max &&
+                      (form.interval_seconds += 1)}
                     class="size-0.5 flex items-center justify-center text-gray-500 hover:text-gray-300 scale-75 cursor-pointer">
                     ▲
                   </button>
@@ -240,8 +259,8 @@
                   <button
                     type="button"
                     onclick={() =>
-                      form.intervalSeconds > AGENT_LIMIT.intervalSeconds.min &&
-                      (form.intervalSeconds -= 1)}
+                      form.interval_seconds > CHECK_LIMIT.intervalSeconds.min &&
+                      (form.interval_seconds -= 1)}
                     class="size-0.5 flex items-center justify-center text-gray-500 hover:text-gray-300 scale-75 cursor-pointer">
                     ▼
                   </button>
@@ -343,7 +362,7 @@
                 </div>
 
                 <input
-                  bind:value={pingConfig.packet_size}
+                  bind:value={pingConfig.size}
                   class="px-3 h-6.5 w-15 bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-md placeholder:text-gray-400/40 text-gray-400 text-sm outline-none tracking-wide text-center"
                   type="text" />
               </div>

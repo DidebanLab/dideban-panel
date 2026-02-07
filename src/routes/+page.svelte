@@ -41,8 +41,8 @@
 
       <TopRight />
     </div>
+    <StatusOverview type="checkers" subtitle="Microservices Health & Availability" />
 
     <StatusOverview type="agents" subtitle="Infrastructure Nodes & Cluster Health" />
-    <StatusOverview type="checkers" subtitle="Microservices Health & Availability" />
   </div>
 </section>
