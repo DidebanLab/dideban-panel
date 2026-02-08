@@ -5,6 +5,9 @@
   import AddChecker from './AddChecker.svelte';
   import { http } from '../../../../services/http.svelte.js';
   import { endpoints } from '../../../../endpoints.svelte.js';
+  import responseTimeColor from '../../../../utils/responseTimeColor.js';
+
+  let history = $state();
 
   let data = $state([
     {
@@ -175,8 +178,7 @@
           <div class="flex flex-col justify-center items-start gap-1">
             <a href="/checkers/{item.id}" class="text-lg dark:text-white">{item.name}</a>
             <div class="text-xs flex justify-center items-center gap-1 text-[#707B76]/40">
-
-              <img width="17" height="17" src="/icons/clock.png" alt="clock">
+              <img width="17" height="17" src="/icons/clock.png" alt="clock" />
               {new Date(data[data.length - 1].last_checked).toLocaleString('en-US')}
             </div>
           </div>
@@ -198,67 +200,85 @@
             </div>
           </div>
         </div>
-        <!-- <div
+        <div
           class="absolute z-10 bottom-4 xl:bottom-6 w-full flex gap-0.5 justify-between items-end px-4.25">
-          {#each item.detail.slice(isMobile ? -31 : -53) as detail}
-            {@const hasAgentMetrics =
-              detail.cpu?.usage_percent ||
-              detail.memory?.usage_percent ||
-              detail.disk?.usage_percent}
-
-            {@const agentError =
-              detail.cpu.usage_percent > LIMITATIONS.cpu.error ||
-              detail.memory.usage_percent > LIMITATIONS.memory.error ||
-              detail.disk.usage_percent > LIMITATIONS.disk.error ||
-              detail.collect_duration_ms > LIMITATIONS.collect_duration_ms.error}
-
-            {@const agentWarn =
-              detail.cpu.usage_percent > LIMITATIONS.cpu.warn ||
-              detail.memory.usage_percent > LIMITATIONS.memory.warn ||
-              detail.disk.usage_percent > LIMITATIONS.disk.warn ||
-              detail.collect_duration_ms > LIMITATIONS.collect_duration_ms.warn}
-
-            {@const latencyError =
-              detail.collect_duration_ms > LIMITATIONS.collect_duration_ms.error}
-
-            {@const latencyWarn = detail.collect_duration_ms > LIMITATIONS.collect_duration_ms.warn}
-            <div
-              class="w-4 h-4 rounded-[1px] hover:h-6 transition-all cursor-pointer relative group {detail.collect_duration_ms
-                ? latencyError
+          {#await http.get(endpoints.checkHistory(item.id), { params: { short: true } }) then res}
+            {#each res.data.data.slice(isMobile ? -31 : -53) as detail (detail[0])}
+              {@const status = detail[1]}
+              {@const id = detail[0]}
+              <button
+                type="button"
+                aria-label="detail of status"
+                onmouseover={() => {
+                  http
+                    .get(`${endpoints.checkHistory(item.id)}/${id}`)
+                    .then(res => (history = res.data.data));
+                }}
+                onmouseleave={() => {
+                  history = null;
+                }}
+                onfocus={() => {
+                  http
+                    .get(`${endpoints.checkHistory(item.id)}/${id}`)
+                    .then(res => (history = res.data.data));
+                }}
+                onblur={() => {
+                  history = null;
+                }}
+                class="w-4 h-4 rounded-[1px] hover:h-6 transition-all cursor-pointer relative group {status ===
+                  'error' || status === 'down'
                   ? 'bg-[#EF4444]'
-                  : latencyWarn
+                  : status === 'timeout'
                     ? 'bg-[#F97316]'
-                    : 'bg-green-700'
-                : 'bg-[#FFFFFF]/5'}">
-              <div
-                class="absolute w-fit group-hover:flex hidden bottom-10 start-1/2 -translate-x-1/2 rounded-xl text-white bg-white/40 dark:bg-black/80 backdrop-blur-md dark:backdrop-blur-3xl border-[#0D0D0D]/5 border dark:border-white/10 px-3 py-2 flex-col justify-start items-start gap-2.5">
-                <div
-                  class="w-full flex justify-between items-center gap-2.5 border-b border-b-[#0D0D0D]/10 dark:border-b-white/15 pb-1.5">
-                  <span class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
-                    >Latency :</span>
-                  <span
-                    class="flex justify-center items-center text-sm text-nowrap {detail.collect_duration_ms >
-                    LIMITATIONS.collect_duration_ms.error
-                      ? 'text-[#F87171]'
-                      : detail.collect_duration_ms > LIMITATIONS.collect_duration_ms.warn
-                        ? 'text-[#F97316]'
-                        : 'text-green-700'}">{detail.collect_duration_ms} ms</span>
-                </div>
+                    : status === 'up'
+                      ? 'bg-green-700'
+                      : 'bg-[#FFFFFF]/5'}">
+                {#if history}
+                  <div
+                    class="absolute w-fit group-hover:flex hidden bottom-10 start-1/2 -translate-x-1/2 rounded-xl text-white bg-white/40 dark:bg-black/80 backdrop-blur-md dark:backdrop-blur-3xl border-[#0D0D0D]/5 border dark:border-white/10 px-3 py-2 flex-col justify-start items-start gap-1">
+                    <div class="w-full flex justify-between items-center gap-2.5">
+                      <span
+                        class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
+                        >Status :</span>
+                      <span
+                        class="flex justify-center items-center text-sm text-nowrap capitalize {history.status ===
+                          'error' || history.status === 'down'
+                          ? 'text-[#F87171]'
+                          : history.status === 'timeout'
+                            ? 'text-[#F97316]'
+                            : history.status === 'up'
+                              ? 'text-green-700'
+                              : ''}">{history.status}</span>
+                    </div>
+                    {#if history.response_time_ms}
+                      <div
+                        class="w-full flex justify-between items-center gap-2.5">
+                        <span
+                          class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
+                          >Latency :</span>
+                        <span
+                          class="flex justify-center items-center text-sm text-nowrap {responseTimeColor(
+                            history.response_time_ms,
+                          )}">{history.response_time_ms} ms</span>
+                      </div>
+                    {/if}
 
-                <div
-                  class="w-full flex justify-start items-center text-sm text-[#6a7282] text-center">
-                  {new Date(detail.disk.timestamp_ms).toLocaleString('en-GB', {
-                    year: 'numeric',
-                    month: '2-digit',
-                    day: '2-digit',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                  })}
-                </div>
-              </div>
-            </div>
-          {/each}
-        </div> -->
+                    <div
+                      class="w-full flex justify-start items-center text-sm pt-1.5 text-[#6a7282] text-center text-nowrap border-t border-t-[#0D0D0D]/10 dark:border-t-white/15">
+                      {new Date(history.checked_at).toLocaleString('en-GB', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}
+                    </div>
+                  </div>
+                {/if}
+              </button>
+            {/each}
+          {/await}
+        </div>
       </div>
     {/each}
   </div>

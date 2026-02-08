@@ -3,6 +3,7 @@ export const endpoints = {
   checksStats: '/checks/stats',
   agents: '/agents/',
   checks: '/checks',
+  checkHistory: id => `/checks/${id}/history`,
   //---------------
 
   login: '',
