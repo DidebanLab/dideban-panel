@@ -1,9 +1,10 @@
 export const endpoints = {
   agentsStats: '/agents/stats',
   checksStats: '/checks/stats',
-  agents: '/agents/',
+  agents: '/agents',
   checks: '/checks',
   checkHistory: id => `/checks/${id}/history`,
+  agentMetric: id => `/agents/${id}/metrics`,
   //---------------
 
   login: '',

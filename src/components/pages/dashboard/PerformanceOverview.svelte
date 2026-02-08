@@ -1,16 +1,24 @@
 <script>
   import Chart from '../../common/Chart.svelte';
-  import { MACHINES } from '../../../routes/constant.svelte';
   import { http } from '../../../services/http.svelte';
   import { endpoints } from '../../../endpoints.svelte';
   import { theme } from '../../../stores/theme.svelte';
+  import { onMount } from 'svelte';
 
-  const steps = ['Beta', 'Main', 'Development'];
+  let agents = $state([]);
   let activeIndex = $state(1);
-  const isActive = $derived(steps[activeIndex]);
+  const isActive = $derived(agents[activeIndex]?.id);
+  let agentMetric = $state({
+    avg_cpu_usage: 42,
+    avg_memory_usage: 44,
+    latest_disk_usage: 43,
+    cpu: [45, 43, 42, 41, 40],
+    memory: [46, 45, 44, 43, 42],
+    record_count: 5,
+  });
 
   const next = () => {
-    if (activeIndex < steps.length - 1) {
+    if (activeIndex < agents.length - 1) {
       activeIndex++;
     } else {
       activeIndex = 0;
@@ -21,30 +29,42 @@
     if (activeIndex > 0) {
       activeIndex--;
     } else {
-      activeIndex = steps.length - 1;
+      activeIndex = agents.length - 1;
     }
   };
 
-  // let data = $state({});
-  // $effect(() => {
-  //   http.post(endpoints.performanceOverview, { agent_id: isActive }).then(res => (data = res.data));
-  // });
+  onMount(() => {
+    http
+      .get(endpoints.agents, {
+        params: {
+          page_size: 3,
+        },
+      })
+      .then(res => {
+        agents = res.data.data;
+      });
+  });
+
+  $effect(() => {
+    http.get(endpoints.agentMetric(isActive)).then(res => (agentMetric = res.data.data));
+  });
 </script>
 
 <div
   class="w-full h-auto px-6 sm:pt-6 sm:pb-1.5 rounded-[14px] dark:bg-[#0D0D0D] bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
   <div class="flex relative flex-col gap-4 items-start justify-between w-full">
-    {#each MACHINES as machine (machine.id)}
-      {#if isActive === machine.agent_id}
+    {#each agents as agent (agent.id)}
+      {#if isActive === agent.id}
         <div
           class="w-full flex flex-col sm:flex-row justify-center items-start sm:justify-between sm:items-baseline">
           <div class="w-full flex flex-col justify-start items-start">
             <span class="text-lg sm:text-xl dark:text-white"
-              >{machine.agent_id} Performance Overview</span>
+              >{agent.name} Performance Overview</span>
             <span class="text-sm text-[#99a1af]">System resource latest utilization trends</span>
           </div>
 
-          <div class="flex justify-start items-center gap-3 w-fit absolute sm:static max-sm:-bottom-6 max-sm:start-1/2 max-sm:-translate-x-1/2">
+          <div
+            class="flex justify-start items-center gap-3 w-fit absolute sm:static max-sm:-bottom-6 max-sm:start-1/2 max-sm:-translate-x-1/2">
             <button class="cursor-pointer" onclick={prev} aria-label="prev slide" type="button">
               <svg
                 class="rotate-180"
@@ -63,14 +83,14 @@
               <button
                 aria-label="slide2"
                 onclick={() => (activeIndex = 0)}
-                class="h-5 group flex justify-center items-center {isActive === 'Beta'
+                class="h-5 group flex justify-center items-center {isActive === agent.id
                   ? ''
                   : 'cursor-pointer'}">
                 <div
-                  style="{isActive === 'Beta'
+                  style="{isActive === agent.id
                     ? 'box-shadow: 0 0 20px 1px rgba(0, 180, 120, 1);'
                     : ''} "
-                  class=" transition-all rounded-full h-0.5 {isActive === 'Beta'
+                  class=" transition-all rounded-full h-0.5 {isActive === agent.id
                     ? 'w-6 bg-[#00b478]'
                     : 'w-5 bg-[#0D0D0D]/30 dark:bg-white/20 group-hover:bg-[#00b478]/50'}">
                 </div>
@@ -78,11 +98,11 @@
               <button
                 aria-label="slide1"
                 onclick={() => (activeIndex = 1)}
-                class="h-5 group flex justify-center items-center {isActive === 'Main'
+                class="h-5 group flex justify-center items-center {isActive === agent.id
                   ? ''
                   : 'cursor-pointer'}">
                 <div
-                  style="{isActive === 'Main'
+                  style="{isActive === agent.id
                     ? 'box-shadow: 0 0 20px 1px rgba(0, 180, 120, 1);'
                     : ''} "
                   class=" transition-all rounded-full h-0.5 {isActive === 'Main'
@@ -94,14 +114,14 @@
               <button
                 aria-label="slide3"
                 onclick={() => (activeIndex = 2)}
-                class="h-5 group flex justify-center items-center {isActive === 'Development'
+                class="h-5 group flex justify-center items-center {isActive === agent.id
                   ? ''
                   : 'cursor-pointer'}">
                 <div
-                  style="{isActive === 'Development'
+                  style="{isActive === agent.id
                     ? 'box-shadow: 0 0 20px 1px rgba(0, 180, 120, 1);'
                     : ''} "
-                  class=" transition-all rounded-full h-0.5 {isActive === 'Development'
+                  class=" transition-all rounded-full h-0.5 {isActive === agent.id
                     ? 'w-6 bg-[#00b478]'
                     : 'w-5 bg-[#0D0D0D]/30 dark:bg-white/20 group-hover:bg-[#00b478]/50'}">
                 </div>
@@ -136,7 +156,7 @@
             </div>
 
             <span class="dark:text-white text-xs md:text-sm xl:text-base 2xl:text-lg"
-              >{machine.cpu[machine.cpu.length - 1].usage_percent}%</span>
+              >{agentMetric.avg_cpu_usage}%</span>
           </div>
           <div
             class="h-full w-50 md:w-fit xl:w-fit flex justify-center items-center gap-4 xl:px-4 xl:py-3 rounded-[10px] xl:bg-[#F9FAFB] dark:xl:bg-[#121212] xl:border border-[#0D0D0D]/5 dark:border-white/5">
@@ -150,7 +170,7 @@
             </div>
 
             <span class="dark:text-white text-xs md:text-sm xl:text-base 2xl:text-lg"
-              >{machine.memory[machine.memory.length - 1].usage_percent}%</span>
+              >{agentMetric.avg_memory_usage}%</span>
           </div>
           <div
             class="h-full w-50 md:w-fit xl:w-fit flex justify-center items-center gap-4 xl:px-4 xl:py-3 rounded-[10px] xl:bg-[#F9FAFB] dark:xl:bg-[#121212] xl:border border-[#0D0D0D]/5 dark:border-white/5">
@@ -160,11 +180,11 @@
                 class="size-2.5 rounded-full bg-[#00bc7d]"></span>
               <span
                 class="flex justify-center items-center text-xs xl:text-sm text-[#6a7282] text-nowrap"
-                >Average Disk Usage :</span>
+                >Latest Disk Usage :</span>
             </div>
 
             <span class="dark:text-white text-xs md:text-sm xl:text-base 2xl:text-lg"
-              >{machine.disk[machine.disk.length - 1].usage_percent}%</span>
+              >{agentMetric.latest_disk_usage}%</span>
           </div>
         </div>
 
@@ -172,15 +192,11 @@
           data={[
             {
               name: 'CPU',
-              data: machine.cpu.map(d => d.usage_percent ?? 0),
+              data: agentMetric.cpu,
             },
             {
               name: 'Memory',
-              data: machine.memory.map(d => d.usage_percent ?? 0),
-            },
-            {
-              name: 'Disk',
-              data: machine.disk.map(d => d.usage_percent ?? 0),
+              data: agentMetric.memory,
             },
           ]} />
       {/if}

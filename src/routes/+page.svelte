@@ -40,10 +40,10 @@
         <PerformanceOverview />
       </div>
 
-      <TopRight />
+      <!-- <TopRight /> -->
     </div>
-    <ChecksStatusOverview />
+    <!-- <ChecksStatusOverview />
 
-    <StatusOverview type="agents" subtitle="Infrastructure Nodes & Cluster Health" />
+    <StatusOverview type="agents" subtitle="Infrastructure Nodes & Cluster Health" /> -->
   </div>
 </section>
