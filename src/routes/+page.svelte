@@ -17,6 +17,6 @@
     </div>
     <ChecksStatusOverview />
 
-    <AgentsStatusOverview type="agents" subtitle="Infrastructure Nodes & Cluster Health" />
+    <!-- <AgentsStatusOverview type="agents" subtitle="Infrastructure Nodes & Cluster Health" /> -->
   </div>
 </section>
