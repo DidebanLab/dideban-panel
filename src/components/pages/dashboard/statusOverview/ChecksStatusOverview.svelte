@@ -174,22 +174,15 @@
 
           <div class="flex flex-col justify-center items-start gap-1">
             <a href="/checkers/{item.id}" class="text-lg dark:text-white">{item.name}</a>
-            <div class="text-xs text-white/20 flex justify-center items-center gap-1">
-              <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="18" height="18">
-                <path
-                  d="M0 0 C4.68796317 2.8950501 8.77605467 6.42344712 10.234375 11.89453125 C11.16656452 18.74158704 11.3930195 24.99387098 7.671875 31.01953125 C3.66347868 35.99068326 0.31000422 38.47580101 -6.0078125 39.3359375 C-13.1275177 39.69575056 -18.34453314 39.19135672 -23.98828125 34.640625 C-29.08369757 29.63479842 -30.03494232 26.05750776 -30.390625 19.01953125 C-30.17838344 12.13997715 -28.58962241 7.80486419 -23.765625 2.89453125 C-17.29271618 -2.6344117 -7.84970384 -3.13766411 0 0 Z M-24.203125 10.01953125 C-26.7034529 15.06348277 -26.81758573 20.62038128 -25.10546875 25.94921875 C-23.22050167 29.75179303 -20.62288678 32.34940792 -16.8203125 34.234375 C-11.49147503 35.94649198 -5.93457652 35.83235915 -0.890625 33.33203125 C3.47501455 29.9268324 5.76813406 26.88424118 6.61328125 21.46484375 C6.89754985 15.4310134 5.95508453 11.66467168 2.234375 6.89453125 C-2.53576543 3.17382172 -6.30210715 2.2313564 -12.3359375 2.515625 C-17.75533493 3.36077219 -20.79792615 5.6538917 -24.203125 10.01953125 Z "
-                  fill="#000000"
-                  transform="translate(33.765625,5.10546875)" />
-                <path
-                  d="M0 0 C0.99 0 1.98 0 3 0 C3 3.96 3 7.92 3 12 C5.64 12 8.28 12 11 12 C11 12.99 11 13.98 11 15 C7.37 15 3.74 15 0 15 C0 10.05 0 5.1 0 0 Z "
-                  fill="#000000"
-                  transform="translate(22,12)" />
-              </svg>{new Date(data[data.length - 1].last_checked).toLocaleString('en-US')}
+            <div class="text-xs flex justify-center items-center gap-1 text-[#707B76]/40">
+
+              <img width="17" height="17" src="/icons/clock.png" alt="clock">
+              {new Date(data[data.length - 1].last_checked).toLocaleString('en-US')}
             </div>
           </div>
           <div class="flex justify-center items-center gap-2 ms-auto mb-auto">
             <span
-              class="text-xs tracking-wider"
+              class="text-xs tracking-wider capitalize"
               class:text-[#F87171]={error}
               class:text-[#00d492]={ok}
               class:text-[#f97316]={warn}>
