@@ -9,7 +9,7 @@
   import { LIMITATIONS } from '../../../../components/config.svelte';
   import PerformanceOverview from '../../../../components/pages/dashboard/PerformanceOverview.svelte';
   import { AGENTS_DATA } from '../../../../components/pages/dashboard/statusOverview/constant.svelte';
-  import StatusOverview from '../../../../components/pages/dashboard/statusOverview/StatusOverview.svelte';
+  import StatusOverview from '../../../../components/pages/dashboard/statusOverview/AgentsStatusOverview.svelte';
   import TopRight from '../../../../components/pages/dashboard/TopRight.svelte';
   import { theme } from '../../../../stores/theme.svelte';
   import { onMount } from 'svelte';
