@@ -9,70 +9,7 @@
 
   let history = $state();
 
-  let data = $state([
-    {
-      id: 3,
-      name: 'Production API',
-      type: 'http',
-      target: 'https://api.example.com/health',
-      config: {
-        method: 'GET',
-        headers: {},
-        body: '',
-        expected_status: 200,
-        expected_content: '',
-        follow_redirects: true,
-        verify_ssl: true,
-      },
-      enabled: true,
-      interval_seconds: 60,
-      timeout_seconds: 10,
-      status: 'up',
-      last_checked_at: '2026-01-31T14:30:00Z',
-      created_at: '2026-01-30T08:00:00Z',
-      updated_at: '2026-01-31T14:30:00Z',
-    },
-    {
-      id: 2,
-      name: 'Database Ping',
-      type: 'ping',
-      target: '192.168.1.10',
-      config: {
-        count: 3,
-        interval: 300,
-        size: 56,
-      },
-      enabled: true,
-      interval_seconds: 120,
-      timeout_seconds: 5,
-      status: 'down',
-      last_checked_at: '2026-01-31T14:28:00Z',
-      created_at: '2026-01-29T14:30:00Z',
-      updated_at: '2026-01-29T14:30:00Z',
-    },
-    {
-      id: 1,
-      name: 'Staging Website',
-      type: 'http',
-      target: 'https://staging.example.com',
-      config: {
-        method: 'GET',
-        headers: {},
-        body: '',
-        expected_status: 200,
-        expected_content: '',
-        follow_redirects: true,
-        verify_ssl: true,
-      },
-      enabled: false,
-      interval_seconds: 300,
-      timeout_seconds: 30,
-      status: 'down',
-      last_checked_at: null,
-      created_at: '2026-01-28T09:00:00Z',
-      updated_at: '2026-01-28T09:45:00Z',
-    },
-  ]);
+  let data = $state();
 
   let isMobile = $state(innerWidth < 640);
 
@@ -105,10 +42,9 @@
 
   <div class="w-full grid grid-cols-1 xl:grid-cols-2 3xl:grid-cols-3 gap-4 custom-scroll p-6">
     {#each data as item (item.id)}
-      {@const error =
-        data[data.length - 1].status === 'error' || data[data.length - 1].status === 'down'}
-      {@const warn = data[data.length - 1].status === 'timeout'}
-      {@const ok = data[data.length - 1].status === 'up'}
+      {@const error = item.status === 'error' || item.status === 'down'}
+      {@const warn = item.status === 'timeout'}
+      {@const ok = item.status === 'up'}
       <div
         class="relative h-32.75 border rounded-[14px] flex flex-col py-4 xl:py-6 gap-7 {error
           ? 'bg-[#EF4444]/5 border-[#EF4444]/15'
@@ -201,7 +137,7 @@
           </div>
         </div>
         <div
-          class="absolute z-10 bottom-4 xl:bottom-6 w-full flex gap-0.5 justify-between items-end px-4.25">
+          class="absolute z-10 bottom-4 xl:bottom-6 w-full flex flex-row-reverse gap-0.5 justify-between items-end px-4.25">
           {#await http.get(endpoints.checkHistory(item.id), { params: { short: true } }) then res}
             {#each res.data.data.slice(isMobile ? -31 : -53) as detail (detail[0])}
               {@const status = detail[1]}
@@ -251,8 +187,7 @@
                               : ''}">{history.status}</span>
                     </div>
                     {#if history.response_time_ms}
-                      <div
-                        class="w-full flex justify-between items-center gap-2.5">
+                      <div class="w-full flex justify-between items-center gap-2.5">
                         <span
                           class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
                           >Latency :</span>

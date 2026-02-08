@@ -7,82 +7,19 @@
   import { endpoints } from '../../../../endpoints.svelte.js';
 
   let isMobile = $state(innerWidth < 640);
-
-  let agents = $state([
-    {
-      id: 3,
-      name: 'Production Server',
-      enabled: true,
-      interval_seconds: 60,
-      auth_token: 'a1b2c3d4e5f67890********',
-      status: 'online',
-      last_seen: '2026-01-31T10:15:30Z',
-      created_at: '2026-01-30T08:00:00Z',
-      updated_at: '2026-01-31T10:15:30Z',
-    },
-    {
-      id: 2,
-      name: 'Staging Server',
-      enabled: true,
-      interval_seconds: 120,
-      auth_token: 'f7e6d5c4b3a21098********',
-      status: 'offline',
-      last_seen: null,
-      created_at: '2026-01-29T14:30:00Z',
-      updated_at: '2026-01-29T14:30:00Z',
-    },
-  ]);
-
+  let agents = $state();
   let history = $state();
-  let historyDetail = $state({
-    id: 105,
-    agent_id: 3,
-    is_offline: false,
-    collect_duration_ms: 125,
-    cpu_load_1: 0.85,
-    cpu_load_5: 0.72,
-    cpu_load_15: 0.68,
-    cpu_usage_percent: 42.3,
-    memory_total_mb: 8192,
-    memory_used_mb: 3584,
-    memory_available_mb: 4608,
-    memory_usage_percent: 43.75,
-    disk_total_gb: 500,
-    disk_used_gb: 215,
-    disk_usage_percent: 43.0,
-    collected_at: '2026-01-31T14:30:00Z',
+  let historyDetail = $state();
+
+  onMount(() => {
+    http
+      .get(endpoints.agents, {
+        params: {
+          page_size: 3,
+        },
+      })
+      .then(res => (agents = res.data.data));
   });
-
-  const rules = {
-    agents: {
-      error: (last, status) => [
-        status === 'offline',
-        last.cpu.usage_percent > LIMITATIONS.cpu.error,
-        last.memory.usage_percent > LIMITATIONS.memory.error,
-        last.disk.usage_percent > LIMITATIONS.disk.error,
-        last.collect_duration_ms > LIMITATIONS.collect_duration_ms.error,
-      ],
-      warn: last => [
-        last.cpu.usage_percent > LIMITATIONS.cpu.warn,
-        last.memory.usage_percent > LIMITATIONS.memory.warn,
-        last.disk.usage_percent > LIMITATIONS.disk.warn,
-        last.collect_duration_ms > LIMITATIONS.collect_duration_ms.warn,
-      ],
-    },
-
-    checkers: {
-      error: (last, status) => [
-        status === 'offline',
-        last.collect_duration_ms > LIMITATIONS.collect_duration_ms.error,
-      ],
-      warn: last => [last.collect_duration_ms > LIMITATIONS.collect_duration_ms.warn],
-    },
-  };
-
-  // let data = $state({});
-  // onMount(() => {
-  //   http.get(endpoints.statusOverview + "agents").then(res => (data = res.data));
-  // });
 </script>
 
 <div
@@ -237,139 +174,131 @@
                         class="flex justify-center items-center text-sm text-nowrap {historyDetail.collect_duration_ms >
                         LIMITATIONS.collect_duration_ms.error
                           ? 'text-[#F87171]'
-                          : detail.collect_duration_ms > LIMITATIONS.collect_duration_ms.warn
+                          : historyDetail.collect_duration_ms > LIMITATIONS.collect_duration_ms.warn
                             ? 'text-[#F97316]'
-                            : 'text-green-700'}">{detail.collect_duration_ms} ms</span>
+                            : 'text-green-700'}">{historyDetail.collect_duration_ms} ms</span>
                     </div>
-                    {#if 'agents' === 'agents'}
-                      {#if detail.cpu.usage_percent}
-                        <div class="flex flex-col items-center w-full gap-1">
-                          <div class="w-full flex justify-start items-center gap-2.5">
-                            <span
-                              style="box-shadow: 0 0 10px 1px #ad46ff;"
-                              class="size-1.5 rounded-full bg-[#ad46ff]"></span>
-                            <div class="flex-1 flex justify-between items-center gap-2.5">
-                              <span
-                                class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
-                                >Cpu :</span>
-                              <span
-                                class="flex justify-center items-center text-sm text-nowrap {detail
-                                  .cpu.usage_percent > LIMITATIONS.cpu.error
-                                  ? 'text-[#F87171]'
-                                  : detail.cpu.usage_percent > LIMITATIONS.cpu.warn
-                                    ? 'text-[#F97316]'
-                                    : 'text-green-700'}">{detail.cpu.usage_percent}%</span>
-                            </div>
-                          </div>
-                          <div class="w-full h-0.5 rounded-full bg-black/10 dark:bg-white/10">
-                            <div
-                              class="h-full rounded-full {detail.cpu.usage_percent >
-                              LIMITATIONS.cpu.error
-                                ? 'bg-[#F87171]'
-                                : detail.cpu.usage_percent > LIMITATIONS.cpu.warn
-                                  ? 'bg-[#F97316]'
-                                  : 'bg-green-700'}"
-                              style="width: {Math.min(
-                                detail.cpu.usage_percent,
-                                100,
-                              )}%;box-shadow: 0 0 10px 1px {detail.cpu.usage_percent >
-                              LIMITATIONS.cpu.error
-                                ? '#F87171'
-                                : detail.cpu.usage_percent > LIMITATIONS.cpu.warn
-                                  ? '#F97316'
-                                  : '#008236'};">
-                            </div>
-                          </div>
+
+                    <div class="flex flex-col items-center w-full gap-1">
+                      <div class="w-full flex justify-start items-center gap-2.5">
+                        <span
+                          style="box-shadow: 0 0 10px 1px #ad46ff;"
+                          class="size-1.5 rounded-full bg-[#ad46ff]"></span>
+                        <div class="flex-1 flex justify-between items-center gap-2.5">
+                          <span
+                            class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
+                            >Cpu :</span>
+                          <span
+                            class="flex justify-center items-center text-sm text-nowrap {historyDetail.cpu_usage_percent >
+                            LIMITATIONS.cpu.error
+                              ? 'text-[#F87171]'
+                              : historyDetail.cpu_usage_percent > LIMITATIONS.cpu.warn
+                                ? 'text-[#F97316]'
+                                : 'text-green-700'}">{historyDetail.cpu_usage_percent}%</span>
                         </div>
-                      {/if}
-                      {#if detail.memory.usage_percent}
-                        <div class="flex flex-col items-center w-full gap-1">
-                          <div class="w-full flex justify-start items-center gap-2.5">
-                            <span
-                              style="box-shadow: 0 0 10px 1px #2b7fff;"
-                              class="size-1.5 rounded-full bg-[#2b7fff]"></span>
-                            <div class="flex-1 flex justify-between items-center gap-2.5">
-                              <span
-                                class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
-                                >Memory :</span>
-                              <span
-                                class="flex justify-center items-center text-sm text-nowrap {detail
-                                  .memory.usage_percent > LIMITATIONS.memory.error
-                                  ? 'text-[#F87171]'
-                                  : detail.memory.usage_percent > LIMITATIONS.memory.warn
-                                    ? 'text-[#F97316]'
-                                    : 'text-green-700'}">{detail.memory.usage_percent}%</span>
-                            </div>
-                          </div>
-                          <div class="w-full h-0.5 rounded-full bg-black/10 dark:bg-white/10">
-                            <div
-                              class="h-full rounded-full {detail.memory.usage_percent >
-                              LIMITATIONS.memory.error
-                                ? 'bg-[#F87171]'
-                                : detail.memory.usage_percent > LIMITATIONS.memory.warn
-                                  ? 'bg-[#F97316]'
-                                  : 'bg-green-700'}"
-                              style="width: {Math.min(
-                                detail.memory.usage_percent,
-                                100,
-                              )}%;box-shadow: 0 0 10px 1px {detail.memory.usage_percent >
-                              LIMITATIONS.memory.error
-                                ? '#F87171'
-                                : detail.memory.usage_percent > LIMITATIONS.memory.warn
-                                  ? '#F97316'
-                                  : '#008236'};">
-                            </div>
-                          </div>
+                      </div>
+                      <div class="w-full h-0.5 rounded-full bg-black/10 dark:bg-white/10">
+                        <div
+                          class="h-full rounded-full {historyDetail.cpu_usage_percent >
+                          LIMITATIONS.cpu.error
+                            ? 'bg-[#F87171]'
+                            : historyDetail.cpu_usage_percent > LIMITATIONS.cpu.warn
+                              ? 'bg-[#F97316]'
+                              : 'bg-green-700'}"
+                          style="width: {Math.min(
+                            historyDetail.cpu_usage_percent,
+                            100,
+                          )}%;box-shadow: 0 0 10px 1px {historyDetail.cpu_usage_percent >
+                          LIMITATIONS.cpu.error
+                            ? '#F87171'
+                            : historyDetail.cpu_usage_percent > LIMITATIONS.cpu.warn
+                              ? '#F97316'
+                              : '#008236'};">
                         </div>
-                      {/if}
-                      {#if detail.disk.usage_percent}
-                        <div class="flex flex-col items-center w-full gap-1">
-                          <div class="w-full flex justify-start items-center gap-2.5">
-                            <span
-                              style="box-shadow: 0 0 10px 1px #22c55e;"
-                              class="size-1.5 rounded-full bg-[#00bc7d]"></span>
-                            <div class="flex-1 flex justify-between items-center gap-2.5">
-                              <span
-                                class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
-                                >Disk :</span>
-                              <span
-                                class="flex justify-center items-center text-sm text-nowrap {detail
-                                  .disk.usage_percent > LIMITATIONS.disk.error
-                                  ? 'text-[#F87171]'
-                                  : detail.disk.usage_percent > LIMITATIONS.disk.warn
-                                    ? 'text-[#F97316]'
-                                    : 'text-green-700'}">{detail.disk.usage_percent}%</span>
-                            </div>
-                          </div>
-                          <div class="w-full h-0.5 rounded-full bg-black/10 dark:bg-white/10">
-                            <div
-                              class="h-full rounded-full {detail.disk.usage_percent >
-                              LIMITATIONS.disk.error
-                                ? 'bg-[#F87171]'
-                                : detail.disk.usage_percent > LIMITATIONS.disk.warn
-                                  ? 'bg-[#F97316]'
-                                  : 'bg-green-700'}"
-                              style="width: {Math.min(
-                                detail.disk.usage_percent,
-                                100,
-                              )}%;box-shadow: 0 0 10px 1px {detail.disk.usage_percent >
-                              LIMITATIONS.disk.error
-                                ? '#F87171'
-                                : detail.disk.usage_percent > LIMITATIONS.disk.warn
-                                  ? '#F97316'
-                                  : '#008236'};">
-                            </div>
-                          </div>
+                      </div>
+                    </div>
+
+                    <div class="flex flex-col items-center w-full gap-1">
+                      <div class="w-full flex justify-start items-center gap-2.5">
+                        <span
+                          style="box-shadow: 0 0 10px 1px #2b7fff;"
+                          class="size-1.5 rounded-full bg-[#2b7fff]"></span>
+                        <div class="flex-1 flex justify-between items-center gap-2.5">
+                          <span
+                            class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
+                            >Memory :</span>
+                          <span
+                            class="flex justify-center items-center text-sm text-nowrap {historyDetail.memory_usage_percent >
+                            LIMITATIONS.memory.error
+                              ? 'text-[#F87171]'
+                              : historyDetail.memory_usage_percent > LIMITATIONS.memory.warn
+                                ? 'text-[#F97316]'
+                                : 'text-green-700'}">{historyDetail.memory_usage_percent}%</span>
                         </div>
-                      {/if}
-                    {/if}
+                      </div>
+                      <div class="w-full h-0.5 rounded-full bg-black/10 dark:bg-white/10">
+                        <div
+                          class="h-full rounded-full {historyDetail.memory_usage_percent >
+                          LIMITATIONS.memory.error
+                            ? 'bg-[#F87171]'
+                            : historyDetail.memory_usage_percent > LIMITATIONS.memory.warn
+                              ? 'bg-[#F97316]'
+                              : 'bg-green-700'}"
+                          style="width: {Math.min(
+                            historyDetail.memory_usage_percent,
+                            100,
+                          )}%;box-shadow: 0 0 10px 1px {historyDetail.memory_usage_percent >
+                          LIMITATIONS.memory.error
+                            ? '#F87171'
+                            : historyDetail.memory_usage_percent > LIMITATIONS.memory.warn
+                              ? '#F97316'
+                              : '#008236'};">
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="flex flex-col items-center w-full gap-1">
+                      <div class="w-full flex justify-start items-center gap-2.5">
+                        <span
+                          style="box-shadow: 0 0 10px 1px #22c55e;"
+                          class="size-1.5 rounded-full bg-[#00bc7d]"></span>
+                        <div class="flex-1 flex justify-between items-center gap-2.5">
+                          <span
+                            class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
+                            >Disk :</span>
+                          <span
+                            class="flex justify-center items-center text-sm text-nowrap {historyDetail.disk_usage_percent >
+                            LIMITATIONS.disk.error
+                              ? 'text-[#F87171]'
+                              : historyDetail.disk_usage_percent > LIMITATIONS.disk.warn
+                                ? 'text-[#F97316]'
+                                : 'text-green-700'}">{historyDetail.disk_usage_percent}%</span>
+                        </div>
+                      </div>
+                      <div class="w-full h-0.5 rounded-full bg-black/10 dark:bg-white/10">
+                        <div
+                          class="h-full rounded-full {historyDetail.disk_usage_percent >
+                          LIMITATIONS.disk.error
+                            ? 'bg-[#F87171]'
+                            : historyDetail.disk_usage_percent > LIMITATIONS.disk.warn
+                              ? 'bg-[#F97316]'
+                              : 'bg-green-700'}"
+                          style="width: {Math.min(
+                            historyDetail.disk_usage_percent,
+                            100,
+                          )}%;box-shadow: 0 0 10px 1px {historyDetail.disk_usage_percent >
+                          LIMITATIONS.disk.error
+                            ? '#F87171'
+                            : historyDetail.disk_usage_percent > LIMITATIONS.disk.warn
+                              ? '#F97316'
+                              : '#008236'};">
+                        </div>
+                      </div>
+                    </div>
 
                     <div
-                      class="w-full flex justify-start items-center text-sm text-[#6a7282] text-center {'agents' ===
-                      'agents'
-                        ? 'border-t-black/10 dark:border-t-white/15 border-t pt-1.5'
-                        : ''}">
-                      {new Date(detail.disk.timestamp_ms).toLocaleString('en-GB', {
+                      class="w-full flex justify-start items-center text-sm text-nowrap text-[#6a7282] text-center border-t-black/10 dark:border-t-white/15 border-t pt-1.5">
+                      {new Date(historyDetail.collected_at).toLocaleString('en-GB', {
                         year: 'numeric',
                         month: '2-digit',
                         day: '2-digit',
