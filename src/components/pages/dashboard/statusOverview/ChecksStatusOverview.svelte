@@ -115,7 +115,15 @@
             <a href="/checkers/{item.id}" class="text-lg dark:text-white">{item.name}</a>
             <div class="text-xs flex justify-center items-center gap-1 text-[#707B76]/40">
               <img width="17" height="17" src="/icons/clock.png" alt="clock" />
-              {new Date(data[data.length - 1].last_checked).toLocaleString('en-US')}
+              {new Date(data[data.length - 1].last_checked).toLocaleString('en-CA', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false,
+              })}
             </div>
           </div>
           <div class="flex justify-center items-center gap-2 ms-auto mb-auto">
@@ -203,12 +211,14 @@
 
                     <div
                       class="w-full flex justify-start items-center text-sm pt-1.5 text-[#6a7282] text-center text-nowrap border-t border-t-[#0D0D0D]/10 dark:border-t-white/15">
-                      {new Date(history.checked_at).toLocaleString('en-GB', {
+                      {new Date(history.checked_at).toLocaleString('en-CA', {
                         year: 'numeric',
                         month: '2-digit',
                         day: '2-digit',
                         hour: '2-digit',
                         minute: '2-digit',
+                        second: '2-digit',
+                        hour12: false,
                       })}
                     </div>
                   </div>
@@ -216,7 +226,8 @@
               </button>
             {/each}
             {#each Array(missingCount) as _, i}
-              <div aria-hidden="true" class="w-4 h-4 rounded-[1px] bg-[#FFFFFF]/10 opacity-50" ></div>
+              <div aria-hidden="true" class="w-4 h-4 rounded-[1px] bg-[#FFFFFF]/10 opacity-50">
+              </div>
             {/each}
           {/await}
         </div>

@@ -46,7 +46,7 @@
 
         <div class="flex flex-col justify-center items-end gap-1">
           <div class="flex justify-center gap-1 items-center text-xs">
-            <span class="text-[#F87171] pe-1">Disabled</span>
+            <span class="text-[#F87171] pe-2">Disabled</span>
             <span class="bg-white/20 h-4 w-px"></span>
             <span class="text-black dark:text-white w-4.5 flex justify-end items-center"
               >{agentsStats.disabled}</span>
