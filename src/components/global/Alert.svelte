@@ -17,9 +17,24 @@
 
   function getAlertMeta(type) {
     if (type === 'error')
-      return { icon: '/icons/error.svg', className: 'border-[#EF4444]/10 bg-[#1c0101]/30' };
-    if (type === 'successful') return { icon: '/icons/tick.svg', className: 'border-green-600' };
-    return { icon: '/icons/warn.png', className: 'border-yellow-500' };
+      return {
+        icon: '/icons/error.svg',
+        className: 'border-[#EF4444]/10 bg-[#1c0101]/30',
+        shadow: '#EF4444',
+      };
+
+    if (type === 'successful')
+      return {
+        icon: '/icons/tick.svg',
+        className: ' border-[#00bc7d]/10 bg-[#00b478]/5',
+        shadow: '#00b478',
+      };
+
+    return {
+      icon: '/icons/warn.png',
+      className: 'border-[#fdc700]/10 bg-[#fdc700]/5 ',
+      shadow: '#fdc700',
+    };
   }
 
   $effect(() => {
@@ -34,19 +49,19 @@
 </script>
 
 <div
-  class="fixed top-4 lg:top-6 left-0 right-0 z-50 flex flex-col items-center space-y-1 lg:space-y-3">
+  class="fixed top-4 lg:top-6 left-0 right-0 z-1000 flex flex-col items-center space-y-1 lg:space-y-3">
   {#each alerts as alert (alert.id)}
     {@const meta = getAlertMeta(alert.type)}
 
     <div
       in:fly={{ y: -10, opacity: 0, duration: 1000 }}
-      out:fly={{ x:200 , opacity: 0, duration: 1000 }}
+      out:fly={{ x: 200, opacity: 0, duration: 1000 }}
       class={`relative group overflow-hidden backdrop-blur-2xl rounded-md border p-4 w-80 sm:w-[80%] lg:w-[70%] xl:w-[40%] flex items-center gap-2 text-sm lg:text-[15px] text-[#7c7c7c] transition-all ${meta.className}`}>
       <!-- glow -->
       <div
         class="absolute -top-2 start-0 size-0 rounded-full
         group-hover:top-5 group-hover:start-20 transition-all duration-1000"
-        style="box-shadow: 0 0 100px 50px rgb(255,100,103,0.5)">
+        style="box-shadow: 0 0 120px 50px {meta.shadow}">
       </div>
 
       <img

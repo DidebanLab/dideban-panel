@@ -1,6 +1,7 @@
 <script>
   import { endpoints } from '../../../../endpoints.svelte';
   import { http } from '../../../../services/http.svelte';
+  import { alertStore } from '../../../../stores/alert.svelte';
   import { closer } from '../../../../stores/modal.svelte';
   import Select from '../../../common/Select.svelte';
   import { CHECK_LIMIT } from '../../../config.svelte';
@@ -55,7 +56,16 @@
       return;
     }
 
-    http.post(endpoints.checks, detail);
+    http.post(endpoints.checks, detail).then(res => {
+      alertStore.addAlert({
+        message: `checker ${res.data.data.name} has been added successfully.`,
+        type: 'successful',
+      });
+
+      closer({
+        id: 'create-checks',
+      });
+    });
   }
 </script>
 
@@ -373,11 +383,9 @@
     {/if}
     <div class="w-full flex justify-between items-center md:mt-10">
       <button
+        disabled={!(form.name && form.target)}
         onclick={() => {
           addCheckerHandler();
-          closer({
-            id: 'create-checks',
-          });
         }}
         type="button"
         class="me-auto w-fit px-5 sm:px-10 text-sm text-[#10b981] h-8.5 flex justify-center items-center rounded-md cursor-pointer bg-[#22c55e]/10 hover:opacity-60 border border-[#00bc7d]/10 disabled:opacity-50 disabled:dark:opacity-30 disabled:cursor-not-allowed">

@@ -9,6 +9,7 @@
   let activeIndex = $state(1);
   const isActive = $derived(agents[activeIndex]);
   let agentMetric = $state();
+  const isMobile = $state(innerWidth < 645);
 
   const next = () => {
     if (activeIndex < agents.length - 1) {
@@ -44,9 +45,15 @@
     const id = agents[activeIndex]?.id;
     if (!id) return;
 
-    http.get(endpoints.agentMetric(id)).then(res => {
-      agentMetric = res.data.data;
-    });
+    http
+      .get(endpoints.agentMetric(id), {
+        params: {
+          size: isMobile ? 31 : 50,
+        },
+      })
+      .then(res => {
+        agentMetric = res.data.data;
+      });
   });
 </script>
 
@@ -58,7 +65,7 @@
         <div
           class="w-full flex flex-col sm:flex-row justify-center items-start sm:justify-between sm:items-baseline">
           <div class="w-full flex flex-col justify-start items-start">
-            <span class="text-lg sm:text-xl dark:text-white"
+            <span class="text-lg sm:text-xl dark:text-white capitalize"
               >{agent.name} Performance Overview</span>
             <span class="text-sm text-[#99a1af]">System resource latest utilization trends</span>
           </div>
@@ -113,7 +120,7 @@
                   </div>
                 </button>
 
-                {#if agent.length > 2}
+                {#if agents.length > 2}
                   <button
                     aria-label="slide3"
                     onclick={() => (activeIndex = 2)}

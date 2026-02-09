@@ -1,6 +1,7 @@
 <script>
   import { endpoints } from '../../../../endpoints.svelte';
   import { http } from '../../../../services/http.svelte';
+  import { alertStore } from '../../../../stores/alert.svelte';
   import { closer } from '../../../../stores/modal.svelte';
   import Select from '../../../common/Select.svelte';
   import { AGENT_LIMIT } from '../../../config.svelte';
@@ -20,7 +21,13 @@
       .post(endpoints.agents, {
         ...form,
       })
-      .then(res => (token = res.data.data.auth_token));
+      .then(res => {
+        token = res.data.data.auth_token;
+        alertStore.addAlert({
+          message: `Agent ${res.data.data.name} has been added successfully.`,
+          type: 'successful',
+        });
+      });
   }
 </script>
 

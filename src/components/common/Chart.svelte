@@ -130,6 +130,13 @@
     chart.render();
   });
 
+  // ✅ این قسمت اضافه شد: وقتی data تغییر کنه، سری‌ها آپدیت بشه
+  $effect(() => {
+    if (chart && data) {
+      chart.updateSeries(data, true);
+    }
+  });
+
   onDestroy(() => {
     chart?.destroy();
   });
