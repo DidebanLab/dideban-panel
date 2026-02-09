@@ -5,17 +5,10 @@
   import { theme } from '../../../stores/theme.svelte';
   import { onMount } from 'svelte';
 
-  let agents = $state([]);
+  let agents = $state();
   let activeIndex = $state(1);
-  const isActive = $derived(agents[activeIndex]?.id);
-  let agentMetric = $state({
-    avg_cpu_usage: 42,
-    avg_memory_usage: 44,
-    latest_disk_usage: 43,
-    cpu: [45, 43, 42, 41, 40],
-    memory: [46, 45, 44, 43, 42],
-    record_count: 5,
-  });
+  const isActive = $derived(agents[activeIndex]);
+  let agentMetric = $state();
 
   const next = () => {
     if (activeIndex < agents.length - 1) {
@@ -46,7 +39,14 @@
   });
 
   $effect(() => {
-    http.get(endpoints.agentMetric(isActive)).then(res => (agentMetric = res.data.data));
+    if (!agents || !agents.length) return;
+
+    const id = agents[activeIndex]?.id;
+    if (!id) return;
+
+    http.get(endpoints.agentMetric(id)).then(res => {
+      agentMetric = res.data.data;
+    });
   });
 </script>
 
@@ -54,7 +54,7 @@
   class="w-full h-auto px-6 sm:pt-6 sm:pb-1.5 rounded-[14px] dark:bg-[#0D0D0D] bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
   <div class="flex relative flex-col gap-4 items-start justify-between w-full">
     {#each agents as agent (agent.id)}
-      {#if isActive === agent.id}
+      {#if isActive.id === agent.id}
         <div
           class="w-full flex flex-col sm:flex-row justify-center items-start sm:justify-between sm:items-baseline">
           <div class="w-full flex flex-col justify-start items-start">
@@ -63,83 +63,88 @@
             <span class="text-sm text-[#99a1af]">System resource latest utilization trends</span>
           </div>
 
-          <div
-            class="flex justify-start items-center gap-3 w-fit absolute sm:static max-sm:-bottom-6 max-sm:start-1/2 max-sm:-translate-x-1/2">
-            <button class="cursor-pointer" onclick={prev} aria-label="prev slide" type="button">
-              <svg
-                class="rotate-180"
-                version="1.1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 50 50">
-                <path
-                  d="M0 0 C3.50602742 0.58046812 5.20849502 1.80123031 7.6875 4.3125 C8.28949219 4.90675781 8.89148437 5.50101563 9.51171875 6.11328125 C11.15761446 8.19981046 11.88713672 9.3374526 12 12 C10.63671875 14.0703125 10.63671875 14.0703125 8.6875 16.125 C8.05199219 16.80820312 7.41648438 17.49140625 6.76171875 18.1953125 C5.51591496 19.47150175 4.26108804 20.73891196 3 22 C2.01 22 1.02 22 0 22 C0.52162717 17.30535551 2.12514403 16.87485597 6 13 C-7.86 12.67 -21.72 12.34 -36 12 C-36 11.34 -36 10.68 -36 10 C-22.14 9.67 -8.28 9.34 6 9 C4.02 7.02 2.04 5.04 0 3 C0 2.01 0 1.02 0 0 Z"
-                  fill={$theme === 'dark' ? 'white' : '#0D0D0D'}
-                  transform="translate(37,14)" />
-              </svg></button>
-
-            <div class="flex justify-center items-center gap-3">
-              <button
-                aria-label="slide2"
-                onclick={() => (activeIndex = 0)}
-                class="h-5 group flex justify-center items-center {isActive === agent.id
-                  ? ''
-                  : 'cursor-pointer'}">
-                <div
-                  style="{isActive === agent.id
-                    ? 'box-shadow: 0 0 20px 1px rgba(0, 180, 120, 1);'
-                    : ''} "
-                  class=" transition-all rounded-full h-0.5 {isActive === agent.id
-                    ? 'w-6 bg-[#00b478]'
-                    : 'w-5 bg-[#0D0D0D]/30 dark:bg-white/20 group-hover:bg-[#00b478]/50'}">
-                </div>
-              </button>
-              <button
-                aria-label="slide1"
-                onclick={() => (activeIndex = 1)}
-                class="h-5 group flex justify-center items-center {isActive === agent.id
-                  ? ''
-                  : 'cursor-pointer'}">
-                <div
-                  style="{isActive === agent.id
-                    ? 'box-shadow: 0 0 20px 1px rgba(0, 180, 120, 1);'
-                    : ''} "
-                  class=" transition-all rounded-full h-0.5 {isActive === 'Main'
-                    ? 'w-6 bg-[#00b478]'
-                    : 'w-5 bg-[#0D0D0D]/30 dark:bg-white/20 group-hover:bg-[#00b478]/50'}">
-                </div>
+          {#if agents.length > 1}
+            <div
+              class="flex justify-start items-center gap-3 w-fit absolute sm:static max-sm:-bottom-6 max-sm:start-1/2 max-sm:-translate-x-1/2">
+              <button class="cursor-pointer" onclick={prev} aria-label="prev slide" type="button">
+                <svg
+                  class="rotate-180"
+                  version="1.1"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 50 50">
+                  <path
+                    d="M0 0 C3.50602742 0.58046812 5.20849502 1.80123031 7.6875 4.3125 C8.28949219 4.90675781 8.89148437 5.50101563 9.51171875 6.11328125 C11.15761446 8.19981046 11.88713672 9.3374526 12 12 C10.63671875 14.0703125 10.63671875 14.0703125 8.6875 16.125 C8.05199219 16.80820312 7.41648438 17.49140625 6.76171875 18.1953125 C5.51591496 19.47150175 4.26108804 20.73891196 3 22 C2.01 22 1.02 22 0 22 C0.52162717 17.30535551 2.12514403 16.87485597 6 13 C-7.86 12.67 -21.72 12.34 -36 12 C-36 11.34 -36 10.68 -36 10 C-22.14 9.67 -8.28 9.34 6 9 C4.02 7.02 2.04 5.04 0 3 C0 2.01 0 1.02 0 0 Z"
+                    fill={$theme === 'dark' ? 'white' : '#0D0D0D'}
+                    transform="translate(37,14)" />
+                </svg>
               </button>
 
-              <button
-                aria-label="slide3"
-                onclick={() => (activeIndex = 2)}
-                class="h-5 group flex justify-center items-center {isActive === agent.id
-                  ? ''
-                  : 'cursor-pointer'}">
-                <div
-                  style="{isActive === agent.id
-                    ? 'box-shadow: 0 0 20px 1px rgba(0, 180, 120, 1);'
-                    : ''} "
-                  class=" transition-all rounded-full h-0.5 {isActive === agent.id
-                    ? 'w-6 bg-[#00b478]'
-                    : 'w-5 bg-[#0D0D0D]/30 dark:bg-white/20 group-hover:bg-[#00b478]/50'}">
-                </div>
-              </button>
+              <div class="flex justify-center items-center gap-3">
+                <button
+                  aria-label="slide1"
+                  onclick={() => (activeIndex = 0)}
+                  class="h-5 group flex justify-center items-center {activeIndex === 0
+                    ? ''
+                    : 'cursor-pointer'}">
+                  <div
+                    style="{activeIndex === 0
+                      ? 'box-shadow: 0 0 20px 1px rgba(0, 180, 120, 1);'
+                      : ''} "
+                    class=" transition-all rounded-full h-0.5 {activeIndex === 0
+                      ? 'w-6 bg-[#00b478]'
+                      : 'w-5 bg-[#0D0D0D]/30 dark:bg-white/20 group-hover:bg-[#00b478]/50'}">
+                  </div>
+                </button>
+                <button
+                  aria-label="slide2"
+                  onclick={() => (activeIndex = 1)}
+                  class="h-5 group flex justify-center items-center {activeIndex === 1
+                    ? ''
+                    : 'cursor-pointer'}">
+                  <div
+                    style="{activeIndex === 1
+                      ? 'box-shadow: 0 0 20px 1px rgba(0, 180, 120, 1);'
+                      : ''} "
+                    class=" transition-all rounded-full h-0.5 {activeIndex === 1
+                      ? 'w-6 bg-[#00b478]'
+                      : 'w-5 bg-[#0D0D0D]/30 dark:bg-white/20 group-hover:bg-[#00b478]/50'}">
+                  </div>
+                </button>
+
+                {#if agent.length > 2}
+                  <button
+                    aria-label="slide3"
+                    onclick={() => (activeIndex = 2)}
+                    class="h-5 group flex justify-center items-center {activeIndex === 2
+                      ? ''
+                      : 'cursor-pointer'}">
+                    <div
+                      style="{activeIndex === 2
+                        ? 'box-shadow: 0 0 20px 1px rgba(0, 180, 120, 1);'
+                        : ''} "
+                      class=" transition-all rounded-full h-0.5 {activeIndex === 2
+                        ? 'w-6 bg-[#00b478]'
+                        : 'w-5 bg-[#0D0D0D]/30 dark:bg-white/20 group-hover:bg-[#00b478]/50'}">
+                    </div>
+                  </button>
+                {/if}
+              </div>
+              <button class="cursor-pointer" onclick={next} aria-label="next slide" type="button">
+                <svg
+                  version="1.1"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 50 50">
+                  <path
+                    d="M0 0 C3.50602742 0.58046812 5.20849502 1.80123031 7.6875 4.3125 C8.28949219 4.90675781 8.89148437 5.50101563 9.51171875 6.11328125 C11.15761446 8.19981046 11.88713672 9.3374526 12 12 C10.63671875 14.0703125 10.63671875 14.0703125 8.6875 16.125 C8.05199219 16.80820312 7.41648438 17.49140625 6.76171875 18.1953125 C5.51591496 19.47150175 4.26108804 20.73891196 3 22 C2.01 22 1.02 22 0 22 C0.52162717 17.30535551 2.12514403 16.87485597 6 13 C-7.86 12.67 -21.72 12.34 -36 12 C-36 11.34 -36 10.68 -36 10 C-22.14 9.67 -8.28 9.34 6 9 C4.02 7.02 2.04 5.04 0 3 C0 2.01 0 1.02 0 0 Z"
+                    fill={$theme === 'dark' ? 'white' : '#0D0D0D'}
+                    transform="translate(37,14)" />
+                </svg></button>
             </div>
-            <button class="cursor-pointer" onclick={next} aria-label="next slide" type="button">
-              <svg
-                version="1.1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 50 50">
-                <path
-                  d="M0 0 C3.50602742 0.58046812 5.20849502 1.80123031 7.6875 4.3125 C8.28949219 4.90675781 8.89148437 5.50101563 9.51171875 6.11328125 C11.15761446 8.19981046 11.88713672 9.3374526 12 12 C10.63671875 14.0703125 10.63671875 14.0703125 8.6875 16.125 C8.05199219 16.80820312 7.41648438 17.49140625 6.76171875 18.1953125 C5.51591496 19.47150175 4.26108804 20.73891196 3 22 C2.01 22 1.02 22 0 22 C0.52162717 17.30535551 2.12514403 16.87485597 6 13 C-7.86 12.67 -21.72 12.34 -36 12 C-36 11.34 -36 10.68 -36 10 C-22.14 9.67 -8.28 9.34 6 9 C4.02 7.02 2.04 5.04 0 3 C0 2.01 0 1.02 0 0 Z"
-                  fill={$theme === 'dark' ? 'white' : '#0D0D0D'}
-                  transform="translate(37,14)" />
-              </svg></button>
-          </div>
+          {/if}
         </div>
 
         <div
@@ -156,7 +161,7 @@
             </div>
 
             <span class="dark:text-white text-xs md:text-sm xl:text-base 2xl:text-lg"
-              >{agentMetric.avg_cpu_usage}%</span>
+              >{agentMetric?.avg_cpu_usage}%</span>
           </div>
           <div
             class="h-full w-50 md:w-fit xl:w-fit flex justify-center items-center gap-4 xl:px-4 xl:py-3 rounded-[10px] xl:bg-[#F9FAFB] dark:xl:bg-[#121212] xl:border border-[#0D0D0D]/5 dark:border-white/5">
@@ -170,7 +175,7 @@
             </div>
 
             <span class="dark:text-white text-xs md:text-sm xl:text-base 2xl:text-lg"
-              >{agentMetric.avg_memory_usage}%</span>
+              >{agentMetric?.avg_memory_usage}%</span>
           </div>
           <div
             class="h-full w-50 md:w-fit xl:w-fit flex justify-center items-center gap-4 xl:px-4 xl:py-3 rounded-[10px] xl:bg-[#F9FAFB] dark:xl:bg-[#121212] xl:border border-[#0D0D0D]/5 dark:border-white/5">
@@ -184,21 +189,22 @@
             </div>
 
             <span class="dark:text-white text-xs md:text-sm xl:text-base 2xl:text-lg"
-              >{agentMetric.latest_disk_usage}%</span>
+              >{agentMetric?.latest_disk_usage}%</span>
           </div>
         </div>
-
-        <Chart
-          data={[
-            {
-              name: 'CPU',
-              data: agentMetric.cpu,
-            },
-            {
-              name: 'Memory',
-              data: agentMetric.memory,
-            },
-          ]} />
+        {#if agentMetric}
+          <Chart
+            data={[
+              {
+                name: 'CPU',
+                data: agentMetric?.cpu,
+              },
+              {
+                name: 'Memory',
+                data: agentMetric?.memory,
+              },
+            ]} />
+        {/if}
       {/if}
     {/each}
   </div>

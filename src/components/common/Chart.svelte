@@ -49,12 +49,12 @@
 
     fill: {
       type: 'gradient',
-      colors: ['#3b82f6', '#a855f7', '#10b981'],
+      colors: ['#a855f7', '#3b82f6', '#10b981'],
       gradient: {
         shade: '',
         type: 'vertical',
         shadeIntensity: 0.5,
-        gradientToColors: ['#3b82f6', '#a855f7', '#10b981'],
+        gradientToColors: ['#a855f7', '#3b82f6', '#10b981'],
         opacityFrom: 0.6,
         opacityTo: 0.1,
         stops: [0, 90, 100],
@@ -94,7 +94,7 @@
       y: { formatter: val => (val ? `${val} %` : '-') },
     },
 
-    colors: ['#3b82f6', '#a855f7', '#10b981'],
+    colors: ['#a855f7', '#3b82f6', '#10b981'],
   };
 
   onMount(() => {
@@ -137,6 +137,7 @@
 
 <div bind:this={chartEl} class="w-full mt-auto {$theme === 'dark' ? 'theme-dark' : 'theme-light'}">
 </div>
+
 <style>
   :global(.theme-dark .apexcharts-tooltip) {
     background: rgba(0, 0, 0, 0.4) !important;
