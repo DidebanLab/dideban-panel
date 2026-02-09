@@ -139,7 +139,10 @@
         <div
           class="absolute z-10 bottom-4 xl:bottom-6 w-full flex flex-row-reverse gap-0.5 justify-between items-end px-4.25">
           {#await http.get(endpoints.checkHistory(item.id), { params: { short: true } }) then res}
-            {#each res.data.data.slice(isMobile ? -31 : -53) as detail (detail[0])}
+            {@const REQUIRED_COUNT = isMobile ? 31 : 50}
+            {@const items = res.data.data.slice(-REQUIRED_COUNT)}
+            {@const missingCount = REQUIRED_COUNT - items.length}
+            {#each items as detail (detail[0])}
               {@const status = detail[1]}
               {@const id = detail[0]}
               <button
@@ -168,7 +171,7 @@
                     ? 'bg-[#F97316]'
                     : status === 'up'
                       ? 'bg-green-700'
-                      : 'bg-[#FFFFFF]/5'}">
+                      : 'bg-[#FFFFFF]/10'}">
                 {#if history}
                   <div
                     class="absolute w-fit group-hover:flex hidden bottom-10 start-1/2 -translate-x-1/2 rounded-xl text-white bg-white/40 dark:bg-black/80 backdrop-blur-md dark:backdrop-blur-3xl border-[#0D0D0D]/5 border dark:border-white/10 px-3 py-2 flex-col justify-start items-start gap-1">
@@ -211,6 +214,9 @@
                   </div>
                 {/if}
               </button>
+            {/each}
+            {#each Array(missingCount) as _, i}
+              <div aria-hidden="true" class="w-4 h-4 rounded-[1px] bg-[#FFFFFF]/10 opacity-50" ></div>
             {/each}
           {/await}
         </div>
