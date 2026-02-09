@@ -7,12 +7,8 @@ export const LIMITATIONS = {
 
 export const AGENT_LIMIT = {
   intervalSeconds: {
-    min: 1,
-    max: 5,
-  },
-  timeoutSeconds: {
-    min: 1,
-    max: 10,
+    min: 10,
+    max: 86400,
   },
 };
 

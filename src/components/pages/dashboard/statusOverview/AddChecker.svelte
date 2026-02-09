@@ -376,7 +376,7 @@
         onclick={() => {
           addCheckerHandler();
           closer({
-            id: 'create-addCheckers',
+            id: 'create-checks',
           });
         }}
         type="button"
