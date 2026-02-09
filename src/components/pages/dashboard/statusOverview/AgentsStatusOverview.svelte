@@ -140,7 +140,10 @@
         <div
           class="absolute z-10 bottom-4 xl:bottom-6 w-full flex ltr:flex-row-reverse gap-0.5 justify-between items-end px-4.25">
           {#await http.get(endpoints.agentHistory(item.id), { params: { short: true } }) then res}
-            {#each res.data.data.slice(isMobile ? -31 : -53) as detail (detail[0])}
+            {@const REQUIRED_COUNT = isMobile ? 31 : 50}
+            {@const items = res.data.data.slice(-REQUIRED_COUNT)}
+            {@const missingCount = REQUIRED_COUNT - items.length}
+            {#each items as detail (detail[0])}
               {@const status = detail[1]}
               {@const id = detail[0]}
               {@const error = status === 'offline'}
@@ -337,6 +340,10 @@
                     </div>
                   </div>{/if}
               </button>
+            {/each}
+            {#each Array(missingCount) as _, i}
+              <div aria-hidden="true" class="w-4 h-4 rounded-[1px] bg-[#FFFFFF]/10 opacity-50">
+              </div>
             {/each}
           {/await}
         </div>
