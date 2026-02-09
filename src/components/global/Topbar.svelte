@@ -6,9 +6,9 @@
   import { page } from '$app/stores';
   let alerts = $state([]);
 
-  onMount(() => {
-    http.get(endpoints.alerts).then(res => (alerts = res.data));
-  });
+  // onMount(() => {
+  //   http.get(endpoints.alerts).then(res => (alerts = res.data));
+  // });
 </script>
 
 <div class="mt-20 2xl:mt-4">

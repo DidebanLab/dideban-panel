@@ -1,5 +1,6 @@
 <script>
   import { page } from '$app/stores';
+  import Alert from '../components/global/Alert.svelte';
   import Modal from '../components/global/Modal.svelte';
   import Sidebar from '../components/global/sidebar/Sidebar.svelte';
   import Topbar from '../components/global/Topbar.svelte';
@@ -16,6 +17,7 @@
   <Modal />
   <Sidebar />
 {/if}
+<Alert />
 
 <MainLayout>
   {#if $page.url.pathname !== '/login'}
