@@ -25,6 +25,7 @@
       <span class="text-sm text-[#99a1af] capitalize">Infrastructure Nodes & Cluster Health</span>
     </div>
     <button
+      type="button"
       onclick={() => {
         opener({
           id: 'create-agents',

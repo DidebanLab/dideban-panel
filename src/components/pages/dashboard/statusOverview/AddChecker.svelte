@@ -1,4 +1,5 @@
 <script>
+  import { onMount } from 'svelte';
   import { endpoints } from '../../../../endpoints.svelte';
   import { http } from '../../../../services/http.svelte';
   import { alertStore } from '../../../../stores/alert.svelte';
@@ -14,6 +15,11 @@
       return acc;
     }, {});
   }
+  let nameInput;
+
+  onMount(() => {
+    nameInput?.focus();
+  });
 
   let body = $state('');
   let httpConfig = $state({
@@ -80,6 +86,7 @@
     <div class="flex flex-col justify-start items-start gap-1.5 w-full">
       <span class="text-black dark:text-white text-sm">Name</span>
       <input
+        bind:this={nameInput}
         bind:value={form.name}
         placeholder="Please enter the checker name"
         class="px-3 h-9 w-full bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-lg placeholder:text-gray-400/40 text-gray-400 text-sm outline-none tracking-wide"

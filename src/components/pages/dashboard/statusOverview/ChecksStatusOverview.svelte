@@ -27,6 +27,7 @@
       <span class="text-sm text-[#99a1af]">Microservices Health & Availability</span>
     </div>
     <button
+      type="button"
       onclick={() => {
         opener({
           id: `create-checks`,
