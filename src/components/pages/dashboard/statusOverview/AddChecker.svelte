@@ -6,6 +6,8 @@
   import { closer } from '../../../../stores/modal.svelte';
   import Select from '../../../common/Select.svelte';
   import { CHECK_LIMIT } from '../../../config.svelte';
+  import { fly } from 'svelte/transition';
+  import { checkerNameRegex, checkerTargetRegexes } from '../../../../validators.svelte';
 
   function normalizeHeaders(headersArray) {
     return headersArray.reduce((acc, { key, value }) => {
@@ -16,10 +18,6 @@
     }, {});
   }
   let nameInput;
-
-  onMount(() => {
-    nameInput?.focus();
-  });
 
   let body = $state('');
   let httpConfig = $state({
@@ -73,6 +71,10 @@
       });
     });
   }
+
+  onMount(() => {
+    nameInput?.focus();
+  });
 </script>
 
 <div
@@ -91,6 +93,15 @@
         placeholder="Please enter the checker name"
         class="px-3 h-9 w-full bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-lg placeholder:text-gray-400/40 text-gray-400 text-sm outline-none tracking-wide"
         type="text" />
+
+      {#if !checkerNameRegex.test(form.name)}
+        <span
+          in:fly={{ y: -5, duration: 500 }}
+          out:fly={{ y: -5, duration: 200 }}
+          class="mt-1 block text-xs text-red-400">
+          Name must be 1–100 characters and contain only letters, numbers, space, "-" or "_"
+        </span>
+      {/if}
     </div>
     <div
       class="w-full flex flex-col sm:flex-row justify-start sm:justify-between items-start gap-6 z-11">
@@ -114,6 +125,19 @@
               : 'Please select a type first'}
           class="px-3 h-9 w-full bg-[#0D0D0D]/5 dark:bg-white/5 disabled:opacity-50 disabled:cursor-not-allowed backdrop-blur-sm rounded-lg placeholder:text-gray-400/40 text-gray-400 text-sm outline-none tracking-wide"
           type="text" />
+
+        {#if (form.target && form.type === 'http' && !checkerTargetRegexes.http.test(form.target)) || (form.type === 'ping' && !checkerTargetRegexes.ping.test(form.target))}
+          <span
+            in:fly={{ y: -5, duration: 500 }}
+            out:fly={{ y: -5, duration: 200 }}
+            class="mt-1 block text-xs text-red-400 tracking-tight">
+            {#if form.type === 'http'}
+              Must be a valid URL (http/https + host/port/path)
+            {:else if form.type === 'ping'}
+              Must be a valid hostname or IPv4
+            {/if}
+          </span>
+        {/if}
       </div>
     </div>
 
@@ -390,7 +414,14 @@
     {/if}
     <div class="w-full flex justify-between items-center md:mt-10">
       <button
-        disabled={!(form.name && form.target)}
+        disabled={!(
+          (form.name &&
+            form.target &&
+            checkerNameRegex.test(form.name) &&
+            form.type === 'http' &&
+            checkerTargetRegexes.http.test(form.target)) ||
+          (form.type === 'ping' && checkerTargetRegexes.ping.test(form.target))
+        )}
         onclick={() => {
           addCheckerHandler();
         }}
