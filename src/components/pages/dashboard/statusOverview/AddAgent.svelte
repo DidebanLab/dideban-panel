@@ -8,7 +8,7 @@
 
   const form = $state({
     enabled: true,
-    name: '',
+    name: null,
     interval_seconds: 10,
   });
 

@@ -12,13 +12,7 @@
   let historyDetail = $state();
 
   onMount(() => {
-    http
-      .get(endpoints.agents, {
-        params: {
-          page_size: 3,
-        },
-      })
-      .then(res => (agents = res.data.data));
+    http.get(endpoints.agents).then(res => (agents = res.data.data));
   });
 </script>
 
@@ -139,9 +133,9 @@
         </div>
         <div
           class="absolute z-10 bottom-4 xl:bottom-6 w-full flex ltr:flex-row-reverse gap-0.5 justify-between items-end px-4.25">
-          {#await http.get(endpoints.agentHistory(item.id), { params: { short: true } }) then res}
+          {#await http.get( endpoints.agentHistory(item.id), { params: { short: true, page_size: isMobile ? 31 : 50 } }, ) then res}
             {@const REQUIRED_COUNT = isMobile ? 31 : 50}
-            {@const items = res.data.data.slice(-REQUIRED_COUNT)}
+            {@const items = res.data.data}
             {@const missingCount = REQUIRED_COUNT - items.length}
             {#each items as detail (detail[0])}
               {@const status = detail[1]}
@@ -344,7 +338,9 @@
               </button>
             {/each}
             {#each Array(missingCount) as _, i}
-              <div aria-hidden="true" class="w-4 h-4 rounded-[1px] bg-black/20 dark:bg-[#FFFFFF]/10 opacity-70">
+              <div
+                aria-hidden="true"
+                class="w-4 h-4 rounded-[1px] bg-black/20 dark:bg-[#FFFFFF]/10 opacity-70">
               </div>
             {/each}
           {/await}

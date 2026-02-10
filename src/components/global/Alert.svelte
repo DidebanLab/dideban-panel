@@ -42,7 +42,7 @@
 
     const timer = setTimeout(() => {
       alertStore.removeAlert(alerts[0].id);
-    }, 3000);
+    }, 4000);
 
     return () => clearTimeout(timer);
   });
@@ -72,12 +72,12 @@
         class="absolute start-4 top-4.5" />
 
       <div class="flex flex-col justify-center items-start">
-        <p class="indent-7 leading-relaxed text-black dark:text-white first-letter:capitalize">
+        <p class="ps-7 leading-relaxed text-black dark:text-white first-letter:capitalize">
           {alert.message}
         </p>
 
         {#if alert?.details}
-          <p class="indent-7 leading-relaxed text-[#99A1AF] first-letter:capitalize">
+          <p class="ps-7 leading-relaxed text-[#99A1AF] first-letter:capitalize">
             {alert.details}
           </p>
         {/if}

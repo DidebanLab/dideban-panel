@@ -26,8 +26,8 @@
   });
   let pingConfig = $state({ count: 3, size: 200, interval: 100 });
   let form = $state({
-    name: '',
-    target: '',
+    name: null,
+    target: null,
     timeout_seconds: 10,
     interval_seconds: 20,
     enabled: true,

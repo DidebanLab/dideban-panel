@@ -226,7 +226,9 @@
               </button>
             {/each}
             {#each Array(missingCount) as _, i}
-              <div aria-hidden="true" class="w-4 h-4 rounded-[1px] bg-black/20 dark:bg-[#FFFFFF]/10 opacity-70">
+              <div
+                aria-hidden="true"
+                class="w-4 h-4 rounded-[1px] bg-black/20 dark:bg-[#FFFFFF]/10 opacity-70">
               </div>
             {/each}
           {/await}
