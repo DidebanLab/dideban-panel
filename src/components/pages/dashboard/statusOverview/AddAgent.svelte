@@ -6,12 +6,15 @@
   import { closer } from '../../../../stores/modal.svelte';
   import Select from '../../../common/Select.svelte';
   import { AGENT_LIMIT } from '../../../config.svelte';
+  import { agentNameRegex } from '../../../../validators.svelte';
+  import { fly } from 'svelte/transition';
 
   const form = $state({
     enabled: true,
     name: null,
     interval_seconds: 10,
   });
+
   let nameInput;
 
   onMount(() => {
@@ -59,6 +62,14 @@
           placeholder="Please enter the checker name"
           class="px-3 h-9 w-full bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-lg placeholder:text-gray-400/40 text-gray-400 text-sm outline-none tracking-wide"
           type="text" />
+        {#if !agentNameRegex.test(form.name)}
+          <span
+            in:fly={{ y: -5, duration: 500 }}
+            out:fly={{ y: -5, duration: 200 }}
+            class="mt-1 block text-xs text-red-400">
+            Name must be 1–100 characters and contain only letters, numbers, space, "-" or "_"
+          </span>
+        {/if}
       </div>
       <div class="flex justify-between items-center text-sm w-full">
         <div class="flex justify-start items-center gap-1">
@@ -157,7 +168,7 @@
     {#if !token}
       <div class="w-full flex justify-between items-center md:mt-10">
         <button
-          disabled={!(form.name && form.interval_seconds)}
+          disabled={!(form.name && form.interval_seconds && agentNameRegex.test(form.name))}
           onclick={() => {
             addAgentHandler();
           }}
