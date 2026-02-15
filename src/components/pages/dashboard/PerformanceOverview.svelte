@@ -204,11 +204,11 @@
             data={[
               {
                 name: 'CPU',
-                data: agentMetric?.cpu,
+                data: [...agentMetric?.cpu].reverse(),
               },
               {
                 name: 'Memory',
-                data: agentMetric?.memory,
+                data: [...agentMetric?.memory].reverse(),
               },
             ]} />
         {/if}
