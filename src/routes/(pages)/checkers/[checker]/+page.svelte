@@ -286,6 +286,11 @@
               </button>
               <button
                 onclick={() => {
+                  opener({
+                    id: 'delete-checker',
+                    content: EditChecker,
+                    props: { data },
+                  });
                   isEditSelectorBox = false;
                 }}
                 class="border border-white/5 bg-[#b7b7b799]/10 w-full text-center rounded-md text-sm py-1 cursor-pointer"

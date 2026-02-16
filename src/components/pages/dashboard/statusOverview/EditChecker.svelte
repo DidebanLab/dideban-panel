@@ -2,79 +2,115 @@
   import { onMount } from 'svelte';
   import { endpoints } from '../../../../endpoints.svelte';
   import { http } from '../../../../services/http.svelte';
+  import { alertStore } from '../../../../stores/alert.svelte';
   import { closer } from '../../../../stores/modal.svelte';
   import Select from '../../../common/Select.svelte';
-  import { AGENT_LIMIT, CHECK_LIMIT } from '../../../config.svelte';
-  import { page } from '$app/stores';
+  import { CHECK_LIMIT } from '../../../config.svelte';
+  import { fly } from 'svelte/transition';
+  import { checkerNameRegex, checkerTargetRegexes } from '../../../../validators.svelte';
 
-  const { name } = $props();
-  let data = $state('');
-  let body = $state('');
+  const { data } = $props(); // 👈 داده ورودی برای ادیت
+
+  function normalizeHeaders(headersArray) {
+    return headersArray.reduce((acc, { key, value }) => {
+      if (key && value) acc[key] = value;
+      return acc;
+    }, {});
+  }
+
+  let nameInput;
+
+  let body = $state(data?.config?.body ?? '');
+
   let httpConfig = $state({
-    method: 'GET',
-    expected_status: 200,
-    expected_content: '',
-    follow_redirects: true,
-    verify_ssl: true,
-    headers: [{ key: '', value: '' }],
+    method: data?.config?.method,
+    expected_status: data?.config?.expected_status ?? 200,
+    expected_content: data?.config?.expected_content ?? '',
+    follow_redirects: data?.config?.follow_redirects,
+    verify_ssl: data?.config?.verify_ssl,
+    headers: data?.config?.headers
+      ? Object.entries(data.config.headers).map(([key, value]) => ({ key, value }))
+      : [{ key: '', value: '' }],
   });
-  let pingConfig = $state({ count: 3, packet_size: 200 });
+
+  let pingConfig = $state({
+    count: data?.config?.count,
+    size: data?.config?.size,
+    interval: data?.config?.interval,
+  });
+
   let form = $state({
-    name: '',
-    target: '',
-    timeoutSeconds: 3,
-    intervalSeconds: 3,
-    enabled: true,
-    type: 'http',
+    name: data?.name,
+    target: data?.target,
+    timeout_seconds: data?.timeout_seconds,
+    interval_seconds: data?.interval_seconds,
+    enabled: data?.enabled ?? true,
+    type: data?.type,
   });
 
-  onMount(() => {
-    http.get(endpoints.checkers + name).then(res => {
-      data = res.data;
-      form = data.form;
-
-      if (form.type === 'http') {
-        httpConfig = data.config;
-        body = data.body;
-      } else if (form.type === 'ping') {
-        pingConfig = data.config;
-      }
-    });
-  });
-
-  function addCheckerHandler() {
+  function editCheckerHandler() {
     let detail = { ...form };
+
     if (form.type === 'http') {
-      if (form.method === 'PATCH') {
-        detail = { ...detail, config: { ...httpConfig, body } };
+      const normalizedHeaders = normalizeHeaders(httpConfig.headers);
+
+      const config = {
+        ...httpConfig,
+        headers: normalizedHeaders,
+      };
+
+      if (httpConfig.method === 'PATCH' || httpConfig.method === 'POST') {
+        detail = { ...detail, config: { ...config, body } };
       } else {
-        detail = { ...detail, config: httpConfig };
+        detail = { ...detail, config };
       }
     } else if (form.type === 'ping') {
       detail = { ...detail, config: { ...pingConfig } };
-    } else {
-      return;
     }
-    http.patch(endpoints.checkers + id, detail);
+
+    http.patch(`${endpoints.checks}/${data.id}`, detail).then(res => {
+      alertStore.addAlert({
+        message: `checker ${res.data.data.name} updated successfully.`,
+        type: 'successful',
+      });
+
+      closer({ id: 'edit-check' });
+    });
   }
+
+  onMount(() => {
+    nameInput?.focus();
+  });
 </script>
 
 <div
-  class="bg-[#F9FAFB] dark:bg-[#121212] backdrop-blur-3xl border border-[#0D0D0D]/5 dark:border-white/10 rounded-xl w-150 flex flex-col">
+  class="bg-[#F9FAFB] dark:bg-[#121212] backdrop-blur-3xl border border-[#0D0D0D]/5 dark:border-white/10 rounded-xl w-[90vw] max-h-[90vh] md:h-fit sm:w-150 flex flex-col">
   <div
-    class=" text-black dark:text-white border-b py-2 border-b-[#0D0D0D]/5 dark:border-b-white/10 flex justify-center items-center text-base capitalize">
-    Edit checker
+    class="relative text-black dark:text-white border-b py-2 border-b-[#0D0D0D]/5 dark:border-b-white/10 flex justify-center items-center text-base capitalize">
+    Edit check
   </div>
-  <div class="relative flex flex-col justify-start items-start p-6 gap-6">
+  <div
+    class="relative flex flex-col justify-start items-start p-6 gap-6 custom-scroll overflow-y-auto">
     <div class="flex flex-col justify-start items-start gap-1.5 w-full">
       <span class="text-black dark:text-white text-sm">Name</span>
       <input
+        bind:this={nameInput}
         bind:value={form.name}
         placeholder="Please enter the checker name"
         class="px-3 h-9 w-full bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-lg placeholder:text-gray-400/40 text-gray-400 text-sm outline-none tracking-wide"
         type="text" />
+
+      {#if !checkerNameRegex.test(form.name)}
+        <span
+          in:fly={{ y: -5, duration: 500 }}
+          out:fly={{ y: -5, duration: 200 }}
+          class="mt-1 block text-xs text-red-400">
+          Name must be 1–100 characters and contain only letters, numbers, space, "-" or "_"
+        </span>
+      {/if}
     </div>
-    <div class="w-full flex justify-between items-start gap-6 z-11">
+    <div
+      class="w-full flex flex-col sm:flex-row justify-start sm:justify-between items-start gap-6 z-11">
       <div class="flex flex-col justify-start items-start gap-1.5 w-full">
         <span class="text-black dark:text-white text-sm">Type</span>
         <Select
@@ -95,6 +131,19 @@
               : 'Please select a type first'}
           class="px-3 h-9 w-full bg-[#0D0D0D]/5 dark:bg-white/5 disabled:opacity-50 disabled:cursor-not-allowed backdrop-blur-sm rounded-lg placeholder:text-gray-400/40 text-gray-400 text-sm outline-none tracking-wide"
           type="text" />
+
+        {#if (form.target && form.type === 'http' && !checkerTargetRegexes.http.test(form.target)) || (form.type === 'ping' && !checkerTargetRegexes.ping.test(form.target))}
+          <span
+            in:fly={{ y: -5, duration: 500 }}
+            out:fly={{ y: -5, duration: 200 }}
+            class="mt-1 block text-xs text-red-400 tracking-tight">
+            {#if form.type === 'http'}
+              Must be a valid URL (http/https + host/port/path)
+            {:else if form.type === 'ping'}
+              Must be a valid hostname or IPv4
+            {/if}
+          </span>
+        {/if}
       </div>
     </div>
 
@@ -102,16 +151,15 @@
       <div class="flex flex-col gap-2 w-full">
         <div class="w-full flex flex-col rounded-xl border border-[#0D0D0D]/5 dark:border-white/10">
           <div
-            class="border-b border-b-[#0D0D0D]/5 dark:border-b-white/10 h-9 flex justify-center items-center w-full relative">
+            class="border-b border-b-[#0D0D0D]/5 dark:border-b-white/10 h-9 flex justify-start sm:justify-center items-center w-full relative">
             <span
-              class="flex justify-center items-center capitalize text-sm tracking-wide text-black dark:text-white px-3"
+              class="flex justify-center items-center capitalize text-sm tracking-wide text-black dark:text-white px-4"
               >{form.type} setting</span>
 
             {#if form.type === 'http'}
               <Select
                 className="w-[131.5px]! justify-end! bg-transparent! px-1.5! rounded-xl! h-6! z-2 absolute! end-1 "
                 bind:value={httpConfig.method}
-                title="Method"
                 options={[
                   { name: 'GET' },
                   { name: 'PUT' },
@@ -184,16 +232,16 @@
               <div class="relative w-15 flex">
                 <input
                   type="number"
-                  value={form.timeoutSeconds}
+                  value={form.timeout_seconds}
                   oninput={e => {
-                    form.timeoutSeconds = Number(e.target.value);
+                    form.timeout_seconds = Number(e.target.value);
                   }}
                   onblur={e => {
                     const value = Number(e.target.value);
                     if (Number.isNaN(value) || value < CHECK_LIMIT.timeoutSeconds.min)
-                      form.timeoutSeconds = CHECK_LIMIT.timeoutSeconds.min;
+                      form.timeout_seconds = CHECK_LIMIT.timeoutSeconds.min;
                     else if (value > CHECK_LIMIT.timeoutSeconds.max)
-                      form.timeoutSeconds = CHECK_LIMIT.timeoutSeconds.max;
+                      form.timeout_seconds = CHECK_LIMIT.timeoutSeconds.max;
                   }}
                   class="px-3 h-6.5 w-full bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-md text-gray-400 text-sm outline-none tracking-wide appearance-none text-center" />
 
@@ -203,8 +251,8 @@
                   <button
                     type="button"
                     onclick={() =>
-                      form.timeoutSeconds < CHECK_LIMIT.timeoutSeconds.max &&
-                      (form.timeoutSeconds += 1)}
+                      form.timeout_seconds < CHECK_LIMIT.timeoutSeconds.max &&
+                      (form.timeout_seconds += 1)}
                     class="size-0.5 flex items-center justify-center text-gray-500 hover:text-gray-300 scale-75 cursor-pointer">
                     ▲
                   </button>
@@ -212,8 +260,8 @@
                   <button
                     type="button"
                     onclick={() =>
-                      form.timeoutSeconds > AGENT_LIMIT.timeoutSeconds.min &&
-                      (form.timeoutSeconds -= 1)}
+                      form.timeout_seconds > CHECK_LIMIT.timeoutSeconds.min &&
+                      (form.timeout_seconds -= 1)}
                     class="size-0.5 flex items-center justify-center text-gray-500 hover:text-gray-300 scale-75 cursor-pointer">
                     ▼
                   </button>
@@ -230,16 +278,16 @@
               <div class="relative w-15 flex">
                 <input
                   type="number"
-                  value={form.intervalSeconds}
+                  value={form.interval_seconds}
                   oninput={e => {
-                    form.intervalSeconds = Number(e.target.value);
+                    form.interval_seconds = Number(e.target.value);
                   }}
                   onblur={e => {
                     const value = Number(e.target.value);
-                    if (Number.isNaN(value) || value < AGENT_LIMIT.intervalSeconds.min)
-                      form.intervalSeconds = AGENT_LIMIT.intervalSeconds.min;
-                    else if (value > AGENT_LIMIT.intervalSeconds.max)
-                      form.intervalSeconds = AGENT_LIMIT.intervalSeconds.max;
+                    if (Number.isNaN(value) || value < CHECK_LIMIT.intervalSeconds.min)
+                      form.interval_seconds = CHECK_LIMIT.intervalSeconds.min;
+                    else if (value > CHECK_LIMIT.intervalSeconds.max)
+                      form.interval_seconds = CHECK_LIMIT.intervalSeconds.max;
                   }}
                   class="px-3 h-6.5 w-full bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-md text-gray-400 text-sm outline-none tracking-wide appearance-none text-center" />
 
@@ -249,8 +297,8 @@
                   <button
                     type="button"
                     onclick={() =>
-                      form.intervalSeconds < AGENT_LIMIT.intervalSeconds.max &&
-                      (form.intervalSeconds += 1)}
+                      form.interval_seconds < CHECK_LIMIT.intervalSeconds.max &&
+                      (form.interval_seconds += 1)}
                     class="size-0.5 flex items-center justify-center text-gray-500 hover:text-gray-300 scale-75 cursor-pointer">
                     ▲
                   </button>
@@ -258,8 +306,8 @@
                   <button
                     type="button"
                     onclick={() =>
-                      form.intervalSeconds > AGENT_LIMIT.intervalSeconds.min &&
-                      (form.intervalSeconds -= 1)}
+                      form.interval_seconds > CHECK_LIMIT.intervalSeconds.min &&
+                      (form.interval_seconds -= 1)}
                     class="size-0.5 flex items-center justify-center text-gray-500 hover:text-gray-300 scale-75 cursor-pointer">
                     ▼
                   </button>
@@ -361,7 +409,7 @@
                 </div>
 
                 <input
-                  bind:value={pingConfig.packet_size}
+                  bind:value={pingConfig.size}
                   class="px-3 h-6.5 w-15 bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-md placeholder:text-gray-400/40 text-gray-400 text-sm outline-none tracking-wide text-center"
                   type="text" />
               </div>
@@ -370,20 +418,23 @@
         </div>
       </div>
     {/if}
-    <button
-      disabled={!(form.name && form.target && form.type)}
-      onclick={() => {
-        addCheckerHandler();
-        closer({
-          id: 'create-editCheckers',
-        });
-      }}
-      type="button"
-      class="mt-10 me-auto w-fit px-10 text-sm text-[#10b981] h-8.5 flex justify-center items-center rounded-md cursor-pointer bg-[#22c55e]/10 hover:opacity-60 border border-[#00bc7d]/10 disabled:dark:opacity-30 disabled:opacity-50 disabled:cursor-not-allowed">
-      Edit Checker
-    </button>
-
-    <div class="absolute end-6 bottom-6">
+    <div class="w-full flex justify-between items-center md:mt-10">
+      <button
+        disabled={!(
+          (form.name &&
+            form.target &&
+            checkerNameRegex.test(form.name) &&
+            form.type === 'http' &&
+            checkerTargetRegexes.http.test(form.target)) ||
+          (form.type === 'ping' && checkerTargetRegexes.ping.test(form.target))
+        )}
+        onclick={() => {
+          editCheckerHandler();
+        }}
+        type="button"
+        class="me-auto w-fit px-5 sm:px-10 text-sm text-[#10b981] h-8.5 flex justify-center items-center rounded-md cursor-pointer bg-[#22c55e]/10 hover:opacity-60 border border-[#00bc7d]/10 disabled:opacity-50 disabled:dark:opacity-30 disabled:cursor-not-allowed">
+        Edit Checker
+      </button>
       <div class="flex justify-around items-center gap-3">
         <span class="text-sm w-[47.5px] {form.enabled ? 'text-[#00bc7d]' : 'text-[#6a7282]'}">
           {form.enabled ? 'Enabled' : 'Disabled'}
