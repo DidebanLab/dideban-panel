@@ -245,7 +245,7 @@
             <div class="w-full h-full bg-white/5"></div>
           </div>
           <div
-            class="relative flex items-center justify-center gap-2.5 bg-[#F87171]/10 w-full rounded-xl h-full py-px">
+            class="relative flex items-center justify-center gap-2.5 bg-[#fdc700]/10 w-full rounded-xl h-full py-px">
             <img
               class="absolute top-1/2 -translate-y-1/2 start-1 size-4"
               width="19"

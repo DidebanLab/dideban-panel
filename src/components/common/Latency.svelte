@@ -8,7 +8,7 @@
 
   const isMobile = $state(innerWidth < 645);
 
-  const { name = 'checker1' } = $props();
+  const { name } = $props();
 
   const timeline = ['d', 'm', 'y'];
 

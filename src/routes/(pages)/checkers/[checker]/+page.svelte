@@ -8,14 +8,14 @@
   import { http } from '../../../../services/http.svelte';
   import { endpoints } from '../../../../endpoints.svelte';
   import UptimeHistoryBox from '../../../../components/common/UptimeHistoryBox.svelte';
+  import DeleteChecker from '../../../../components/pages/checker/DeleteChecker.svelte';
 
-  const name = $page.params.checker;
-  let data = $state({
-    type: 'http',
-    target: 'https://darichetejarat.ir',
-    uptime: 50,
-    status: 'up',
-  });
+  const id = $page.params.checker;
+  let data = $state();
+  let timeRange = $state(24);
+  let isEditSelectorBox = $state(false);
+
+  let summary = $state();
 
   let uptimeData = $state([
     {
@@ -141,6 +141,11 @@
         return 'text-[#F97316]';
     }
   };
+
+  onMount(() => {
+    http.get(endpoints.checks + `/${id}`).then(res => (data = res.data?.data));
+    http.get(endpoints.checks + `/${id}/summery`).then(res => (summary = res.data?.data));
+  });
 </script>
 
 <section class="w-full m-auto h-auto flex flex-col col-span-10">
@@ -204,118 +209,356 @@
                 transform="translate(49,20)" />
             </svg>
           </div>
-
-          <span class="text-black dark:text-white text-xl capitalize">{name}</span>
+          <div class="flex flex-col justify-center items-start">
+            <span class="text-black dark:text-white text-xl capitalize">{data?.name}</span>
+            <div class="flex justify-end items-center gap-2 text-xs text-white/40">
+              <span class="flex justify-center items-center text-nowrap">Last Check :</span>
+              <span class="flex justify-center items-center text-nowrap tracking-wider"
+                >{data?.last_check || 'Jan 13th, 08:54:22'}</span>
+            </div>
+          </div>
         </div>
 
-        <div class="flex justify-end items-center gap-2 text-sm text-[#99a1af]">
-          <span class="flex justify-center items-center text-nowrap">Last Check :</span>
-          <span class="flex justify-center items-center text-nowrap tracking-wider"
-            >{data.last_check || 'Jan 13th, 08:54:22'}</span>
+        <div
+          class="flex text-white/20 w-88 py-2 justify-between px-5 text-sm items-center rounded-lg dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
+          <button
+            onclick={() => (timeRange = 1)}
+            class="transition-all duration-300 {timeRange === 1
+              ? 'text-[#3b82f6]'
+              : 'cursor-pointer'}">1h</button>
+
+          <div class="h-5 w-px bg-white/20"></div>
+          <button
+            onclick={() => (timeRange = 3)}
+            class="transition-all duration-300 {timeRange === 3
+              ? 'text-[#3b82f6]'
+              : 'cursor-pointer'}">3h</button>
+          <div class="h-5 w-px bg-white/20"></div>
+          <button
+            onclick={() => (timeRange = 6)}
+            class="transition-all duration-300 {timeRange === 6
+              ? 'text-[#3b82f6]'
+              : 'cursor-pointer'}">6h</button>
+          <div class="h-5 w-px bg-white/20"></div>
+          <button
+            onclick={() => (timeRange = 12)}
+            class="transition-all duration-300 {timeRange === 12
+              ? 'text-[#3b82f6]'
+              : 'cursor-pointer'}">12h</button>
+          <div class="h-5 w-px bg-white/20"></div>
+          <button
+            onclick={() => (timeRange = 24)}
+            class="transition-all duration-300 {timeRange === 24
+              ? 'text-[#3b82f6]'
+              : 'cursor-pointer'}">24h</button>
         </div>
       </div>
       <div
         class=" w-full flex 2xl:flex-row flex-col-reverse gap-4 justify-between items-center text-white text-base">
-        <Latency {name} />
+        <Latency name={data?.name} />
         <div
-          class="relative w-full 2xl:w-[18%] gap-3 flex 2xl:flex-col justify-start items-start mb-auto">
-          <div
-            class="flex w-full flex-col justify-between items-center overflow-hidden text-base text-white border border-[#0D0D0D]/5 dark:border-white/5 rounded-xl dark:bg-[#0D0D0D] bg-[#FFFFFF]">
-            <span class="py-3 text-center w-full 2xl:text-sm text-[#99a1af] dark:text-white">
-              {data.target}</span>
-          </div>
-          <div class="h-px w-full bg-[#0D0D0D]/5 dark:bg-white/5 hidden 2xl:block"></div>
-
-          <div
-            class="relative w-full flex justify-between items-center p-2 border border-[#0D0D0D]/5 dark:border-white/5 rounded-xl dark:bg-[#0D0D0D] bg-[#FFFFFF]">
-            <span
-              class="w-full relative flex justify-center items-center text-base tracking-wider {data.type ===
-              'ping'
-                ? 'text-[#3b82f6]'
-                : 'dark:text-white/20 text-[#99a1af]'}">Ping</span>
-            <span
-              class="w-px h-7.5 bg-[#0D0D0D]/5 dark:bg-white/5 border border-[#0D0D0D]/5 dark:border-white/5"
-            ></span>
-            <span
-              class="w-full relative flex justify-center items-center text-base tracking-wider {data.type ===
-              'http'
-                ? 'text-[#3b82f6]'
-                : 'dark:text-white/20 text-[#99a1af]'}"
-              >Http
-            </span>
-          </div>
-
-          <div
-            class="relative w-full flex justify-between items-center p-2 border border-[#0D0D0D]/5 dark:border-white/5 rounded-xl dark:bg-[#0D0D0D] bg-[#FFFFFF]">
-            <span
-              class="flex justify-center items-center w-full text-base dark:text-white/20 text-[#99a1af]"
-              >Uptime</span>
-            <span
-              class="w-px h-7.5 bg-[#0D0D0D]/5 dark:bg-white/5 border border-[#0D0D0D]/5 dark:border-white/5"
-            ></span>
-            <span
-              class="w-full relative flex justify-center items-center text-base tracking-wider text-[#F97316]"
-              >{data.uptime}%
-            </span>
-          </div>
-
-          <div
-            class="relative w-full flex justify-between items-center p-2 border border-[#0D0D0D]/5 dark:border-white/5 rounded-xl dark:bg-[#0D0D0D] bg-[#FFFFFF]">
-            <span
-              class="flex justify-center items-center w-full text-base dark:text-white/20 text-[#99a1af]"
-              >Status</span>
-            <span
-              class="w-px h-7.5 bg-[#0D0D0D]/5 dark:bg-white/5 border border-[#0D0D0D]/5 dark:border-white/5"
-            ></span>
-            <span
-              class="w-full relative flex justify-center items-center text-base tracking-wider capitalize {statusColorHandler(
-                data.status,
-              )}"
-              >{data.status}
-            </span>
-          </div>
-
+          class="relative w-full 2xl:w-[30%] gap-3 flex 2xl:flex-col justify-start items-start mb-auto">
           <button
+            aria-label="edit config selector"
             onclick={() => {
-              opener({
-                id: `create-editCheckers`,
-                content: EditChecker,
-                props: { name },
-              });
+              isEditSelectorBox = !isEditSelectorBox;
             }}
-            class="absolute right-0 -top-6 2xl:static ms-auto me-1 text-[#99a1af] dark:text-white/20 text-sm cursor-pointer hover:text-white/30">
-            Edit
+            class="absolute -top-6 cursor-pointer end-0 flex justify-end items-center gap-1 border border-[#0D0D0D]/5 dark:border-white/5 rounded-sm p-1 bg-[#0D0D0D]/5 dark:bg-white/5">
+            <span class="size-1 bg-white/40 rounded-full"></span>
+            <span class="size-1 bg-white/40 rounded-full"></span>
+            <span class="size-1 bg-white/40 rounded-full"></span>
           </button>
+
+          {#if isEditSelectorBox}
+            <div
+              class="absolute justify-center items-center end-0 -top-2 z-10 w-20 h-auto flex flex-col gap-1 border border-[#0D0D0D]/5 dark:border-white/5 rounded-lg p-1 bg-[#0D0D0D]/5 backdrop-blur-2xl">
+              <button
+                onclick={() => {
+                  opener({
+                    id: 'delete-checker',
+                    content: DeleteChecker,
+                    props: { name: data.name, id },
+                  });
+                  isEditSelectorBox = false;
+                }}
+                class="border border-red-600/20 w-full text-center rounded-md text-sm text-red-600/80 bg-red-600/10 py-1 cursor-pointer"
+                >Delete
+              </button>
+              <button
+                onclick={() => {
+                  isEditSelectorBox = false;
+                }}
+                class="border border-white/5 bg-[#b7b7b799]/10 w-full text-center rounded-md text-sm py-1 cursor-pointer"
+                >Edit</button>
+            </div>
+          {/if}
+          <div class="flex flex-col gap-3 justify-center w-full items-center overflow-hidden">
+            <div
+              class="relative w-full flex justify-between items-center p-2 border border-[#0D0D0D]/5 dark:border-white/5 rounded-xl dark:bg-[#0D0D0D] bg-[#FFFFFF]">
+              <span
+                class="w-full relative flex justify-center items-center text-base tracking-wider {data?.type ===
+                'ping'
+                  ? 'text-[#3b82f6]'
+                  : 'dark:text-white/20 text-[#99a1af]'}">Ping</span>
+              <span
+                class="w-px h-7.5 bg-[#0D0D0D]/5 dark:bg-white/5 border border-[#0D0D0D]/5 dark:border-white/5"
+              ></span>
+              <span
+                class="w-full relative flex justify-center items-center text-base tracking-wider {data?.type ===
+                'http'
+                  ? 'text-[#3b82f6]'
+                  : 'dark:text-white/20 text-[#99a1af]'}"
+                >Http
+              </span>
+            </div>
+            <div class="flex gap-2 justify-center items-center w-full">
+              <div
+                class=" border-[#2B7FFF]/20 dark:border-white/5 flex flex-col justify-between items-center p-1 rounded-[14px] border w-full relative overflow-hidden group">
+                <div
+                  class="absolute -top-5 end-0 size-0 rounded-full group-hover:top-5 group-hover:end-5 transition-all duration-700"
+                  style="box-shadow: 0 0 100px 30px rgba(0,102,255,1)">
+                  <div class="w-full h-full bg-white/5"></div>
+                </div>
+                <div
+                  class="relative flex items-center justify-center bg-[#2B7FFF]/10 w-full rounded-xl h-full py-1">
+                  <div
+                    class="flex justify-center items-center p-1 bg-[#2B7FFF]/20 absolute top-1/2 -translate-y-1/2 start-1 rounded-full">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="18"
+                      height="18"
+                      viewBox="0 0 50 50">
+                      <path
+                        d="M0 0 C3 2 3 2 5 5 C5.86581772 9.4012401 6.01108378 11.47398762 3.52734375 15.22265625 C-2.95356484 22.8043561 -2.95356484 22.8043561 -7.04296875 23.1953125 C-7.75066406 23.17210938 -8.45835938 23.14890625 -9.1875 23.125 C-10.445625 23.08375 -11.70375 23.0425 -13 23 C-12.67 22.01 -12.34 21.02 -12 20 C-10.948125 19.731875 -9.89625 19.46375 -8.8125 19.1875 C-4.28625582 17.77768624 -1.62364229 15.95880545 1 12 C1.66887173 8.82876903 1.66887173 8.82876903 1 6 C-0.86218169 3.77298541 -0.86218169 3.77298541 -3.6875 3.4375 C-8.61362869 4.27401242 -11.10325139 7.04085547 -14 11 C-15.04798094 13.39142787 -15.52415422 15.40928408 -16 18 C-16.66 18 -17.32 18 -18 18 C-18.52300693 14.86195844 -18.64665842 12.12712428 -18 9 C-13.26581233 2.5148114 -8.27480357 -1.36067516 0 0 Z"
+                        fill="#2B7FFF"
+                        transform="translate(41,4)" />
+                      <path
+                        d="M0 0 C1.8871875 0.061875 1.8871875 0.061875 3.8125 0.125 C3.4825 1.115 3.1525 2.105 2.8125 3.125 C1.760625 3.393125 0.70875 3.66125 -0.375 3.9375 C-4.90124418 5.34731376 -7.56385771 7.16619455 -10.1875 11.125 C-10.85637173 14.29623097 -10.85637173 14.29623097 -10.1875 17.125 C-8.32531831 19.35201459 -8.32531831 19.35201459 -5.5 19.6875 C-0.57387131 18.85098758 1.91575139 16.08414453 4.8125 12.125 C5.86048094 9.73357213 6.33665422 7.71571592 6.8125 5.125 C7.4725 5.125 8.1325 5.125 8.8125 5.125 C9.65080986 11.83147887 9.65080986 11.83147887 7.359375 15.3671875 C0.79088303 22.90163417 0.79088303 22.90163417 -5.0625 23.5625 C-8.40397704 23.45769352 -9.24568326 23.08621116 -12.1875 21.125 C-14.22910423 18.06259365 -15.0346899 15.96472834 -14.81640625 12.25390625 C-12.95928324 5.96737184 -6.66224659 -0.21843431 0 0 Z"
+                        fill="#2B7FFF"
+                        transform="translate(18.1875,22.875)" />
+                      <path
+                        d="M0 0 C-0.49685857 4.25310932 -2.91961357 6.32031258 -5.875 9.25 C-6.75929688 10.14203125 -7.64359375 11.0340625 -8.5546875 11.953125 C-11 14 -11 14 -14 14 C-13.50314143 9.74689068 -11.08038643 7.67968742 -8.125 4.75 C-7.24070312 3.85796875 -6.35640625 2.9659375 -5.4453125 2.046875 C-3 0 -3 0 0 0 Z"
+                        fill="#2B7FFF"
+                        transform="translate(32,18)" />
+                    </svg>
+                  </div>
+
+                  <span class="text-base text-black dark:text-white">Target</span>
+                </div>
+                <span class="text-sm p-4 xl:p-3 2xl:p-2.5 text-[#99a1af]">{data?.target}</span>
+                <svg
+                  class="opacity-5 absolute bottom-0 end-0"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="70"
+                  height="70"
+                  viewBox="0 0 50 50">
+                  <path
+                    d="M0 0 C3 2 3 2 5 5 C5.86581772 9.4012401 6.01108378 11.47398762 3.52734375 15.22265625 C-2.95356484 22.8043561 -2.95356484 22.8043561 -7.04296875 23.1953125 C-7.75066406 23.17210938 -8.45835938 23.14890625 -9.1875 23.125 C-10.445625 23.08375 -11.70375 23.0425 -13 23 C-12.67 22.01 -12.34 21.02 -12 20 C-10.948125 19.731875 -9.89625 19.46375 -8.8125 19.1875 C-4.28625582 17.77768624 -1.62364229 15.95880545 1 12 C1.66887173 8.82876903 1.66887173 8.82876903 1 6 C-0.86218169 3.77298541 -0.86218169 3.77298541 -3.6875 3.4375 C-8.61362869 4.27401242 -11.10325139 7.04085547 -14 11 C-15.04798094 13.39142787 -15.52415422 15.40928408 -16 18 C-16.66 18 -17.32 18 -18 18 C-18.52300693 14.86195844 -18.64665842 12.12712428 -18 9 C-13.26581233 2.5148114 -8.27480357 -1.36067516 0 0 Z"
+                    fill="#2B7FFF"
+                    transform="translate(41,4)" />
+                  <path
+                    d="M0 0 C1.8871875 0.061875 1.8871875 0.061875 3.8125 0.125 C3.4825 1.115 3.1525 2.105 2.8125 3.125 C1.760625 3.393125 0.70875 3.66125 -0.375 3.9375 C-4.90124418 5.34731376 -7.56385771 7.16619455 -10.1875 11.125 C-10.85637173 14.29623097 -10.85637173 14.29623097 -10.1875 17.125 C-8.32531831 19.35201459 -8.32531831 19.35201459 -5.5 19.6875 C-0.57387131 18.85098758 1.91575139 16.08414453 4.8125 12.125 C5.86048094 9.73357213 6.33665422 7.71571592 6.8125 5.125 C7.4725 5.125 8.1325 5.125 8.8125 5.125 C9.65080986 11.83147887 9.65080986 11.83147887 7.359375 15.3671875 C0.79088303 22.90163417 0.79088303 22.90163417 -5.0625 23.5625 C-8.40397704 23.45769352 -9.24568326 23.08621116 -12.1875 21.125 C-14.22910423 18.06259365 -15.0346899 15.96472834 -14.81640625 12.25390625 C-12.95928324 5.96737184 -6.66224659 -0.21843431 0 0 Z"
+                    fill="#2B7FFF"
+                    transform="translate(18.1875,22.875)" />
+                  <path
+                    d="M0 0 C-0.49685857 4.25310932 -2.91961357 6.32031258 -5.875 9.25 C-6.75929688 10.14203125 -7.64359375 11.0340625 -8.5546875 11.953125 C-11 14 -11 14 -14 14 C-13.50314143 9.74689068 -11.08038643 7.67968742 -8.125 4.75 C-7.24070312 3.85796875 -6.35640625 2.9659375 -5.4453125 2.046875 C-3 0 -3 0 0 0 Z"
+                    fill="#2B7FFF"
+                    transform="translate(32,18)" />
+                </svg>
+              </div>
+            </div>
+
+            <div class="h-px w-full bg-[#0D0D0D]/5 dark:bg-white/5 hidden 2xl:block"></div>
+            <div class="flex gap-2 justify-center items-center w-full">
+              <div
+                class="flex flex-col justify-between items-center p-1 rounded-[14px] border w-full h-full relative overflow-hidden group {data?.status ===
+                'up'
+                  ? 'border-[#00bc7d]/20'
+                  : data?.status === 'down' || data?.status === 'error'
+                    ? 'border-[#FB2C36]/15'
+                    : 'border-[#fdc700]/20'}">
+                <div
+                  class="absolute -top-5 end-0 size-0 rounded-full group-hover:top-5 group-hover:end-5 transition-all duration-700"
+                  style="box-shadow: 0 0 100px 30px {data?.status === 'up'
+                    ? '#00bc7d'
+                    : data?.status === 'down' || data?.status === 'error'
+                      ? '#FB2C36'
+                      : '#fdc700'}">
+                  <div class="w-full h-full bg-white/5"></div>
+                </div>
+                <div
+                  class="relative flex items-center justify-center w-full rounded-xl h-full py-1 {data?.status ===
+                  'up'
+                    ? 'bg-[#00bc7d]/10'
+                    : data?.status === 'down' || data?.status === 'error'
+                      ? 'bg-[#F87171]/10'
+                      : 'bg-[#fdc700]/10'}">
+                  <div
+                    class="flex justify-center items-center p-1 absolute top-1/2 -translate-y-1/2 start-1 rounded-full">
+                  </div>
+
+                  <span class="text-base text-black dark:text-white">Status</span>
+                </div>
+                <span
+                  class="text-lg p-4 xl:p-3 2xl:p-2.5 capitalize {data?.status === 'up'
+                    ? 'text-[#00bc7d]'
+                    : data?.status === 'down' || data?.status === 'error'
+                      ? 'text-[#F87171]'
+                      : 'text-[#fdc700]/10'}">{data?.status}</span>
+              </div>
+              <div
+                class="flex flex-col justify-between items-center p-1 rounded-[14px] border w-full h-full relative overflow-hidden group {data?.enabled
+                  ? 'border-[#00bc7d]/20'
+                  : 'border-[#FB2C36]/15'}">
+                <div
+                  class="absolute -top-5 end-0 size-0 rounded-full group-hover:top-5 group-hover:end-5 transition-all duration-700"
+                  style="box-shadow: 0 0 100px 30px {data?.enabled
+                    ? 'rgb(0,212,146,0.8)'
+                    : 'rgb(255,100,103)'};">
+                  <div class="w-full h-full bg-white/5"></div>
+                </div>
+                <div
+                  class=" relative flex items-center justify-center w-full rounded-xl h-full py-1 {data?.enabled
+                    ? 'bg-[#00bc7d]/10'
+                    : 'bg-[#F87171]/10'}">
+                  <div
+                    class="flex justify-center items-center p-1 absolute top-1/2 -translate-y-1/2 start-1 rounded-full {data?.enabled
+                      ? 'bg-[#00bc7d]/10'
+                      : ' bg-[##FB2C36]/10'}">
+                  </div>
+
+                  <span class="text-base text-black dark:text-white">Activation</span>
+                </div>
+                <span
+                  class="text-lg p-4 xl:p-3 2xl:p-2.5 {data?.enabled
+                    ? 'text-[#00bc7d]'
+                    : ' text-[#F87171]'}">{data?.enabled ? 'Enabled' : 'Disabled'}</span>
+              </div>
+            </div>
+
+            <div
+              class="flex flex-col gap-2 justify-center items-center w-full rounded-xl border p-1 border-[#0D0D0D]/5 dark:border-white/5 dark:bg-[#0D0D0D] bg-[#FFFFFF]">
+              <div
+                class="relative flex flex-col items-center justify-center w-full rounded-xl h-full py-1 bg-[#0D0D0D]/5 dark:bg-white/5">
+                <span class="text-base text-black dark:text-white">Summary</span>
+              </div>
+              <div class="flex justify-between gap-3 items-center text-sm w-full py-1 px-2">
+                <div class="flex flex-col justify-center items-start gap-3 w-full">
+                  <div class="flex justify-between items-center gap-1 w-full">
+                    <span class="text-black dark:text-[#99a1af]">Total Checks :</span>
+                    <span class="text-xs text-[#2B7FFF]">{summary?.summary?.total_checks}</span>
+                  </div>
+                  <div class="flex justify-between items-center gap-1 w-full">
+                    <span class="text-black dark:text-[#99a1af]">Total Satisfied :</span>
+                    <span class="text-xs text-[#2B7FFF]">{summary?.summary?.total_satisfied}</span>
+                  </div>
+                  <div class="flex justify-between items-center gap-1 w-full">
+                    <span class="text-black dark:text-[#99a1af]">Total Tolerating :</span>
+                    <span class="text-xs text-[#2B7FFF]">{summary?.summary?.total_tolerating}</span>
+                  </div>
+                  <div class="flex justify-between items-center gap-1 w-full">
+                    <span class="text-black dark:text-[#99a1af]">Total Frustrated :</span>
+                    <span class="text-xs text-[#2B7FFF]">{summary?.summary?.total_frustrated}</span>
+                  </div>
+                </div>
+
+                <div class="h-27 w-px bg-white/20"></div>
+                <div class="flex flex-col justify-center items-start gap-3 w-full">
+                  <div class="flex justify-between items-center gap-1 w-full">
+                    <span class="text-black dark:text-[#99a1af]">Uptime :</span>
+                    <span
+                      class="text-xs {summary?.summary?.uptime_percent >= 90
+                        ? 'text-green-500'
+                        : summary?.summary?.uptime_percent >= 80
+                          ? 'text-[#00D492]'
+                          : summary?.summary?.uptime_percent >= 70
+                            ? 'text-[#FDC700]'
+                            : summary?.summary?.uptime_percent >= 50
+                              ? 'text-[#F97316]'
+                              : 'text-[#F87171]'}">{summary?.summary?.uptime_percent}%</span>
+                  </div>
+                  <div class="flex justify-between items-center gap-1 w-full">
+                    <span class="text-black dark:text-[#99a1af]">Apdex Score :</span>
+                    <span
+                      class="text-xs {summary?.summary?.apdex_score >= 90
+                        ? 'text-green-500'
+                        : summary?.summary?.apdex_score >= 80
+                          ? 'text-[#00D492]'
+                          : summary?.summary?.apdex_score >= 70
+                            ? 'text-[#FDC700]'
+                            : summary?.summary?.apdex_score >= 50
+                              ? 'text-[#F97316]'
+                              : 'text-[#F87171]'}">{summary?.summary?.apdex_score}%</span>
+                  </div>
+                  <div class="flex justify-between items-center gap-1 w-full">
+                    <span class="text-black dark:text-[#99a1af]">Apdex Rating :</span>
+                    <span
+                      class="text-xs capitalize {summary?.summary?.apdex_rating?.toLowerCase() ===
+                      'excellent'
+                        ? 'text-green-500'
+                        : summary?.summary?.apdex_rating?.toLowerCase() === 'good'
+                          ? 'text-[#00D492]'
+                          : summary?.summary?.apdex_rating?.toLowerCase() === 'fair'
+                            ? 'text-[#FDC700]'
+                            : summary?.summary?.apdex_rating?.toLowerCase() === 'poor'
+                              ? 'text-[#F97316]'
+                              : 'text-[#F87171]'}">{summary?.summary?.apdex_rating}</span>
+                  </div>
+
+                  <div class="flex justify-between items-center gap-1 w-full">
+                    <span class="text-black dark:text-[#99a1af]">Avg RTime :</span>
+                    <span class="text-xs text-white bg-white/10 py-1 px-2 rounded-lg"
+                      >{summary?.summary?.avg_response_time} ms</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- <button
+              onclick={() => {
+                opener({
+                  id: `create-editCheckers`,
+                  content: EditChecker,
+                  props: { name },
+                });
+              }}
+              class="absolute right-0 -top-6 2xl:static ms-auto me-1 text-[#99a1af] dark:text-white/20 text-sm cursor-pointer hover:text-white/30">
+              Edit
+            </button> -->
+          </div>
         </div>
       </div>
-    </div>
 
-    <div
-      class="w-full flex flex-col justify-start items-start gap-4 border border-[#0D0D0D]/5 dark:border-white/5 p-6 rounded-xl">
-      <div class="flex flex-col">
-        <span class="text-black dark:text-white text-xl">Uptime</span><span class="text-sm text-[#99a1af]"
-          >History Of Uptime</span>
-      </div>
-
-      <div class="w-full grid grid-cols-5 2xl:grid-cols-7 text-white gap-4 relative">
-        <div class="absolute end-0 bottom-0 flex flex-col justify-center items-end gap-2">
-          <div class="flex justify-center items-center gap-2 text-black dark:text-white/40 text-sm">
-            <span> More than 80%</span>
-            <div class="size-3.5 rounded-sm bg-red-600/70"></div>
-          </div>
-          <div class="flex justify-center items-center gap-2 text-black dark:text-white/40 text-sm">
-            <span> {'50% < value < 80%'}</span>
-            <div class="size-3.5 rounded-sm bg-[#F97316]"></div>
-          </div>
-          <div class="flex justify-center items-center gap-2 text-black dark:text-white/40 text-sm">
-            <span>less Than 51 %</span>
-            <div class="size-3.5 rounded-sm bg-green-700"></div>
-          </div>
+      <div
+        class="w-full flex flex-col justify-start items-start gap-4 border border-[#0D0D0D]/5 dark:border-white/5 p-6 rounded-xl">
+        <div class="flex flex-col">
+          <span class="text-black dark:text-white text-xl">Uptime</span><span
+            class="text-sm text-[#99a1af]">History Of Uptime</span>
         </div>
 
-        {#each uptimeData as item (item.month)}
-          <UptimeHistoryBox {name} month={item.month} average={item.average} data={item.uptime} />
-        {/each}
+        <div class="w-full grid grid-cols-5 2xl:grid-cols-7 text-white gap-4 relative">
+          <div class="absolute end-0 bottom-0 flex flex-col justify-center items-end gap-2">
+            <div
+              class="flex justify-center items-center gap-2 text-black dark:text-white/40 text-sm">
+              <span> More than 80%</span>
+              <div class="size-3.5 rounded-sm bg-red-600/70"></div>
+            </div>
+            <div
+              class="flex justify-center items-center gap-2 text-black dark:text-white/40 text-sm">
+              <span> {'50% < value < 80%'}</span>
+              <div class="size-3.5 rounded-sm bg-[#F97316]"></div>
+            </div>
+            <div
+              class="flex justify-center items-center gap-2 text-black dark:text-white/40 text-sm">
+              <span>less Than 51 %</span>
+              <div class="size-3.5 rounded-sm bg-green-700"></div>
+            </div>
+          </div>
+
+          <!-- {#each uptimeData as item (item.month)}
+            <UptimeHistoryBox {name} month={item.month} average={item.average} data={item.uptime} />
+          {/each} -->
+        </div>
       </div>
     </div>
   </div>
