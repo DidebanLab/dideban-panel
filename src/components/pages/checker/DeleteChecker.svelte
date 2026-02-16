@@ -20,7 +20,7 @@
   class="relative group overflow-hidden backdrop-blur-3xl px-3 py-2.5 border bor rounded-xl w-[90vw] max-h-[90vh] md:fit sm:w-150 flex flex-col justify-start items-start border-[#F87171]/20 bg-[#F9FAFB] dark:bg-[#121212]">
   <div
     class="absolute -top-10 start-0 size-0 rounded-full group-hover:top-0 group-hover:start-7 transition-all duration-700"
-    style="box-shadow: 0 0 100px 100px rgb(255,100,103,0.1)">
+    style="box-shadow: 0 0 120px 100px rgb(255,100,103,0.1)">
     <div class="w-full h-full bg-white/5"></div>
   </div>
 
