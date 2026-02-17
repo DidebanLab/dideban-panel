@@ -9,7 +9,7 @@
   import { fly } from 'svelte/transition';
   import { checkerNameRegex, checkerTargetRegexes } from '../../../../validators.svelte';
 
-  const { data } = $props(); // 👈 داده ورودی برای ادیت
+  const { data } = $props();
 
   function normalizeHeaders(headersArray) {
     return headersArray.reduce((acc, { key, value }) => {
@@ -291,7 +291,6 @@
                   }}
                   class="px-3 h-6.5 w-full bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-md text-gray-400 text-sm outline-none tracking-wide appearance-none text-center" />
 
-                <!-- Custom Arrows -->
                 <div
                   class="absolute end-2 top-1/2 -translate-y-1/2 flex flex-col justify-center items-center gap-2.5 h-full">
                   <button
@@ -386,7 +385,6 @@
                     type="number"
                     class="px-3 h-6.5 w-full bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-md text-gray-400 text-sm outline-none tracking-wide appearance-none text-center" />
 
-                  <!-- Custom Arrows -->
                   <div
                     class="absolute end-2 top-1/2 -translate-y-1/2 flex flex-col justify-center items-center gap-2.5 h-full">
                     <button
