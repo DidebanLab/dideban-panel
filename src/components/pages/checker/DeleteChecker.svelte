@@ -3,6 +3,8 @@
   import { http } from '../../../services/http.svelte';
   import { endpoints } from '../../../endpoints.svelte';
   import { alertStore } from '../../../stores/alert.svelte';
+  import { closer } from '../../../stores/modal.svelte';
+  import { goto } from '$app/navigation';
 
   let step = $state(1);
   let nameInput = $state('');
@@ -61,9 +63,16 @@
         } else if (step === 2) {
           http.delete(endpoints.checks + `/${id}`).then(res => {
             alertStore.addAlert({
-              message: res.data.message,
+              message: res.data.data.message,
+              type: 'successful',
             });
           });
+
+          closer({
+            id: 'delete-checker',
+          });
+
+          goto('/');
         }
       }}
       aria-label="delete-confirm"

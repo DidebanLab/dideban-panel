@@ -84,7 +84,6 @@ http.interceptors.response.use(
 
   // ❗ error handler → show alert
   error => {
-    console.log(error.response);
     // network error
     if (error.code === 'ERR_NETWORK') {
       alertStore.addAlert({
