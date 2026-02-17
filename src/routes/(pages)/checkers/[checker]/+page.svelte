@@ -10,12 +10,15 @@
   import UptimeHistoryBox from '../../../../components/common/UptimeHistoryBox.svelte';
   import DeleteChecker from '../../../../components/pages/checker/DeleteChecker.svelte';
   import ApdexHistogramChart from '../../../../components/pages/checker/ApdexHistogramChart.svelte';
+  import responseTimeColor from '../../../../utils/responseTimeColor';
 
   const id = $page.params.checker;
   let data = $state();
   let timeRange = $state(24);
   let isEditSelectorBox = $state(false);
   let histogram = $state();
+  let isMobile = $state(innerWidth < 640);
+  let history = $state();
 
   let summary = $state();
 
@@ -260,9 +263,132 @@
       </div>
       <div
         class=" w-full flex 2xl:flex-row flex-col-reverse gap-4 justify-between items-center text-white text-base">
-        <Latency name={data?.name} />
+        <div class="flex flex-col gap-4 w-full">
+          <div
+            class="relative flex flex-col h-35 p-6 gap-4 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
+            <div class="w-fit flex flex-col justify-start items-start">
+              <span class="text-lg text-black dark:text-white"> Latest Uptime History</span>
+              <span class="text-sm text-[#99a1af]">Latest Uptime History Overview</span>
+            </div>
+            <div
+              class=" w-full z-10 flex flex-row-reverse gap-0.5 justify-between items-end absolute bottom-6 start-1/2 -translate-x-1/2 px-6">
+              {#await http.get(endpoints.checkHistory(id), { params: { short: true } }) then res}
+                {@const REQUIRED_COUNT = isMobile ? 31 : 50}
+                {@const items = res.data.data.slice(-REQUIRED_COUNT)}
+                {@const missingCount = REQUIRED_COUNT - items.length}
+                {#each items as detail (detail[0])}
+                  {@const status = detail[1]}
+
+                  <button
+                    type="button"
+                    aria-label="detail of status"
+                    onmouseover={() => {
+                      http
+                        .get(`${endpoints.checkHistory(id)}/${detail[0]}`)
+                        .then(res => (history = res.data.data));
+                    }}
+                    onmouseleave={() => {
+                      history = null;
+                    }}
+                    onfocus={() => {
+                      http
+                        .get(`${endpoints.checkHistory(id)}/${detail[0]}`)
+                        .then(res => (history = res.data.data));
+                    }}
+                    onblur={() => {
+                      history = null;
+                    }}
+                    class="w-4 h-4 rounded-[1px] hover:h-6 transition-all cursor-pointer relative group {status ===
+                      'error' || status === 'down'
+                      ? 'bg-[#EF4444]'
+                      : status === 'timeout'
+                        ? 'bg-[#F97316]'
+                        : status === 'up'
+                          ? 'bg-green-700'
+                          : 'bg-[#FFFFFF]/10'}">
+                    {#if history}
+                      <div
+                        class="absolute z-10 w-fit group-hover:flex hidden bottom-10 start-1/2 -translate-x-1/2 rounded-xl text-white bg-white/40 dark:bg-black/80 backdrop-blur-md dark:backdrop-blur-3xl border-[#0D0D0D]/5 border dark:border-white/10 px-3 py-2 flex-col justify-start items-start gap-1">
+                        <div class="w-full flex justify-between items-center gap-2.5">
+                          <span
+                            class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
+                            >Status :</span>
+                          <span
+                            class="flex justify-center items-center text-sm text-nowrap capitalize {history?.status ===
+                              'error' || history?.status === 'down'
+                              ? 'text-[#F87171]'
+                              : history?.status === 'timeout'
+                                ? 'text-[#F97316]'
+                                : history?.status === 'up'
+                                  ? 'text-green-700'
+                                  : ''}">{history?.status}</span>
+                        </div>
+                        {#if history?.response_time_ms}
+                          <div class="w-full flex justify-between items-center gap-2.5">
+                            <span
+                              class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
+                              >Latency :</span>
+                            <span
+                              class="flex justify-center items-center text-sm text-nowrap {responseTimeColor(
+                                history?.response_time_ms,
+                              )}">{history?.response_time_ms} ms</span>
+                          </div>
+                        {/if}
+                        {#if history?.status_code}
+                          <div class="w-full flex justify-between items-center gap-2.5">
+                            <span
+                              class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
+                              >Status Code :</span>
+                            <span
+                              class="flex justify-center items-center text-sm text-nowrap {history?.status ===
+                                'error' || history?.status === 'down'
+                                ? 'text-[#F87171]'
+                                : history?.status === 'up'
+                                  ? 'text-green-700'
+                                  : ''}">{history?.status_code}</span>
+                          </div>
+                        {/if}
+                        {#if history?.error_message}
+                          <div class="w-full flex justify-between items-center gap-2.5">
+                            <span
+                              class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
+                              >Error Message :</span>
+                            <span
+                              class="flex justify-center items-center text-sm text-nowrap text-[#F87171]"
+                              >{history?.error_message}</span>
+                          </div>
+                        {/if}
+
+                        <div
+                          class="w-full flex justify-start items-center text-sm pt-1.5 text-[#6a7282] text-center text-nowrap border-t border-t-[#0D0D0D]/10 dark:border-t-white/15">
+                          {new Date(history?.checked_at).toLocaleString('en-CA', {
+                            year: 'numeric',
+                            month: '2-digit',
+                            day: '2-digit',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            second: '2-digit',
+                            hour12: false,
+                          })}
+                        </div>
+                      </div>
+                    {/if}
+                  </button>
+                {/each}
+                {#each Array(missingCount) as _, i}
+                  <div
+                    aria-hidden="true"
+                    class="w-4 h-4 rounded-[1px] bg-black/20 dark:bg-[#FFFFFF]/10 opacity-70">
+                  </div>
+                {/each}
+              {/await}
+            </div>
+          </div>
+
+          <Latency name={data?.name} />
+        </div>
         <div
-          class="relative w-full 2xl:w-[30%] gap-3 flex 2xl:flex-col justify-start items-start mb-auto">
+          class="relative w-full 2xl:w-[20.5%] gap-3 flex 2xl:flex-col justify-start items-start mb-auto">
           <button
             aria-label="edit config selector"
             onclick={() => {
@@ -452,74 +578,70 @@
                 class="relative flex flex-col items-center justify-center w-full rounded-xl h-full py-1 bg-[#0D0D0D]/5 dark:bg-white/5">
                 <span class="text-base text-black dark:text-white">Summary</span>
               </div>
-              <div class="flex justify-between gap-3 items-center text-sm w-full p-1">
-                <div class="flex flex-col justify-center items-start gap-3 w-full">
-                  <div class="flex justify-between items-center gap-1 w-full">
-                    <span class="text-black dark:text-[#99a1af]">Total Checks :</span>
-                    <span class="text-xs text-[#2B7FFF]">{summary?.summary?.total_checks}</span>
-                  </div>
-                  <div class="flex justify-between items-center gap-1 w-full">
-                    <span class="text-black dark:text-[#99a1af]">Total Satisfied :</span>
-                    <span class="text-xs text-[#2B7FFF]">{summary?.summary?.total_satisfied}</span>
-                  </div>
-                  <div class="flex justify-between items-center gap-1 w-full">
-                    <span class="text-black dark:text-[#99a1af]">Total Tolerating :</span>
-                    <span class="text-xs text-[#2B7FFF]">{summary?.summary?.total_tolerating}</span>
-                  </div>
-                  <div class="flex justify-between items-center gap-1 w-full">
-                    <span class="text-black dark:text-[#99a1af]">Total Frustrated :</span>
-                    <span class="text-xs text-[#2B7FFF]">{summary?.summary?.total_frustrated}</span>
-                  </div>
+
+              <div class="flex flex-col justify-center items-start gap-3 p-2 w-full">
+                <div class="flex justify-between items-center gap-1 w-full text-xs">
+                  <span class="text-black dark:text-[#99a1af]">Total Checks :</span>
+                  <span class=" text-[#2B7FFF]">{summary?.summary?.total_checks}</span>
+                </div>
+                <div class="flex justify-between items-center gap-1 w-full text-xs">
+                  <span class="text-black dark:text-[#99a1af]">Total Satisfied :</span>
+                  <span class=" text-[#2B7FFF]">{summary?.summary?.total_satisfied}</span>
+                </div>
+                <div class="flex justify-between items-center gap-1 w-full text-xs">
+                  <span class="text-black dark:text-[#99a1af]">Total Tolerating :</span>
+                  <span class=" text-[#2B7FFF]">{summary?.summary?.total_tolerating}</span>
+                </div>
+                <div class="flex justify-between items-center gap-1 w-full text-xs">
+                  <span class="text-black dark:text-[#99a1af]">Total Frustrated :</span>
+                  <span class=" text-[#2B7FFF]">{summary?.summary?.total_frustrated}</span>
+                </div>
+                <div class="flex justify-between items-center gap-1 w-full text-xs">
+                  <span class="text-black dark:text-[#99a1af]">Uptime :</span>
+                  <span
+                    class=" {summary?.summary?.uptime_percent >= 90
+                      ? 'text-green-500'
+                      : summary?.summary?.uptime_percent >= 80
+                        ? 'text-[#00D492]'
+                        : summary?.summary?.uptime_percent >= 70
+                          ? 'text-[#FDC700]'
+                          : summary?.summary?.uptime_percent >= 50
+                            ? 'text-[#F97316]'
+                            : 'text-[#F87171]'}">{summary?.summary?.uptime_percent}%</span>
+                </div>
+                <div class="flex justify-between items-center gap-1 w-full text-xs">
+                  <span class="text-black dark:text-[#99a1af]">Apdex Score :</span>
+                  <span
+                    class=" {summary?.summary?.apdex_score >= 90
+                      ? 'text-green-500'
+                      : summary?.summary?.apdex_score >= 80
+                        ? 'text-[#00D492]'
+                        : summary?.summary?.apdex_score >= 70
+                          ? 'text-[#FDC700]'
+                          : summary?.summary?.apdex_score >= 50
+                            ? 'text-[#F97316]'
+                            : 'text-[#F87171]'}">{summary?.summary?.apdex_score}%</span>
+                </div>
+                <div class="flex justify-between items-center gap-1 w-full text-xs">
+                  <span class="text-black dark:text-[#99a1af] text-nowrap">Apdex Rating :</span>
+                  <span
+                    class=" capitalize {summary?.summary?.apdex_rating?.toLowerCase() ===
+                    'excellent'
+                      ? 'text-green-500'
+                      : summary?.summary?.apdex_rating?.toLowerCase() === 'good'
+                        ? 'text-[#00D492]'
+                        : summary?.summary?.apdex_rating?.toLowerCase() === 'fair'
+                          ? 'text-[#FDC700]'
+                          : summary?.summary?.apdex_rating?.toLowerCase() === 'poor'
+                            ? 'text-[#F97316]'
+                            : 'text-[#F87171]'}">{summary?.summary?.apdex_rating}</span>
                 </div>
 
-                <div class="h-27 w-px bg-white/20"></div>
-                <div class="flex flex-col justify-center items-start gap-3 w-full">
-                  <div class="flex justify-between items-center gap-1 w-full">
-                    <span class="text-black dark:text-[#99a1af]">Uptime :</span>
-                    <span
-                      class="text-xs {summary?.summary?.uptime_percent >= 90
-                        ? 'text-green-500'
-                        : summary?.summary?.uptime_percent >= 80
-                          ? 'text-[#00D492]'
-                          : summary?.summary?.uptime_percent >= 70
-                            ? 'text-[#FDC700]'
-                            : summary?.summary?.uptime_percent >= 50
-                              ? 'text-[#F97316]'
-                              : 'text-[#F87171]'}">{summary?.summary?.uptime_percent}%</span>
-                  </div>
-                  <div class="flex justify-between items-center gap-1 w-full">
-                    <span class="text-black dark:text-[#99a1af]">Apdex Score :</span>
-                    <span
-                      class="text-xs {summary?.summary?.apdex_score >= 90
-                        ? 'text-green-500'
-                        : summary?.summary?.apdex_score >= 80
-                          ? 'text-[#00D492]'
-                          : summary?.summary?.apdex_score >= 70
-                            ? 'text-[#FDC700]'
-                            : summary?.summary?.apdex_score >= 50
-                              ? 'text-[#F97316]'
-                              : 'text-[#F87171]'}">{summary?.summary?.apdex_score}%</span>
-                  </div>
-                  <div class="flex justify-between items-center gap-1 w-full">
-                    <span class="text-black dark:text-[#99a1af] text-nowrap">Apdex Rating :</span>
-                    <span
-                      class="text-xs capitalize {summary?.summary?.apdex_rating?.toLowerCase() ===
-                      'excellent'
-                        ? 'text-green-500'
-                        : summary?.summary?.apdex_rating?.toLowerCase() === 'good'
-                          ? 'text-[#00D492]'
-                          : summary?.summary?.apdex_rating?.toLowerCase() === 'fair'
-                            ? 'text-[#FDC700]'
-                            : summary?.summary?.apdex_rating?.toLowerCase() === 'poor'
-                              ? 'text-[#F97316]'
-                              : 'text-[#F87171]'}">{summary?.summary?.apdex_rating}</span>
-                  </div>
-
-                  <div class="flex justify-between items-center gap-1 w-full">
-                    <span class="text-black dark:text-[#99a1af]">Avg RTime :</span>
-                    <span class="text-xs text-white bg-white/10 py-1 px-2 rounded-lg"
-                      >{summary?.summary?.avg_response_time} ms</span>
-                  </div>
+                <div class="relative flex justify-between items-center gap-1 w-full text-xs">
+                  <span class="text-black dark:text-[#99a1af]">Avg RTime :</span>
+                  <span
+                    class=" text-white bg-white/10 py-1 px-2 rounded-lg absolute end-0 top-1/2 -translate-y-1/2"
+                    >{summary?.summary?.avg_response_time} ms</span>
                 </div>
               </div>
             </div>
