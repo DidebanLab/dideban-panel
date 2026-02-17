@@ -447,7 +447,7 @@
                 class="relative flex flex-col items-center justify-center w-full rounded-xl h-full py-1 bg-[#0D0D0D]/5 dark:bg-white/5">
                 <span class="text-base text-black dark:text-white">Summary</span>
               </div>
-              <div class="flex justify-between gap-3 items-center text-sm w-full py-1 px-2">
+              <div class="flex justify-between gap-3 items-center text-sm w-full p-1">
                 <div class="flex flex-col justify-center items-start gap-3 w-full">
                   <div class="flex justify-between items-center gap-1 w-full">
                     <span class="text-black dark:text-[#99a1af]">Total Checks :</span>
@@ -496,7 +496,7 @@
                               : 'text-[#F87171]'}">{summary?.summary?.apdex_score}%</span>
                   </div>
                   <div class="flex justify-between items-center gap-1 w-full">
-                    <span class="text-black dark:text-[#99a1af]">Apdex Rating :</span>
+                    <span class="text-black dark:text-[#99a1af] text-nowrap">Apdex Rating :</span>
                     <span
                       class="text-xs capitalize {summary?.summary?.apdex_rating?.toLowerCase() ===
                       'excellent'
