@@ -9,11 +9,13 @@
   import { endpoints } from '../../../../endpoints.svelte';
   import UptimeHistoryBox from '../../../../components/common/UptimeHistoryBox.svelte';
   import DeleteChecker from '../../../../components/pages/checker/DeleteChecker.svelte';
+  import ApdexHistogramChart from '../../../../components/pages/checker/ApdexHistogramChart.svelte';
 
   const id = $page.params.checker;
   let data = $state();
   let timeRange = $state(24);
   let isEditSelectorBox = $state(false);
+  let histogram = $state();
 
   let summary = $state();
 
@@ -145,6 +147,9 @@
   onMount(() => {
     http.get(endpoints.checks + `/${id}`).then(res => (data = res.data?.data));
     http.get(endpoints.checks + `/${id}/summery`).then(res => (summary = res.data?.data));
+    http
+      .get(endpoints.checks + `/${id}/histogram`)
+      .then(res => (histogram = res.data?.data?.histogram));
   });
 </script>
 
@@ -532,6 +537,85 @@
             </button> -->
           </div>
         </div>
+      </div>
+
+      <div
+        class="w-full flex flex-col justify-start items-start gap-4 border border-[#0D0D0D]/5 dark:border-white/5 p-6 pb-0 rounded-xl">
+        <div class="flex justify-between items-start w-full">
+          <div class="flex flex-col">
+            <span class="text-black dark:text-white text-xl">Apdex Histogram</span><span
+              class="text-sm text-[#99a1af]">Application health reflected in Apdex levels</span>
+          </div>
+
+          <div
+            class="flex flex-col gap-2 justify-center items-center w-fit rounded-xl border p-4 border-[#0D0D0D]/5 dark:border-white/5 dark:bg-[#0D0D0D] bg-[#FFFFFF]">
+            <div class="flex justify-between gap-3 items-center text-sm w-full">
+              <div class="flex flex-col justify-center items-start gap-3 w-full">
+                <div class="flex justify-between items-center gap-1 w-full text-xs">
+                  <div class="text-[#6a7282] text-nowrap flex justify-start items-center gap-3">
+                    <span
+                      style="box-shadow: 0 0 10px 2px #008236;;"
+                      class="size-1.5 rounded-full bg-[#008236]"></span>
+                    {histogram?.[0]?.range_start}_{histogram?.[0]?.range_end} (ms):
+                  </div>
+                  <span class="text-[#008236]">{histogram?.[0].count}</span>
+                </div>
+                <div class="flex justify-between items-center gap-1 w-full text-xs">
+                  <div class="text-[#6a7282] text-nowrap flex justify-start items-center gap-3">
+                    <span
+                      style="box-shadow: 0 0 10px 2px #00D492;;"
+                      class="size-1.5 rounded-full bg-[#00D492]"></span>
+                    {histogram?.[1]?.range_start}_{histogram?.[1]?.range_end} (ms):
+                  </div>
+                  <span class="text-[#00D492]">{histogram?.[1].count}</span>
+                </div>
+                <div class="flex justify-between items-center gap-1 w-full text-xs">
+                  <div class="text-[#6a7282] text-nowrap flex justify-start items-center gap-3">
+                    <span
+                      style="box-shadow: 0 0 10px 2px #FDC700;;"
+                      class="size-1.5 rounded-full bg-[#FDC700]"></span>
+                    {histogram?.[2]?.range_start}_{histogram?.[2]?.range_end} (ms):
+                  </div>
+                  <span class="text-[#FDC700]">{histogram?.[2].count}</span>
+                </div>
+              </div>
+
+              <div class="h-19 w-px bg-white/20"></div>
+              <div class="flex flex-col justify-center items-start gap-3 w-full">
+                <div class="flex justify-between items-center gap-1 w-full text-xs">
+                  <div class="text-[#6a7282] text-nowrap flex justify-start items-center gap-3">
+                    <span
+                      style="box-shadow: 0 0 10px 2px #F97316;;"
+                      class="size-1.5 rounded-full bg-[#F97316]"></span>
+                    {histogram?.[3]?.range_start}_{histogram?.[3]?.range_end} (ms):
+                  </div>
+                  <span class="text-[#F97316]">{histogram?.[3].count}</span>
+                </div>
+                <div class="flex justify-between items-center gap-1 w-full text-xs">
+                  <div class="text-[#6a7282] text-nowrap flex justify-start items-center gap-3">
+                    <span
+                      style="box-shadow: 0 0 10px 2px #EF4444;;"
+                      class="size-1.5 rounded-full bg-[#EF4444]"></span>
+                    {histogram?.[4]?.range_start}_{histogram?.[4]?.range_end} (ms):
+                  </div>
+                  <span class="text-[#EF4444]">{histogram?.[4].count}</span>
+                </div>
+                <div class="flex justify-between items-center gap-1 w-full text-xs">
+                  <div class="text-[#6a7282] text-nowrap flex justify-start items-center gap-3">
+                    <span
+                      style="box-shadow: 0 0 10px 2px #C3110C;;"
+                      class="size-1.5 rounded-full bg-[#C3110C]"></span>
+                    Errors:
+                  </div>
+                  <span class="text-[#C3110C]">{histogram?.[5]?.errors || 0}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {#key histogram}
+          <ApdexHistogramChart data={histogram} />
+        {/key}
       </div>
 
       <div
