@@ -60,8 +60,8 @@
 <div
   class="w-full h-auto px-6 sm:pt-6 sm:pb-1.5 rounded-[14px] dark:bg-[#0D0D0D] bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
   <div class="flex relative flex-col gap-4 items-start justify-between w-full">
-    {#each agents as agent (agent.id)}
-      {#if isActive.id === agent.id}
+    {#each agents as agent (agent?.id)}
+      {#if isActive?.id === agent?.id}
         <div
           class="w-full flex flex-col sm:flex-row justify-center items-start sm:justify-between sm:items-baseline">
           <div class="w-full flex flex-col justify-start items-start">

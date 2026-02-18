@@ -7,6 +7,7 @@ export const endpoints = {
   agentMetric: id => `/agents/${id}/metrics`,
   agentHistory: id => `/agents/${id}/history`,
   agentHistoryDetail: (agentId, historyId) => `/agents/${agentId}/history/${historyId}`,
+  checkApdexHistory: id => `/checks/${id}/apdex`,
   //---------------
 
   login: '',
