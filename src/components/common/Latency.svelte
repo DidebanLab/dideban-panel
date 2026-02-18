@@ -1,43 +1,45 @@
 <script>
   import { page } from '$app/stores';
+  import { onMount } from 'svelte';
   import { endpoints } from '../../endpoints.svelte';
   import { http } from '../../services/http.svelte';
   import UptimeChart from './UptimeChart.svelte';
 
   const isMobile = $state(innerWidth < 645);
 
-  const { name } = $props();
+  const { name, id, subtitle, averageLatency } = $props();
 
-  let data = $state([
-    1000, 5000, 2000, 2400, 1400, 2300, 1000, 5000, 2000, 2400, 1400, 2300, 1000, 5000, 2000, 2400,
-    1400, 2300, 1000, 5000, 2000, 2400, 1400, 2300,
-  ]);
+  let data = $state();
 
-  // $effect(() => {
-  //   http.post(endpoints.latency, { name, timeline: activeTimeline }).then(res => (data = res.data));
-  // });
+  onMount(() => {
+    http
+      .get(endpoints.checks + `/${id}/latency`)
+      .then(res => (data = res.data?.data?.latency_series));
+  });
 </script>
 
 <div
   class="w-full flex flex-col sm:p-4 md:pb-0 sm:gap-4 md:pt-4 2xl:p-6 2xl:pb-1 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
   <div class="w-full flex justify-between items-start">
-    <div class="w-full flex flex-col justify-start items-start">
+    <div class="w-full flex gap-1 flex-col justify-start items-start">
       <span class="text-lg md:text-xl text-black dark:text-white"> Latency</span>
-      <span class="text-sm text-[#99a1af]">Total Time For Request Response</span>
-    </div>
-    <div
-      class="w-fit mb-5 sm:w-50 md:w-fit xl:w-fit flex justify-center items-center gap-4 sm:px-4 sm:py-3 rounded-[10px] sm:bg-[#F9FAFB] dark:sm:bg-[#121212] sm:border border-[#0D0D0D]/5 dark:border-white/5">
-      <div class="w-full flex justify-start items-center gap-2.5">
-        <span style="box-shadow: 0 0 10px 1px #2b7fff;;" class="size-2.5 rounded-full bg-[#2b7fff]"
-        ></span>
-        <span class="flex justify-center items-center text-xs xl:text-sm text-[#6a7282] text-nowrap"
-          >Last ( LTC ) :</span>
+      <div class="text-xs text-white bg-white/10 py-1 px-2 rounded-md">
+        <span class="text-white/50">Total Checks :</span>
+        {subtitle}
       </div>
+    </div>
 
-      <span class="dark:text-white text-xs md:text-sm xl:text-base 2xl:text-lg text-nowrap"
-        >{data[data.length - 1]} ms</span>
+    <div
+      class="relative text-sm py-2 px-3 rounded-full border text-white border-white/5 text-nowrap">
+      <div
+        class="w-full h-full rounded-full bg-transparent absolute top-1/2 start-1/2 -translate-1/2"
+        style="box-shadow: rgb(250,250,250,0.1) 0px 0px 10px 0.5px;">
+      </div>
+      <span class="text-white/40 me-1"> Avg Response Time: </span>
+      {averageLatency} ms
     </div>
   </div>
-
-  <UptimeChart name="Latency" height={250} data={[...data.slice(isMobile ? -10 : -53)]} unit="ms" />
+  {#key data}
+    <UptimeChart name="Latency" height={250} {data} unit="ms" />
+  {/key}
 </div>

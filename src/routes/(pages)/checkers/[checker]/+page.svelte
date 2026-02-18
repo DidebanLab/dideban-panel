@@ -319,7 +319,7 @@
                         ? '#FDC700'
                         : summary?.summary?.uptime_percent >= 50
                           ? '#F97316'
-                          : '#EF4444'} 0px 0px 10px 1px;">
+                          : '#EF4444'} 0px 0px 10px 0.5px;">
                 </div>
                 {summary?.summary?.uptime_percent}%
               </span>
@@ -436,7 +436,11 @@
           </div>
         {/await}
 
-        <Latency name={data?.name} />
+        <Latency
+          {id}
+          name={data?.name}
+          subtitle={summary?.summary?.total_checks}
+          averageLatency={summary?.summary?.avg_response_time} />
       </div>
 
       <div

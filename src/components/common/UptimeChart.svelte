@@ -7,17 +7,29 @@
 
   let chartEl;
   let chart;
+  const seriesData =
+    data?.map(([timestamp, value]) => ({
+      x: new Date(timestamp),
+      y: value,
+    })) || [];
 
   onMount(() => {
     const options = {
       chart: {
         type: 'area',
         height,
-        zoom: {
-          enabled: false,
-        },
         toolbar: {
-          show: false,
+          show: true,
+          tools: {
+            download: false,
+            selection: true,
+            zoom: true, // دکمه زوم
+            zoomin: true, // دکمه بزرگ‌نمایی
+            zoomout: true, // دکمه کوچک‌نمایی
+            pan: true, // دکمه جابه‌جایی چارت
+            reset: true, // دکمه بازگردانی به حالت اولیه
+          },
+          autoSelected: 'zoom', // حالت پیش‌فرض فعال روی زوم
         },
       },
 
@@ -26,50 +38,70 @@
       },
 
       dataLabels: {
-        enabled: true,
-        formatter: val => `${val} ${unit}`,
-        offsetY: -10,
-        style: {
-          fontSize: '10px',
-          fontWeight: '600',
-          colors: ['#0088ee'],
-        },
-        background: {
-          enabled: false,
-        },
+        enabled: false,
       },
 
       stroke: {
-        width: 1,
+        width: 0.2,
       },
 
       fill: {
         type: 'gradient',
         gradient: {
           shadeIntensity: 0.1,
-          opacityFrom: 0.6,
+          opacityFrom: 1,
           opacityTo: 0.1,
         },
       },
       tooltip: {
-        enabled: true,
-        x: {
-          show: false,
-        },
-        y: {
-          formatter: val => `${val} ${unit}`,
-          title: {
-            formatter: () => `${name} :`,
-          },
+        custom: function ({ series, seriesIndex, dataPointIndex, w }) {
+          const value = series[seriesIndex][dataPointIndex];
+          const timestamp = w.globals.seriesX[seriesIndex][dataPointIndex];
+
+          const date = new Date(timestamp).toLocaleString('en-CA', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false,
+          });
+
+          return `
+      <div class="px-3 py-2">
+        <div class="flex justify-start items-center gap-2">
+          <span class="size-2 rounded-full bg-[#3b82f6]"></span>
+          ${name} : ${value}${unit}
+        </div>
+
+        <div class="w-full h-px bg-white/20 my-1.5"></div>
+        <div class="text-xs text-white/30 tracking-wide">${date}</div>
+        
+      </div>
+    `;
         },
       },
-
       xaxis: {
-        show: false,
-        axisBorder: { show: false },
-        axisTicks: { show: false },
+        tooltip: {
+          enabled: false,
+        },
+        type: 'datetime',
         labels: {
-          show: false,
+          show: true,
+          datetimeUTC: false,
+        },
+        axisBorder: {
+          show: true,
+          color: 'rgba(250,250,250,0.1)', // رنگ قرمز برای خط پایین
+          height: 0.5, // ضخامت خط
+          offsetY: 2,
+        },
+        axisTicks: {
+          show: true,
+          color: 'rgba(250,250,250,0.1)', // رنگ تیک‌ها هم قرمز بشه
+          height: 7,
+          offsetY: 2,
         },
       },
 
@@ -87,7 +119,7 @@
       series: [
         {
           name,
-          data,
+          data: seriesData,
         },
       ],
     });
@@ -99,7 +131,13 @@
   });
 </script>
 
-<div bind:this={chartEl} class="w-full scale-[106.5%] scale-y-128 sm:scale-y-128 md:scale-y-110  sm:scale-x-105 md:scale-x-103 lg:scale-x-102 3xl:scale-101 {$theme === 'dark' ? 'theme-dark' : 'theme-light'}"></div>
+<div
+  bind:this={chartEl}
+  class="w-full scale-[106.5%] scale-y-128 sm:scale-y-128 md:scale-y-110 sm:scale-x-105 md:scale-x-103 lg:scale-x-102 3xl:scale-101 {$theme ===
+  'dark'
+    ? 'theme-dark'
+    : 'theme-light'}">
+</div>
 
 <style>
   :global(.theme-dark .apexcharts-tooltip) {
@@ -134,4 +172,6 @@
   :global(.apexcharts-tooltip-title) {
     display: none;
   }
+
+ 
 </style>
