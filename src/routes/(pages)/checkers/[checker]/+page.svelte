@@ -283,7 +283,7 @@
             class="relative flex flex-col h-35 p-6 gap-4 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
             <div class="w-full flex justify-between items-start">
               <div class="w-fit flex flex-col justify-start items-start">
-                <span class="text-lg text-black dark:text-white"> Latest Uptime History</span>
+                <span class="text-lg text-black dark:text-white">Uptime</span>
                 <div class="flex justify-end items-center gap-2 text-xs text-white/40">
                   <span class="flex justify-center items-center text-nowrap">Last Check :</span>
                   <span class="flex justify-center items-center text-nowrap tracking-wider">
@@ -298,27 +298,31 @@
                     })}</span>
                 </div>
               </div>
-              <div class="flex w-fit justify-center items-center gap-2 ms-auto mb-auto">
-                <span
-                  class="text-xs tracking-wider capitalize"
-                  class:text-[#F87171]={error}
-                  class:text-[#00d492]={ok}
-                  class:text-[#f97316]={warn}>
-                  {items[0][1]}
-                </span>
-
+              <span
+                class="relative text-xl py-1 px-4 rounded-full border {summary?.summary
+                  ?.uptime_percent >= 90
+                  ? 'text-[#008236] bg-[#008236]/20 border-[#008236]/20'
+                  : summary?.summary?.uptime_percent >= 80
+                    ? 'text-[#00D492] bg-[#00D492]/20'
+                    : summary?.summary?.uptime_percent >= 70
+                      ? 'text-[#FDC700] bg-[#FDC700]/20'
+                      : summary?.summary?.uptime_percent >= 50
+                        ? 'text-[#F97316] bg-[#F97316]/20'
+                        : 'text-[#EF4444] bg-[#EF4444]/20'}">
                 <div
-                  class="size-2.5 rounded-full"
-                  class:bg-[#ef4444]={error}
-                  class:bg-[#f97316]={warn}
-                  class:bg-[#00d492]={ok}
-                  style="box-shadow: 0 0 10px 1px {error
-                    ? '#ef4444'
-                    : warn
-                      ? '#f97316'
-                      : '#00d492'}">
+                  class="w-full h-full rounded-full bg-transparent absolute top-1/2 start-1/2 -translate-1/2"
+                  style="box-shadow: {summary?.summary?.uptime_percent >= 90
+                    ? '#008236'
+                    : summary?.summary?.uptime_percent >= 80
+                      ? '#00D492'
+                      : summary?.summary?.uptime_percent >= 70
+                        ? '#FDC700'
+                        : summary?.summary?.uptime_percent >= 50
+                          ? '#F97316'
+                          : '#EF4444'} 0px 0px 10px 1px;">
                 </div>
-              </div>
+                {summary?.summary?.uptime_percent}%
+              </span>
             </div>
 
             <div
