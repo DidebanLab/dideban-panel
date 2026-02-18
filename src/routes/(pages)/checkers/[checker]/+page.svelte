@@ -445,10 +445,75 @@
 
       <div
         class="relative w-full flex flex-col h-35 p-6 gap-4 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
-        <div class="w-fit flex flex-col justify-start items-start">
-          <span class="text-lg text-black dark:text-white"> Apdex history</span>
-          <span class="text-sm text-[#99a1af]">Apdex History Overview</span>
+        <div class="flex justify-between items-start">
+          <div class="w-fit flex flex-col justify-start items-start">
+            <span class="text-lg text-black dark:text-white"> Apdex history</span>
+            <div class="flex justify-start items-center gap-1">
+              <span class="text-sm text-[#99a1af]">Detail Information</span>
+
+              <button class="group relative">
+                <img
+                  class="cursor-pointer"
+                  width="20"
+                  height="20"
+                  src="/icons/question.png"
+                  alt="question" />
+                <div
+                  class="absolute *:text-nowrap bg-black/50 backdrop-blur-2xl hidden group-hover:flex text-white/30 text-sm ms-2 start-full bottom-0 border border-white/20 rounded-xl py-3 px-4 flex-col gap-1">
+                  <div class="flex justify-between items-center gap-1 w-full">
+                    <span>Total Satisfied :</span>
+                    <span class="text-white">{summary?.summary?.total_satisfied}</span>
+                  </div>
+                  <div class="flex justify-between items-center gap-1 w-full">
+                    <span>Total Tolerating :</span>
+                    <span class="text-white">{summary?.summary?.total_tolerating}</span>
+                  </div>
+                  <div class="flex justify-between items-center gap-1 w-full">
+                    <span>Total Frustrated :</span>
+                    <span class="text-white">{summary?.summary?.total_frustrated}</span>
+                  </div>
+                </div></button>
+            </div>
+          </div>
+          <div
+            class="relative text-sm h-9 p-1 rounded-full border text-white text-nowrap {summary
+              ?.summary?.apdex_score >= 90
+              ? 'text-[#008236] border-[#008236]/20'
+              : summary?.summary?.apdex_score >= 80
+                ? 'text-[#00D492] border-[#00D492]/20'
+                : summary?.summary?.apdex_score >= 70
+                  ? 'text-[#FDC700] border-[#FDC700]/20 '
+                  : summary?.summary?.apdex_score >= 50
+                    ? 'text-[#F97316] border-[#F97316]/20'
+                    : 'text-[#EF4444] border-[#EF4444]/20'}">
+            <div
+              class="w-full h-full rounded-full bg-transparent absolute top-1/2 start-1/2 -translate-1/2"
+              style="box-shadow: {summary?.summary?.apdex_score >= 90
+                ? 'rgba(0, 130, 54,0.2)'
+                : summary?.summary?.apdex_score >= 80
+                  ? 'rgba(0, 212, 146,0.2)'
+                  : summary?.summary?.apdex_score >= 70
+                    ? 'rgba(253, 199, 0,0.2)'
+                    : summary?.summary?.apdex_score >= 50
+                      ? 'rgba(249, 115, 22,0.2)'
+                      : 'rgba(239, 68, 68,0.2)'} 0px 0px 10px 0.5px;">
+            </div>
+            <span
+              class="p-2 h-full rounded-full {summary?.summary?.apdex_rating?.toLowerCase() === 'excellent'
+                ? 'text-[#008236] bg-[#008236]/10'
+                : summary?.summary?.apdex_rating?.toLowerCase() === 'good'
+                  ? 'text-[#00D492] bg-[#00D492]/10'
+                  : summary?.summary?.apdex_rating?.toLowerCase() === 'fair'
+                    ? 'text-[#FDC700] bg-[#FDC700]/10 '
+                    : summary?.summary?.apdex_rating?.toLowerCase() === 'poor'
+                      ? 'text-[#F97316] bg-[#F97316]/10'
+                      : 'text-[#F87171] bg-[#F87171]/10'}">
+              {summary?.summary?.apdex_rating}
+            </span>
+            {summary?.summary?.apdex_score}%
+          </div>
         </div>
+
         <div
           class=" w-full z-10 flex flex-row-reverse gap-0.5 justify-start items-end absolute bottom-6 start-1/2 -translate-x-1/2 px-6">
           {#await http.get(endpoints.checkApdexHistory(id)) then res}
