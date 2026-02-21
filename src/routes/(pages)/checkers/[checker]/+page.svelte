@@ -422,13 +422,47 @@
             </div>
           </div>
         {/await}
-
-        <Latency
-          {id}
-          name={data?.name}
-          subtitle={summary?.summary?.total_checks}
-          averageLatency={summary?.summary?.avg_response_time} />
       </div>
+
+      <div
+        class="flex mx-auto sticky top-6 shadow-sm shadow-[#3b82f6]/50 z-200 text-white/20 w-88 py-2 justify-between px-5 text-sm items-center rounded-lg dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
+        <button
+          onclick={() => (timeRange = 1)}
+          class="transition-all duration-300 {timeRange === 1
+            ? 'text-[#3b82f6]'
+            : 'cursor-pointer'}">1h</button>
+
+        <div class="h-5 w-px bg-white/20"></div>
+        <button
+          onclick={() => (timeRange = 3)}
+          class="transition-all duration-300 {timeRange === 3
+            ? 'text-[#3b82f6]'
+            : 'cursor-pointer'}">3h</button>
+        <div class="h-5 w-px bg-white/20"></div>
+        <button
+          onclick={() => (timeRange = 6)}
+          class="transition-all duration-300 {timeRange === 6
+            ? 'text-[#3b82f6]'
+            : 'cursor-pointer'}">6h</button>
+        <div class="h-5 w-px bg-white/20"></div>
+        <button
+          onclick={() => (timeRange = 12)}
+          class="transition-all duration-300 {timeRange === 12
+            ? 'text-[#3b82f6]'
+            : 'cursor-pointer'}">12h</button>
+        <div class="h-5 w-px bg-white/20"></div>
+        <button
+          onclick={() => (timeRange = 24)}
+          class="transition-all duration-300 {timeRange === 24
+            ? 'text-[#3b82f6]'
+            : 'cursor-pointer'}">24h</button>
+      </div>
+
+      <Latency
+        {id}
+        name={data?.name}
+        subtitle={summary?.summary?.total_checks}
+        averageLatency={summary?.summary?.avg_response_time} />
 
       <div
         class="relative w-full flex flex-col p-6 pb-13 gap-4 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
@@ -476,7 +510,7 @@
               {summary?.summary?.apdex_rating}
             </span>
 
-            <span class="h-7 w-px bg-white/10"></span>
+            <span class="h-7 w-px bg-white/15"></span>
 
             <span> {summary?.summary?.apdex_score}%</span>
           </div>
@@ -621,64 +655,45 @@
               class="text-sm text-[#99a1af]">Application health reflected in Apdex levels</span>
           </div>
 
-          <div
-            class="flex flex-col gap-2 justify-center items-center w-fit rounded-xl border p-4 border-[#0D0D0D]/5 dark:border-white/5 dark:bg-[#0D0D0D] bg-[#FFFFFF]">
+          <div class="flex flex-col gap-2 justify-center items-center">
             <div class="flex justify-between gap-3 items-center text-sm w-full">
               <div class="flex flex-col justify-center items-start gap-3 w-full">
                 <div class="flex justify-between items-center gap-1 w-full text-xs">
                   <div class="text-[#6a7282] text-nowrap flex justify-start items-center gap-3">
-                    <span
-                      style="box-shadow: 0 0 10px 2px #008236;;"
-                      class="size-1.5 rounded-full bg-[#008236]"></span>
                     {histogram?.[0]?.range_start}_{histogram?.[0]?.range_end} (ms):
                   </div>
                   <span class="text-[#008236]">{histogram?.[0].count}</span>
                 </div>
                 <div class="flex justify-between items-center gap-1 w-full text-xs">
                   <div class="text-[#6a7282] text-nowrap flex justify-start items-center gap-3">
-                    <span
-                      style="box-shadow: 0 0 10px 2px #00D492;;"
-                      class="size-1.5 rounded-full bg-[#00D492]"></span>
                     {histogram?.[1]?.range_start}_{histogram?.[1]?.range_end} (ms):
                   </div>
                   <span class="text-[#00D492]">{histogram?.[1].count}</span>
                 </div>
                 <div class="flex justify-between items-center gap-1 w-full text-xs">
                   <div class="text-[#6a7282] text-nowrap flex justify-start items-center gap-3">
-                    <span
-                      style="box-shadow: 0 0 10px 2px #FDC700;;"
-                      class="size-1.5 rounded-full bg-[#FDC700]"></span>
                     {histogram?.[2]?.range_start}_{histogram?.[2]?.range_end} (ms):
                   </div>
                   <span class="text-[#FDC700]">{histogram?.[2].count}</span>
                 </div>
               </div>
 
-              <div class="h-19 w-px bg-white/20"></div>
+              <div class="h-19 w-px bg-white/15"></div>
               <div class="flex flex-col justify-center items-start gap-3 w-full">
                 <div class="flex justify-between items-center gap-1 w-full text-xs">
                   <div class="text-[#6a7282] text-nowrap flex justify-start items-center gap-3">
-                    <span
-                      style="box-shadow: 0 0 10px 2px #F97316;;"
-                      class="size-1.5 rounded-full bg-[#F97316]"></span>
                     {histogram?.[3]?.range_start}_{histogram?.[3]?.range_end} (ms):
                   </div>
                   <span class="text-[#F97316]">{histogram?.[3].count}</span>
                 </div>
                 <div class="flex justify-between items-center gap-1 w-full text-xs">
                   <div class="text-[#6a7282] text-nowrap flex justify-start items-center gap-3">
-                    <span
-                      style="box-shadow: 0 0 10px 2px #EF4444;;"
-                      class="size-1.5 rounded-full bg-[#EF4444]"></span>
                     {histogram?.[4]?.range_start}_{histogram?.[4]?.range_end} (ms):
                   </div>
                   <span class="text-[#EF4444]">{histogram?.[4].count}</span>
                 </div>
                 <div class="flex justify-between items-center gap-1 w-full text-xs">
                   <div class="text-[#6a7282] text-nowrap flex justify-start items-center gap-3">
-                    <span
-                      style="box-shadow: 0 0 10px 2px #C3110C;;"
-                      class="size-1.5 rounded-full bg-[#C3110C]"></span>
                     Errors:
                   </div>
                   <span class="text-[#C3110C]">{histogram?.[5]?.errors || 0}</span>
@@ -726,31 +741,3 @@
     </div>
   </div>
 </section>
-<!-- <div
-  class="flex text-white/20 w-88 py-2 justify-between px-5 text-sm items-center rounded-lg dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
-  <button
-    onclick={() => (timeRange = 1)}
-    class="transition-all duration-300 {timeRange === 1 ? 'text-[#3b82f6]' : 'cursor-pointer'}"
-    >1h</button>
-
-  <div class="h-5 w-px bg-white/20"></div>
-  <button
-    onclick={() => (timeRange = 3)}
-    class="transition-all duration-300 {timeRange === 3 ? 'text-[#3b82f6]' : 'cursor-pointer'}"
-    >3h</button>
-  <div class="h-5 w-px bg-white/20"></div>
-  <button
-    onclick={() => (timeRange = 6)}
-    class="transition-all duration-300 {timeRange === 6 ? 'text-[#3b82f6]' : 'cursor-pointer'}"
-    >6h</button>
-  <div class="h-5 w-px bg-white/20"></div>
-  <button
-    onclick={() => (timeRange = 12)}
-    class="transition-all duration-300 {timeRange === 12 ? 'text-[#3b82f6]' : 'cursor-pointer'}"
-    >12h</button>
-  <div class="h-5 w-px bg-white/20"></div>
-  <button
-    onclick={() => (timeRange = 24)}
-    class="transition-all duration-300 {timeRange === 24 ? 'text-[#3b82f6]' : 'cursor-pointer'}"
-    >24h</button>
-</div> -->
