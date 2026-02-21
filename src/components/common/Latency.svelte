@@ -29,12 +29,7 @@
       </div>
     </div>
 
-    <div
-      class="relative text-sm py-2 px-3 rounded-full border text-white border-white/5 text-nowrap">
-      <div
-        class="w-full h-full rounded-full bg-transparent absolute top-1/2 start-1/2 -translate-1/2"
-        style="box-shadow: rgb(250,250,250,0.1) 0px 0px 10px 0.5px;">
-      </div>
+    <div class="text-sm py-2 px-3 rounded-full border text-white border-white/5 text-nowrap">
       <span class="text-white/40 me-1"> Avg Response Time: </span>
       {averageLatency} ms
     </div>
