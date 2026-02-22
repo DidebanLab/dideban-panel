@@ -702,9 +702,7 @@
             </div>
           </div>
         </div>
-        {#key histogram}
-          <ApdexHistogramChart data={histogram} />
-        {/key}
+      
       </div>
 
       <div
