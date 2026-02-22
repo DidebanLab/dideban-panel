@@ -9,7 +9,6 @@
   import { endpoints } from '../../../../endpoints.svelte';
   import UptimeHistoryBox from '../../../../components/common/UptimeHistoryBox.svelte';
   import DeleteChecker from '../../../../components/pages/checker/DeleteChecker.svelte';
-  import ApdexHistogramChart from '../../../../components/pages/checker/ApdexHistogramChart.svelte';
   import responseTimeColor from '../../../../utils/responseTimeColor';
   import ConfirmEditConfig from '../../../../components/pages/checker/ConfirmEditConfig.svelte';
   import { alertStore } from '../../../../stores/alert.svelte';
@@ -524,7 +523,7 @@
             {@const missingCount = REQUIRED_COUNT - items.length}
             {#each items as detail, i}
               <div
-                style="height: {detail?.apdex_score}px;"
+                style="height: {detail?.apdex_score / 2}px;"
                 class="w-full rounded-[1px] cursor-pointer relative group border-t-4 {detail?.apdex_rating?.toLowerCase() ===
                 'excellent'
                   ? 'bg-green-500 border-t-green-700 hover:bg-green-700'
@@ -648,63 +647,63 @@
       </div>
 
       <div
-        class="w-full flex flex-col justify-start items-start gap-4 border p-6 pb-0 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
-        <div class="flex justify-between items-start w-full">
-          <div class="flex flex-col">
-            <span class="text-black dark:text-white text-xl">Apdex Histogram</span><span
-              class="text-sm text-[#99a1af]">Application health reflected in Apdex levels</span>
-          </div>
-
-          <div class="flex flex-col gap-2 justify-center items-center">
-            <div class="flex justify-between gap-3 items-center text-sm w-full">
-              <div class="flex flex-col justify-center items-start gap-3 w-full">
-                <div class="flex justify-between items-center gap-1 w-full text-xs">
-                  <div class="text-[#6a7282] text-nowrap flex justify-start items-center gap-3">
-                    {histogram?.[0]?.range_start}_{histogram?.[0]?.range_end} (ms):
-                  </div>
-                  <span class="text-[#008236]">{histogram?.[0].count}</span>
-                </div>
-                <div class="flex justify-between items-center gap-1 w-full text-xs">
-                  <div class="text-[#6a7282] text-nowrap flex justify-start items-center gap-3">
-                    {histogram?.[1]?.range_start}_{histogram?.[1]?.range_end} (ms):
-                  </div>
-                  <span class="text-[#00D492]">{histogram?.[1].count}</span>
-                </div>
-                <div class="flex justify-between items-center gap-1 w-full text-xs">
-                  <div class="text-[#6a7282] text-nowrap flex justify-start items-center gap-3">
-                    {histogram?.[2]?.range_start}_{histogram?.[2]?.range_end} (ms):
-                  </div>
-                  <span class="text-[#FDC700]">{histogram?.[2].count}</span>
-                </div>
-              </div>
-
-              <div class="h-19 w-px bg-white/15"></div>
-              <div class="flex flex-col justify-center items-start gap-3 w-full">
-                <div class="flex justify-between items-center gap-1 w-full text-xs">
-                  <div class="text-[#6a7282] text-nowrap flex justify-start items-center gap-3">
-                    {histogram?.[3]?.range_start}_{histogram?.[3]?.range_end} (ms):
-                  </div>
-                  <span class="text-[#F97316]">{histogram?.[3].count}</span>
-                </div>
-                <div class="flex justify-between items-center gap-1 w-full text-xs">
-                  <div class="text-[#6a7282] text-nowrap flex justify-start items-center gap-3">
-                    {histogram?.[4]?.range_start}_{histogram?.[4]?.range_end} (ms):
-                  </div>
-                  <span class="text-[#EF4444]">{histogram?.[4].count}</span>
-                </div>
-                <div class="flex justify-between items-center gap-1 w-full text-xs">
-                  <div class="text-[#6a7282] text-nowrap flex justify-start items-center gap-3">
-                    Errors:
-                  </div>
-                  <span class="text-[#C3110C]">{histogram?.[5]?.errors || 0}</span>
-                </div>
-              </div>
-            </div>
-          </div>
+        class="relative w-full flex flex-col p-6 pb-13 gap-4 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
+        <div class="flex flex-col">
+          <span class="text-black dark:text-white text-xl">Apdex Histogram</span><span
+            class="text-sm text-[#99a1af]">Application health reflected in Apdex levels</span>
         </div>
-      
-      </div>
 
+        <div class="relative w-full z-10 flex gap-0.5 justify-start items-end mt-4">
+          {#await http.get(endpoints.checkHistogram(id)) then res}
+            {@const items = res.data?.data?.histogram}
+            {@const maxCount = Math.max(...items.map(i => i.count), 1)}
+            {@const getWidthSize = rangeEnd => {
+              switch (rangeEnd) {
+                case -1:
+                  return 'w-[5%] bg-[#F87171] border-t-[#ba4646] hover:bg-[#ff5757]';
+
+                case 400:
+                  return 'w-[5%] bg-green-700 border-t-green-900 hover:bg-green-800';
+                case 1600:
+                  return 'w-[15%] bg-[#00D492] border-t-[#009667] hover:bg-[#00ad76]';
+                case 4800:
+                  return 'w-[35%] bg-[#FDC700] border-t-[#c79c00] hover:bg-[#c19700]';
+                case 8000:
+                  return 'w-[35%] bg-[#F97316] border-t-[#c25e17] hover:bg-[#cf5600]';
+              }
+            }}
+
+            {#each items as detail, i}
+              {@const height = (detail?.count / maxCount) * 100}
+              <div
+                style="height: {height}px;"
+                class="border-t-4 rounded-t-xs cursor-pointer relative {getWidthSize(
+                  detail?.range_end,
+                )} ">
+                <div class="absolute start-1/2 -translate-x-1/2 -top-6 text-sm text-white">
+                  {detail?.count}
+                </div>
+                {#if detail?.range_start !== 0}
+                  <div class="absolute -bottom-2 text-xs -start-px bg-white/15 h-2 w-px"></div>
+                  <div class="absolute -bottom-7 text-xs -start-3 text-white/20 text-nowrap">
+                    {detail?.range_start}ms
+                  </div>
+                {/if}
+              </div>
+            {/each}
+
+            {@const height = (10 / maxCount) * 100}
+            <div
+              style="height: {height}px;"
+              class="border-t-4 w-[5%] rounded-t-xs cursor-pointer relative bg-[#410000] border-t-[#4b0000] hover:bg-[#410000]/70">
+              <div class="absolute -bottom-2 text-xs -start-px bg-white/15 h-2 w-px"></div>
+              <div class="absolute -bottom-2 text-xs end-0 bg-white/15 h-2 w-px"></div>
+              <div class="absolute -bottom-7 text-xs -start-3 text-white/20 text-nowrap">+8ms</div>
+              <div class="absolute -bottom-7 text-xs -end-1 text-white/20 text-nowrap">Errors</div>
+            </div>
+          {/await}
+        </div>
+      </div>
       <div
         class="w-full flex flex-col justify-start items-start gap-4 border border-[#0D0D0D]/5 dark:border-white/5 p-6 rounded-xl">
         <div class="flex flex-col">

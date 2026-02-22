@@ -4,6 +4,7 @@ export const endpoints = {
   agents: '/agents',
   checks: '/checks',
   checkHistory: id => `/checks/${id}/history`,
+  checkHistogram: id => `/checks/${id}/histogram`,
   agentMetric: id => `/agents/${id}/metrics`,
   agentHistory: id => `/agents/${id}/history`,
   agentHistoryDetail: (agentId, historyId) => `/agents/${agentId}/history/${historyId}`,
