@@ -12,11 +12,13 @@
   import responseTimeColor from '../../../../utils/responseTimeColor';
   import ConfirmEditConfig from '../../../../components/pages/checker/ConfirmEditConfig.svelte';
   import { alertStore } from '../../../../stores/alert.svelte';
+  import { goto } from '$app/navigation';
 
   const id = $page.params.checker;
   let data = $state();
   let timeRange = $state(24);
   let enabled = $state();
+  let date = $state(null);
 
   let histogram = $state();
   let isMobile = $state(innerWidth < 640);
@@ -92,16 +94,6 @@
 
   let apdexData = $state();
 
-  // onMount(() => {
-  //   http.get(endpoints.uptimeHistory + name).then(res => {
-  //     uptimeData = res.data;
-  //   });
-  // });
-
-  // $effect(() => {
-  //   http.post(endpoints.performanceOverview, { agent_id: $page.params.checker }).then(res => (data = res.data));
-  // });
-
   const statusColorHandler = status => {
     switch (status) {
       case 'up':
@@ -119,6 +111,7 @@
   };
 
   onMount(() => {
+    // ----------------------------------------
     http.get(endpoints.checks + `/${id}`).then(res => {
       data = res.data?.data;
       enabled = res.data?.data.enabled;
@@ -127,6 +120,22 @@
       .get(endpoints.checks + `/${id}/histogram`)
       .then(res => (histogram = res.data?.data?.histogram));
     http.get(endpoints.checks + `/${id}/summary/yearly`).then(res => (summary = res.data?.data));
+  });
+
+  $effect(() => {
+    const year = $page.url.searchParams.get('year');
+    let month = $page.url.searchParams.get('month');
+    let day = $page.url.searchParams.get('day');
+
+    if (month?.length < 2) month = `0${month}`;
+    if (day?.length < 2) day = `0${day}`;
+
+    if (year && month && day) {
+      date = { year, month, day };
+      http.get(endpoints.checksSummaryDate(id, `${year}-${month}-${day}`)).then(res => {});
+    } else {
+      date = null;
+    }
   });
 </script>
 
@@ -394,41 +403,43 @@
         {/await}
       </div>
 
-      <div
-        class="flex mx-auto sticky top-6 shadow-sm shadow-[#3b82f6]/50 z-200 text-white/20 w-88 py-2 justify-between px-5 text-sm items-center rounded-lg dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
-        <button
-          onclick={() => (timeRange = 1)}
-          class="transition-all duration-300 {timeRange === 1
-            ? 'text-[#3b82f6]'
-            : 'cursor-pointer'}">1h</button>
+      {#if !date}
+        <div
+          class="flex mx-auto sticky top-6 shadow-sm shadow-[#3b82f6]/50 z-200 text-white/20 w-88 py-2 justify-between px-5 text-sm items-center rounded-lg dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
+          <button
+            onclick={() => (timeRange = 1)}
+            class="transition-all duration-300 {timeRange === 1
+              ? 'text-[#3b82f6]'
+              : 'cursor-pointer'}">1h</button>
 
-        <div class="h-5 w-px bg-white/20"></div>
-        <button
-          onclick={() => (timeRange = 3)}
-          class="transition-all duration-300 {timeRange === 3
-            ? 'text-[#3b82f6]'
-            : 'cursor-pointer'}">3h</button>
-        <div class="h-5 w-px bg-white/20"></div>
-        <button
-          onclick={() => (timeRange = 6)}
-          class="transition-all duration-300 {timeRange === 6
-            ? 'text-[#3b82f6]'
-            : 'cursor-pointer'}">6h</button>
-        <div class="h-5 w-px bg-white/20"></div>
-        <button
-          onclick={() => (timeRange = 12)}
-          class="transition-all duration-300 {timeRange === 12
-            ? 'text-[#3b82f6]'
-            : 'cursor-pointer'}">12h</button>
-        <div class="h-5 w-px bg-white/20"></div>
-        <button
-          onclick={() => (timeRange = 24)}
-          class="transition-all duration-300 {timeRange === 24
-            ? 'text-[#3b82f6]'
-            : 'cursor-pointer'}">24h</button>
-      </div>
+          <div class="h-5 w-px bg-white/20"></div>
+          <button
+            onclick={() => (timeRange = 3)}
+            class="transition-all duration-300 {timeRange === 3
+              ? 'text-[#3b82f6]'
+              : 'cursor-pointer'}">3h</button>
+          <div class="h-5 w-px bg-white/20"></div>
+          <button
+            onclick={() => (timeRange = 6)}
+            class="transition-all duration-300 {timeRange === 6
+              ? 'text-[#3b82f6]'
+              : 'cursor-pointer'}">6h</button>
+          <div class="h-5 w-px bg-white/20"></div>
+          <button
+            onclick={() => (timeRange = 12)}
+            class="transition-all duration-300 {timeRange === 12
+              ? 'text-[#3b82f6]'
+              : 'cursor-pointer'}">12h</button>
+          <div class="h-5 w-px bg-white/20"></div>
+          <button
+            onclick={() => (timeRange = 24)}
+            class="transition-all duration-300 {timeRange === 24
+              ? 'text-[#3b82f6]'
+              : 'cursor-pointer'}">24h</button>
+        </div>
+        <Latency {id} name={data?.name} />
+      {/if}
 
-      <Latency {id} name={data?.name} />
       {#await http.get(endpoints.checkApdexHistory(id)) then res}
         {@const REQUIRED_COUNT = 96}
         {@const { total_satisfied, total_tolerating, total_frustrated, apdex_score, apdex_rating } =
@@ -678,62 +689,109 @@
           {/await}
         </div>
       </div>
+
       <div
-        class="w-full flex flex-col justify-start items-start gap-4 border border-[#0D0D0D]/5 dark:border-white/5 p-6 rounded-xl">
-        <div class="flex flex-col">
-          <span class="text-black dark:text-white text-xl">Checks Summary</span>
-          <span class="text-sm text-[#99a1af]">All checks data in a year</span>
-        </div>
-
-        <div class="w-full grid grid-cols-6 gap-8">
-          {#each summary as item, i}
-            {@const historyMap = new Map(Object.entries(item?.history ?? {}))}
-            <div class="flex flex-col gap-4">
-              <div class="flex justify-between items-center w-full border-b border-b-white/15 pb-1">
-                <span class="text-sm text-white"> {getMonthName(item.month)}</span>
-                <div class="flex flex-col">
-                  <div
-                    class="text-xs flex items-center justify-end gap-1 {item?.apdex_rate?.toLowerCase() ===
-                    'excellent'
-                      ? 'text-green-500'
-                      : item?.apdex_rate?.toLowerCase() === 'good'
-                        ? 'text-[#00D492]'
-                        : item?.apdex_rate?.toLowerCase() === 'fair'
-                          ? 'text-[#FDC700]'
-                          : item?.apdex_rate?.toLowerCase() === 'poor'
-                            ? 'text-[#F97316]'
-                            : 'text-[#F87171]'}">
-                    <span class="opacity-50"> {item?.apdex_rate}</span>
-                    <span class="bg-white/15 w-px h-4"></span>
-                    <span> {item?.apdex_score}%</span>
-                  </div>
+        class="w-full grid grid-cols-6 gap-8 border border-[#0D0D0D]/5 dark:border-white/5 p-6 rounded-xl">
+        {#each summary as item, i}
+          {@const historyMap = new Map(Object.entries(item?.history ?? {}))}
+          <div class="flex flex-col gap-4">
+            <div class="flex justify-between items-center w-full border-b border-b-white/15 pb-1">
+              <span class="text-sm text-white"> {getMonthName(item.month)}</span>
+              <div class="flex flex-col">
+                <div
+                  class="text-xs flex items-center justify-end gap-1 {item?.apdex_rate?.toLowerCase() ===
+                  'excellent'
+                    ? 'text-green-500'
+                    : item?.apdex_rate?.toLowerCase() === 'good'
+                      ? 'text-[#00D492]'
+                      : item?.apdex_rate?.toLowerCase() === 'fair'
+                        ? 'text-[#FDC700]'
+                        : item?.apdex_rate?.toLowerCase() === 'poor'
+                          ? 'text-[#F97316]'
+                          : 'text-[#F87171]'}">
+                  <span class="opacity-50"> {item?.apdex_rate}</span>
+                  <span class="bg-white/15 w-px h-4"></span>
+                  <span> {item?.apdex_score}%</span>
                 </div>
-              </div>
-
-              <div class="grid grid-cols-7 grid-rows-5 gap-4 w-full">
-                <div style="grid-column: span {new Date(item.year, item.month - 1, 1).getDay()};">
-                </div>
-                {#each historyMap as [day, value], i}
-                  <div
-                    class="text-white aspect-square w-full flex items-center justify-center relative border border-white/15 {value >=
-                    90
-                      ? 'bg-[#008236]'
-                      : value >= 80
-                        ? 'bg-[#00D492]'
-                        : value >= 70
-                          ? 'bg-[#FDC700]'
-                          : value >= 50
-                            ? 'bg-[#F97316]'
-                            : value !== null
-                              ? 'bg-[#EF4444]'
-                              : ' shadow-inner shadow-white/5'}">
-                    <span class="absolute start-1/2 top-1/2 -translate-1/2">-</span>
-                  </div>
-                {/each}
               </div>
             </div>
-          {/each}
-        </div>
+
+            <div class="grid grid-cols-7 grid-rows-5 gap-4 w-full">
+              <div style="grid-column: span {new Date(item.year, item.month - 1, 1).getDay()};">
+              </div>
+              {#each historyMap as [day, value], i}
+                {@const isSpecialModeWithDate =
+                  date &&
+                  date?.year == item?.year &&
+                  date?.month == item?.month &&
+                  date?.day == day}
+                <button
+                  onclick={() => {
+                    const newUrl = new URL($page.url);
+                    newUrl.searchParams.set('year', item?.year);
+                    newUrl.searchParams.set('month', item?.month);
+                    newUrl.searchParams.set('day', day);
+
+                    goto(newUrl, {
+                      keepfocus: true,
+                      noScroll: true,
+                    });
+                  }}
+                  style={isSpecialModeWithDate
+                    ? `box-shadow: 0 0 7px 4px ${
+                        value >= 90
+                          ? 'rgba(0, 130, 54, 0.4)'
+                          : value >= 80
+                            ? 'rgba(0, 212, 146, 0.4)'
+                            : value >= 70
+                              ? 'rgba(253, 199, 0, 0.4)'
+                              : value >= 50
+                                ? 'rgba(249, 115, 22, 0.4)'
+                                : 'rgba(239, 68, 68, 0.4)'
+                      };`
+                    : ''}
+                  class="text-white aspect-square transition-all w-full flex items-center justify-center relative border border-white/15 group {isSpecialModeWithDate
+                    ? 'animate-pulse'
+                    : 'cursor-pointer'} {value >= 90
+                    ? 'bg-[#008236]'
+                    : value >= 80
+                      ? 'bg-[#00D492]'
+                      : value >= 70
+                        ? 'bg-[#FDC700]'
+                        : value >= 50
+                          ? 'bg-[#F97316]'
+                          : value !== null
+                            ? 'bg-[#EF4444]'
+                            : ' shadow-inner shadow-white/5 cursor-default!'} ">
+                  <div
+                    class="hidden absolute min-w-40 text-sm -top-20 border border-white/15 px-3 py-2 flex-col gap-1 bg-black/80 backdrop-blur-2xl rounded-xl z-10 {value !==
+                      null && !isSpecialModeWithDate
+                      ? 'group-hover:flex'
+                      : ''}">
+                    <div class="flex justify-between items-center">
+                      <span class="text-[#6a7282] text-nowrap">Uptime :</span>
+                      <span
+                        class="text-nowrap {value >= 90
+                          ? 'text-[#008236]'
+                          : value >= 80
+                            ? 'text-[#00D492]'
+                            : value >= 70
+                              ? 'text-[#FDC700]'
+                              : value >= 50
+                                ? 'text-[#F97316]'
+                                : 'text-[#EF4444]'}">{value}%</span>
+                    </div>
+
+                    <span
+                      class="text-white/30 text-nowrap border-t pt-1 border-t-white/15 text-start"
+                      >{item?.year}/{item?.month}/{day}</span>
+                  </div>
+                  <span class="absolute start-1/2 top-1/2 -translate-1/2">-</span>
+                </button>
+              {/each}
+            </div>
+          </div>
+        {/each}
       </div>
     </div>
   </div>

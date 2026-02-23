@@ -3,6 +3,7 @@ export const endpoints = {
   checksStats: '/checks/stats',
   agents: '/agents',
   checks: '/checks',
+  checksSummaryDate: (id, date) => `/checks/${id}/summary/${date}`,
   checkHistory: id => `/checks/${id}/history`,
   checkHistogram: id => `/checks/${id}/histogram`,
   agentMetric: id => `/agents/${id}/metrics`,
