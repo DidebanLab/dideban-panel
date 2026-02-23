@@ -21,6 +21,74 @@
   let histogram = $state();
   let isMobile = $state(innerWidth < 640);
   let history = $state();
+  let summary = $state([
+    {
+      year: 2025,
+      month: 2,
+      uptime: 99,
+      apdex_score: 95,
+      apdex_rate: 'Excellent',
+      counts: 43200,
+      history: {
+        '1': 99,
+        '2': 100,
+        '3': 98,
+        '4': null,
+        '5': 100,
+        '...': '...',
+        '28': 99,
+      },
+    },
+    {
+      year: 2025,
+      month: 3,
+      uptime: 98,
+      apdex_score: 92,
+      apdex_rate: 'Excellent',
+      counts: 44640,
+      history: {
+        '1': 100,
+        '2': 97,
+        '3': 99,
+        '...': '...',
+        '31': 98,
+      },
+    },
+    {
+      year: 2026,
+      month: 1,
+      uptime: 99,
+      apdex_score: 94,
+      apdex_rate: 'Excellent',
+      counts: 44640,
+      history: {
+        '1': 99,
+        '2': 100,
+        '3': 99,
+        '...': '...',
+        '31': 100,
+      },
+    },
+  ]);
+
+  const MONTHS = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ];
+
+  function getMonthName(month) {
+    return MONTHS[month - 1];
+  }
 
   let apdexData = $state();
 
@@ -58,6 +126,7 @@
     http
       .get(endpoints.checks + `/${id}/histogram`)
       .then(res => (histogram = res.data?.data?.histogram));
+    http.get(endpoints.checks + `/${id}/summary/yearly`).then(res => (summary = res.data?.data));
   });
 </script>
 
@@ -612,8 +681,58 @@
       <div
         class="w-full flex flex-col justify-start items-start gap-4 border border-[#0D0D0D]/5 dark:border-white/5 p-6 rounded-xl">
         <div class="flex flex-col">
-          <span class="text-black dark:text-white text-xl">Uptime</span><span
-            class="text-sm text-[#99a1af]">History Of Uptime</span>
+          <span class="text-black dark:text-white text-xl">Checks Summary</span>
+          <span class="text-sm text-[#99a1af]">All checks data in a year</span>
+        </div>
+
+        <div class="w-full grid grid-cols-6 gap-8">
+          {#each summary as item, i}
+            {@const historyMap = new Map(Object.entries(item?.history ?? {}))}
+            <div class="flex flex-col gap-4">
+              <div class="flex justify-between items-center w-full border-b border-b-white/15 pb-1">
+                <span class="text-sm text-white"> {getMonthName(item.month)}</span>
+                <div class="flex flex-col">
+                  <div
+                    class="text-xs flex items-center justify-end gap-1 {item?.apdex_rate?.toLowerCase() ===
+                    'excellent'
+                      ? 'text-green-500'
+                      : item?.apdex_rate?.toLowerCase() === 'good'
+                        ? 'text-[#00D492]'
+                        : item?.apdex_rate?.toLowerCase() === 'fair'
+                          ? 'text-[#FDC700]'
+                          : item?.apdex_rate?.toLowerCase() === 'poor'
+                            ? 'text-[#F97316]'
+                            : 'text-[#F87171]'}">
+                    <span class="opacity-50"> {item?.apdex_rate}</span>
+                    <span class="bg-white/15 w-px h-4"></span>
+                    <span> {item?.apdex_score}%</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-7 grid-rows-5 gap-4 w-full">
+                <div style="grid-column: span {new Date(item.year, item.month - 1, 1).getDay()};">
+                </div>
+                {#each historyMap as [day, value], i}
+                  <div
+                    class="text-white aspect-square w-full flex items-center justify-center relative border border-white/15 {value >=
+                    90
+                      ? 'bg-[#008236]'
+                      : value >= 80
+                        ? 'bg-[#00D492]'
+                        : value >= 70
+                          ? 'bg-[#FDC700]'
+                          : value >= 50
+                            ? 'bg-[#F97316]'
+                            : value !== null
+                              ? 'bg-[#EF4444]'
+                              : ' shadow-inner shadow-white/5'}">
+                    <span class="absolute start-1/2 top-1/2 -translate-1/2">-</span>
+                  </div>
+                {/each}
+              </div>
+            </div>
+          {/each}
         </div>
       </div>
     </div>
