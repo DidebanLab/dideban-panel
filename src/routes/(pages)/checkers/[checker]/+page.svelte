@@ -22,106 +22,7 @@
   let isMobile = $state(innerWidth < 640);
   let history = $state();
 
-  let summary = $state();
-
-  let uptimeData = $state([
-    {
-      month: 'January',
-      average: 90,
-      uptime: [
-        100, 98, 96, 94, 98, 100, 100, 90, 50, 30, 53, 78, 90, 98, 96, 94, 98, 100, 100, 90, 50, 30,
-        53, 78, 90, 98, 96, 94, 98, 100, 100,
-      ],
-    },
-    {
-      month: 'February',
-      average: 95,
-      uptime: [
-        100, 98, 96, 94, 98, 100, 100, 90, 50, 30, 53, 78, 90, 98, 96, 94, 98, 100, 100, 90, 50, 30,
-        53, 78, 90, 98, 96, 94,
-      ],
-    },
-    {
-      month: 'March',
-      average: 98,
-      uptime: [
-        100, 98, 96, 94, 98, 100, 100, 90, 50, 30, 53, 78, 90, 98, 96, 94, 98, 100, 100, 90, 50, 30,
-        53, 78, 90, 98, 96, 94, 98, 100, 100,
-      ],
-    },
-    {
-      month: 'April',
-      average: 98,
-      uptime: [
-        100, 98, 96, 94, 98, 100, 100, 90, 50, 30, 53, 78, 90, 98, 96, 98, 100, 100, 90, 50, 30, 53,
-        78, 90, 98, 96, 94, 98, 100, 100,
-      ],
-    },
-    {
-      month: 'May',
-      average: 98,
-      uptime: [
-        100, 98, 96, 94, 98, 100, 100, 90, 50, 30, 53, 78, 90, 98, 96, 94, 98, 100, 100, 90, 50, 30,
-        53, 78, 90, 98, 96, 94, 98, 100, 100,
-      ],
-    },
-    {
-      month: 'June',
-      average: 98,
-      uptime: [
-        100, 98, 96, 94, 98, 100, 100, 90, 50, 53, 78, 90, 98, 96, 94, 98, 100, 100, 90, 50, 30, 53,
-        78, 90, 98, 96, 94, 98, 100, 100,
-      ],
-    },
-    {
-      month: 'July',
-      average: 98,
-      uptime: [
-        100, 98, 96, 94, 98, 100, 100, 90, 50, 30, 53, 78, 90, 98, 96, 94, 98, 100, 100, 90, 50, 30,
-        53, 78, 90, 98, 96, 94, 98, 100, 100,
-      ],
-    },
-    {
-      month: 'August',
-      average: 98,
-      uptime: [
-        100, 98, 96, 94, 98, 100, 100, 90, 50, 30, 53, 78, 90, 98, 96, 94, 98, 100, 100, 90, 50, 30,
-        53, 78, 90, 98, 96, 94, 98, 100, 100,
-      ],
-    },
-    {
-      month: 'September',
-      average: 98,
-      uptime: [
-        100, 98, 96, 94, 98, 100, 100, 90, 50, 53, 78, 90, 98, 96, 94, 98, 100, 100, 90, 50, 30, 53,
-        78, 90, 98, 96, 94, 98, 100, 100,
-      ],
-    },
-    {
-      month: 'October',
-      average: 98,
-      uptime: [
-        100, 98, 96, 94, 98, 100, 100, 90, 50, 30, 53, 78, 90, 98, 96, 94, 98, 100, 100, 90, 50, 30,
-        53, 78, 90, 98, 96, 94, 98, 100, 100,
-      ],
-    },
-    {
-      month: 'November',
-      average: 98,
-      uptime: [
-        100, 98, 96, 94, 98, 100, 100, 90, 50, 53, 78, 90, 98, 96, 94, 98, 100, 100, 90, 50, 30, 53,
-        78, 90, 98, 96, 94, 98, 100, 100,
-      ],
-    },
-    {
-      month: 'December',
-      average: 98,
-      uptime: [
-        100, 98, 96, 94, 98, 100, 100, 90, 50, 30, 53, 78, 90, 98, 96, 94, 98, 100, 100, 90, 50, 30,
-        53, 78, 90, 98, 96, 94, 98, 100, 100,
-      ],
-    },
-  ]);
+  let apdexData = $state();
 
   // onMount(() => {
   //   http.get(endpoints.uptimeHistory + name).then(res => {
@@ -154,7 +55,6 @@
       data = res.data?.data;
       enabled = res.data?.data.enabled;
     });
-    http.get(endpoints.checks + `/${id}/summery`).then(res => (summary = res.data?.data));
     http
       .get(endpoints.checks + `/${id}/histogram`)
       .then(res => (histogram = res.data?.data?.histogram));
@@ -269,7 +169,7 @@
       </div>
 
       <div class="flex flex-col gap-4 w-full">
-        {#await http.get( endpoints.checkHistory(id), { params: { short: true, page_size: isMobile ? 31 : 96 } }, ) then res}
+        {#await http.get( endpoints.checkHistory(id), { params: { short: true, detail: true, page_size: isMobile ? 31 : 96 } }, ) then res}
           {@const REQUIRED_COUNT = isMobile ? 31 : 96}
           {@const items = res.data.data.slice(-REQUIRED_COUNT)}
           {@const missingCount = REQUIRED_COUNT - items.length}
@@ -277,6 +177,8 @@
             items[0][1]?.toLowerCase() === 'error' || items[0][1]?.toLowerCase() === 'down'}
           {@const warn = items[0][1]?.toLowerCase() === 'timeout'}
           {@const ok = items[0][1]?.toLowerCase() === 'up'}
+          {@const uptime_percent = res.data?.uptime_percent}
+          {@const last_checked = res.data?.last_checked}
 
           <div
             class="relative flex flex-col h-35 p-6 gap-4 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
@@ -286,7 +188,7 @@
                 <div class="flex justify-end items-center gap-2 text-xs text-white/40">
                   <span class="flex justify-center items-center text-nowrap">Last Check :</span>
                   <span class="flex justify-center items-center text-nowrap tracking-wider">
-                    {new Date(data?.last_checked).toLocaleString('en-CA', {
+                    {new Date(last_checked).toLocaleString('en-CA', {
                       year: 'numeric',
                       month: '2-digit',
                       day: '2-digit',
@@ -298,16 +200,16 @@
                 </div>
               </div>
               <span
-                class="text-2xl {summary?.summary?.uptime_percent >= 90
+                class="text-2xl {uptime_percent >= 90
                   ? 'text-[#008236]'
-                  : summary?.summary?.uptime_percent >= 80
+                  : uptime_percent >= 80
                     ? 'text-[#00D492]'
-                    : summary?.summary?.uptime_percent >= 70
+                    : uptime_percent >= 70
                       ? 'text-[#FDC700]'
-                      : summary?.summary?.uptime_percent >= 50
+                      : uptime_percent >= 50
                         ? 'text-[#F97316]'
                         : 'text-[#EF4444]'}">
-                {summary?.summary?.uptime_percent}%
+                {uptime_percent}%
               </span>
             </div>
 
@@ -457,70 +359,68 @@
             : 'cursor-pointer'}">24h</button>
       </div>
 
-      <Latency
-        {id}
-        name={data?.name}
-        subtitle={summary?.summary?.total_checks}
-        averageLatency={summary?.summary?.avg_response_time} />
+      <Latency {id} name={data?.name} />
+      {#await http.get(endpoints.checkApdexHistory(id)) then res}
+        {@const REQUIRED_COUNT = 96}
+        {@const { total_satisfied, total_tolerating, total_frustrated, apdex_score, apdex_rating } =
+          res.data?.data}
+        {@const items = res.data.data?.apdex_series.reverse().slice(-REQUIRED_COUNT)}
+        {@const missingCount = REQUIRED_COUNT - items.length}
+        <div
+          class="relative w-full flex flex-col p-6 pb-13 gap-4 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
+          <div class="flex justify-between items-start">
+            <div class="w-fit flex flex-col justify-start items-start">
+              <span class="text-lg text-black dark:text-white"> Apdex history</span>
+              <div class="flex justify-start items-center gap-1">
+                <span class="text-sm text-[#99a1af]">Detail Information</span>
 
-      <div
-        class="relative w-full flex flex-col p-6 pb-13 gap-4 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
-        <div class="flex justify-between items-start">
-          <div class="w-fit flex flex-col justify-start items-start">
-            <span class="text-lg text-black dark:text-white"> Apdex history</span>
-            <div class="flex justify-start items-center gap-1">
-              <span class="text-sm text-[#99a1af]">Detail Information</span>
+                <button class="group relative">
+                  <img
+                    class="cursor-pointer"
+                    width="20"
+                    height="20"
+                    src="/icons/question.png"
+                    alt="question" />
+                  <div
+                    class="absolute *:text-nowrap bg-black/50 backdrop-blur-2xl hidden group-hover:flex text-white/30 text-sm ms-2 start-full bottom-0 border border-white/10 rounded-xl py-3 px-4 flex-col gap-1">
+                    <div class="flex justify-between items-center gap-1 w-full">
+                      <span>Total Satisfied :</span>
+                      <span class="text-white">{total_satisfied}</span>
+                    </div>
+                    <div class="flex justify-between items-center gap-1 w-full">
+                      <span>Total Tolerating :</span>
+                      <span class="text-white">{total_tolerating}</span>
+                    </div>
+                    <div class="flex justify-between items-center gap-1 w-full">
+                      <span>Total Frustrated :</span>
+                      <span class="text-white">{total_frustrated}</span>
+                    </div>
+                  </div></button>
+              </div>
+            </div>
+            <div
+              class="flex text-2xl justify-end gap-2 items-center {apdex_score >= 90
+                ? 'text-[#008236]'
+                : apdex_score >= 80
+                  ? 'text-[#00D492]'
+                  : apdex_score >= 70
+                    ? 'text-[#FDC700]'
+                    : apdex_score >= 50
+                      ? 'text-[#F97316]'
+                      : 'text-[#EF4444]'}">
+              <span>
+                {apdex_rating}
+              </span>
 
-              <button class="group relative">
-                <img
-                  class="cursor-pointer"
-                  width="20"
-                  height="20"
-                  src="/icons/question.png"
-                  alt="question" />
-                <div
-                  class="absolute *:text-nowrap bg-black/50 backdrop-blur-2xl hidden group-hover:flex text-white/30 text-sm ms-2 start-full bottom-0 border border-white/10 rounded-xl py-3 px-4 flex-col gap-1">
-                  <div class="flex justify-between items-center gap-1 w-full">
-                    <span>Total Satisfied :</span>
-                    <span class="text-white">{summary?.summary?.total_satisfied}</span>
-                  </div>
-                  <div class="flex justify-between items-center gap-1 w-full">
-                    <span>Total Tolerating :</span>
-                    <span class="text-white">{summary?.summary?.total_tolerating}</span>
-                  </div>
-                  <div class="flex justify-between items-center gap-1 w-full">
-                    <span>Total Frustrated :</span>
-                    <span class="text-white">{summary?.summary?.total_frustrated}</span>
-                  </div>
-                </div></button>
+              <span class="h-7 w-px bg-white/15"></span>
+
+              <span> {apdex_score}%</span>
             </div>
           </div>
-          <div
-            class="flex text-2xl justify-end gap-2 items-center {summary?.summary?.apdex_score >= 90
-              ? 'text-[#008236]'
-              : summary?.summary?.apdex_score >= 80
-                ? 'text-[#00D492]'
-                : summary?.summary?.apdex_score >= 70
-                  ? 'text-[#FDC700]'
-                  : summary?.summary?.apdex_score >= 50
-                    ? 'text-[#F97316]'
-                    : 'text-[#EF4444]'}">
-            <span>
-              {summary?.summary?.apdex_rating}
-            </span>
 
-            <span class="h-7 w-px bg-white/15"></span>
+          <div class="relative w-full z-10 flex flex-row-reverse gap-0.5 justify-start items-end">
+            <div class="w-full absolute -bottom-1 h-px bg-white/10"></div>
 
-            <span> {summary?.summary?.apdex_score}%</span>
-          </div>
-        </div>
-
-        <div class="relative w-full z-10 flex flex-row-reverse gap-0.5 justify-start items-end">
-          <div class="w-full absolute -bottom-1 h-px bg-white/10"></div>
-          {#await http.get(endpoints.checkApdexHistory(id)) then res}
-            {@const REQUIRED_COUNT = 96}
-            {@const items = res.data.data?.apdex_series.reverse().slice(-REQUIRED_COUNT)}
-            {@const missingCount = REQUIRED_COUNT - items.length}
             {#each items as detail, i}
               <div
                 style="height: {detail?.apdex_score / 2}px;"
@@ -530,7 +430,7 @@
                   : detail?.apdex_rating?.toLowerCase() === 'good'
                     ? 'bg-[#00D492] border-t-[#009667] hover:bg-[#00ad76]'
                     : detail?.apdex_rating?.toLowerCase() === 'fair'
-                      ? 'bg-[#FDC700] border-t-[#c79c00] hover:bg-[#c19700]'
+                      ? 'bg-[#FDC700] border-t-[#c79c00] hover:bg-[#ffd745]'
                       : detail?.apdex_rating?.toLowerCase() === 'poor'
                         ? 'bg-[#F97316] border-t-[#c25e17] hover:bg-[#cf5600]'
                         : 'bg-[#F87171] border-t-[#ba4646] hover:bg-[#ff5757]'}">
@@ -642,9 +542,9 @@
                 </div>
               </div>
             {/each}
-          {/await}
+          </div>
         </div>
-      </div>
+      {/await}
 
       <div
         class="relative w-full flex flex-col p-6 pb-13 gap-4 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
@@ -654,9 +554,11 @@
         </div>
 
         <div class="relative w-full z-10 flex gap-0.5 justify-start items-end mt-4">
+          <div class="absolute -bottom-1 w-full h-px bg-white/15"></div>
           {#await http.get(endpoints.checkHistogram(id)) then res}
             {@const items = res.data?.data?.histogram}
             {@const maxCount = Math.max(...items.map(i => i.count), 1)}
+            {@const errorCount = res.data?.data?.error_count}
             {@const getWidthSize = rangeEnd => {
               switch (rangeEnd) {
                 case -1:
@@ -667,7 +569,7 @@
                 case 1600:
                   return 'w-[15%] bg-[#00D492] border-t-[#009667] hover:bg-[#00ad76]';
                 case 4800:
-                  return 'w-[35%] bg-[#FDC700] border-t-[#c79c00] hover:bg-[#c19700]';
+                  return 'w-[35%] bg-[#FDC700] border-t-[#c79c00] hover:bg-[#ffd745]';
                 case 8000:
                   return 'w-[35%] bg-[#F97316] border-t-[#c25e17] hover:bg-[#cf5600]';
               }
@@ -679,12 +581,12 @@
                 style="height: {height}px;"
                 class="border-t-4 rounded-t-xs cursor-pointer relative {getWidthSize(
                   detail?.range_end,
-                )} ">
+                )}">
                 <div class="absolute start-1/2 -translate-x-1/2 -top-6 text-sm text-white">
                   {detail?.count}
                 </div>
                 {#if detail?.range_start !== 0}
-                  <div class="absolute -bottom-2 text-xs -start-px bg-white/15 h-2 w-px"></div>
+                  <div class="absolute -bottom-3 text-xs -start-px bg-white/15 h-2 w-px"></div>
                   <div class="absolute -bottom-7 text-xs -start-3 text-white/20 text-nowrap">
                     {detail?.range_start}ms
                   </div>
@@ -696,8 +598,11 @@
             <div
               style="height: {height}px;"
               class="border-t-4 w-[5%] rounded-t-xs cursor-pointer relative bg-[#410000] border-t-[#4b0000] hover:bg-[#410000]/70">
-              <div class="absolute -bottom-2 text-xs -start-px bg-white/15 h-2 w-px"></div>
-              <div class="absolute -bottom-2 text-xs end-0 bg-white/15 h-2 w-px"></div>
+              <div class="absolute start-1/2 -translate-x-1/2 -top-6 text-sm text-white">
+                {errorCount}
+              </div>
+              <div class="absolute -bottom-3 text-xs -start-px bg-white/15 h-2 w-px"></div>
+              <div class="absolute -bottom-3 text-xs end-0 bg-white/15 h-2 w-px"></div>
               <div class="absolute -bottom-7 text-xs -start-3 text-white/20 text-nowrap">+8ms</div>
               <div class="absolute -bottom-7 text-xs -end-1 text-white/20 text-nowrap">Errors</div>
             </div>
@@ -709,30 +614,6 @@
         <div class="flex flex-col">
           <span class="text-black dark:text-white text-xl">Uptime</span><span
             class="text-sm text-[#99a1af]">History Of Uptime</span>
-        </div>
-
-        <div class="w-full grid grid-cols-5 2xl:grid-cols-7 text-white gap-4 relative">
-          <div class="absolute end-0 bottom-0 flex flex-col justify-center items-end gap-2">
-            <div
-              class="flex justify-center items-center gap-2 text-black dark:text-white/40 text-sm">
-              <span> More than 80%</span>
-              <div class="size-3.5 rounded-sm bg-red-600/70"></div>
-            </div>
-            <div
-              class="flex justify-center items-center gap-2 text-black dark:text-white/40 text-sm">
-              <span> {'50% < value < 80%'}</span>
-              <div class="size-3.5 rounded-sm bg-[#F97316]"></div>
-            </div>
-            <div
-              class="flex justify-center items-center gap-2 text-black dark:text-white/40 text-sm">
-              <span>less Than 51 %</span>
-              <div class="size-3.5 rounded-sm bg-green-700"></div>
-            </div>
-          </div>
-
-          <!-- {#each uptimeData as item (item.month)}
-            <UptimeHistoryBox {name} month={item.month} average={item.average} data={item.uptime} />
-          {/each} -->
         </div>
       </div>
     </div>

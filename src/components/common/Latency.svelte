@@ -7,14 +7,12 @@
 
   const isMobile = $state(innerWidth < 645);
 
-  const { name, id, subtitle, averageLatency } = $props();
+  const { name, id } = $props();
 
   let data = $state();
 
   onMount(() => {
-    http
-      .get(endpoints.checks + `/${id}/latency`)
-      .then(res => (data = res.data?.data?.latency_series));
+    http.get(endpoints.checks + `/${id}/latency`).then(res => (data = res.data?.data));
   });
 </script>
 
@@ -25,16 +23,16 @@
       <span class="text-lg md:text-xl text-black dark:text-white"> Latency</span>
       <div class="text-xs text-white bg-white/10 py-1 px-2 rounded-md">
         <span class="text-white/50">Total Checks :</span>
-        {subtitle}
+        {data?.total_checks}
       </div>
     </div>
 
     <div class="text-sm py-2 px-3 rounded-full border text-white border-white/5 text-nowrap">
       <span class="text-white/40 me-1"> Avg Response Time: </span>
-      {averageLatency} ms
+      {data?.avg_response_time} ms
     </div>
   </div>
-  {#key data}
-    <UptimeChart name="Latency" height={250} {data} unit="ms" />
+  {#key data?.latency_series}
+    <UptimeChart name="Latency" height={250} data={data?.latency_series} unit="ms" />
   {/key}
 </div>
