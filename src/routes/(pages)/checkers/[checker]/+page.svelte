@@ -722,9 +722,9 @@
               {#each historyMap as [day, value], i}
                 {@const isSpecialModeWithDate =
                   date &&
-                  date?.year == item?.year &&
-                  date?.month == item?.month &&
-                  date?.day == day}
+                  Number(date?.year) === Number(item?.year) &&
+                  Number(date?.month) === Number(item?.month) &&
+                  Number(date?.day) === Number(day)}
                 <button
                   onclick={() => {
                     const newUrl = new URL($page.url);
