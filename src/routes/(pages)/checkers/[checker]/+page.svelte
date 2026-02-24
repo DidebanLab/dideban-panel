@@ -14,15 +14,17 @@
   import { alertStore } from '../../../../stores/alert.svelte';
   import { goto } from '$app/navigation';
 
+  const REQUIRED_COUNT = $state(innerWidth < 640 ? 31 : 96);
   const id = $page.params.checker;
   let data = $state();
   let timeRange = $state(24);
   let enabled = $state();
   let date = $state(null);
-
   let histogram = $state();
-  let isMobile = $state(innerWidth < 640);
   let history = $state();
+  let missingCount = $derived(Math.max(0, REQUIRED_COUNT - (history?.data?.length ?? 0)));
+  let historyDetail = $state();
+  let apdex = $state();
   let summary = $state([
     {
       year: 2025,
@@ -92,35 +94,34 @@
     return MONTHS[month - 1];
   }
 
-  let apdexData = $state();
-
-  const statusColorHandler = status => {
-    switch (status) {
-      case 'up':
-        return 'text-[#00bc7d]';
-
-      case 'down':
-        return 'text-[#F87171]';
-
-      case 'error':
-        return 'text-[#F87171]';
-
-      case 'warn':
-        return 'text-[#F97316]';
-    }
-  };
-
   onMount(() => {
+    http
+      .get(endpoints.checkHistory(id), {
+        params: { short: true, detail: true, page_size: REQUIRED_COUNT },
+      })
+      .then(res => (history = { ...res.data, data: res.data?.data.slice(-REQUIRED_COUNT) }));
+
+    http.get(endpoints.checkApdexHistory(id)).then(
+      res =>
+        (apdex = {
+          ...res.data?.data,
+          apdex_series: res.data?.data?.apdex_series.reverse().slice(-96),
+        }),
+    );
     // ----------------------------------------
     http.get(endpoints.checks + `/${id}`).then(res => {
       data = res.data?.data;
       enabled = res.data?.data.enabled;
     });
-    http
-      .get(endpoints.checks + `/${id}/histogram`)
-      .then(res => (histogram = res.data?.data?.histogram));
-    http.get(endpoints.checks + `/${id}/summary/yearly`).then(res => (summary = res.data?.data));
+    http.get(endpoints.checkHistogram(id)).then(
+      res =>
+        (histogram = {
+          ...res.data?.data,
+          max_count: Math.max(...res.data?.data?.histogram.map(i => i.count), 1),
+        }),
+    );
   });
+  http.get(endpoints.checks + `/${id}/summary/yearly`).then(res => (summary = res.data?.data));
 
   $effect(() => {
     const year = $page.url.searchParams.get('year');
@@ -247,160 +248,148 @@
       </div>
 
       <div class="flex flex-col gap-4 w-full">
-        {#await http.get( endpoints.checkHistory(id), { params: { short: true, detail: true, page_size: isMobile ? 31 : 96 } }, ) then res}
-          {@const REQUIRED_COUNT = isMobile ? 31 : 96}
-          {@const items = res.data.data.slice(-REQUIRED_COUNT)}
-          {@const missingCount = REQUIRED_COUNT - items.length}
-          {@const error =
-            items[0][1]?.toLowerCase() === 'error' || items[0][1]?.toLowerCase() === 'down'}
-          {@const warn = items[0][1]?.toLowerCase() === 'timeout'}
-          {@const ok = items[0][1]?.toLowerCase() === 'up'}
-          {@const uptime_percent = res.data?.uptime_percent}
-          {@const last_checked = res.data?.last_checked}
+        <div
+          class="relative flex flex-col h-35 p-6 gap-4 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
+          <div class="w-full flex justify-between items-start">
+            <div class="w-fit flex flex-col justify-start items-start">
+              <span class="text-lg text-black dark:text-white">Uptime</span>
+              <div class="flex justify-end items-center gap-2 text-xs text-white/40">
+                <span class="flex justify-center items-center text-nowrap">Last Check :</span>
+                <span class="flex justify-center items-center text-nowrap tracking-wider">
+                  {new Date(history?.uptime_percent).toLocaleString('en-CA', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: false,
+                  })}</span>
+              </div>
+            </div>
+            <span
+              class="text-2xl {history?.uptime_percent >= 90
+                ? 'text-[#008236]'
+                : history?.uptime_percent >= 80
+                  ? 'text-[#00D492]'
+                  : history?.uptime_percent >= 70
+                    ? 'text-[#FDC700]'
+                    : history?.uptime_percent >= 50
+                      ? 'text-[#F97316]'
+                      : 'text-[#EF4444]'}">
+              {history?.uptime_percent}%
+            </span>
+          </div>
 
           <div
-            class="relative flex flex-col h-35 p-6 gap-4 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
-            <div class="w-full flex justify-between items-start">
-              <div class="w-fit flex flex-col justify-start items-start">
-                <span class="text-lg text-black dark:text-white">Uptime</span>
-                <div class="flex justify-end items-center gap-2 text-xs text-white/40">
-                  <span class="flex justify-center items-center text-nowrap">Last Check :</span>
-                  <span class="flex justify-center items-center text-nowrap tracking-wider">
-                    {new Date(last_checked).toLocaleString('en-CA', {
-                      year: 'numeric',
-                      month: '2-digit',
-                      day: '2-digit',
-                      hour: '2-digit',
-                      minute: '2-digit',
-                      second: '2-digit',
-                      hour12: false,
-                    })}</span>
-                </div>
-              </div>
-              <span
-                class="text-2xl {uptime_percent >= 90
-                  ? 'text-[#008236]'
-                  : uptime_percent >= 80
-                    ? 'text-[#00D492]'
-                    : uptime_percent >= 70
-                      ? 'text-[#FDC700]'
-                      : uptime_percent >= 50
-                        ? 'text-[#F97316]'
-                        : 'text-[#EF4444]'}">
-                {uptime_percent}%
-              </span>
-            </div>
+            class=" w-full z-10 flex flex-row-reverse gap-0.5 justify-between items-end absolute bottom-6 start-1/2 -translate-x-1/2 px-6">
+            {#each history?.data as detail (detail[0])}
+              {@const status = detail[1]}
 
-            <div
-              class=" w-full z-10 flex flex-row-reverse gap-0.5 justify-between items-end absolute bottom-6 start-1/2 -translate-x-1/2 px-6">
-              {#each items as detail (detail[0])}
-                {@const status = detail[1]}
-
-                <button
-                  type="button"
-                  aria-label="detail of status"
-                  onmouseover={() => {
-                    http
-                      .get(`${endpoints.checkHistory(id)}/${detail[0]}`)
-                      .then(res => (history = res.data.data));
-                  }}
-                  onmouseleave={() => {
-                    history = null;
-                  }}
-                  onfocus={() => {
-                    http
-                      .get(`${endpoints.checkHistory(id)}/${detail[0]}`)
-                      .then(res => (history = res.data.data));
-                  }}
-                  onblur={() => {
-                    history = null;
-                  }}
-                  class="w-4 h-4 rounded-[1px] hover:h-6 transition-all cursor-pointer relative group {status ===
-                    'error' || status === 'down'
-                    ? 'bg-[#EF4444]'
-                    : status === 'timeout'
-                      ? 'bg-[#F97316]'
-                      : status === 'up'
-                        ? 'bg-green-700'
-                        : 'bg-[#FFFFFF]/10'}">
-                  {#if history}
-                    <div
-                      class="absolute z-10 w-fit group-hover:flex hidden bottom-10 start-1/2 -translate-x-1/2 rounded-xl text-white bg-white/40 dark:bg-black/80 backdrop-blur-md dark:backdrop-blur-3xl border-[#0D0D0D]/5 border dark:border-white/10 px-3 py-2 flex-col justify-start items-start gap-1">
+              <button
+                type="button"
+                aria-label="detail of status"
+                onmouseover={() => {
+                  http
+                    .get(`${endpoints.checkHistory(id)}/${detail[0]}`)
+                    .then(res => (historyDetail = res.data?.data));
+                }}
+                onmouseleave={() => {
+                  historyDetail = null;
+                }}
+                onfocus={() => {
+                  http
+                    .get(`${endpoints.checkHistory(id)}/${detail[0]}`)
+                    .then(res => (historyDetail = res.data?.data));
+                }}
+                onblur={() => {
+                  historyDetailDetail = null;
+                }}
+                class="w-4 h-4 rounded-[1px] hover:h-6 transition-all cursor-pointer relative group {status ===
+                  'error' || status === 'down'
+                  ? 'bg-[#EF4444]'
+                  : status === 'timeout'
+                    ? 'bg-[#F97316]'
+                    : status === 'up'
+                      ? 'bg-green-700'
+                      : 'bg-[#FFFFFF]/10'}">
+                {#if historyDetail}
+                  <div
+                    class="absolute z-10 w-fit group-hover:flex hidden bottom-10 start-1/2 -translate-x-1/2 rounded-xl text-white bg-white/40 dark:bg-black/80 backdrop-blur-md dark:backdrop-blur-3xl border-[#0D0D0D]/5 border dark:border-white/10 px-3 py-2 flex-col justify-start items-start gap-1">
+                    <div class="w-full flex justify-between items-center gap-2.5">
+                      <span
+                        class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
+                        >Status :</span>
+                      <span
+                        class="flex justify-center items-center text-sm text-nowrap capitalize {historyDetail?.status ===
+                          'error' || historyDetail?.status === 'down'
+                          ? 'text-[#F87171]'
+                          : historyDetail?.status === 'timeout'
+                            ? 'text-[#F97316]'
+                            : historyDetail?.status === 'up'
+                              ? 'text-green-700'
+                              : ''}">{historyDetail?.status}</span>
+                    </div>
+                    {#if historyDetail?.response_time_ms}
                       <div class="w-full flex justify-between items-center gap-2.5">
                         <span
                           class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
-                          >Status :</span>
+                          >Latency :</span>
                         <span
-                          class="flex justify-center items-center text-sm text-nowrap capitalize {history?.status ===
-                            'error' || history?.status === 'down'
+                          class="flex justify-center items-center text-sm text-nowrap {responseTimeColor(
+                            historyDetail?.response_time_ms,
+                          )}">{historyDetail?.response_time_ms} ms</span>
+                      </div>
+                    {/if}
+                    {#if historyDetail?.status_code}
+                      <div class="w-full flex justify-between items-center gap-2.5">
+                        <span
+                          class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
+                          >Status Code :</span>
+                        <span
+                          class="flex justify-center items-center text-sm text-nowrap {historyDetail?.status ===
+                            'error' || historyDetail?.status === 'down'
                             ? 'text-[#F87171]'
-                            : history?.status === 'timeout'
-                              ? 'text-[#F97316]'
-                              : history?.status === 'up'
-                                ? 'text-green-700'
-                                : ''}">{history?.status}</span>
+                            : historyDetail?.status === 'up'
+                              ? 'text-green-700'
+                              : ''}">{historyDetail?.status_code}</span>
                       </div>
-                      {#if history?.response_time_ms}
-                        <div class="w-full flex justify-between items-center gap-2.5">
-                          <span
-                            class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
-                            >Latency :</span>
-                          <span
-                            class="flex justify-center items-center text-sm text-nowrap {responseTimeColor(
-                              history?.response_time_ms,
-                            )}">{history?.response_time_ms} ms</span>
-                        </div>
-                      {/if}
-                      {#if history?.status_code}
-                        <div class="w-full flex justify-between items-center gap-2.5">
-                          <span
-                            class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
-                            >Status Code :</span>
-                          <span
-                            class="flex justify-center items-center text-sm text-nowrap {history?.status ===
-                              'error' || history?.status === 'down'
-                              ? 'text-[#F87171]'
-                              : history?.status === 'up'
-                                ? 'text-green-700'
-                                : ''}">{history?.status_code}</span>
-                        </div>
-                      {/if}
-                      {#if history?.error_message}
-                        <div class="w-full flex justify-between items-center gap-2.5">
-                          <span
-                            class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
-                            >Error Message :</span>
-                          <span
-                            class="flex justify-center items-center text-sm text-nowrap text-[#F87171]"
-                            >{history?.error_message}</span>
-                        </div>
-                      {/if}
+                    {/if}
+                    {#if historyDetail?.error_message}
+                      <div class="w-full flex justify-between items-center gap-2.5">
+                        <span
+                          class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
+                          >Error Message :</span>
+                        <span
+                          class="flex justify-center items-center text-sm text-nowrap text-[#F87171]"
+                          >{historyDetail?.error_message}</span>
+                      </div>
+                    {/if}
 
-                      <div
-                        class="w-full flex justify-start items-center text-sm pt-1.5 text-[#6a7282] text-center text-nowrap border-t border-t-[#0D0D0D]/10 dark:border-t-white/15">
-                        {new Date(history?.checked_at).toLocaleString('en-CA', {
-                          year: 'numeric',
-                          month: '2-digit',
-                          day: '2-digit',
-                          hour: '2-digit',
-                          minute: '2-digit',
-                          second: '2-digit',
-                          hour12: false,
-                        })}
-                      </div>
+                    <div
+                      class="w-full flex justify-start items-center text-sm pt-1.5 text-[#6a7282] text-center text-nowrap border-t border-t-[#0D0D0D]/10 dark:border-t-white/15">
+                      {new Date(historyDetail?.checked_at).toLocaleString('en-CA', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit',
+                        hour12: false,
+                      })}
                     </div>
-                  {/if}
-                </button>
-              {/each}
-              {#each Array(missingCount) as _, i}
-                <div
-                  aria-hidden="true"
-                  class="w-4 h-4 rounded-[1px] bg-black/20 dark:bg-[#FFFFFF]/10 opacity-70">
-                </div>
-              {/each}
-            </div>
+                  </div>
+                {/if}
+              </button>
+            {/each}
+            {#each Array(missingCount) as _, i}
+              <div
+                aria-hidden="true"
+                class="w-4 h-4 rounded-[1px] bg-black/20 dark:bg-[#FFFFFF]/10 opacity-70">
+              </div>
+            {/each}
           </div>
-        {/await}
+        </div>
       </div>
 
       {#if !date}
@@ -440,191 +429,179 @@
         <Latency {id} name={data?.name} />
       {/if}
 
-      {#await http.get(endpoints.checkApdexHistory(id)) then res}
-        {@const REQUIRED_COUNT = 96}
-        {@const { total_satisfied, total_tolerating, total_frustrated, apdex_score, apdex_rating } =
-          res.data?.data}
-        {@const items = res.data.data?.apdex_series.reverse().slice(-REQUIRED_COUNT)}
-        {@const missingCount = REQUIRED_COUNT - items.length}
-        <div
-          class="relative w-full flex flex-col p-6 pb-13 gap-4 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
-          <div class="flex justify-between items-start">
-            <div class="w-fit flex flex-col justify-start items-start">
-              <span class="text-lg text-black dark:text-white"> Apdex history</span>
-              <div class="flex justify-start items-center gap-1">
-                <span class="text-sm text-[#99a1af]">Detail Information</span>
+      <div
+        class="relative w-full flex flex-col p-6 pb-13 gap-4 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
+        <div class="flex justify-between items-start">
+          <div class="w-fit flex flex-col justify-start items-start">
+            <span class="text-lg text-black dark:text-white"> Apdex history</span>
+            <div class="flex justify-start items-center gap-1">
+              <span class="text-sm text-[#99a1af]">Detail Information</span>
 
-                <button class="group relative">
-                  <img
-                    class="cursor-pointer"
-                    width="20"
-                    height="20"
-                    src="/icons/question.png"
-                    alt="question" />
-                  <div
-                    class="absolute *:text-nowrap bg-black/50 backdrop-blur-2xl hidden group-hover:flex text-white/30 text-sm ms-2 start-full bottom-0 border border-white/10 rounded-xl py-3 px-4 flex-col gap-1">
-                    <div class="flex justify-between items-center gap-1 w-full">
-                      <span>Total Satisfied :</span>
-                      <span class="text-white">{total_satisfied}</span>
-                    </div>
-                    <div class="flex justify-between items-center gap-1 w-full">
-                      <span>Total Tolerating :</span>
-                      <span class="text-white">{total_tolerating}</span>
-                    </div>
-                    <div class="flex justify-between items-center gap-1 w-full">
-                      <span>Total Frustrated :</span>
-                      <span class="text-white">{total_frustrated}</span>
-                    </div>
-                  </div></button>
-              </div>
-            </div>
-            <div
-              class="flex text-2xl justify-end gap-2 items-center {apdex_score >= 90
-                ? 'text-[#008236]'
-                : apdex_score >= 80
-                  ? 'text-[#00D492]'
-                  : apdex_score >= 70
-                    ? 'text-[#FDC700]'
-                    : apdex_score >= 50
-                      ? 'text-[#F97316]'
-                      : 'text-[#EF4444]'}">
-              <span>
-                {apdex_rating}
-              </span>
-
-              <span class="h-7 w-px bg-white/15"></span>
-
-              <span> {apdex_score}%</span>
+              <button class="group relative">
+                <img
+                  class="cursor-pointer"
+                  width="20"
+                  height="20"
+                  src="/icons/question.png"
+                  alt="question" />
+                <div
+                  class="absolute *:text-nowrap bg-black/50 backdrop-blur-2xl hidden group-hover:flex text-white/30 text-sm ms-2 start-full bottom-0 border border-white/10 rounded-xl py-3 px-4 flex-col gap-1">
+                  <div class="flex justify-between items-center gap-1 w-full">
+                    <span>Total Satisfied :</span>
+                    <span class="text-white">{apdex?.total_satisfied}</span>
+                  </div>
+                  <div class="flex justify-between items-center gap-1 w-full">
+                    <span>Total Tolerating :</span>
+                    <span class="text-white">{apdex?.total_tolerating}</span>
+                  </div>
+                  <div class="flex justify-between items-center gap-1 w-full">
+                    <span>Total Frustrated :</span>
+                    <span class="text-white">{apdex?.total_frustrated}</span>
+                  </div>
+                </div></button>
             </div>
           </div>
+          <div
+            class="flex text-2xl justify-end gap-2 items-center {apdex?.apdex_score >= 90
+              ? 'text-[#008236]'
+              : apdex?.apdex_score >= 80
+                ? 'text-[#00D492]'
+                : apdex?.apdex_score >= 70
+                  ? 'text-[#FDC700]'
+                  : apdex?.apdex_score >= 50
+                    ? 'text-[#F97316]'
+                    : 'text-[#EF4444]'}">
+            <span>
+              {apdex?.apdex_rating}
+            </span>
 
-          <div class="relative w-full z-10 flex flex-row-reverse gap-0.5 justify-start items-end">
-            <div class="w-full absolute -bottom-1 h-px bg-white/10"></div>
+            <span class="h-7 w-px bg-white/15"></span>
 
-            {#each items as detail, i}
-              <div
-                style="height: {detail?.apdex_score / 2}px;"
-                class="w-full rounded-[1px] cursor-pointer relative group border-t-4 {detail?.apdex_rating?.toLowerCase() ===
-                'excellent'
-                  ? 'bg-green-500 border-t-green-700 hover:bg-green-700'
-                  : detail?.apdex_rating?.toLowerCase() === 'good'
-                    ? 'bg-[#00D492] border-t-[#009667] hover:bg-[#00ad76]'
-                    : detail?.apdex_rating?.toLowerCase() === 'fair'
-                      ? 'bg-[#FDC700] border-t-[#c79c00] hover:bg-[#ffd745]'
-                      : detail?.apdex_rating?.toLowerCase() === 'poor'
-                        ? 'bg-[#F97316] border-t-[#c25e17] hover:bg-[#cf5600]'
-                        : 'bg-[#F87171] border-t-[#ba4646] hover:bg-[#ff5757]'}">
-                {#if i % 4 === 0}
-                  <div class="absolute -bottom-3 start-0 h-2 w-px bg-white/10">
-                    <div class="relative">
-                      <div
-                        class="absolute -bottom-7 start-1/2 -translate-x-1/2 text-white/20 text-xs text-nowrap">
-                        {new Date(detail?.start_time).toLocaleString('en-CA', {
-                          hour: '2-digit',
-                          minute: '2-digit',
-                          hour12: false,
-                        })}
-                      </div>
-                    </div>
-                  </div>
-                {/if}
-                <div
-                  class="absolute z-10 w-fit group-hover:flex hidden bottom-10 start-1/2 -translate-x-1/2 rounded-xl text-white bg-white/40 dark:bg-black/80 backdrop-blur-md dark:backdrop-blur-3xl border-[#0D0D0D]/5 border dark:border-white/10 px-3 py-2 flex-col justify-start items-start gap-1">
-                  <div class="w-full flex justify-between items-center gap-2.5">
-                    <span
-                      class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
-                      >Apdex Rating :</span>
-                    <span
-                      class="flex justify-center items-center text-sm text-nowrap capitalize {detail?.apdex_rating?.toLowerCase() ===
-                      'excellent'
-                        ? 'text-green-500'
-                        : detail?.apdex_rating?.toLowerCase() === 'good'
-                          ? 'text-[#00D492]'
-                          : detail?.apdex_rating?.toLowerCase() === 'fair'
-                            ? 'text-[#FDC700]'
-                            : detail?.apdex_rating?.toLowerCase() === 'poor'
-                              ? 'text-[#F97316]'
-                              : 'text-[#F87171]'}">{detail?.apdex_rating}</span>
-                  </div>
-                  <div class="w-full flex justify-between items-center gap-2.5">
-                    <span
-                      class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
-                      >Apdex Score :</span>
-                    <span
-                      class="flex justify-center items-center text-sm text-nowrap capitalize {detail?.apdex_rating?.toLowerCase() ===
-                      'excellent'
-                        ? 'text-green-500'
-                        : detail?.apdex_rating?.toLowerCase() === 'good'
-                          ? 'text-[#00D492]'
-                          : detail?.apdex_rating?.toLowerCase() === 'fair'
-                            ? 'text-[#FDC700]'
-                            : detail?.apdex_rating?.toLowerCase() === 'poor'
-                              ? 'text-[#F97316]'
-                              : 'text-[#F87171]'}">{detail?.apdex_score}%</span>
-                  </div>
+            <span> {apdex?.apdex_score}%</span>
+          </div>
+        </div>
 
-                  <div class="w-full flex justify-between items-center gap-2.5">
-                    <span
-                      class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
-                      >Total Satisfied :</span>
-                    <span class="flex justify-center items-center text-sm text-nowrap text-white"
-                      >{detail?.total_satisfied}</span>
-                  </div>
+        <div class="relative w-full z-10 flex flex-row-reverse gap-0.5 justify-start items-end">
+          <div class="w-full absolute -bottom-1 h-px bg-white/10"></div>
 
-                  <div class="w-full flex justify-between items-center gap-2.5">
-                    <span
-                      class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
-                      >Total Tolerating :</span>
-                    <span class="flex justify-center items-center text-sm text-nowrap text-white"
-                      >{detail?.total_tolerating}</span>
-                  </div>
-
-                  <div class="w-full flex justify-between items-center gap-2.5">
-                    <span
-                      class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
-                      >Total Frustrated :</span>
-                    <span class="flex justify-center items-center text-sm text-nowrap text-white"
-                      >{detail?.total_frustrated}</span>
-                  </div>
-
-                  <div
-                    class="w-full flex flex-col justify-start items-start text-xs pt-1.5 text-[#6a7282] text-center text-nowrap border-t border-t-[#0D0D0D]/10 dark:border-t-white/15">
-                    <div class="flex justify-between items-center gap-1 w-full">
-                      <span>From</span>
-                      <span class="text-white/30">
-                        :
-                        {new Date(detail?.start_time).toLocaleString('en-CA', {
-                          year: 'numeric',
-                          month: '2-digit',
-                          day: '2-digit',
-                          hour: '2-digit',
-                          minute: '2-digit',
-                          second: '2-digit',
-                          hour12: false,
-                        })}</span>
-                    </div>
-
-                    <div class="flex justify-between items-center gap-1 w-full">
-                      <span>Until</span>
-                      <span class="text-white/30">
-                        :
-                        {new Date(detail?.end_time).toLocaleString('en-CA', {
-                          year: 'numeric',
-                          month: '2-digit',
-                          day: '2-digit',
-                          hour: '2-digit',
-                          minute: '2-digit',
-                          second: '2-digit',
-                          hour12: false,
-                        })}</span>
+          {#each apdex?.apdex_series as detail, i}
+            <div
+              style="height: {detail?.apdex_score / 2}px;"
+              class="w-full rounded-[1px] cursor-pointer relative group border-t-4 {detail?.apdex_rating?.toLowerCase() ===
+              'excellent'
+                ? 'bg-green-500 border-t-green-700 hover:bg-green-700'
+                : detail?.apdex_rating?.toLowerCase() === 'good'
+                  ? 'bg-[#00D492] border-t-[#009667] hover:bg-[#00ad76]'
+                  : detail?.apdex_rating?.toLowerCase() === 'fair'
+                    ? 'bg-[#FDC700] border-t-[#c79c00] hover:bg-[#ffd745]'
+                    : detail?.apdex_rating?.toLowerCase() === 'poor'
+                      ? 'bg-[#F97316] border-t-[#c25e17] hover:bg-[#cf5600]'
+                      : 'bg-[#F87171] border-t-[#ba4646] hover:bg-[#ff5757]'}">
+              {#if i % 4 === 0}
+                <div class="absolute -bottom-3 start-0 h-2 w-px bg-white/10">
+                  <div class="relative">
+                    <div
+                      class="absolute -bottom-7 start-1/2 -translate-x-1/2 text-white/20 text-xs text-nowrap">
+                      {new Date(detail?.start_time).toLocaleString('en-CA', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: false,
+                      })}
                     </div>
                   </div>
                 </div>
+              {/if}
+              <div
+                class="absolute z-10 w-fit group-hover:flex hidden bottom-10 start-1/2 -translate-x-1/2 rounded-xl text-white bg-white/40 dark:bg-black/80 backdrop-blur-md dark:backdrop-blur-3xl border-[#0D0D0D]/5 border dark:border-white/10 px-3 py-2 flex-col justify-start items-start gap-1">
+                <div class="w-full flex justify-between items-center gap-2.5">
+                  <span class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
+                    >Apdex Rating :</span>
+                  <span
+                    class="flex justify-center items-center text-sm text-nowrap capitalize {detail?.apdex_rating?.toLowerCase() ===
+                    'excellent'
+                      ? 'text-green-500'
+                      : detail?.apdex_rating?.toLowerCase() === 'good'
+                        ? 'text-[#00D492]'
+                        : detail?.apdex_rating?.toLowerCase() === 'fair'
+                          ? 'text-[#FDC700]'
+                          : detail?.apdex_rating?.toLowerCase() === 'poor'
+                            ? 'text-[#F97316]'
+                            : 'text-[#F87171]'}">{detail?.apdex_rating}</span>
+                </div>
+                <div class="w-full flex justify-between items-center gap-2.5">
+                  <span class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
+                    >Apdex Score :</span>
+                  <span
+                    class="flex justify-center items-center text-sm text-nowrap capitalize {detail?.apdex_rating?.toLowerCase() ===
+                    'excellent'
+                      ? 'text-green-500'
+                      : detail?.apdex_rating?.toLowerCase() === 'good'
+                        ? 'text-[#00D492]'
+                        : detail?.apdex_rating?.toLowerCase() === 'fair'
+                          ? 'text-[#FDC700]'
+                          : detail?.apdex_rating?.toLowerCase() === 'poor'
+                            ? 'text-[#F97316]'
+                            : 'text-[#F87171]'}">{detail?.apdex_score}%</span>
+                </div>
+
+                <div class="w-full flex justify-between items-center gap-2.5">
+                  <span class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
+                    >Total Satisfied :</span>
+                  <span class="flex justify-center items-center text-sm text-nowrap text-white"
+                    >{detail?.total_satisfied}</span>
+                </div>
+
+                <div class="w-full flex justify-between items-center gap-2.5">
+                  <span class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
+                    >Total Tolerating :</span>
+                  <span class="flex justify-center items-center text-sm text-nowrap text-white"
+                    >{detail?.total_tolerating}</span>
+                </div>
+
+                <div class="w-full flex justify-between items-center gap-2.5">
+                  <span class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
+                    >Total Frustrated :</span>
+                  <span class="flex justify-center items-center text-sm text-nowrap text-white"
+                    >{detail?.total_frustrated}</span>
+                </div>
+
+                <div
+                  class="w-full flex flex-col justify-start items-start text-xs pt-1.5 text-[#6a7282] text-center text-nowrap border-t border-t-[#0D0D0D]/10 dark:border-t-white/15">
+                  <div class="flex justify-between items-center gap-1 w-full">
+                    <span>From</span>
+                    <span class="text-white/30">
+                      :
+                      {new Date(detail?.start_time).toLocaleString('en-CA', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit',
+                        hour12: false,
+                      })}</span>
+                  </div>
+
+                  <div class="flex justify-between items-center gap-1 w-full">
+                    <span>Until</span>
+                    <span class="text-white/30">
+                      :
+                      {new Date(detail?.end_time).toLocaleString('en-CA', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit',
+                        hour12: false,
+                      })}</span>
+                  </div>
+                </div>
               </div>
-            {/each}
-          </div>
+            </div>
+          {/each}
         </div>
-      {/await}
+      </div>
 
       <div
         class="relative w-full flex flex-col p-6 pb-13 gap-4 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
@@ -635,58 +612,44 @@
 
         <div class="relative w-full z-10 flex gap-0.5 justify-start items-end mt-4">
           <div class="absolute -bottom-1 w-full h-px bg-white/15"></div>
-          {#await http.get(endpoints.checkHistogram(id)) then res}
-            {@const items = res.data?.data?.histogram}
-            {@const maxCount = Math.max(...items.map(i => i.count), 1)}
-            {@const errorCount = res.data?.data?.error_count}
-            {@const getWidthSize = rangeEnd => {
-              switch (rangeEnd) {
-                case -1:
-                  return 'w-[5%] bg-[#F87171] border-t-[#ba4646] hover:bg-[#ff5757]';
 
-                case 400:
-                  return 'w-[5%] bg-green-700 border-t-green-900 hover:bg-green-800';
-                case 1600:
-                  return 'w-[15%] bg-[#00D492] border-t-[#009667] hover:bg-[#00ad76]';
-                case 4800:
-                  return 'w-[35%] bg-[#FDC700] border-t-[#c79c00] hover:bg-[#ffd745]';
-                case 8000:
-                  return 'w-[35%] bg-[#F97316] border-t-[#c25e17] hover:bg-[#cf5600]';
-              }
-            }}
-
-            {#each items as detail, i}
-              {@const height = (detail?.count / maxCount) * 100}
-              <div
-                style="height: {height}px;"
-                class="border-t-4 rounded-t-xs cursor-pointer relative {getWidthSize(
-                  detail?.range_end,
-                )}">
-                <div class="absolute start-1/2 -translate-x-1/2 -top-6 text-sm text-white">
-                  {detail?.count}
-                </div>
-                {#if detail?.range_start !== 0}
-                  <div class="absolute -bottom-3 text-xs -start-px bg-white/15 h-2 w-px"></div>
-                  <div class="absolute -bottom-7 text-xs -start-3 text-white/20 text-nowrap">
-                    {detail?.range_start}ms
-                  </div>
-                {/if}
-              </div>
-            {/each}
-
-            {@const height = (10 / maxCount) * 100}
+          {#each histogram?.histogram as detail, i}
             <div
-              style="height: {height}px;"
-              class="border-t-4 w-[5%] rounded-t-xs cursor-pointer relative bg-[#410000] border-t-[#4b0000] hover:bg-[#410000]/70">
+              style="height: {(detail?.count / histogram?.max_count) * 100}px;"
+              class="border-t-4 rounded-t-xs cursor-pointer relative {detail?.range_end === -1
+                ? 'w-[5%] bg-[#F87171] border-t-[#ba4646] hover:bg-[#ff5757]'
+                : detail?.range_end === 400
+                  ? 'w-[5%] bg-green-700 border-t-green-900 hover:bg-green-800'
+                  : detail?.range_end === 1600
+                    ? 'w-[15%] bg-[#00D492] border-t-[#009667] hover:bg-[#00ad76]'
+                    : detail?.range_end === 4800
+                      ? 'w-[35%] bg-[#FDC700] border-t-[#c79c00] hover:bg-[#ffd745]'
+                      : detail?.range_end === 8000
+                        ? 'w-[35%] bg-[#F97316] border-t-[#c25e17] hover:bg-[#cf5600]'
+                        : ''}">
               <div class="absolute start-1/2 -translate-x-1/2 -top-6 text-sm text-white">
-                {errorCount}
+                {detail?.count}
               </div>
-              <div class="absolute -bottom-3 text-xs -start-px bg-white/15 h-2 w-px"></div>
-              <div class="absolute -bottom-3 text-xs end-0 bg-white/15 h-2 w-px"></div>
-              <div class="absolute -bottom-7 text-xs -start-3 text-white/20 text-nowrap">+8ms</div>
-              <div class="absolute -bottom-7 text-xs -end-1 text-white/20 text-nowrap">Errors</div>
+              {#if detail?.range_start !== 0}
+                <div class="absolute -bottom-3 text-xs -start-px bg-white/15 h-2 w-px"></div>
+                <div class="absolute -bottom-7 text-xs -start-3 text-white/20 text-nowrap">
+                  {detail?.range_start}ms
+                </div>
+              {/if}
             </div>
-          {/await}
+          {/each}
+
+          <div
+            style="height: {(10 / histogram?.max_count) * 100}px;"
+            class="border-t-4 w-[5%] rounded-t-xs cursor-pointer relative bg-[#410000] border-t-[#4b0000] hover:bg-[#410000]/70">
+            <div class="absolute start-1/2 -translate-x-1/2 -top-6 text-sm text-white">
+              {histogram?.error_count}
+            </div>
+            <div class="absolute -bottom-3 text-xs -start-px bg-white/15 h-2 w-px"></div>
+            <div class="absolute -bottom-3 text-xs end-0 bg-white/15 h-2 w-px"></div>
+            <div class="absolute -bottom-7 text-xs -start-3 text-white/20 text-nowrap">+8ms</div>
+            <div class="absolute -bottom-7 text-xs -end-1 text-white/20 text-nowrap">Errors</div>
+          </div>
         </div>
       </div>
 
