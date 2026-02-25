@@ -295,7 +295,9 @@
 
       <div class="flex flex-col gap-4 w-full">
         <div
-          class="relative flex flex-col h-35 p-6 gap-4 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
+          class="relative flex flex-col p-6 gap-4 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5 {date
+            ? 'h-43'
+            : 'h-35'}">
           <div class="w-full flex justify-between items-start">
             <div class="w-fit flex flex-col justify-start items-start">
               <span class="text-lg text-black dark:text-white">Uptime</span>
@@ -333,7 +335,9 @@
           </div>
 
           <div
-            class=" w-full z-10 flex flex-row-reverse gap-0.5 justify-between items-end absolute bottom-6 start-1/2 -translate-x-1/2 px-6">
+            class=" w-full z-10 flex flex-row-reverse gap-0.5 justify-between items-end absolute start-1/2 -translate-x-1/2 px-6 {date
+              ? 'bottom-14'
+              : 'bottom-6'}">
             {#if !date}
               {#each history?.data as detail (detail[0])}
                 {@const status = detail[1]}
@@ -449,22 +453,34 @@
                 </div>
               {/each}
             {:else}
-              {#each summaryWithDate.uptime_series as uptime, i}
+              {#each summaryWithDate?.uptime_series as uptime, i}
                 <button
                   type="button"
                   aria-label="detail of status"
-                  class="w-full h-4 rounded-t-xs transition-all cursor-pointer relative group {uptime >=
-                  90
-                    ? 'bg-[#008236]'
+                  class="w-full h-6 transition-all cursor-pointer relative group {uptime >= 90
+                    ? 'hover:bg-[#008236]/70 bg-[#008236]'
                     : uptime >= 80
-                      ? 'bg-[#00D492]'
+                      ? 'hover:bg-[#00D492]/70 bg-[#00D492]'
                       : uptime >= 70
-                        ? 'bg-[#FDC700]'
+                        ? 'hover:bg-[#FDC700]/70 bg-[#FDC700]'
                         : uptime >= 50
-                          ? 'bg-[#F97316]'
-                          : 'bg-[#EF4444]'}">
+                          ? 'hover:bg-[#F97316]/70 bg-[#F97316]'
+                          : 'hover:bg-[#EF4444]/70 bg-[#EF4444]'}">
+                  <div class="absolute top-1/2 start-1/2 -translate-1/2 text-xs text-white">
+                    {uptime}%
+                  </div>
+
+                  <div class="h-2 w-px bg-white/10 absolute -end-px -bottom-3"></div>
+
+                  <div class="h-2 w-px text-white/20 absolute end-3.25 text-xs -bottom-7">
+                    {(summaryWithDate.uptime_series.length - i).toString().padStart(2, '0')}:00
+                  </div>
                 </button>
               {/each}
+
+              <div class="absolute -bottom-1 start-1/2 -translate-x-1/2 w-full px-6">
+                <div class="h-px w-full bg-white/10"></div>
+              </div>
             {/if}
           </div>
         </div>
