@@ -166,6 +166,50 @@
     http.get(endpoints.checks + `/${id}/summary/yearly`).then(res => (summary = res.data?.data));
   });
 
+  function nextDate(data, year, month, day) {
+    const maxDay = Object.keys(
+      data.filter(item => Number(item.month) === Number(month))[0].history,
+    ).length;
+    let nextDay = Number(day);
+    let nextMonth = Number(month);
+    let nextYear = Number(year);
+    if (Number(day) === maxDay) {
+      nextDay = 1;
+      if (nextMonth === 12) {
+        nextMonth = 1;
+        nextYear = nextYear + 1;
+      } else {
+        nextMonth = nextMonth + 1;
+      }
+    } else {
+      nextDay = nextDay + 1;
+    }
+
+    goto(`/checkers/${id}?year=${nextYear}&month=${nextMonth}&day=${nextDay}`);
+  }
+
+  function preDate(data, year, month, day) {
+    const maxDayPreMonth = Object.keys(
+      data.filter(item => Number(item.month) === Number(month - 1))[0].history,
+    ).length;
+    let perDay = Number(day);
+    let perMonth = Number(month);
+    let perYear = Number(year);
+    if (Number(day) === 1) {
+      perDay = maxDayPreMonth;
+      if (perMonth === 1) {
+        perMonth = 12;
+        perYear = perYear - 1;
+      } else {
+        perMonth - 1;
+      }
+    } else {
+      perDay = perDay - 1;
+    }
+
+    goto(`/checkers/${id}?year=${nextYear}&month=${nextMonth}&day=${nextDay}`);
+  }
+
   $effect(() => {
     const year = $page.url.searchParams.get('year');
     let month = $page.url.searchParams.get('month');
@@ -229,18 +273,28 @@
           </div>
 
           <!-- Next -->
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="w-4 h-4 hover:opacity-65 cursor-pointer"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="white">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M9 5l7 7-7 7" />
-          </svg>
+          <button
+            aria-label="next date"
+            onclick={() => {
+              nextDate(
+                summary,
+                $page.url.searchParams.get('year'),
+                $page.url.searchParams.get('month'),
+                $page.url.searchParams.get('day'),
+              );
+            }}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-4 h-4 hover:opacity-65 cursor-pointer"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="white">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 5l7 7-7 7" />
+            </svg></button>
         </div>
 
         {#if date}
