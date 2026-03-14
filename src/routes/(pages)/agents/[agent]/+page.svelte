@@ -29,7 +29,864 @@
   let historyDetail = $state();
   let collectDuration = $state();
   let summary = $state();
-  let summaryWithDate = $state();
+  let summaryWithDate = $state({
+    date: '2025-12-19',
+    overall: {
+      total_collects: 1440,
+      uptime_percent: 94,
+      avg_collect_duration_ms: 284,
+      rate: 'Good',
+      min_collect_duration_ms: 20,
+      max_collect_duration_ms: 549,
+    },
+    uptime_series: [
+      {
+        is_offline: false,
+        collect_duration_ms: 299,
+        cpu_usage_percent: 29,
+        memory_usage_percent: 59,
+        disk_usage_percent: 23,
+      },
+      {
+        is_offline: false,
+        collect_duration_ms: 299,
+        cpu_usage_percent: 29,
+        memory_usage_percent: 59,
+        disk_usage_percent: 23,
+      },
+      {
+        is_offline: false,
+        collect_duration_ms: 299,
+        cpu_usage_percent: 29,
+        memory_usage_percent: 59,
+        disk_usage_percent: 23,
+      },
+      {
+        is_offline: false,
+        collect_duration_ms: 299,
+        cpu_usage_percent: 29,
+        memory_usage_percent: 59,
+        disk_usage_percent: 23,
+      },
+      {
+        is_offline: false,
+        collect_duration_ms: 299,
+        cpu_usage_percent: 29,
+        memory_usage_percent: 59,
+        disk_usage_percent: 23,
+      },
+      {
+        is_offline: false,
+        collect_duration_ms: 299,
+        cpu_usage_percent: 29,
+        memory_usage_percent: 59,
+        disk_usage_percent: 23,
+      },
+      {
+        is_offline: false,
+        collect_duration_ms: 299,
+        cpu_usage_percent: 29,
+        memory_usage_percent: 59,
+        disk_usage_percent: 23,
+      },
+      {
+        is_offline: false,
+        collect_duration_ms: 299,
+        cpu_usage_percent: 29,
+        memory_usage_percent: 59,
+        disk_usage_percent: 23,
+      },
+      {
+        is_offline: false,
+        collect_duration_ms: 299,
+        cpu_usage_percent: 29,
+        memory_usage_percent: 59,
+        disk_usage_percent: 23,
+      },
+      {
+        is_offline: false,
+        collect_duration_ms: 299,
+        cpu_usage_percent: 29,
+        memory_usage_percent: 59,
+        disk_usage_percent: 23,
+      },
+      {
+        is_offline: false,
+        collect_duration_ms: 299,
+        cpu_usage_percent: 29,
+        memory_usage_percent: 59,
+        disk_usage_percent: 23,
+      },
+      {
+        is_offline: false,
+        collect_duration_ms: 299,
+        cpu_usage_percent: 29,
+        memory_usage_percent: 59,
+        disk_usage_percent: 23,
+      },
+      {
+        is_offline: false,
+        collect_duration_ms: 299,
+        cpu_usage_percent: 29,
+        memory_usage_percent: 59,
+        disk_usage_percent: 23,
+      },
+      {
+        is_offline: false,
+        collect_duration_ms: 299,
+        cpu_usage_percent: 29,
+        memory_usage_percent: 59,
+        disk_usage_percent: 23,
+      },
+      {
+        is_offline: false,
+        collect_duration_ms: 299,
+        cpu_usage_percent: 29,
+        memory_usage_percent: 59,
+        disk_usage_percent: 23,
+      },
+      {
+        is_offline: false,
+        collect_duration_ms: 299,
+        cpu_usage_percent: 29,
+        memory_usage_percent: 59,
+        disk_usage_percent: 23,
+      },
+      {
+        is_offline: false,
+        collect_duration_ms: 299,
+        cpu_usage_percent: 29,
+        memory_usage_percent: 59,
+        disk_usage_percent: 23,
+      },
+      {
+        is_offline: false,
+        collect_duration_ms: 299,
+        cpu_usage_percent: 29,
+        memory_usage_percent: 59,
+        disk_usage_percent: 23,
+      },
+      {
+        is_offline: false,
+        collect_duration_ms: 299,
+        cpu_usage_percent: 29,
+        memory_usage_percent: 59,
+        disk_usage_percent: 23,
+      },
+      {
+        is_offline: false,
+        collect_duration_ms: 299,
+        cpu_usage_percent: 29,
+        memory_usage_percent: 59,
+        disk_usage_percent: 23,
+      },
+      {
+        is_offline: false,
+        collect_duration_ms: 299,
+        cpu_usage_percent: 29,
+        memory_usage_percent: 59,
+        disk_usage_percent: 23,
+      },
+      {
+        is_offline: false,
+        collect_duration_ms: 299,
+        cpu_usage_percent: 29,
+        memory_usage_percent: 59,
+        disk_usage_percent: 23,
+      },
+      {
+        is_offline: false,
+        collect_duration_ms: 299,
+        cpu_usage_percent: 29,
+        memory_usage_percent: 59,
+        disk_usage_percent: 23,
+      },
+      {
+        is_offline: false,
+        collect_duration_ms: 299,
+        cpu_usage_percent: 29,
+        memory_usage_percent: 59,
+        disk_usage_percent: 23,
+      },
+    ],
+    collect_duration_series: [
+      {
+        start_time: '0000-01-01T00:00:00+03:25',
+        end_time: '0000-01-01T00:00:00+03:25',
+        collects: 60,
+        uptime_percent: 92,
+        avg_collect_duration_ms: 282,
+        rate: 'Good',
+        min_collect_duration_ms: 0,
+        max_collect_duration_ms: 533,
+      },
+      {
+        start_time: '0000-01-01T00:00:00+03:25',
+        end_time: '0000-01-01T00:00:00+03:25',
+        collects: 60,
+        uptime_percent: 92,
+        avg_collect_duration_ms: 282,
+        rate: 'Good',
+        min_collect_duration_ms: 0,
+        max_collect_duration_ms: 533,
+      },
+      {
+        start_time: '0000-01-01T00:00:00+03:25',
+        end_time: '0000-01-01T00:00:00+03:25',
+        collects: 60,
+        uptime_percent: 92,
+        avg_collect_duration_ms: 282,
+        rate: 'Good',
+        min_collect_duration_ms: 0,
+        max_collect_duration_ms: 533,
+      },
+      {
+        start_time: '0000-01-01T00:00:00+03:25',
+        end_time: '0000-01-01T00:00:00+03:25',
+        collects: 60,
+        uptime_percent: 92,
+        avg_collect_duration_ms: 282,
+        rate: 'Good',
+        min_collect_duration_ms: 0,
+        max_collect_duration_ms: 533,
+      },
+      {
+        start_time: '0000-01-01T00:00:00+03:25',
+        end_time: '0000-01-01T00:00:00+03:25',
+        collects: 60,
+        uptime_percent: 92,
+        avg_collect_duration_ms: 282,
+        rate: 'Good',
+        min_collect_duration_ms: 0,
+        max_collect_duration_ms: 533,
+      },
+      {
+        start_time: '0000-01-01T00:00:00+03:25',
+        end_time: '0000-01-01T00:00:00+03:25',
+        collects: 60,
+        uptime_percent: 92,
+        avg_collect_duration_ms: 282,
+        rate: 'Good',
+        min_collect_duration_ms: 0,
+        max_collect_duration_ms: 533,
+      },
+      {
+        start_time: '0000-01-01T00:00:00+03:25',
+        end_time: '0000-01-01T00:00:00+03:25',
+        collects: 60,
+        uptime_percent: 92,
+        avg_collect_duration_ms: 282,
+        rate: 'Good',
+        min_collect_duration_ms: 0,
+        max_collect_duration_ms: 533,
+      },
+      {
+        start_time: '0000-01-01T00:00:00+03:25',
+        end_time: '0000-01-01T00:00:00+03:25',
+        collects: 60,
+        uptime_percent: 92,
+        avg_collect_duration_ms: 282,
+        rate: 'Good',
+        min_collect_duration_ms: 0,
+        max_collect_duration_ms: 533,
+      },
+      {
+        start_time: '0000-01-01T00:00:00+03:25',
+        end_time: '0000-01-01T00:00:00+03:25',
+        collects: 60,
+        uptime_percent: 92,
+        avg_collect_duration_ms: 282,
+        rate: 'Good',
+        min_collect_duration_ms: 0,
+        max_collect_duration_ms: 533,
+      },
+      {
+        start_time: '0000-01-01T00:00:00+03:25',
+        end_time: '0000-01-01T00:00:00+03:25',
+        collects: 60,
+        uptime_percent: 92,
+        avg_collect_duration_ms: 282,
+        rate: 'Good',
+        min_collect_duration_ms: 0,
+        max_collect_duration_ms: 533,
+      },
+      {
+        start_time: '0000-01-01T00:00:00+03:25',
+        end_time: '0000-01-01T00:00:00+03:25',
+        collects: 60,
+        uptime_percent: 92,
+        avg_collect_duration_ms: 282,
+        rate: 'Good',
+        min_collect_duration_ms: 0,
+        max_collect_duration_ms: 533,
+      },
+      {
+        start_time: '0000-01-01T00:00:00+03:25',
+        end_time: '0000-01-01T00:00:00+03:25',
+        collects: 60,
+        uptime_percent: 92,
+        avg_collect_duration_ms: 282,
+        rate: 'Good',
+        min_collect_duration_ms: 0,
+        max_collect_duration_ms: 533,
+      },
+      {
+        start_time: '0000-01-01T00:00:00+03:25',
+        end_time: '0000-01-01T00:00:00+03:25',
+        collects: 60,
+        uptime_percent: 92,
+        avg_collect_duration_ms: 282,
+        rate: 'Good',
+        min_collect_duration_ms: 0,
+        max_collect_duration_ms: 533,
+      },
+      {
+        start_time: '0000-01-01T00:00:00+03:25',
+        end_time: '0000-01-01T00:00:00+03:25',
+        collects: 60,
+        uptime_percent: 92,
+        avg_collect_duration_ms: 282,
+        rate: 'Good',
+        min_collect_duration_ms: 0,
+        max_collect_duration_ms: 533,
+      },
+      {
+        start_time: '0000-01-01T00:00:00+03:25',
+        end_time: '0000-01-01T00:00:00+03:25',
+        collects: 60,
+        uptime_percent: 92,
+        avg_collect_duration_ms: 282,
+        rate: 'Good',
+        min_collect_duration_ms: 0,
+        max_collect_duration_ms: 533,
+      },
+      {
+        start_time: '0000-01-01T00:00:00+03:25',
+        end_time: '0000-01-01T00:00:00+03:25',
+        collects: 60,
+        uptime_percent: 92,
+        avg_collect_duration_ms: 282,
+        rate: 'Good',
+        min_collect_duration_ms: 0,
+        max_collect_duration_ms: 533,
+      },
+      {
+        start_time: '0000-01-01T00:00:00+03:25',
+        end_time: '0000-01-01T00:00:00+03:25',
+        collects: 60,
+        uptime_percent: 92,
+        avg_collect_duration_ms: 282,
+        rate: 'Good',
+        min_collect_duration_ms: 0,
+        max_collect_duration_ms: 533,
+      },
+      {
+        start_time: '0000-01-01T00:00:00+03:25',
+        end_time: '0000-01-01T00:00:00+03:25',
+        collects: 60,
+        uptime_percent: 92,
+        avg_collect_duration_ms: 282,
+        rate: 'Good',
+        min_collect_duration_ms: 0,
+        max_collect_duration_ms: 533,
+      },
+      {
+        start_time: '0000-01-01T00:00:00+03:25',
+        end_time: '0000-01-01T00:00:00+03:25',
+        collects: 60,
+        uptime_percent: 92,
+        avg_collect_duration_ms: 282,
+        rate: 'Good',
+        min_collect_duration_ms: 0,
+        max_collect_duration_ms: 533,
+      },
+      {
+        start_time: '0000-01-01T00:00:00+03:25',
+        end_time: '0000-01-01T00:00:00+03:25',
+        collects: 60,
+        uptime_percent: 92,
+        avg_collect_duration_ms: 282,
+        rate: 'Good',
+        min_collect_duration_ms: 0,
+        max_collect_duration_ms: 533,
+      },
+      {
+        start_time: '0000-01-01T00:00:00+03:25',
+        end_time: '0000-01-01T00:00:00+03:25',
+        collects: 60,
+        uptime_percent: 92,
+        avg_collect_duration_ms: 282,
+        rate: 'Good',
+        min_collect_duration_ms: 0,
+        max_collect_duration_ms: 533,
+      },
+      {
+        start_time: '0000-01-01T00:00:00+03:25',
+        end_time: '0000-01-01T00:00:00+03:25',
+        collects: 60,
+        uptime_percent: 92,
+        avg_collect_duration_ms: 282,
+        rate: 'Good',
+        min_collect_duration_ms: 0,
+        max_collect_duration_ms: 533,
+      },
+      {
+        start_time: '0000-01-01T00:00:00+03:25',
+        end_time: '0000-01-01T00:00:00+03:25',
+        collects: 60,
+        uptime_percent: 92,
+        avg_collect_duration_ms: 282,
+        rate: 'Good',
+        min_collect_duration_ms: 0,
+        max_collect_duration_ms: 533,
+      },
+      {
+        start_time: '0000-01-01T00:00:00+03:25',
+        end_time: '0000-01-01T00:00:00+03:25',
+        collects: 60,
+        uptime_percent: 92,
+        avg_collect_duration_ms: 282,
+        rate: 'Good',
+        min_collect_duration_ms: 0,
+        max_collect_duration_ms: 533,
+      },
+    ],
+    chart_series: [
+      {
+        id: 778262,
+        agent_id: 1,
+        is_offline: false,
+        collect_duration_ms: 299,
+        cpu_load_1: 3.83,
+        cpu_load_5: 2.84,
+        cpu_load_15: 2.13,
+        cpu_usage_percent: 29,
+        memory_total_mb: 10240,
+        memory_used_mb: 6041,
+        memory_available_mb: 4199,
+        memory_usage_percent: 59,
+        disk_total_gb: 1500,
+        disk_used_gb: 345,
+        disk_usage_percent: 23,
+        collected_at: '2026-02-03T13:33:59.4449488+03:30',
+      },
+      {
+        id: 778262,
+        agent_id: 1,
+        is_offline: false,
+        collect_duration_ms: 299,
+        cpu_load_1: 3.83,
+        cpu_load_5: 2.84,
+        cpu_load_15: 2.13,
+        cpu_usage_percent: 29,
+        memory_total_mb: 10240,
+        memory_used_mb: 6041,
+        memory_available_mb: 4199,
+        memory_usage_percent: 59,
+        disk_total_gb: 1500,
+        disk_used_gb: 345,
+        disk_usage_percent: 23,
+        collected_at: '2026-02-03T13:33:59.4449488+03:30',
+      },
+      {
+        id: 778262,
+        agent_id: 1,
+        is_offline: false,
+        collect_duration_ms: 299,
+        cpu_load_1: 3.83,
+        cpu_load_5: 2.84,
+        cpu_load_15: 2.13,
+        cpu_usage_percent: 29,
+        memory_total_mb: 10240,
+        memory_used_mb: 6041,
+        memory_available_mb: 4199,
+        memory_usage_percent: 59,
+        disk_total_gb: 1500,
+        disk_used_gb: 345,
+        disk_usage_percent: 23,
+        collected_at: '2026-02-03T13:33:59.4449488+03:30',
+      },
+      {
+        id: 778262,
+        agent_id: 1,
+        is_offline: false,
+        collect_duration_ms: 299,
+        cpu_load_1: 3.83,
+        cpu_load_5: 2.84,
+        cpu_load_15: 2.13,
+        cpu_usage_percent: 29,
+        memory_total_mb: 10240,
+        memory_used_mb: 6041,
+        memory_available_mb: 4199,
+        memory_usage_percent: 59,
+        disk_total_gb: 1500,
+        disk_used_gb: 345,
+        disk_usage_percent: 23,
+        collected_at: '2026-02-03T13:33:59.4449488+03:30',
+      },
+      {
+        id: 778262,
+        agent_id: 1,
+        is_offline: false,
+        collect_duration_ms: 299,
+        cpu_load_1: 3.83,
+        cpu_load_5: 2.84,
+        cpu_load_15: 2.13,
+        cpu_usage_percent: 29,
+        memory_total_mb: 10240,
+        memory_used_mb: 6041,
+        memory_available_mb: 4199,
+        memory_usage_percent: 59,
+        disk_total_gb: 1500,
+        disk_used_gb: 345,
+        disk_usage_percent: 23,
+        collected_at: '2026-02-03T13:33:59.4449488+03:30',
+      },
+      {
+        id: 778262,
+        agent_id: 1,
+        is_offline: false,
+        collect_duration_ms: 299,
+        cpu_load_1: 3.83,
+        cpu_load_5: 2.84,
+        cpu_load_15: 2.13,
+        cpu_usage_percent: 29,
+        memory_total_mb: 10240,
+        memory_used_mb: 6041,
+        memory_available_mb: 4199,
+        memory_usage_percent: 59,
+        disk_total_gb: 1500,
+        disk_used_gb: 345,
+        disk_usage_percent: 23,
+        collected_at: '2026-02-03T13:33:59.4449488+03:30',
+      },
+      {
+        id: 778262,
+        agent_id: 1,
+        is_offline: false,
+        collect_duration_ms: 299,
+        cpu_load_1: 3.83,
+        cpu_load_5: 2.84,
+        cpu_load_15: 2.13,
+        cpu_usage_percent: 29,
+        memory_total_mb: 10240,
+        memory_used_mb: 6041,
+        memory_available_mb: 4199,
+        memory_usage_percent: 59,
+        disk_total_gb: 1500,
+        disk_used_gb: 345,
+        disk_usage_percent: 23,
+        collected_at: '2026-02-03T13:33:59.4449488+03:30',
+      },
+      {
+        id: 778262,
+        agent_id: 1,
+        is_offline: false,
+        collect_duration_ms: 299,
+        cpu_load_1: 3.83,
+        cpu_load_5: 2.84,
+        cpu_load_15: 2.13,
+        cpu_usage_percent: 29,
+        memory_total_mb: 10240,
+        memory_used_mb: 6041,
+        memory_available_mb: 4199,
+        memory_usage_percent: 59,
+        disk_total_gb: 1500,
+        disk_used_gb: 345,
+        disk_usage_percent: 23,
+        collected_at: '2026-02-03T13:33:59.4449488+03:30',
+      },
+      {
+        id: 778262,
+        agent_id: 1,
+        is_offline: false,
+        collect_duration_ms: 299,
+        cpu_load_1: 3.83,
+        cpu_load_5: 2.84,
+        cpu_load_15: 2.13,
+        cpu_usage_percent: 29,
+        memory_total_mb: 10240,
+        memory_used_mb: 6041,
+        memory_available_mb: 4199,
+        memory_usage_percent: 59,
+        disk_total_gb: 1500,
+        disk_used_gb: 345,
+        disk_usage_percent: 23,
+        collected_at: '2026-02-03T13:33:59.4449488+03:30',
+      },
+      {
+        id: 778262,
+        agent_id: 1,
+        is_offline: false,
+        collect_duration_ms: 299,
+        cpu_load_1: 3.83,
+        cpu_load_5: 2.84,
+        cpu_load_15: 2.13,
+        cpu_usage_percent: 29,
+        memory_total_mb: 10240,
+        memory_used_mb: 6041,
+        memory_available_mb: 4199,
+        memory_usage_percent: 59,
+        disk_total_gb: 1500,
+        disk_used_gb: 345,
+        disk_usage_percent: 23,
+        collected_at: '2026-02-03T13:33:59.4449488+03:30',
+      },
+      {
+        id: 778262,
+        agent_id: 1,
+        is_offline: false,
+        collect_duration_ms: 299,
+        cpu_load_1: 3.83,
+        cpu_load_5: 2.84,
+        cpu_load_15: 2.13,
+        cpu_usage_percent: 29,
+        memory_total_mb: 10240,
+        memory_used_mb: 6041,
+        memory_available_mb: 4199,
+        memory_usage_percent: 59,
+        disk_total_gb: 1500,
+        disk_used_gb: 345,
+        disk_usage_percent: 23,
+        collected_at: '2026-02-03T13:33:59.4449488+03:30',
+      },
+      {
+        id: 778262,
+        agent_id: 1,
+        is_offline: false,
+        collect_duration_ms: 299,
+        cpu_load_1: 3.83,
+        cpu_load_5: 2.84,
+        cpu_load_15: 2.13,
+        cpu_usage_percent: 29,
+        memory_total_mb: 10240,
+        memory_used_mb: 6041,
+        memory_available_mb: 4199,
+        memory_usage_percent: 59,
+        disk_total_gb: 1500,
+        disk_used_gb: 345,
+        disk_usage_percent: 23,
+        collected_at: '2026-02-03T13:33:59.4449488+03:30',
+      },
+      {
+        id: 778262,
+        agent_id: 1,
+        is_offline: false,
+        collect_duration_ms: 299,
+        cpu_load_1: 3.83,
+        cpu_load_5: 2.84,
+        cpu_load_15: 2.13,
+        cpu_usage_percent: 29,
+        memory_total_mb: 10240,
+        memory_used_mb: 6041,
+        memory_available_mb: 4199,
+        memory_usage_percent: 59,
+        disk_total_gb: 1500,
+        disk_used_gb: 345,
+        disk_usage_percent: 23,
+        collected_at: '2026-02-03T13:33:59.4449488+03:30',
+      },
+      {
+        id: 778262,
+        agent_id: 1,
+        is_offline: false,
+        collect_duration_ms: 299,
+        cpu_load_1: 3.83,
+        cpu_load_5: 2.84,
+        cpu_load_15: 2.13,
+        cpu_usage_percent: 29,
+        memory_total_mb: 10240,
+        memory_used_mb: 6041,
+        memory_available_mb: 4199,
+        memory_usage_percent: 59,
+        disk_total_gb: 1500,
+        disk_used_gb: 345,
+        disk_usage_percent: 23,
+        collected_at: '2026-02-03T13:33:59.4449488+03:30',
+      },
+      {
+        id: 778262,
+        agent_id: 1,
+        is_offline: false,
+        collect_duration_ms: 299,
+        cpu_load_1: 3.83,
+        cpu_load_5: 2.84,
+        cpu_load_15: 2.13,
+        cpu_usage_percent: 29,
+        memory_total_mb: 10240,
+        memory_used_mb: 6041,
+        memory_available_mb: 4199,
+        memory_usage_percent: 59,
+        disk_total_gb: 1500,
+        disk_used_gb: 345,
+        disk_usage_percent: 23,
+        collected_at: '2026-02-03T13:33:59.4449488+03:30',
+      },
+      {
+        id: 778262,
+        agent_id: 1,
+        is_offline: false,
+        collect_duration_ms: 299,
+        cpu_load_1: 3.83,
+        cpu_load_5: 2.84,
+        cpu_load_15: 2.13,
+        cpu_usage_percent: 29,
+        memory_total_mb: 10240,
+        memory_used_mb: 6041,
+        memory_available_mb: 4199,
+        memory_usage_percent: 59,
+        disk_total_gb: 1500,
+        disk_used_gb: 345,
+        disk_usage_percent: 23,
+        collected_at: '2026-02-03T13:33:59.4449488+03:30',
+      },
+      {
+        id: 778262,
+        agent_id: 1,
+        is_offline: false,
+        collect_duration_ms: 299,
+        cpu_load_1: 3.83,
+        cpu_load_5: 2.84,
+        cpu_load_15: 2.13,
+        cpu_usage_percent: 29,
+        memory_total_mb: 10240,
+        memory_used_mb: 6041,
+        memory_available_mb: 4199,
+        memory_usage_percent: 59,
+        disk_total_gb: 1500,
+        disk_used_gb: 345,
+        disk_usage_percent: 23,
+        collected_at: '2026-02-03T13:33:59.4449488+03:30',
+      },
+      {
+        id: 778262,
+        agent_id: 1,
+        is_offline: false,
+        collect_duration_ms: 299,
+        cpu_load_1: 3.83,
+        cpu_load_5: 2.84,
+        cpu_load_15: 2.13,
+        cpu_usage_percent: 29,
+        memory_total_mb: 10240,
+        memory_used_mb: 6041,
+        memory_available_mb: 4199,
+        memory_usage_percent: 59,
+        disk_total_gb: 1500,
+        disk_used_gb: 345,
+        disk_usage_percent: 23,
+        collected_at: '2026-02-03T13:33:59.4449488+03:30',
+      },
+      {
+        id: 778262,
+        agent_id: 1,
+        is_offline: false,
+        collect_duration_ms: 299,
+        cpu_load_1: 3.83,
+        cpu_load_5: 2.84,
+        cpu_load_15: 2.13,
+        cpu_usage_percent: 29,
+        memory_total_mb: 10240,
+        memory_used_mb: 6041,
+        memory_available_mb: 4199,
+        memory_usage_percent: 59,
+        disk_total_gb: 1500,
+        disk_used_gb: 345,
+        disk_usage_percent: 23,
+        collected_at: '2026-02-03T13:33:59.4449488+03:30',
+      },
+      {
+        id: 778262,
+        agent_id: 1,
+        is_offline: false,
+        collect_duration_ms: 299,
+        cpu_load_1: 3.83,
+        cpu_load_5: 2.84,
+        cpu_load_15: 2.13,
+        cpu_usage_percent: 29,
+        memory_total_mb: 10240,
+        memory_used_mb: 6041,
+        memory_available_mb: 4199,
+        memory_usage_percent: 59,
+        disk_total_gb: 1500,
+        disk_used_gb: 345,
+        disk_usage_percent: 23,
+        collected_at: '2026-02-03T13:33:59.4449488+03:30',
+      },
+      {
+        id: 778262,
+        agent_id: 1,
+        is_offline: false,
+        collect_duration_ms: 299,
+        cpu_load_1: 3.83,
+        cpu_load_5: 2.84,
+        cpu_load_15: 2.13,
+        cpu_usage_percent: 29,
+        memory_total_mb: 10240,
+        memory_used_mb: 6041,
+        memory_available_mb: 4199,
+        memory_usage_percent: 59,
+        disk_total_gb: 1500,
+        disk_used_gb: 345,
+        disk_usage_percent: 23,
+        collected_at: '2026-02-03T13:33:59.4449488+03:30',
+      },
+      {
+        id: 778262,
+        agent_id: 1,
+        is_offline: false,
+        collect_duration_ms: 299,
+        cpu_load_1: 3.83,
+        cpu_load_5: 2.84,
+        cpu_load_15: 2.13,
+        cpu_usage_percent: 29,
+        memory_total_mb: 10240,
+        memory_used_mb: 6041,
+        memory_available_mb: 4199,
+        memory_usage_percent: 59,
+        disk_total_gb: 1500,
+        disk_used_gb: 345,
+        disk_usage_percent: 23,
+        collected_at: '2026-02-03T13:33:59.4449488+03:30',
+      },
+      {
+        id: 778262,
+        agent_id: 1,
+        is_offline: false,
+        collect_duration_ms: 299,
+        cpu_load_1: 3.83,
+        cpu_load_5: 2.84,
+        cpu_load_15: 2.13,
+        cpu_usage_percent: 29,
+        memory_total_mb: 10240,
+        memory_used_mb: 6041,
+        memory_available_mb: 4199,
+        memory_usage_percent: 59,
+        disk_total_gb: 1500,
+        disk_used_gb: 345,
+        disk_usage_percent: 23,
+        collected_at: '2026-02-03T13:33:59.4449488+03:30',
+      },
+      {
+        id: 778262,
+        agent_id: 1,
+        is_offline: false,
+        collect_duration_ms: 299,
+        cpu_load_1: 3.83,
+        cpu_load_5: 2.84,
+        cpu_load_15: 2.13,
+        cpu_usage_percent: 29,
+        memory_total_mb: 10240,
+        memory_used_mb: 6041,
+        memory_available_mb: 4199,
+        memory_usage_percent: 59,
+        disk_total_gb: 1500,
+        disk_used_gb: 345,
+        disk_usage_percent: 23,
+        collected_at: '2026-02-03T13:33:59.4449488+03:30',
+      },
+    ],
+    time_range: { from: '2025-12-19T00:00:00+03:30', to: '2025-12-20T00:00:00+03:30', hours: 24 },
+  });
 
   const MONTHS = [
     'January',
@@ -140,11 +997,9 @@
     if (year && month && day) {
       historyDetail = null;
       date = { year, month, day };
-      http.get(endpoints.checksSummaryDate(id, `${year}-${month}-${day}`)).then(res => {
-        summaryWithDate = {
-          ...res.data?.data,
-        };
-      });
+      // http.get(endpoints.agentSummaryDate(id, `${year}-${month}-${day}`)).then(res => {
+      //   summaryWithDate = res.data?.data;
+      // });
     } else {
       date = null;
     }
@@ -359,19 +1214,33 @@
               </div>
             </div>
 
-            <span
-              class="text-2xl {summaryWithDate?.overall.uptime_percent ||
-              history?.uptime_percent >= 90
-                ? 'text-[#008236]'
-                : summaryWithDate?.overall.uptime_percent || history?.uptime_percent >= 80
-                  ? 'text-[#00D492]'
-                  : summaryWithDate?.overall.uptime_percent || history?.uptime_percent >= 70
-                    ? 'text-[#FDC700]'
-                    : summaryWithDate?.overall.uptime_percent || history?.uptime_percent >= 50
-                      ? 'text-[#F97316]'
-                      : 'text-[#EF4444]'}">
-              {summaryWithDate?.overall.uptime_percent || history?.uptime_percent}%
-            </span>
+            {#if !date}
+              <span
+                class="text-2xl {history?.uptime_percent >= 90
+                  ? 'text-[#008236]'
+                  : history?.uptime_percent >= 80
+                    ? 'text-[#00D492]'
+                    : history?.uptime_percent >= 70
+                      ? 'text-[#FDC700]'
+                      : history?.uptime_percent >= 50
+                        ? 'text-[#F97316]'
+                        : 'text-[#EF4444]'}">
+                {history?.uptime_percent}%
+              </span>
+            {:else}
+              <span
+                class="text-2xl {summaryWithDate?.overall.uptime_percent >= 90
+                  ? 'text-[#008236]'
+                  : summaryWithDate?.overall.uptime_percent >= 80
+                    ? 'text-[#00D492]'
+                    : summaryWithDate?.overall.uptime_percent >= 70
+                      ? 'text-[#FDC700]'
+                      : summaryWithDate?.overall.uptime_percent >= 50
+                        ? 'text-[#F97316]'
+                        : 'text-[#EF4444]'}">
+                {summaryWithDate?.overall.uptime_percent}%
+              </span>
+            {/if}
           </div>
 
           <div
@@ -597,26 +1466,178 @@
                 <button
                   type="button"
                   aria-label="detail of status"
-                  class="w-full h-6 transition-all cursor-pointer relative group {uptime >= 90
-                    ? 'hover:bg-[#008236]/70 bg-[#008236]'
-                    : uptime >= 80
-                      ? 'hover:bg-[#00D492]/70 bg-[#00D492]'
-                      : uptime >= 70
-                        ? 'hover:bg-[#FDC700]/70 bg-[#FDC700]'
-                        : uptime >= 50
-                          ? 'hover:bg-[#F97316]/70 bg-[#F97316]'
-                          : 'hover:bg-[#EF4444]/70 bg-[#EF4444]'}">
+                  class="w-full h-6 rounded-[1px] hover:h-7 transition-all cursor-pointer relative group {uptime.is_offline
+                    ? 'bg-[#EF4444]'
+                    : uptime.is_offline === false
+                      ? 'bg-green-700'
+                      : uptime.is_offline === null
+                        ? 'bg-[#FFFFFF]/10'
+                        : ''}">
                   <div
-                    class="absolute top-1/2 start-1/2 -translate-1/2 text-xs text-white transition-all">
-                    {uptime}%
-                  </div>
+                    class="absolute w-fit group-hover:flex hidden bottom-10 start-1/2 -translate-x-1/2 rounded-xl text-white bg-white/40 dark:bg-black/80 backdrop-blur-md dark:backdrop-blur-3xl border-[#0D0D0D]/5 border dark:border-white/10 px-3 py-2 flex-col justify-start items-start {uptime.is_offline
+                      ? 'gap-1.5'
+                      : 'gap-2.5'}">
+                    {#if uptime.collect_duration_ms}
+                      <div
+                        class="w-full flex justify-between items-center gap-2.5 border-b border-b-[#0D0D0D]/10 dark:border-b-white/15 pb-1.5">
+                        <span
+                          class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
+                          >Latency :</span>
+                        <span
+                          class="flex justify-center items-center text-sm text-nowrap {uptime.collect_duration_ms >
+                          LIMITATIONS.collect_duration_ms.error
+                            ? 'text-[#F87171]'
+                            : uptime.collect_duration_ms > LIMITATIONS.collect_duration_ms.warn
+                              ? 'text-[#F97316]'
+                              : 'text-green-700'}">{uptime.collect_duration_ms} ms</span>
+                      </div>
+                    {/if}
 
+                    {#if uptime.cpu_usage_percent}
+                      <div class="flex flex-col items-center w-full gap-1">
+                        <div class="w-full flex justify-start items-center gap-2.5">
+                          <span
+                            style="box-shadow: 0 0 10px 1px #ad46ff;"
+                            class="size-1.5 rounded-full bg-[#ad46ff]"></span>
+                          <div class="flex-1 flex justify-between items-center gap-2.5">
+                            <span
+                              class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
+                              >Cpu :</span>
+                            <span
+                              class="flex justify-center items-center text-sm text-nowrap {uptime.cpu_usage_percent >
+                              LIMITATIONS.cpu.error
+                                ? 'text-[#F87171]'
+                                : uptime.cpu_usage_percent > LIMITATIONS.cpu.warn
+                                  ? 'text-[#F97316]'
+                                  : 'text-green-700'}">{uptime.cpu_usage_percent}%</span>
+                          </div>
+                        </div>
+                        <div class="w-full h-0.5 rounded-full bg-black/10 dark:bg-white/10">
+                          <div
+                            class="h-full rounded-full {uptime.cpu_usage_percent >
+                            LIMITATIONS.cpu.error
+                              ? 'bg-[#F87171]'
+                              : uptime.cpu_usage_percent > LIMITATIONS.cpu.warn
+                                ? 'bg-[#F97316]'
+                                : 'bg-green-700'}"
+                            style="width: {Math.min(
+                              uptime.cpu_usage_percent,
+                              100,
+                            )}%;box-shadow: 0 0 10px 1px {uptime.cpu_usage_percent >
+                            LIMITATIONS.cpu.error
+                              ? '#F87171'
+                              : uptime.cpu_usage_percent > LIMITATIONS.cpu.warn
+                                ? '#F97316'
+                                : '#008236'};">
+                          </div>
+                        </div>
+                      </div>
+                    {/if}
+
+                    {#if uptime.memory_usage_percent}
+                      <div class="flex flex-col items-center w-full gap-1">
+                        <div class="w-full flex justify-start items-center gap-2.5">
+                          <span
+                            style="box-shadow: 0 0 10px 1px #2b7fff;"
+                            class="size-1.5 rounded-full bg-[#2b7fff]"></span>
+                          <div class="flex-1 flex justify-between items-center gap-2.5">
+                            <span
+                              class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
+                              >Memory :</span>
+                            <span
+                              class="flex justify-center items-center text-sm text-nowrap {uptime.memory_usage_percent >
+                              LIMITATIONS.memory.error
+                                ? 'text-[#F87171]'
+                                : uptime.memory_usage_percent > LIMITATIONS.memory.warn
+                                  ? 'text-[#F97316]'
+                                  : 'text-green-700'}">{uptime.memory_usage_percent}%</span>
+                          </div>
+                        </div>
+                        <div class="w-full h-0.5 rounded-full bg-black/10 dark:bg-white/10">
+                          <div
+                            class="h-full rounded-full {uptime.memory_usage_percent >
+                            LIMITATIONS.memory.error
+                              ? 'bg-[#F87171]'
+                              : uptime.memory_usage_percent > LIMITATIONS.memory.warn
+                                ? 'bg-[#F97316]'
+                                : 'bg-green-700'}"
+                            style="width: {Math.min(
+                              uptime.memory_usage_percent,
+                              100,
+                            )}%;box-shadow: 0 0 10px 1px {uptime.memory_usage_percent >
+                            LIMITATIONS.memory.error
+                              ? '#F87171'
+                              : uptime.memory_usage_percent > LIMITATIONS.memory.warn
+                                ? '#F97316'
+                                : '#008236'};">
+                          </div>
+                        </div>
+                      </div>
+                    {/if}
+
+                    {#if uptime.disk_usage_percent}
+                      <div class="flex flex-col items-center w-full gap-1 pb-1.5">
+                        <div class="w-full flex justify-start items-center gap-2.5">
+                          <span
+                            style="box-shadow: 0 0 10px 1px #22c55e;"
+                            class="size-1.5 rounded-full bg-[#00bc7d]"></span>
+                          <div class="flex-1 flex justify-between items-center gap-2.5">
+                            <span
+                              class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
+                              >Disk :</span>
+                            <span
+                              class="flex justify-center items-center text-sm text-nowrap {uptime.disk_usage_percent >
+                              LIMITATIONS.disk.error
+                                ? 'text-[#F87171]'
+                                : uptime.disk_usage_percent > LIMITATIONS.disk.warn
+                                  ? 'text-[#F97316]'
+                                  : 'text-green-700'}">{uptime.disk_usage_percent}%</span>
+                          </div>
+                        </div>
+                        <div class="w-full h-0.5 rounded-full bg-black/10 dark:bg-white/10">
+                          <div
+                            class="h-full rounded-full {uptime.disk_usage_percent >
+                            LIMITATIONS.disk.error
+                              ? 'bg-[#F87171]'
+                              : uptime.disk_usage_percent > LIMITATIONS.disk.warn
+                                ? 'bg-[#F97316]'
+                                : 'bg-green-700'}"
+                            style="width: {Math.min(
+                              uptime.disk_usage_percent,
+                              100,
+                            )}%;box-shadow: 0 0 10px 1px {uptime.disk_usage_percent >
+                            LIMITATIONS.disk.error
+                              ? '#F87171'
+                              : uptime.disk_usage_percent > LIMITATIONS.disk.warn
+                                ? '#F97316'
+                                : '#008236'};">
+                          </div>
+                        </div>
+                      </div>
+                    {/if}
+                    {#if uptime?.is_offline}
+                      <div class="w-full flex justify-between items-center gap-2.5">
+                        <span
+                          class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
+                          >Status :</span>
+                        <span
+                          class="flex justify-center items-center text-sm text-nowrap capitalize text-[#F87171]"
+                          >Offline</span>
+                      </div>
+                    {/if}
+                  </div>
                   <div class="h-2 w-px bg-white/10 absolute -end-px -bottom-3"></div>
 
                   <div class="h-2 w-px text-white/20 absolute end-3.25 text-xs -bottom-7">
-                    {(summaryWithDate.uptime_series.length - i).toString().padStart(2, '0')}:00
+                    {(summaryWithDate.uptime_series?.length - i).toString().padStart(2, '0')}:00
                   </div>
                 </button>
+              {/each}
+              {#each Array(24 - summaryWithDate.uptime_series?.length) as _, i}
+                <div
+                  aria-hidden="true"
+                  class="w-full h-4 rounded-[1px] bg-black/20 dark:bg-[#FFFFFF]/10 opacity-70">
+                </div>
               {/each}
 
               <div class="absolute -bottom-1 start-1/2 -translate-x-1/2 w-full px-6">
@@ -635,31 +1656,31 @@
           {#if date}
             <div class="flex text-2xl justify-end gap-2 items-center">
               <span
-                class={summaryWithDate?.overall?.apdex_rating?.toLowerCase() === 'excellent'
+                class={summaryWithDate.overall?.rate?.toLowerCase() === 'excellent'
                   ? 'text-green-500'
-                  : summaryWithDate?.overall?.apdex_rating?.toLowerCase() === 'good'
+                  : summaryWithDate.overall?.rate?.toLowerCase() === 'good'
                     ? 'text-[#00D492]'
-                    : summaryWithDate?.overall?.apdex_rating?.toLowerCase() === 'fair'
+                    : summaryWithDate.overall?.rate?.toLowerCase() === 'fair'
                       ? 'text-[#FDC700]'
-                      : summaryWithDate?.overall?.apdex_rating?.toLowerCase() === 'poor'
+                      : summaryWithDate.overall?.rate?.toLowerCase() === 'poor'
                         ? 'text-[#F97316]'
                         : 'text-[#F87171]'}>
-                {summaryWithDate?.overall?.apdex_rating}
+                {summaryWithDate.overall?.rate}
               </span>
 
               <span class="h-7 w-px bg-white/15"></span>
 
               <span
-                class={summaryWithDate?.overall?.apdex_score >= 90
+                class={summaryWithDate.overall?.avg_collect_duration_ms >= 90
                   ? 'text-[#008236]'
-                  : summaryWithDate?.overall?.apdex_score >= 80
+                  : summaryWithDate.overall?.avg_collect_duration_m >= 80
                     ? 'text-[#00D492]'
-                    : summaryWithDate?.overall?.apdex_score >= 70
+                    : summaryWithDate.overall?.avg_collect_duration_m >= 70
                       ? 'text-[#FDC700]'
-                      : summaryWithDate?.overall?.apdex_score >= 50
+                      : summaryWithDate.overall?.avg_collect_duration_m >= 50
                         ? 'text-[#F97316]'
                         : 'text-[#EF4444]'}>
-                {summaryWithDate?.overall?.apdex_score}%</span>
+                {summaryWithDate.overall?.avg_collect_duration_m}ms</span>
             </div>
           {:else}
             <div class="flex text-2xl justify-end gap-2 items-center">
@@ -679,16 +1700,16 @@
               <span class="h-7 w-px bg-white/15"></span>
 
               <span
-                class={summaryWithDate?.overall?.apdex_score || collectDuration?.avg_ms >= 90
+                class={collectDuration?.avg_ms >= 90
                   ? 'text-[#008236]'
-                  : summaryWithDate?.overall?.apdex_score || collectDuration?.avg_ms >= 80
+                  : collectDuration?.avg_ms >= 80
                     ? 'text-[#00D492]'
-                    : summaryWithDate?.overall?.apdex_score || collectDuration?.avg_ms >= 70
+                    : collectDuration?.avg_ms >= 70
                       ? 'text-[#FDC700]'
-                      : summaryWithDate?.overall?.apdex_score || collectDuration?.avg_ms >= 50
+                      : collectDuration?.avg_ms >= 50
                         ? 'text-[#F97316]'
                         : 'text-[#EF4444]'}>
-                {summaryWithDate?.overall?.apdex_score || collectDuration?.avg_ms}ms</span>
+                {collectDuration?.avg_ms}ms</span>
             </div>
           {/if}
         </div>
@@ -696,7 +1717,7 @@
         <div class="relative w-full z-10 flex gap-0.5 justify-start items-end">
           <div class="w-full absolute -bottom-1 h-px bg-white/10"></div>
 
-          {#each date ? summaryWithDate?.apdex_series : collectDuration?.series as detail, i}
+          {#each date ? summaryWithDate?.collect_duration_series : collectDuration?.series as detail, i}
             <div
               style="height: {(detail?.avg_ms * 100) / collectDuration.max_ms / 1.5}px;"
               class="w-full rounded-[1px] cursor-pointer relative group border-t-4 transition-all {detail?.rate?.toLowerCase() ===

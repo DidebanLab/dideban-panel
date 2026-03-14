@@ -11,6 +11,7 @@ export const endpoints = {
   agentHistoryDetail: (agentId, historyId) => `/agents/${agentId}/history/${historyId}`,
   agentCollectDuration: agentId => `/agents/${agentId}/collect-duration`,
   checkApdexHistory: id => `/checks/${id}/apdex`,
+  agentSummaryDate: (id, date) => `/agents/${id}/summary/${date}`,
   //---------------
 
   login: '',
