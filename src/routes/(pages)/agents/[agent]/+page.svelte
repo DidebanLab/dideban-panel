@@ -1007,7 +1007,12 @@
 
     if (pointIndexHoverd && id) {
       http
-        .get(endpoints.agentHistoryDetail(id, pointIndexHoverd))
+        .get(
+          endpoints.agentHistoryDetail(
+            id,
+            [...chart?.points?.map(item => item?.[0])][pointIndexHoverd],
+          ),
+        )
         .then(res => (metricPointDetail = res.data?.data));
     }
     //---
@@ -1978,31 +1983,51 @@
             <div class="w-full flex gap-1 flex-col justify-start items-start">
               <span class="text-lg md:text-xl text-black dark:text-white">Metrics</span>
               <div class="flex justify-end items-center gap-2 text-xs text-white/40">
-                <span class="flex justify-center items-center text-nowrap">Collect at :</span>
-
-                <span class="flex justify-center items-center text-nowrap tracking-wider">
+                {#if date}
                   {#if isMouseInside}
-                    {new Date(metricPointDetail?.collected_at).toLocaleString('en-CA', {
-                      year: 'numeric',
-                      month: '2-digit',
-                      day: '2-digit',
-                      hour: '2-digit',
-                      minute: '2-digit',
-                      second: '2-digit',
-                      hour12: false,
-                    })}
-                  {:else}
-                    {new Date(chart?.last_history?.collected_at).toLocaleString('en-CA', {
-                      year: 'numeric',
-                      month: '2-digit',
-                      day: '2-digit',
-                      hour: '2-digit',
-                      minute: '2-digit',
-                      second: '2-digit',
-                      hour12: false,
-                    })}
+                    <span class="flex justify-center items-center text-nowrap">Collect at :</span>
+
+                    <span class="flex justify-center items-center text-nowrap tracking-wider">
+                      {new Date(
+                        summaryWithDate?.chart_series[pointIndexHoverd].collected_at,
+                      ).toLocaleString('en-CA', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit',
+                        hour12: false,
+                      })}
+                    </span>
                   {/if}
-                </span>
+                {:else}
+                  <span class="flex justify-center items-center text-nowrap">Collect at :</span>
+
+                  <span class="flex justify-center items-center text-nowrap tracking-wider">
+                    {#if isMouseInside}
+                      {new Date(metricPointDetail?.collected_at).toLocaleString('en-CA', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit',
+                        hour12: false,
+                      })}
+                    {:else}
+                      {new Date(chart?.last_history?.collected_at).toLocaleString('en-CA', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit',
+                        hour12: false,
+                      })}
+                    {/if}
+                  </span>
+                {/if}
               </div>
             </div>
 
@@ -2010,7 +2035,18 @@
               class="text-sm py-2 px-3 rounded-full border text-white border-white/5 text-nowrap">
               <span class="text-white/40 me-1">Collect Duration : </span>
 
-              {#if isMouseInside}
+              {#if date}
+                {#if isMouseInside}
+                  <span
+                    class={responseTimeColor(
+                      summaryWithDate.chart_series[pointIndexHoverd].collect_duration_ms,
+                    )}
+                    >{summaryWithDate.chart_series[pointIndexHoverd].collect_duration_ms} ms</span>
+                {:else}
+                  <span class={responseTimeColor(summaryWithDate.overall.avg_collect_duration_ms)}
+                    >{summaryWithDate.overall.avg_collect_duration_ms} ms</span>
+                {/if}
+              {:else if isMouseInside}
                 <span class={responseTimeColor(metricPointDetail?.collect_duration_ms)}
                   >{metricPointDetail?.collect_duration_ms} ms</span>
               {:else}
@@ -2019,19 +2055,25 @@
               {/if}
             </div>
           </div>
-          {#if chart}
+          {#if Boolean(date ? summaryWithDate.chart_series : chart)}
+            {@const memoryData = date
+              ? [...summaryWithDate.chart_series.map(item => item.memory_usage_percent)]
+              : [...chart?.points?.map(item => item?.[2])]}
+
+            {@const cpuData = date
+              ? [...summaryWithDate.chart_series.map(item => item.cpu_usage_percent)]
+              : [...chart?.points?.map(item => item?.[1])]}
             <Chart
               bind:isMouseInside
               bind:pointIndexHoverd
-              points={[...chart?.points?.map(item => item?.[0])]}
               data={[
                 {
                   name: 'CPU',
-                  data: [...chart?.points?.map(item => item?.[1])],
+                  data: cpuData,
                 },
                 {
                   name: 'Memory',
-                  data: [...chart?.points?.map(item => item?.[2])],
+                  data: memoryData,
                 },
               ]} />
           {/if}

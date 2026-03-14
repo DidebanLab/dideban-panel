@@ -100,7 +100,7 @@
 
     tooltip: {
       custom: function ({ dataPointIndex }) {
-        pointIndexHoverd = points[dataPointIndex];
+        pointIndexHoverd = dataPointIndex;
         return `<div></div>`;
       },
     },
@@ -108,7 +108,7 @@
     colors: ['#a855f7', '#3b82f6', '#10b981'],
   };
 
-  onMount(() => {
+  $effect(() => {
     chart = new ApexCharts(chartEl, {
       ...options,
       series: data,
