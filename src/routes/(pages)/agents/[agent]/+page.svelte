@@ -1219,39 +1219,46 @@
           <div class="w-full flex justify-between items-start">
             <div class="w-fit flex flex-col justify-start items-start">
               <span class="text-lg text-black dark:text-white">Uptime</span>
-              <div class="flex justify-end items-center gap-2 text-xs text-white/40">
-                <span class="flex justify-center items-center text-nowrap"
-                  >{date ? 'Date : ' + summaryWithDate?.date : 'Last Collected :'}</span>
 
-                {#if !date}
-                  <span class="flex justify-center items-center text-nowrap tracking-wider">
-                    {new Date(history?.last_collected).toLocaleString('en-CA', {
-                      year: 'numeric',
-                      month: '2-digit',
-                      day: '2-digit',
-                      hour: '2-digit',
-                      minute: '2-digit',
-                      second: '2-digit',
-                      hour12: false,
-                    })}
-                  </span>
-                {/if}
-              </div>
+              {#if date ? summaryWithDate?.date : history?.last_collected}
+                <div class="flex justify-end items-center gap-2 text-xs text-white/40">
+                  <span class="flex justify-center items-center text-nowrap"
+                    >{date ? 'Date : ' + summaryWithDate?.date : 'Last Collected :'}</span>
+
+                  {#if !date}
+                    <span class="flex justify-center items-center text-nowrap tracking-wider">
+                      {new Date(history?.last_collected).toLocaleString('en-CA', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit',
+                        hour12: false,
+                      })}
+                    </span>
+                  {/if}
+                </div>
+              {/if}
             </div>
 
             {#if !date}
-              <span
-                class="text-2xl {history?.uptime_percent >= 90
-                  ? 'text-[#008236]'
-                  : history?.uptime_percent >= 80
-                    ? 'text-[#00D492]'
-                    : history?.uptime_percent >= 70
-                      ? 'text-[#FDC700]'
-                      : history?.uptime_percent >= 50
-                        ? 'text-[#F97316]'
-                        : 'text-[#EF4444]'}">
-                {history?.uptime_percent}%
-              </span>
+              {#if history?.uptime_percent}
+                <span
+                  class="text-2xl {history?.uptime_percent >= 90
+                    ? 'text-[#008236]'
+                    : history?.uptime_percent >= 80
+                      ? 'text-[#00D492]'
+                      : history?.uptime_percent >= 70
+                        ? 'text-[#FDC700]'
+                        : history?.uptime_percent >= 50
+                          ? 'text-[#F97316]'
+                          : 'text-[#EF4444]'}">
+                  {history?.uptime_percent}%
+                </span>
+              {:else}
+                <span class="text-2xl text-white/20"> No Data </span>
+              {/if}
             {:else}
               <span
                 class="text-2xl {summaryWithDate?.overall.uptime_percent >= 90
