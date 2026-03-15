@@ -57,13 +57,6 @@
         data = res.data?.data;
         enabled = res.data?.data.enabled;
       });
-      http.get(endpoints.checkHistogram(id)).then(
-        res =>
-          (histogram = {
-            ...res.data?.data,
-            max_count: Math.max(...res.data?.data?.histogram.map(i => i.count), 1),
-          }),
-      );
     }
 
     http.get(endpoints.checkSummaryYearly(id)).then(res => (summary = res.data?.data));
@@ -148,6 +141,14 @@
         (apdex = {
           ...res.data?.data,
           apdex_series: res.data?.data?.apdex_series.reverse().slice(-96),
+        }),
+    );
+    //----
+    http.get(endpoints.checkHistogram(id), { params: { hours } }).then(
+      res =>
+        (histogram = {
+          ...res.data?.data,
+          max_count: Math.max(...res.data?.data?.histogram.map(i => i.count), 1),
         }),
     );
   });
@@ -537,30 +538,40 @@
         </div>
       </div>
 
-      {#if !date}
+      {#if !date && data?.interval_seconds * 2 <= 43200}
         <div
-          class="flex mx-auto sticky top-6 shadow-sm shadow-[#3b82f6]/50 z-20 text-white/20 w-88 py-2 justify-between px-5 text-sm items-center rounded-lg dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
-          <button
-            onclick={() => (hours = 1)}
-            class="transition-all duration-300 {hours === 1 ? 'text-[#3b82f6]' : 'cursor-pointer'}"
-            >1h</button>
+          class="flex mx-auto sticky top-6 shadow-sm shadow-[#3b82f6]/50 z-20 text-white/20 gap-6 py-2 justify-between px-6 text-sm items-center rounded-lg dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
+          {#if data?.interval_seconds * 2 <= 3600}
+            <button
+              onclick={() => (hours = 1)}
+              class="transition-all duration-300 {hours === 1
+                ? 'text-[#3b82f6]'
+                : 'cursor-pointer'}">1h</button>
 
-          <div class="h-5 w-px bg-white/20"></div>
-          <button
-            onclick={() => (hours = 3)}
-            class="transition-all duration-300 {hours === 3 ? 'text-[#3b82f6]' : 'cursor-pointer'}"
-            >3h</button>
-          <div class="h-5 w-px bg-white/20"></div>
-          <button
-            onclick={() => (hours = 6)}
-            class="transition-all duration-300 {hours === 6 ? 'text-[#3b82f6]' : 'cursor-pointer'}"
-            >6h</button>
-          <div class="h-5 w-px bg-white/20"></div>
+            <div class="h-5 w-px bg-white/15"></div>
+          {/if}
+          {#if data?.interval_seconds * 2 <= 10800}
+            <button
+              onclick={() => (hours = 3)}
+              class="transition-all duration-300 {hours === 3
+                ? 'text-[#3b82f6]'
+                : 'cursor-pointer'}">3h</button>
+            <div class="h-5 w-px bg-white/15"></div>
+          {/if}
+          {#if data?.interval_seconds * 2 <= 21600}
+            <button
+              onclick={() => (hours = 6)}
+              class="transition-all duration-300 {hours === 6
+                ? 'text-[#3b82f6]'
+                : 'cursor-pointer'}">6h</button>
+            <div class="h-5 w-px bg-white/15"></div>
+          {/if}
+
           <button
             onclick={() => (hours = 12)}
             class="transition-all duration-300 {hours === 12 ? 'text-[#3b82f6]' : 'cursor-pointer'}"
             >12h</button>
-          <div class="h-5 w-px bg-white/20"></div>
+          <div class="h-5 w-px bg-white/15"></div>
           <button
             onclick={() => (hours = 24)}
             class="transition-all duration-300 {hours === 24 ? 'text-[#3b82f6]' : 'cursor-pointer'}"

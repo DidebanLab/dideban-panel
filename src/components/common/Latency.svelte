@@ -27,8 +27,8 @@
   <div class="w-full flex justify-between items-start">
     <div class="w-full flex gap-1 flex-col justify-start items-start">
       <span class="text-lg md:text-xl text-black dark:text-white"> Latency</span>
-      <div class="text-xs text-white bg-white/10 py-1 px-2 rounded-md">
-        <span class="text-white/50">Total Checks :</span>
+      <div class="text-xs text-white/70 flex gap-1.5">
+        <span class="text-white/40">Total Checks :</span>
         {data?.total_checks}
       </div>
     </div>
