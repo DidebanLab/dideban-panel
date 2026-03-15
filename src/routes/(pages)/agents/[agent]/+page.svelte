@@ -1259,7 +1259,7 @@
               {:else}
                 <span class="text-2xl text-white/20"> No Data </span>
               {/if}
-            {:else}
+            {:else if summaryWithDate?.overall.uptime_percent}
               <span
                 class="text-2xl {summaryWithDate?.overall.uptime_percent >= 90
                   ? 'text-[#008236]'
@@ -1271,8 +1271,8 @@
                         ? 'text-[#F97316]'
                         : 'text-[#EF4444]'}">
                 {summaryWithDate?.overall.uptime_percent}%
-              </span>
-            {/if}
+              </span>{:else}
+              <span class="text-2xl text-white/20"> No Data </span>{/if}
           </div>
 
           <div
