@@ -53,14 +53,6 @@
         })
         .then(res => (history = { ...res.data, data: res.data?.data.slice(-REQUIRED_COUNT) }));
 
-      http.get(endpoints.checkApdexHistory(id)).then(
-        res =>
-          (apdex = {
-            ...res.data?.data,
-            apdex_series: res.data?.data?.apdex_series.reverse().slice(-96),
-          }),
-      );
-
       http.get(endpoints.singleCheck(id)).then(res => {
         data = res.data?.data;
         enabled = res.data?.data.enabled;
@@ -150,6 +142,14 @@
     } else {
       date = null;
     }
+    //---
+    http.get(endpoints.checkApdexHistory(id), { params: { hours } }).then(
+      res =>
+        (apdex = {
+          ...res.data?.data,
+          apdex_series: res.data?.data?.apdex_series.reverse().slice(-96),
+        }),
+    );
   });
 </script>
 
