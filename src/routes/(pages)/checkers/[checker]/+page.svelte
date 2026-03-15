@@ -161,11 +161,43 @@
       class="w-full flex flex-col justify-start items-start gap-6 border border-[#0D0D0D]/5 dark:border-white/5 p-6 rounded-xl">
       <div class="w-full flex justify-between items-start relative">
         <div class="flex flex-col justify-center items-start">
-          <span class="text-black dark:text-white text-xl capitalize">{data?.name}</span>
+          {#if data?.name}
+            <span class="text-black dark:text-white text-xl capitalize">{data?.name}</span
+            >{:else}<div class="flex justify-center items-center gap-2">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M10.0003 18.3332C14.6027 18.3332 18.3337 14.6022 18.3337 9.99984C18.3337 5.39746 14.6027 1.6665 10.0003 1.6665C5.39795 1.6665 1.66699 5.39746 1.66699 9.99984C1.66699 14.6022 5.39795 18.3332 10.0003 18.3332Z"
+                  stroke="#B4242B"
+                  stroke-width="1.66667"
+                  stroke-linecap="round"
+                  stroke-linejoin="round" />
+                <path
+                  d="M10 6.6665V9.99984"
+                  stroke="#B4242B"
+                  stroke-width="1.66667"
+                  stroke-linecap="round"
+                  stroke-linejoin="round" />
+                <path
+                  d="M10 13.3335H10.0083"
+                  stroke="#B4242B"
+                  stroke-width="1.66667"
+                  stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </svg>
+              <span class="text-xl text-red-500/70 mt-0.5">Check with Id {id} Not Found</span>
+            </div>{/if}
 
-          <span
-            class="flex justify-center items-center text-nowrap tracking-wider text-white/40 text-sm"
-            >{data?.target}</span>
+          {#if data?.target}
+            <span
+              class="flex justify-center items-center text-nowrap tracking-wider text-white/40 text-sm"
+              >{data?.target}
+            </span>
+          {/if}
         </div>
         {#if date}
           <div
@@ -247,7 +279,7 @@
                 d="M15 19l-7-7 7-7" />
             </svg>
           </button>
-        {:else}
+        {:else if data}
           <div class="flex justify-center items-center gap-3">
             <div class="flex justify-center items-center gap-1.75">
               <button
@@ -329,48 +361,55 @@
 
       <div class="flex flex-col gap-4 w-full">
         <div
-          class="relative flex flex-col p-6 gap-4 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5 {date
+          class="relative flex flex-col p-6 gap-4 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5 {date &&
+          data
             ? 'h-43'
             : 'h-35'}">
           <div class="w-full flex justify-between items-start">
             <div class="w-fit flex flex-col justify-start items-start">
               <span class="text-lg text-black dark:text-white">Uptime</span>
-              <div class="flex justify-end items-center gap-2 text-xs text-white/40">
-                <span class="flex justify-center items-center text-nowrap"
-                  >{date ? 'Date : ' + summaryWithDate?.date : 'Last Check :'}</span>
 
-                {#if !date}
-                  <span class="flex justify-center items-center text-nowrap tracking-wider">
-                    {new Date(history?.last_checked).toLocaleString('en-CA', {
-                      year: 'numeric',
-                      month: '2-digit',
-                      day: '2-digit',
-                      hour: '2-digit',
-                      minute: '2-digit',
-                      second: '2-digit',
-                      hour12: false,
-                    })}</span>
-                {/if}
-              </div>
+              {#if date ? summaryWithDate?.date : history?.last_checked}
+                <div class="flex justify-end items-center gap-2 text-xs text-white/40">
+                  <span class="flex justify-center items-center text-nowrap"
+                    >{date ? 'Date : ' + summaryWithDate?.date : 'Last Check :'}</span>
+
+                  {#if !date}
+                    <span class="flex justify-center items-center text-nowrap tracking-wider">
+                      {new Date(history?.last_checked).toLocaleString('en-CA', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit',
+                        hour12: false,
+                      })}</span>
+                  {/if}
+                </div>{/if}
             </div>
             {#if date}
-              <span
-                class="text-2xl {summaryWithDate?.overall.uptime_percent
-                  ? summaryWithDate?.overall.uptime_percent >= 90
-                    ? 'text-[#008236]'
-                    : summaryWithDate?.overall.uptime_percent >= 80
-                      ? 'text-[#00D492]'
-                      : summaryWithDate?.overall.uptime_percent >= 70
-                        ? 'text-[#FDC700]'
-                        : summaryWithDate?.overall.uptime_percent >= 50
-                          ? 'text-[#F97316]'
-                          : 'text-[#EF4444]'
-                  : 'text-white/20'}">
-                {summaryWithDate?.overall.uptime_percent
-                  ? summaryWithDate?.overall.uptime_percent + '%'
-                  : 'No Data'}
-              </span>
-            {:else}
+              {#if summaryWithDate?.overall.uptime_percent}
+                <span
+                  class="text-2xl {summaryWithDate?.overall.uptime_percent
+                    ? summaryWithDate?.overall.uptime_percent >= 90
+                      ? 'text-[#008236]'
+                      : summaryWithDate?.overall.uptime_percent >= 80
+                        ? 'text-[#00D492]'
+                        : summaryWithDate?.overall.uptime_percent >= 70
+                          ? 'text-[#FDC700]'
+                          : summaryWithDate?.overall.uptime_percent >= 50
+                            ? 'text-[#F97316]'
+                            : 'text-[#EF4444]'
+                    : 'text-white/20'}">
+                  {summaryWithDate?.overall.uptime_percent
+                    ? summaryWithDate?.overall.uptime_percent + '%'
+                    : 'No Data'}
+                </span>
+              {:else}
+                <span class="text-2xl text-white/20">No Data</span>
+              {/if}
+            {:else if history?.uptime_percent}
               <span
                 class="text-2xl {history?.uptime_percent >= 90
                   ? 'text-[#008236]'
@@ -382,7 +421,8 @@
                         ? 'text-[#F97316]'
                         : 'text-[#EF4444]'}">
                 {history?.uptime_percent}%
-              </span>
+              </span>{:else}
+              <span class="text-2xl text-white/20">No Data</span>
             {/if}
           </div>
 
@@ -505,33 +545,44 @@
                 </div>
               {/each}
             {:else}
-              {#each summaryWithDate?.uptime_series as uptime, i}
-                <button
-                  type="button"
-                  aria-label="detail of status"
-                  class="w-full h-6 transition-all cursor-pointer relative group {uptime
-                    ? uptime >= 90
-                      ? 'hover:bg-[#008236]/70 bg-[#008236]'
-                      : uptime >= 80
-                        ? 'hover:bg-[#00D492]/70 bg-[#00D492]'
-                        : uptime >= 70
-                          ? 'hover:bg-[#FDC700]/70 bg-[#FDC700]'
-                          : uptime >= 50
-                            ? 'hover:bg-[#F97316]/70 bg-[#F97316]'
-                            : 'hover:bg-[#EF4444]/70 bg-[#EF4444]'
-                    : 'bg-white/10'}">
-                  <div
-                    class="absolute top-1/2 start-1/2 -translate-1/2 text-xs text-white transition-all">
-                    {uptime && uptime + '%'}
-                  </div>
+              {#if summaryWithDate?.uptime_series}
+                {#each summaryWithDate?.uptime_series as uptime, i}
+                  <button
+                    type="button"
+                    aria-label="detail of status"
+                    class="w-full h-6 transition-all cursor-pointer relative group {uptime
+                      ? uptime >= 90
+                        ? 'hover:bg-[#008236]/70 bg-[#008236]'
+                        : uptime >= 80
+                          ? 'hover:bg-[#00D492]/70 bg-[#00D492]'
+                          : uptime >= 70
+                            ? 'hover:bg-[#FDC700]/70 bg-[#FDC700]'
+                            : uptime >= 50
+                              ? 'hover:bg-[#F97316]/70 bg-[#F97316]'
+                              : 'hover:bg-[#EF4444]/70 bg-[#EF4444]'
+                      : 'bg-white/5'}">
+                    <div
+                      class="absolute top-1/2 start-1/2 -translate-1/2 text-xs text-white transition-all">
+                      {uptime && uptime + '%'}
+                    </div>
 
-                  <div class="h-2 w-px bg-white/10 absolute -end-px -bottom-3"></div>
+                    <div class="h-2 w-px bg-white/10 absolute -end-px -bottom-3"></div>
 
-                  <div class="h-2 w-px text-white/20 absolute end-3.25 text-xs -bottom-7">
-                    {(summaryWithDate.uptime_series.length - i).toString().padStart(2, '0')}:00
+                    <div class="h-2 w-px text-white/20 absolute end-3.25 text-xs -bottom-7">
+                      {(summaryWithDate.uptime_series.length - i).toString().padStart(2, '0')}:00
+                    </div>
+                  </button>
+                {/each}
+              {:else}
+                {#each Array(24) as _, i}
+                  <div aria-hidden="true" class="w-full h-6 rounded-[1px] bg-white/5 relative">
+                    <div class="h-2 w-px bg-white/10 absolute -end-px -bottom-3"></div>
+                    <div class="h-2 w-px text-white/20 absolute end-3.25 text-xs -bottom-7">
+                      {(24 - i).toString().padStart(2, '0')}:00
+                    </div>
                   </div>
-                </button>
-              {/each}
+                {/each}
+              {/if}
 
               <div class="absolute -bottom-1 start-1/2 -translate-x-1/2 w-full px-6">
                 <div class="h-px w-full bg-white/10"></div>
@@ -580,6 +631,8 @@
             class="transition-all duration-300 {hours === 24 ? 'text-[#3b82f6]' : 'cursor-pointer'}"
             >24h</button>
         </div>
+      {/if}
+      {#if !date}
         <Latency {hours} {id} name={data?.name} />
       {/if}
 
@@ -704,7 +757,9 @@
         <div
           class="relative w-full z-10 flex gap-0.5 justify-start items-end {date
             ? ''
-            : 'flex-row-reverse'}">
+            : apdex?.apdex_series
+              ? 'flex-row-reverse'
+              : ''}">
           <div class="w-full absolute -bottom-1 h-px bg-white/10"></div>
 
           {#each date ? summaryWithDate?.apdex_series : apdex?.apdex_series as detail, i}
@@ -723,7 +778,7 @@
                     : detail?.apdex_rating?.toLowerCase() === 'poor'
                       ? 'bg-[#F97316] border-t-[#c25e17] hover:bg-[#cf5600]'
                       : 'bg-[#F87171] border-t-[#ba4646] hover:bg-[#ff5757]'}">
-              {#if i % (date ? 1 : length < 30 ? 1 : 3) === 0}
+              {#if i !== 0 && i % (date ? 1 : length < 30 ? 1 : 3) === 0}
                 <div class="absolute -bottom-3 start-0 h-2 w-px bg-white/10">
                   <div class="relative">
                     <div
@@ -847,9 +902,10 @@
               </div>
             </div>
           {/each}
-          {#if date && !summaryWithDate?.overall.apdex_score}
+
+          {#if date ? !summaryWithDate?.overall.apdex_score : !apdex?.apdex_score}
             {#each Array(24) as _, i}
-              <div aria-hidden="true" class="w-full h-6 rounded-[1px] bg-white/10 relative">
+              <div aria-hidden="true" class="w-full h-6 rounded-[1px] bg-white/5 relative">
                 <div class="h-2 w-px bg-white/10 absolute -end-px -bottom-3"></div>
                 <div class="h-2 w-px text-white/20 absolute end-3.25 text-xs -bottom-7">
                   {(i + 1).toString().padStart(2, '0')}:00
@@ -867,14 +923,14 @@
             <span class="text-black dark:text-white text-xl">Apdex Histogram</span><span
               class="text-sm text-[#99a1af]">Application health reflected in Apdex levels</span>
           </div>
-          {#if date && !(summaryWithDate?.histogram?.error_count || summaryWithDate?.histogram?.buckets.some(item => item?.count))}
+          {#if date ? !(summaryWithDate?.histogram?.error_count || summaryWithDate?.histogram?.buckets.some(item => item?.count)) : !histogram}
             <span class="text-2xl text-white/20"> No Data </span>
           {/if}
         </div>
         <div class="relative w-full z-10 flex gap-0.5 justify-start items-end mt-4">
           <div class="absolute -bottom-1 w-full h-px bg-white/15"></div>
 
-          {#each date ? summaryWithDate?.histogram?.buckets : histogram?.histogram as detail, i}
+          {#each (date ? summaryWithDate?.histogram?.buckets : histogram?.histogram) || [{ range_start: 0, range_end: 400, count: 0 }, { range_start: 400, range_end: 1600, count: 0 }, { range_start: 1600, range_end: 4800, count: 0 }, { range_start: 4800, range_end: 8000, count: 0 }, { range_start: 8000, range_end: -1, count: 0 }] as detail, i}
             <div
               style="height: {(detail?.count /
                 (date ? summaryWithDate?.histogram?.max_count : histogram?.max_count)) *
@@ -911,7 +967,7 @@
               : 0}px;"
             class="border-t-4 w-[5%] rounded-t-xs cursor-pointer relative bg-[#410000] border-t-[#4b0000] hover:bg-[#410000]/70">
             <div class="absolute start-1/2 -translate-x-1/2 -top-6 text-sm text-white">
-              {date ? summaryWithDate?.histogram?.error_count : histogram?.error_count}
+              {date ? summaryWithDate?.histogram?.error_count || 0 : histogram?.error_count || 0}
             </div>
             <div class="absolute -bottom-3 text-xs -start-px bg-white/15 h-2 w-px"></div>
             <div class="absolute -bottom-3 text-xs end-0 bg-white/15 h-2 w-px"></div>
@@ -920,114 +976,114 @@
           </div>
         </div>
       </div>
-
-      <div
-        class="w-full grid grid-cols-6 gap-8 border border-[#0D0D0D]/5 dark:border-white/5 p-6 rounded-xl">
-        {#each summary as item, i}
-          {@const historyMap = new Map(Object.entries(item?.history ?? {}))}
-          <div class="flex flex-col gap-4">
-            <div class="flex justify-between items-center w-full border-b border-b-white/15 pb-1">
-              <span class="text-sm text-white"> {getMonthName(item.month)}</span>
-              <div class="flex flex-col">
-                <div
-                  class="text-xs items-center justify-end gap-1 flex {item?.apdex_rate?.toLowerCase() ===
-                  'excellent'
-                    ? 'text-green-500'
-                    : item?.apdex_rate?.toLowerCase() === 'good'
-                      ? 'text-[#00D492]'
-                      : item?.apdex_rate?.toLowerCase() === 'fair'
-                        ? 'text-[#FDC700]'
-                        : item?.apdex_rate?.toLowerCase() === 'poor'
-                          ? 'text-[#F97316]'
-                          : 'text-[#F87171]'}">
-                  {#if item?.apdex_score === 0}
-                    <span class="text-white/20 text-xs">No Data</span>
-                  {:else}
-                    <span class="opacity-50"> {item?.apdex_rate}</span>
-                    <span class="bg-white/15 w-px h-4"></span>
-                    <span> {item?.apdex_score}%</span>
-                  {/if}
+      {#if summary}
+        <div
+          class="w-full grid grid-cols-6 gap-8 border border-[#0D0D0D]/5 dark:border-white/5 p-6 rounded-xl">
+          {#each summary as item, i}
+            {@const historyMap = new Map(Object.entries(item?.history ?? {}))}
+            <div class="flex flex-col gap-4">
+              <div class="flex justify-between items-center w-full border-b border-b-white/15 pb-1">
+                <span class="text-sm text-white"> {getMonthName(item.month)}</span>
+                <div class="flex flex-col">
+                  <div
+                    class="text-xs items-center justify-end gap-1 flex {item?.apdex_rate?.toLowerCase() ===
+                    'excellent'
+                      ? 'text-green-500'
+                      : item?.apdex_rate?.toLowerCase() === 'good'
+                        ? 'text-[#00D492]'
+                        : item?.apdex_rate?.toLowerCase() === 'fair'
+                          ? 'text-[#FDC700]'
+                          : item?.apdex_rate?.toLowerCase() === 'poor'
+                            ? 'text-[#F97316]'
+                            : 'text-[#F87171]'}">
+                    {#if item?.apdex_score === 0}
+                      <span class="text-white/20 text-xs">No Data</span>
+                    {:else}
+                      <span class="opacity-50"> {item?.apdex_rate}</span>
+                      <span class="bg-white/15 w-px h-4"></span>
+                      <span> {item?.apdex_score}%</span>
+                    {/if}
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div class="grid grid-cols-7 grid-rows-5 gap-4 w-full">
-              <div style="grid-column: span {new Date(item.year, item.month - 1, 1).getDay()};">
-              </div>
-              {#each historyMap as [day, value], i}
-                {@const isSpecialModeWithDate =
-                  date &&
-                  Number(date?.year) === Number(item?.year) &&
-                  Number(date?.month) === Number(item?.month) &&
-                  Number(date?.day) === Number(day)}
-                <button
-                  onclick={() => {
-                    const newUrl = new URL($page.url);
-                    newUrl.searchParams.set('year', item?.year);
-                    newUrl.searchParams.set('month', item?.month);
-                    newUrl.searchParams.set('day', day);
+              <div class="grid grid-cols-7 grid-rows-5 gap-4 w-full">
+                <div style="grid-column: span {new Date(item.year, item.month - 1, 1).getDay()};">
+                </div>
+                {#each historyMap as [day, value], i}
+                  {@const isSpecialModeWithDate =
+                    date &&
+                    Number(date?.year) === Number(item?.year) &&
+                    Number(date?.month) === Number(item?.month) &&
+                    Number(date?.day) === Number(day)}
+                  <button
+                    onclick={() => {
+                      const newUrl = new URL($page.url);
+                      newUrl.searchParams.set('year', item?.year);
+                      newUrl.searchParams.set('month', item?.month);
+                      newUrl.searchParams.set('day', day);
 
-                    goto(newUrl, {
-                      keepfocus: true,
-                      noScroll: true,
-                    });
-                  }}
-                  style={isSpecialModeWithDate
-                    ? `box-shadow: 0 0 7px 4px ${
-                        value >= 90
-                          ? 'rgba(0, 130, 54, 0.4)'
-                          : value >= 80
-                            ? 'rgba(0, 212, 146, 0.4)'
-                            : value >= 70
-                              ? 'rgba(253, 199, 0, 0.4)'
-                              : value >= 50
-                                ? 'rgba(249, 115, 22, 0.4)'
-                                : 'rgba(239, 68, 68, 0.4)'
-                      };`
-                    : ''}
-                  class="text-white aspect-square transition-all w-full flex items-center justify-center relative border border-white/15 group {isSpecialModeWithDate
-                    ? 'animate-pulse'
-                    : 'cursor-pointer'} {value >= 90
-                    ? 'bg-[#008236]'
-                    : value >= 80
-                      ? 'bg-[#00D492]'
-                      : value >= 70
-                        ? 'bg-[#FDC700]'
-                        : value >= 50
-                          ? 'bg-[#F97316]'
-                          : value !== null
-                            ? 'bg-[#EF4444]'
-                            : ' shadow-inner shadow-white/5 cursor-default!'} ">
-                  <div
-                    class="hidden absolute min-w-40 text-sm -top-20 border border-white/15 px-3 py-2 flex-col gap-1 bg-black/80 backdrop-blur-2xl rounded-xl z-10 {value !==
-                      null && !isSpecialModeWithDate
-                      ? 'group-hover:flex'
-                      : ''}">
-                    <div class="flex justify-between items-center">
-                      <span class="text-[#6a7282] text-nowrap">Uptime :</span>
+                      goto(newUrl, {
+                        keepfocus: true,
+                        noScroll: true,
+                      });
+                    }}
+                    style={isSpecialModeWithDate
+                      ? `box-shadow: 0 0 7px 4px ${
+                          value >= 90
+                            ? 'rgba(0, 130, 54, 0.4)'
+                            : value >= 80
+                              ? 'rgba(0, 212, 146, 0.4)'
+                              : value >= 70
+                                ? 'rgba(253, 199, 0, 0.4)'
+                                : value >= 50
+                                  ? 'rgba(249, 115, 22, 0.4)'
+                                  : 'rgba(239, 68, 68, 0.4)'
+                        };`
+                      : ''}
+                    class="text-white aspect-square transition-all w-full flex items-center justify-center relative border border-white/15 group {isSpecialModeWithDate
+                      ? 'animate-pulse'
+                      : 'cursor-pointer'} {value >= 90
+                      ? 'bg-[#008236]'
+                      : value >= 80
+                        ? 'bg-[#00D492]'
+                        : value >= 70
+                          ? 'bg-[#FDC700]'
+                          : value >= 50
+                            ? 'bg-[#F97316]'
+                            : value !== null
+                              ? 'bg-[#EF4444]'
+                              : ' shadow-inner shadow-white/5 cursor-default!'} ">
+                    <div
+                      class="hidden absolute min-w-40 text-sm -top-20 border border-white/15 px-3 py-2 flex-col gap-1 bg-black/80 backdrop-blur-2xl rounded-xl z-10 {value !==
+                        null && !isSpecialModeWithDate
+                        ? 'group-hover:flex'
+                        : ''}">
+                      <div class="flex justify-between items-center">
+                        <span class="text-[#6a7282] text-nowrap">Uptime :</span>
+                        <span
+                          class="text-nowrap {value >= 90
+                            ? 'text-[#008236]'
+                            : value >= 80
+                              ? 'text-[#00D492]'
+                              : value >= 70
+                                ? 'text-[#FDC700]'
+                                : value >= 50
+                                  ? 'text-[#F97316]'
+                                  : 'text-[#EF4444]'}">{value}%</span>
+                      </div>
+
                       <span
-                        class="text-nowrap {value >= 90
-                          ? 'text-[#008236]'
-                          : value >= 80
-                            ? 'text-[#00D492]'
-                            : value >= 70
-                              ? 'text-[#FDC700]'
-                              : value >= 50
-                                ? 'text-[#F97316]'
-                                : 'text-[#EF4444]'}">{value}%</span>
+                        class="text-white/30 text-nowrap border-t pt-1 border-t-white/15 text-start"
+                        >{item?.year}/{item?.month}/{day}</span>
                     </div>
-
-                    <span
-                      class="text-white/30 text-nowrap border-t pt-1 border-t-white/15 text-start"
-                      >{item?.year}/{item?.month}/{day}</span>
-                  </div>
-                  <span class="absolute start-1/2 top-1/2 -translate-1/2">-</span>
-                </button>
-              {/each}
+                    <span class="absolute start-1/2 top-1/2 -translate-1/2">-</span>
+                  </button>
+                {/each}
+              </div>
             </div>
-          </div>
-        {/each}
-      </div>
+          {/each}
+        </div>{/if}
     </div>
   </div>
 </section>
