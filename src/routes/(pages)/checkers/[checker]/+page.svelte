@@ -267,7 +267,7 @@
                 type="button"
                 onclick={() => {
                   opener({
-                    id: 'edit-checker',
+                    id: 'edit-check',
                     content: EditChecker,
                     props: { data },
                   });

@@ -75,6 +75,8 @@
       });
 
       closer({ id: 'edit-check' });
+
+      location.href = `/checkers/${data.id}`;
     });
   }
 
