@@ -295,7 +295,7 @@
                       });
                     } else {
                       http
-                        .patch(`${endpoints.checks}/${data?.id}`, {
+                        .patch(endpoints.singleCheck(data?.id), {
                           enabled: true,
                         })
                         .then(res => {
@@ -396,7 +396,7 @@
                   onmouseover={() => {
                     if (!date) {
                       http
-                        .get(`${endpoints.checkHistory(id)}/${detail[0]}`)
+                        .get(endpoints.checkHistoryDetail(id, detail[0]))
                         .then(res => (historyDetail = res.data?.data));
                     }
                   }}
@@ -408,7 +408,7 @@
                   onfocus={() => {
                     if (!date) {
                       http
-                        .get(`${endpoints.checkHistory(id)}/${detail[0]}`)
+                        .get(endpoints.checkHistoryDetail(id, detail[0]))
                         .then(res => (historyDetail = res.data?.data));
                     }
                   }}
