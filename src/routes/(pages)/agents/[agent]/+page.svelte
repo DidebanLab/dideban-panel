@@ -6,13 +6,13 @@
   import EditChecker from '../../../../components/pages/dashboard/statusOverview/EditChecker.svelte';
   import { onMount } from 'svelte';
   import { http } from '../../../../services/http.svelte';
-  import DeleteChecker from '../../../../components/pages/checker/DeleteChecker.svelte';
   import responseTimeColor from '../../../../utils/responseTimeColor.js';
   import { alertStore } from '../../../../stores/alert.svelte.js';
   import { goto } from '$app/navigation';
   import { LIMITATIONS } from '../../../../components/config.svelte.js';
   import Chart from '../../../../components/pages/agent/Chart.svelte';
   import ConfirmEditAgent from '../../../../components/pages/agent/ConfirmEditAgent.svelte';
+  import DeleteAgent from '../../../../components/pages/agent/DeleteAgent.svelte';
 
   const REQUIRED_COUNT = $state(innerWidth < 640 ? 31 : 96);
   const id = $page.params.agent;
@@ -1141,9 +1141,9 @@
                 type="button"
                 onclick={() => {
                   opener({
-                    id: 'delete-checker',
-                    content: DeleteChecker,
-                    props: { data },
+                    id: 'delete-agent',
+                    content: DeleteAgent,
+                    props: { name: data?.name, id: data?.id },
                   });
                 }}>
                 <img src="/icons/trash.png" alt="trash" width="20" height="20" /></button>
