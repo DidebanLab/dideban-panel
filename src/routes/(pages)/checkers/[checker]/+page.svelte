@@ -15,7 +15,7 @@
   const REQUIRED_COUNT = $state(innerWidth < 640 ? 31 : 96);
   const id = $page.params.checker;
   let data = $state();
-  let timeRange = $state(24);
+  let hours = $state(24);
   let enabled = $state();
   let date = $state(null);
   let histogram = $state();
@@ -541,37 +541,32 @@
         <div
           class="flex mx-auto sticky top-6 shadow-sm shadow-[#3b82f6]/50 z-20 text-white/20 w-88 py-2 justify-between px-5 text-sm items-center rounded-lg dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
           <button
-            onclick={() => (timeRange = 1)}
-            class="transition-all duration-300 {timeRange === 1
-              ? 'text-[#3b82f6]'
-              : 'cursor-pointer'}">1h</button>
+            onclick={() => (hours = 1)}
+            class="transition-all duration-300 {hours === 1 ? 'text-[#3b82f6]' : 'cursor-pointer'}"
+            >1h</button>
 
           <div class="h-5 w-px bg-white/20"></div>
           <button
-            onclick={() => (timeRange = 3)}
-            class="transition-all duration-300 {timeRange === 3
-              ? 'text-[#3b82f6]'
-              : 'cursor-pointer'}">3h</button>
+            onclick={() => (hours = 3)}
+            class="transition-all duration-300 {hours === 3 ? 'text-[#3b82f6]' : 'cursor-pointer'}"
+            >3h</button>
           <div class="h-5 w-px bg-white/20"></div>
           <button
-            onclick={() => (timeRange = 6)}
-            class="transition-all duration-300 {timeRange === 6
-              ? 'text-[#3b82f6]'
-              : 'cursor-pointer'}">6h</button>
+            onclick={() => (hours = 6)}
+            class="transition-all duration-300 {hours === 6 ? 'text-[#3b82f6]' : 'cursor-pointer'}"
+            >6h</button>
           <div class="h-5 w-px bg-white/20"></div>
           <button
-            onclick={() => (timeRange = 12)}
-            class="transition-all duration-300 {timeRange === 12
-              ? 'text-[#3b82f6]'
-              : 'cursor-pointer'}">12h</button>
+            onclick={() => (hours = 12)}
+            class="transition-all duration-300 {hours === 12 ? 'text-[#3b82f6]' : 'cursor-pointer'}"
+            >12h</button>
           <div class="h-5 w-px bg-white/20"></div>
           <button
-            onclick={() => (timeRange = 24)}
-            class="transition-all duration-300 {timeRange === 24
-              ? 'text-[#3b82f6]'
-              : 'cursor-pointer'}">24h</button>
+            onclick={() => (hours = 24)}
+            class="transition-all duration-300 {hours === 24 ? 'text-[#3b82f6]' : 'cursor-pointer'}"
+            >24h</button>
         </div>
-        <Latency {id} name={data?.name} />
+        <Latency {hours} {id} name={data?.name} />
       {/if}
 
       <div

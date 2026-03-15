@@ -7,12 +7,18 @@
 
   const isMobile = $state(innerWidth < 645);
 
-  const { name, id } = $props();
+  const { name, id, hours } = $props();
 
   let data = $state();
 
-  onMount(() => {
-    http.get(endpoints.checkLatency(id)).then(res => (data = res.data?.data));
+  $effect(() => {
+    http
+      .get(endpoints.checkLatency(id), {
+        params: {
+          hours,
+        },
+      })
+      .then(res => (data = res.data?.data));
   });
 </script>
 
