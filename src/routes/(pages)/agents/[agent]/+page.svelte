@@ -973,7 +973,7 @@
       nextDay = nextDay + 1;
     }
 
-    goto(`/checkers/${id}?year=${nextYear}&month=${nextMonth}&day=${nextDay}`);
+    goto(`/agents/${id}?year=${nextYear}&month=${nextMonth}&day=${nextDay}`);
   }
 
   function preDate(data, year, month, day) {
@@ -1002,7 +1002,7 @@
       perDay = perDay - 1;
     }
 
-    goto(`/checkers/${id}?year=${perYear}&month=${perMonth}&day=${perDay}`);
+    goto(`/agents/${id}?year=${perYear}&month=${perMonth}&day=${perDay}`);
   }
   $effect(() => {
     const year = $page.url.searchParams.get('year');
@@ -1115,7 +1115,7 @@
         {#if date}
           <button
             onclick={() => {
-              goto(`/checkers/${id}`);
+              goto(`/agents/${id}`);
             }}
             class="flex items-center gap-2 ps-4 bg-emerald-500/10 animate-pulse hover:animate-none pe-2.5 h-8 text-xs rounded-full outline outline-offset-1 outline-emerald-500/60 text-emerald-400 cursor-pointer">
             Back to Today
