@@ -3,8 +3,9 @@
   import { endpoints } from '../../../endpoints.svelte';
   import { alertStore } from '../../../stores/alert.svelte';
   import { closer } from '../../../stores/modal.svelte';
+  import { page } from '$app/stores';
 
-  const { checkerId, name } = $props();
+  const { name } = $props();
 </script>
 
 <div
@@ -15,39 +16,44 @@
     <div class="w-full h-full bg-white/5"></div>
   </div>
 
-  <div class="flex justify-between items-center w-full">
-    <div class="flex justify-center items-center gap-2">
-      <svg
-        width="20"
-        height="20"
-        viewBox="0 0 20 20"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg">
-        <path
-          d="M10.0003 18.3332C14.6027 18.3332 18.3337 14.6022 18.3337 9.99984C18.3337 5.39746 14.6027 1.6665 10.0003 1.6665C5.39795 1.6665 1.66699 5.39746 1.66699 9.99984C1.66699 14.6022 5.39795 18.3332 10.0003 18.3332Z"
-          stroke="#FDC700"
-          stroke-width="1.66667"
-          stroke-linecap="round"
-          stroke-linejoin="round" />
-        <path
-          d="M10 6.6665V9.99984"
-          stroke="#FDC700"
-          stroke-width="1.66667"
-          stroke-linecap="round"
-          stroke-linejoin="round" />
-        <path
-          d="M10 13.3335H10.0083"
-          stroke="#FDC700"
-          stroke-width="1.66667"
-          stroke-linecap="round"
-          stroke-linejoin="round" />
-      </svg>
-      <span class="text-xl text-[#FDC700] mt-px">Confirm Activation Update</span>
+  <div class="flex justify-center items-center gap-2">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M10.0003 18.3332C14.6027 18.3332 18.3337 14.6022 18.3337 9.99984C18.3337 5.39746 14.6027 1.6665 10.0003 1.6665C5.39795 1.6665 1.66699 5.39746 1.66699 9.99984C1.66699 14.6022 5.39795 18.3332 10.0003 18.3332Z"
+        stroke="#FDC700"
+        stroke-width="1.66667"
+        stroke-linecap="round"
+        stroke-linejoin="round" />
+      <path
+        d="M10 6.6665V9.99984"
+        stroke="#FDC700"
+        stroke-width="1.66667"
+        stroke-linecap="round"
+        stroke-linejoin="round" />
+      <path
+        d="M10 13.3335H10.0083"
+        stroke="#FDC700"
+        stroke-width="1.66667"
+        stroke-linecap="round"
+        stroke-linejoin="round" />
+    </svg>
+    <span class="text-xl text-[#FDC700] mt-px">Confirm Activation Update</span>
+  </div>
+
+  <div class="w-full h-px bg-[#FDC700]/20 mt-2.5"></div>
+
+  <div class="flex justify-between items-end">
+    <div class="flex flex-col justify-start items-start gap-2 py-3 w-full">
+      <span class="text-black dark:text-white text-base">Confirm Activation Update</span>
+
+      <span class="text-[#90A1AF] text-sm"
+        >This action will update the current activation status. Please confirm to proceed.
+      </span>
     </div>
     <button
       onclick={() => {
         http
-          .patch(`${endpoints.checks}/${checkerId}`, {
+          .patch(`${endpoints.checks}/${$page.params.checker}`, {
             enabled: false,
           })
           .then(res => {
@@ -57,23 +63,13 @@
             });
 
             setTimeout(() => {
-              location.href = `/checker/${data?.id}`;
-            }, 2000);
+              location.href = `/checkers/${$page.params.checker}`;
+            }, 1000);
           });
       }}
       aria-label="delete-confirm"
-      class="border cursor-pointer rounded-md px-4 py-1.5 bg-[#FDC700]/10 text-[#FDC700] border-[#FDC700]/10 text-sm ms-auto"
+      class="border outline-none cursor-pointer rounded-md px-4 py-1.5 bg-[#FDC700]/10 text-[#FDC700] hover:opacity-70 border-[#FDC700]/10 text-sm ms-auto"
       >Confirm
     </button>
-  </div>
-
-  <div class="w-full h-px bg-[#FDC700]/20 mt-2.5"></div>
-
-  <div class="flex flex-col justify-start items-start gap-2 py-3 w-full">
-    <span class="text-black dark:text-white text-base">Confirm Activation Update</span>
-
-    <span class="text-[#90A1AF] text-sm"
-      >This action will update the current activation status. Please confirm to proceed.
-    </span>
   </div>
 </div>

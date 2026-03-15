@@ -377,7 +377,6 @@
                         id: 'confirm-edit',
                         content: ConfirmEditConfig,
                         props: {
-                          checkerId: data?.id,
                           name: data?.name,
                         },
                       });
@@ -391,6 +390,7 @@
                             message: `Checker ${data?.name} activation updated successfully.`,
                             type: 'successful',
                           });
+
                           location.href = `/checkers/${data?.id}`;
                         });
                     }
@@ -607,7 +607,7 @@
 
       {#if !date}
         <div
-          class="flex mx-auto sticky top-6 shadow-sm shadow-[#3b82f6]/50 z-200 text-white/20 w-88 py-2 justify-between px-5 text-sm items-center rounded-lg dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
+          class="flex mx-auto sticky top-6 shadow-sm shadow-[#3b82f6]/50 z-20 text-white/20 w-88 py-2 justify-between px-5 text-sm items-center rounded-lg dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
           <button
             onclick={() => (timeRange = 1)}
             class="transition-all duration-300 {timeRange === 1
