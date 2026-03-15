@@ -8,7 +8,7 @@
   import { endpoints } from '../../../../endpoints.svelte';
   import DeleteChecker from '../../../../components/pages/checker/DeleteChecker.svelte';
   import responseTimeColor from '../../../../utils/responseTimeColor';
-  import ConfirmEditConfig from '../../../../components/pages/checker/ConfirmEditConfig.svelte';
+  import ConfirmEditChecker from '../../../../components/pages/checker/ConfirmEditChecker.svelte';
   import { alertStore } from '../../../../stores/alert.svelte';
   import { goto } from '$app/navigation';
 
@@ -290,7 +290,7 @@
                     if (enabled) {
                       opener({
                         id: 'confirm-edit',
-                        content: ConfirmEditConfig,
+                        content: ConfirmEditChecker,
                         props: {
                           name: data?.name,
                         },

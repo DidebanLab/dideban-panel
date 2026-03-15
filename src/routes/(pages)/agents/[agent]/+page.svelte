@@ -8,11 +8,11 @@
   import { http } from '../../../../services/http.svelte';
   import DeleteChecker from '../../../../components/pages/checker/DeleteChecker.svelte';
   import responseTimeColor from '../../../../utils/responseTimeColor.js';
-  import ConfirmEditConfig from '../../../../components/pages/checker/ConfirmEditConfig.svelte';
   import { alertStore } from '../../../../stores/alert.svelte.js';
   import { goto } from '$app/navigation';
   import { LIMITATIONS } from '../../../../components/config.svelte.js';
   import Chart from '../../../../components/pages/agent/Chart.svelte';
+  import ConfirmEditAgent from '../../../../components/pages/agent/ConfirmEditAgent.svelte';
 
   const REQUIRED_COUNT = $state(innerWidth < 640 ? 31 : 96);
   const id = $page.params.agent;
@@ -1169,20 +1169,20 @@
                 <span class="text-xs text-[#99a1af]">
                   {enabled ? 'Enabled' : 'Disabled'}
                 </span>
+
                 <button
                   onclick={() => {
                     if (enabled) {
                       opener({
                         id: 'confirm-edit',
-                        content: ConfirmEditConfig,
+                        content: ConfirmEditAgent,
                         props: {
-                          checkerId: data?.id,
                           name: data?.name,
                         },
                       });
                     } else {
                       http
-                        .patch(`${endpoints.agents}/${data?.id}`, {
+                        .patch(endpoints.singleAgent(data?.id), {
                           enabled: true,
                         })
                         .then(res => {
@@ -1195,12 +1195,14 @@
                     }
                   }}
                   aria-label="activation toggle"
-                  class="w-11 h-6 bg-[#00bc7d]/20 border border-[#00bc7d]/30 rounded-full relative cursor-pointer">
+                  class="w-11 h-6 rounded-full relative cursor-pointer {enabled
+                    ? 'bg-[#00bc7d]/20 border border-[#00bc7d]/30'
+                    : 'bg-[#6a7282]/10 border border-[#6a7282]/20 '}">
                   <div
-                    style="box-shadow: 0 5px 30px #00bc7d;"
-                    class="absolute top-1/2 -translate-y-1/2 left-px size-5 rounded-full bg-[#00bc7d] transition-transform duration-300 ease-in-out {enabled
-                      ? 'translate-x-5'
-                      : 'translate-x-0'}">
+                    style={enabled ? 'box-shadow: 0 0 5px 0.5px #00bc7d' : ''}
+                    class="absolute top-1/2 -translate-y-1/2 left-px size-5 rounded-full transition-transform duration-300 ease-in-out {enabled
+                      ? 'translate-x-5 bg-[#00bc7d]'
+                      : 'translate-x-0 bg-[#4d4d4d]'}">
                   </div>
                 </button>
               </div>
