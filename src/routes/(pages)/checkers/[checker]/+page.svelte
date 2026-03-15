@@ -705,6 +705,9 @@
           <div class="w-full absolute -bottom-1 h-px bg-white/10"></div>
 
           {#each date ? summaryWithDate?.apdex_series : apdex?.apdex_series as detail, i}
+            {@const length = date
+              ? summaryWithDate?.apdex_series.length
+              : apdex?.apdex_series.length}
             <div
               style="height: {detail?.apdex_score / 2}px;"
               class="w-full rounded-[1px] cursor-pointer relative group border-t-4 transition-all {detail?.apdex_rating?.toLowerCase() ===
@@ -717,7 +720,7 @@
                     : detail?.apdex_rating?.toLowerCase() === 'poor'
                       ? 'bg-[#F97316] border-t-[#c25e17] hover:bg-[#cf5600]'
                       : 'bg-[#F87171] border-t-[#ba4646] hover:bg-[#ff5757]'}">
-              {#if i !== 0 && i % (date ? 1 : 3) === 0}
+              {#if  ( i % (date ? 1 : length<30?1:3) === 0)}
                 <div class="absolute -bottom-3 start-0 h-2 w-px bg-white/10">
                   <div class="relative">
                     <div
