@@ -284,6 +284,7 @@
                 <span class="text-xs text-[#99a1af]">
                   {enabled ? 'Enabled' : 'Disabled'}
                 </span>
+
                 <button
                   onclick={() => {
                     if (enabled) {
@@ -310,12 +311,14 @@
                     }
                   }}
                   aria-label="activation toggle"
-                  class="w-11 h-6 bg-[#00bc7d]/20 border border-[#00bc7d]/30 rounded-full relative cursor-pointer">
+                  class="w-11 h-6 rounded-full relative cursor-pointer {enabled
+                    ? 'bg-[#00bc7d]/20 border border-[#00bc7d]/30'
+                    : 'bg-[#6a7282]/10 border border-[#6a7282]/20 '}">
                   <div
-                    style="box-shadow: 0 5px 30px #00bc7d;"
-                    class="absolute top-1/2 -translate-y-1/2 left-px size-5 rounded-full bg-[#00bc7d] transition-transform duration-300 ease-in-out {enabled
-                      ? 'translate-x-5'
-                      : 'translate-x-0'}">
+                    style={enabled ? 'box-shadow: 0 0 5px 0.5px #00bc7d' : ''}
+                    class="absolute top-1/2 -translate-y-1/2 left-px size-5 rounded-full transition-transform duration-300 ease-in-out {enabled
+                      ? 'translate-x-5 bg-[#00bc7d]'
+                      : 'translate-x-0 bg-[#4d4d4d]'}">
                   </div>
                 </button>
               </div>
@@ -720,7 +723,7 @@
                     : detail?.apdex_rating?.toLowerCase() === 'poor'
                       ? 'bg-[#F97316] border-t-[#c25e17] hover:bg-[#cf5600]'
                       : 'bg-[#F87171] border-t-[#ba4646] hover:bg-[#ff5757]'}">
-              {#if  ( i % (date ? 1 : length<30?1:3) === 0)}
+              {#if i % (date ? 1 : length < 30 ? 1 : 3) === 0}
                 <div class="absolute -bottom-3 start-0 h-2 w-px bg-white/10">
                   <div class="relative">
                     <div
