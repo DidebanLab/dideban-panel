@@ -2,7 +2,6 @@
   import { onMount, onDestroy } from 'svelte';
   import ApexCharts from 'apexcharts';
   import { theme } from '../../../stores/theme.svelte';
-  import { http } from '../../../services/http.svelte';
   import { endpoints } from '../../../endpoints.svelte';
   let { data, pointIndexHoverd = $bindable(), points, isMouseInside = $bindable() } = $props();
 
@@ -18,7 +17,7 @@
 
   const options = {
     chart: {
-      height: 380, // ✅ فقط این خط تغییر کرده
+      height: 380,
       type: 'area',
       zoom: { enabled: false },
       padding: { top: 0, right: 0, bottom: 0, left: 0 },

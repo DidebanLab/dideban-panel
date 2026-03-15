@@ -77,7 +77,7 @@
         if (step === 1) {
           step = 2;
         } else if (step === 2) {
-          http.delete(endpoints.checks + `/${id}`).then(res => {
+          http.delete(endpoints.singleCheck(id)).then(res => {
             alertStore.addAlert({
               message: res.data.data.message,
               type: 'successful',

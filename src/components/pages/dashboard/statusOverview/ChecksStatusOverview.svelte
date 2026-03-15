@@ -159,7 +159,7 @@
                 aria-label="detail of status"
                 onmouseover={() => {
                   http
-                    .get(`${endpoints.checkHistory(item.id)}/${id}`)
+                    .get(endpoints.checkHistoryDetail(item.id, id))
                     .then(res => (history = res.data.data));
                 }}
                 onmouseleave={() => {
@@ -167,7 +167,7 @@
                 }}
                 onfocus={() => {
                   http
-                    .get(`${endpoints.checkHistory(item.id)}/${id}`)
+                    .get(endpoints.checkHistoryDetail(item.id, id))
                     .then(res => (history = res.data.data));
                 }}
                 onblur={() => {

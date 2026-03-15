@@ -53,7 +53,7 @@
     <button
       onclick={() => {
         http
-          .patch(`${endpoints.checks}/${$page.params.checker}`, {
+          .patch(endpoints.singleCheck($page.params.checker), {
             enabled: false,
           })
           .then(res => {

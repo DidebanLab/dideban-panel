@@ -937,7 +937,7 @@
 
       http.get(endpoints.agentCollectDuration(id)).then(res => (collectDuration = res.data?.data));
 
-      http.get(endpoints.agents + `/${id}`).then(res => {
+      http.get(endpoints.singleAgent(id)).then(res => {
         data = res.data?.data;
         enabled = res.data?.data.enabled;
       });
@@ -951,7 +951,7 @@
         .then(res => (chart = res.data?.data));
     }
 
-    http.get(endpoints.agents + `/${id}/summary/yearly`).then(res => (summary = res.data?.data));
+    http.get(endpoints.agentSummaryYearly(id)).then(res => (summary = res.data?.data));
   });
 
   function nextDate(data, year, month, day) {
@@ -2526,14 +2526,12 @@
                           : 'text-green-700'}">{metricPointDetail?.memory_usage_percent}%</span>
                   {:else}
                     <span
-                      class="text-xs {chart?.last_history
-                        ?.memory_usage_percent > LIMITATIONS.memory.error
+                      class="text-xs {chart?.last_history?.memory_usage_percent >
+                      LIMITATIONS.memory.error
                         ? 'text-[#F87171]'
-                        : chart?.last_history?.memory_usage_percent >
-                            LIMITATIONS.memory.warn
+                        : chart?.last_history?.memory_usage_percent > LIMITATIONS.memory.warn
                           ? 'text-[#F97316]'
-                          : 'text-green-700'}"
-                      >{chart?.last_history?.memory_usage_percent}%</span>
+                          : 'text-green-700'}">{chart?.last_history?.memory_usage_percent}%</span>
                   {/if}
                 </div>
                 <div class="w-full flex justify-between items-start gap-1">
@@ -2610,11 +2608,9 @@
                     class="h-full rounded-s-md transition-all {chart?.last_collected
                       ?.memory_usage_percent === 100
                       ? 'rounded-e-md'
-                      : ''} {chart?.last_history?.memory_usage_percent >
-                    LIMITATIONS.memory.error
+                      : ''} {chart?.last_history?.memory_usage_percent > LIMITATIONS.memory.error
                       ? 'bg-[#EF4444]'
-                      : chart?.last_history?.memory_usage_percent >
-                          LIMITATIONS.memory.warn
+                      : chart?.last_history?.memory_usage_percent > LIMITATIONS.memory.warn
                         ? 'bg-[#F97316]'
                         : 'bg-green-700'}">
                   </div>
@@ -2629,243 +2625,235 @@
 
           <div class="h-px w-full bg-white/10"></div>
 
-
           {#if date}
-          <div class="flex flex-col justify-start items-start gap-4">
-            <div class="flex justify-start items-start gap-2">
-              <span class="h-full w-0.5 bg-[#10b981] rounded-full"></span>
-              <span class="text-lg text-black dark:text-white">Disk</span>
-            </div>
+            <div class="flex flex-col justify-start items-start gap-4">
+              <div class="flex justify-start items-start gap-2">
+                <span class="h-full w-0.5 bg-[#10b981] rounded-full"></span>
+                <span class="text-lg text-black dark:text-white">Disk</span>
+              </div>
 
-            <div class="w-full grid grid-cols-2 grid-rows-2 gap-y-2 gap-x-4">
-              <div class="w-full flex justify-between items-start gap-1">
-                <span class="text-white/40 text-xs">Usage: </span>
+              <div class="w-full grid grid-cols-2 grid-rows-2 gap-y-2 gap-x-4">
+                <div class="w-full flex justify-between items-start gap-1">
+                  <span class="text-white/40 text-xs">Usage: </span>
 
-                {#if isMouseInside}
-                  <span
-                    class="text-xs {summaryWithDate.chart_series[pointIndexHoverd]
+                  {#if isMouseInside}
+                    <span
+                      class="text-xs {summaryWithDate.chart_series[pointIndexHoverd]
                         ?.disk_usage_percent > LIMITATIONS.disk.error
-                      ? 'text-[#F87171]'
-                      : summaryWithDate.chart_series[pointIndexHoverd]
-                        ?.disk_usage_percent > LIMITATIONS.disk.warn
-                        ? 'text-[#F97316]'
-                        : 'text-green-700'}">{summaryWithDate.chart_series[pointIndexHoverd]
-                        ?.disk_usage_percent}%</span>
-                {:else}
-                  <span
-                    class="text-xs {summaryWithDate?.overall?.last_collected?.disk_usage_percent >
+                        ? 'text-[#F87171]'
+                        : summaryWithDate.chart_series[pointIndexHoverd]?.disk_usage_percent >
+                            LIMITATIONS.disk.warn
+                          ? 'text-[#F97316]'
+                          : 'text-green-700'}"
+                      >{summaryWithDate.chart_series[pointIndexHoverd]?.disk_usage_percent}%</span>
+                  {:else}
+                    <span
+                      class="text-xs {summaryWithDate?.overall?.last_collected?.disk_usage_percent >
+                      LIMITATIONS.disk.error
+                        ? 'text-[#F87171]'
+                        : summaryWithDate?.overall?.last_collected?.disk_usage_percent >
+                            LIMITATIONS.disk.warn
+                          ? 'text-[#F97316]'
+                          : 'text-green-700'}"
+                      >{summaryWithDate?.overall?.last_collected?.disk_usage_percent}%</span>
+                  {/if}
+                </div>
+                <div class="w-full flex justify-between items-start gap-1">
+                  <span class="text-white/40 text-xs">Total: </span>
+
+                  {#if isMouseInside}
+                    <span class="text-xs text-white"
+                      >{summaryWithDate.chart_series[pointIndexHoverd]?.disk_total_gb}
+                      <sub class="text-white/40">Gb</sub></span>
+                  {:else}
+                    <span class="text-xs text-white"
+                      >{summaryWithDate?.overall?.last_collected?.disk_total_gb}
+                      <sub class="text-white/40">Gb</sub></span>
+                  {/if}
+                </div>
+                <div class="w-full flex justify-between items-start gap-1">
+                  <span class="text-white/40 text-xs">Used: </span>
+
+                  {#if isMouseInside}
+                    <span class="text-xs text-white"
+                      >{summaryWithDate.chart_series[pointIndexHoverd]?.disk_used_gb}
+                      <sub class="text-white/40"> Gb</sub></span>
+                  {:else}
+                    <span class="text-xs text-white"
+                      >{summaryWithDate?.overall?.last_collected?.disk_used_gb}
+                      <sub class="text-white/40"> Gb</sub></span>
+                  {/if}
+                </div>
+                <div class="w-full flex justify-between items-start gap-1">
+                  <span class="text-white/40 text-xs">Available: </span>
+                  {#if isMouseInside}
+                    <span class="text-xs text-white"
+                      >{summaryWithDate.chart_series[pointIndexHoverd]?.disk_total_gb -
+                        summaryWithDate.chart_series[pointIndexHoverd]?.disk_used_gb}
+                      <sub class="text-white/40"> Gb</sub></span>
+                  {:else}
+                    <span class="text-xs text-white"
+                      >{summaryWithDate?.overall?.last_collected?.disk_total_gb -
+                        summaryWithDate?.overall?.last_collected?.disk_used_gb}
+                      <sub class="text-white/40"> Gb</sub></span>
+                  {/if}
+                </div>
+              </div>
+              {#if isMouseInside}
+                <div
+                  class="w-full rounded-md relative h-5 flex justify-start items-center overflow-hidden bg-white/5">
+                  <div
+                    style="width:{summaryWithDate.chart_series[pointIndexHoverd]
+                      ?.disk_usage_percent}%;"
+                    class="h-full rounded-s-md transition-all {summaryWithDate.chart_series[
+                      pointIndexHoverd
+                    ]?.disk_usage_percent === 100
+                      ? 'rounded-e-md'
+                      : ''} {summaryWithDate.chart_series[pointIndexHoverd]?.disk_usage_percent >
                     LIMITATIONS.disk.error
-                      ? 'text-[#F87171]'
-                      : summaryWithDate?.overall?.last_collected?.disk_usage_percent >
+                      ? 'bg-[#EF4444]'
+                      : summaryWithDate.chart_series[pointIndexHoverd]?.disk_usage_percent >
                           LIMITATIONS.disk.warn
-                        ? 'text-[#F97316]'
-                        : 'text-green-700'}"
-                    >{summaryWithDate?.overall?.last_collected?.disk_usage_percent}%</span>
-                {/if}
-              </div>
-              <div class="w-full flex justify-between items-start gap-1">
-                <span class="text-white/40 text-xs">Total: </span>
+                        ? 'bg-[#F97316]'
+                        : 'bg-green-700'}">
+                  </div>
 
-                {#if isMouseInside}
-                  <span class="text-xs text-white"
-                    >{summaryWithDate.chart_series[pointIndexHoverd]
-                        ?.disk_total_gb}
-                    <sub class="text-white/40">Gb</sub></span>
-                {:else}
-                  <span class="text-xs text-white"
-                    >{summaryWithDate?.overall?.last_collected?.disk_total_gb}
-                    <sub class="text-white/40">Gb</sub></span>
-                {/if}
-              </div>
-              <div class="w-full flex justify-between items-start gap-1">
-                <span class="text-white/40 text-xs">Used: </span>
+                  <div
+                    class="absolute z-10 flex justify-center items-center rounded-full end-2 top-1/2 -translate-y-1/2 text-xs text-white">
+                    {summaryWithDate.chart_series[pointIndexHoverd]?.disk_usage_percent}%
+                  </div>
+                </div>
+              {:else}
+                <div
+                  class="w-full rounded-md relative h-6 flex justify-start items-center overflow-hidden bg-white/5">
+                  <div
+                    style="width:{summaryWithDate.overall.last_collected?.disk_usage_percent}%;"
+                    class="h-full rounded-s-md transition-all {summaryWithDate.overall
+                      .last_collected?.disk_usage_percent === 100
+                      ? 'rounded-e-md'
+                      : ''} {summaryWithDate.overall.last_collected?.disk_usage_percent >
+                    LIMITATIONS.disk.error
+                      ? 'bg-[#EF4444]'
+                      : summaryWithDate.overall.last_collected?.disk_usage_percent >
+                          LIMITATIONS.disk.warn
+                        ? 'bg-[#F97316]'
+                        : 'bg-green-700'}">
+                  </div>
 
-                {#if isMouseInside}
-                  <span class="text-xs text-white"
-                    >{summaryWithDate.chart_series[pointIndexHoverd]
-                        ?.disk_used_gb}
-                    <sub class="text-white/40"> Gb</sub></span>
-                {:else}
-                  <span class="text-xs text-white"
-                    >{summaryWithDate?.overall?.last_collected?.disk_used_gb}
-                    <sub class="text-white/40"> Gb</sub></span>
-                {/if}
-              </div>
-              <div class="w-full flex justify-between items-start gap-1">
-                <span class="text-white/40 text-xs">Available: </span>
-                {#if isMouseInside}
-                  <span class="text-xs text-white"
-                    >{summaryWithDate.chart_series[pointIndexHoverd]
-                        ?.disk_total_gb - summaryWithDate.chart_series[pointIndexHoverd]
-                        ?.disk_used_gb}
-                    <sub class="text-white/40"> Gb</sub></span>
-                {:else}
-                  <span class="text-xs text-white"
-                    >{summaryWithDate?.overall?.last_collected?.disk_total_gb -
-                      summaryWithDate?.overall?.last_collected?.disk_used_gb}
-                    <sub class="text-white/40"> Gb</sub></span>
-                {/if}
-              </div>
+                  <div
+                    class="absolute z-10 flex justify-center items-center rounded-full end-2 top-1/2 -translate-y-1/2 text-xs text-white">
+                    {summaryWithDate.overall.last_collected?.disk_usage_percent}%
+                  </div>
+                </div>{/if}
             </div>
-            {#if isMouseInside}
-              <div
-                class="w-full rounded-md relative h-5 flex justify-start items-center overflow-hidden bg-white/5">
-                <div
-                  style="width:{summaryWithDate.chart_series[pointIndexHoverd]
-                        ?.disk_usage_percent}%;"
-                  class="h-full rounded-s-md transition-all {summaryWithDate.chart_series[pointIndexHoverd]
-                        ?.disk_usage_percent ===
-                  100
-                    ? 'rounded-e-md'
-                    : ''} {summaryWithDate.chart_series[pointIndexHoverd]
-                        ?.disk_usage_percent > LIMITATIONS.disk.error
-                    ? 'bg-[#EF4444]'
-                    : summaryWithDate.chart_series[pointIndexHoverd]
-                        ?.disk_usage_percent > LIMITATIONS.disk.warn
-                      ? 'bg-[#F97316]'
-                      : 'bg-green-700'}">
-                </div>
+          {:else}
+            <div class="flex flex-col justify-start items-start gap-4">
+              <div class="flex justify-start items-start gap-2">
+                <span class="h-full w-0.5 bg-[#10b981] rounded-full"></span>
+                <span class="text-lg text-black dark:text-white">Disk</span>
+              </div>
 
-                <div
-                  class="absolute z-10 flex justify-center items-center rounded-full end-2 top-1/2 -translate-y-1/2 text-xs text-white">
-                  {summaryWithDate.chart_series[pointIndexHoverd]
-                        ?.disk_usage_percent}%
+              <div class="w-full grid grid-cols-2 grid-rows-2 gap-y-2 gap-x-4">
+                <div class="w-full flex justify-between items-start gap-1">
+                  <span class="text-white/40 text-xs">Usage: </span>
+
+                  {#if isMouseInside}
+                    <span
+                      class="text-xs {metricPointDetail?.disk_usage_percent > LIMITATIONS.disk.error
+                        ? 'text-[#F87171]'
+                        : metricPointDetail?.disk_usage_percent > LIMITATIONS.disk.warn
+                          ? 'text-[#F97316]'
+                          : 'text-green-700'}">{metricPointDetail?.disk_usage_percent}%</span>
+                  {:else}
+                    <span
+                      class="text-xs {chart?.last_history?.disk_usage_percent >
+                      LIMITATIONS.disk.error
+                        ? 'text-[#F87171]'
+                        : chart?.last_history?.disk_usage_percent > LIMITATIONS.disk.warn
+                          ? 'text-[#F97316]'
+                          : 'text-green-700'}">{chart?.last_history?.disk_usage_percent}%</span>
+                  {/if}
+                </div>
+                <div class="w-full flex justify-between items-start gap-1">
+                  <span class="text-white/40 text-xs">Total: </span>
+
+                  {#if isMouseInside}
+                    <span class="text-xs text-white"
+                      >{metricPointDetail?.disk_total_gb}
+                      <sub class="text-white/40">Gb</sub></span>
+                  {:else}
+                    <span class="text-xs text-white"
+                      >{chart?.last_history?.disk_total_gb}
+                      <sub class="text-white/40">Gb</sub></span>
+                  {/if}
+                </div>
+                <div class="w-full flex justify-between items-start gap-1">
+                  <span class="text-white/40 text-xs">Used: </span>
+
+                  {#if isMouseInside}
+                    <span class="text-xs text-white"
+                      >{metricPointDetail?.disk_used_gb}
+                      <sub class="text-white/40"> Gb</sub></span>
+                  {:else}
+                    <span class="text-xs text-white"
+                      >{chart?.last_history?.disk_used_gb}
+                      <sub class="text-white/40"> Gb</sub></span>
+                  {/if}
+                </div>
+                <div class="w-full flex justify-between items-start gap-1">
+                  <span class="text-white/40 text-xs">Available: </span>
+                  {#if isMouseInside}
+                    <span class="text-xs text-white"
+                      >{metricPointDetail?.disk_total_gb - metricPointDetail?.disk_used_gb}
+                      <sub class="text-white/40"> Gb</sub></span>
+                  {:else}
+                    <span class="text-xs text-white"
+                      >{chart?.last_history?.disk_total_gb - chart?.last_history?.disk_used_gb}
+                      <sub class="text-white/40"> Gb</sub></span>
+                  {/if}
                 </div>
               </div>
-            {:else}
-              <div
-                class="w-full rounded-md relative h-6 flex justify-start items-center overflow-hidden bg-white/5">
+              {#if isMouseInside}
                 <div
-                  style="width:{summaryWithDate.overall.last_collected?.disk_usage_percent}%;"
-                  class="h-full rounded-s-md transition-all {summaryWithDate.overall.last_collected?.disk_usage_percent === 100
-                    ? 'rounded-e-md'
-                    : ''} {summaryWithDate.overall.last_collected?.disk_usage_percent > LIMITATIONS.disk.error
-                    ? 'bg-[#EF4444]'
-                    : summaryWithDate.overall.last_collected?.disk_usage_percent > LIMITATIONS.disk.warn
-                      ? 'bg-[#F97316]'
-                      : 'bg-green-700'}">
-                </div>
-
-                <div
-                  class="absolute z-10 flex justify-center items-center rounded-full end-2 top-1/2 -translate-y-1/2 text-xs text-white">
-                  {summaryWithDate.overall.last_collected?.disk_usage_percent}%
-                </div>
-              </div>{/if}
-          </div>
-           {:else}
-          
-          
-          <div class="flex flex-col justify-start items-start gap-4">
-            <div class="flex justify-start items-start gap-2">
-              <span class="h-full w-0.5 bg-[#10b981] rounded-full"></span>
-              <span class="text-lg text-black dark:text-white">Disk</span>
-            </div>
-
-            <div class="w-full grid grid-cols-2 grid-rows-2 gap-y-2 gap-x-4">
-              <div class="w-full flex justify-between items-start gap-1">
-                <span class="text-white/40 text-xs">Usage: </span>
-
-                {#if isMouseInside}
-                  <span
-                    class="text-xs {metricPointDetail?.disk_usage_percent > LIMITATIONS.disk.error
-                      ? 'text-[#F87171]'
+                  class="w-full rounded-md relative h-5 flex justify-start items-center overflow-hidden bg-white/5">
+                  <div
+                    style="width:{metricPointDetail?.disk_usage_percent}%;"
+                    class="h-full rounded-s-md transition-all {metricPointDetail?.disk_usage_percent ===
+                    100
+                      ? 'rounded-e-md'
+                      : ''} {metricPointDetail?.disk_usage_percent > LIMITATIONS.disk.error
+                      ? 'bg-[#EF4444]'
                       : metricPointDetail?.disk_usage_percent > LIMITATIONS.disk.warn
-                        ? 'text-[#F97316]'
-                        : 'text-green-700'}">{metricPointDetail?.disk_usage_percent}%</span>
-                {:else}
-                  <span
-                    class="text-xs {chart?.last_history?.disk_usage_percent >
-                    LIMITATIONS.disk.error
-                      ? 'text-[#F87171]'
-                      : chart?.last_history?.disk_usage_percent >
-                          LIMITATIONS.disk.warn
-                        ? 'text-[#F97316]'
-                        : 'text-green-700'}"
-                    >{chart?.last_history?.disk_usage_percent}%</span>
-                {/if}
-              </div>
-              <div class="w-full flex justify-between items-start gap-1">
-                <span class="text-white/40 text-xs">Total: </span>
+                        ? 'bg-[#F97316]'
+                        : 'bg-green-700'}">
+                  </div>
 
-                {#if isMouseInside}
-                  <span class="text-xs text-white"
-                    >{metricPointDetail?.disk_total_gb}
-                    <sub class="text-white/40">Gb</sub></span>
-                {:else}
-                  <span class="text-xs text-white"
-                    >{chart?.last_history?.disk_total_gb}
-                    <sub class="text-white/40">Gb</sub></span>
-                {/if}
-              </div>
-              <div class="w-full flex justify-between items-start gap-1">
-                <span class="text-white/40 text-xs">Used: </span>
+                  <div
+                    class="absolute z-10 flex justify-center items-center rounded-full end-2 top-1/2 -translate-y-1/2 text-xs text-white">
+                    {metricPointDetail?.disk_usage_percent}%
+                  </div>
+                </div>
+              {:else}
+                <div
+                  class="w-full rounded-md relative h-6 flex justify-start items-center overflow-hidden bg-white/5">
+                  <div
+                    style="width:{chart?.last_history?.disk_usage_percent}%;"
+                    class="h-full rounded-s-md transition-all {chart?.last_history
+                      ?.disk_usage_percent === 100
+                      ? 'rounded-e-md'
+                      : ''} {chart?.last_history?.disk_usage_percent > LIMITATIONS.disk.error
+                      ? 'bg-[#EF4444]'
+                      : chart?.last_history?.disk_usage_percent > LIMITATIONS.disk.warn
+                        ? 'bg-[#F97316]'
+                        : 'bg-green-700'}">
+                  </div>
 
-                {#if isMouseInside}
-                  <span class="text-xs text-white"
-                    >{metricPointDetail?.disk_used_gb}
-                    <sub class="text-white/40"> Gb</sub></span>
-                {:else}
-                  <span class="text-xs text-white"
-                    >{chart?.last_history?.disk_used_gb}
-                    <sub class="text-white/40"> Gb</sub></span>
-                {/if}
-              </div>
-              <div class="w-full flex justify-between items-start gap-1">
-                <span class="text-white/40 text-xs">Available: </span>
-                {#if isMouseInside}
-                  <span class="text-xs text-white"
-                    >{metricPointDetail?.disk_total_gb - metricPointDetail?.disk_used_gb}
-                    <sub class="text-white/40"> Gb</sub></span>
-                {:else}
-                  <span class="text-xs text-white"
-                    >{chart?.last_history?.disk_total_gb -
-                      chart?.last_history?.disk_used_gb}
-                    <sub class="text-white/40"> Gb</sub></span>
-                {/if}
-              </div>
-            </div>
-            {#if isMouseInside}
-              <div
-                class="w-full rounded-md relative h-5 flex justify-start items-center overflow-hidden bg-white/5">
-                <div
-                  style="width:{metricPointDetail?.disk_usage_percent}%;"
-                  class="h-full rounded-s-md transition-all {metricPointDetail?.disk_usage_percent ===
-                  100
-                    ? 'rounded-e-md'
-                    : ''} {metricPointDetail?.disk_usage_percent > LIMITATIONS.disk.error
-                    ? 'bg-[#EF4444]'
-                    : metricPointDetail?.disk_usage_percent > LIMITATIONS.disk.warn
-                      ? 'bg-[#F97316]'
-                      : 'bg-green-700'}">
-                </div>
-
-                <div
-                  class="absolute z-10 flex justify-center items-center rounded-full end-2 top-1/2 -translate-y-1/2 text-xs text-white">
-                  {metricPointDetail?.disk_usage_percent}%
-                </div>
-              </div>
-            {:else}
-              <div
-                class="w-full rounded-md relative h-6 flex justify-start items-center overflow-hidden bg-white/5">
-                <div
-                  style="width:{chart?.last_history?.disk_usage_percent}%;"
-                  class="h-full rounded-s-md transition-all {chart?.last_history
-                    ?.disk_usage_percent === 100
-                    ? 'rounded-e-md'
-                    : ''} {chart?.last_history?.disk_usage_percent > LIMITATIONS.disk.error
-                    ? 'bg-[#EF4444]'
-                    : chart?.last_history?.disk_usage_percent > LIMITATIONS.disk.warn
-                      ? 'bg-[#F97316]'
-                      : 'bg-green-700'}">
-                </div>
-
-                <div
-                  class="absolute z-10 flex justify-center items-center rounded-full end-2 top-1/2 -translate-y-1/2 text-xs text-white">
-                  {chart?.last_history?.disk_usage_percent}%
-                </div>
-              </div>{/if}
-          </div>{/if}
-          
+                  <div
+                    class="absolute z-10 flex justify-center items-center rounded-full end-2 top-1/2 -translate-y-1/2 text-xs text-white">
+                    {chart?.last_history?.disk_usage_percent}%
+                  </div>
+                </div>{/if}
+            </div>{/if}
         </div>
       </div>
 

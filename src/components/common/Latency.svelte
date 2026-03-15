@@ -12,7 +12,7 @@
   let data = $state();
 
   onMount(() => {
-    http.get(endpoints.checks + `/${id}/latency`).then(res => (data = res.data?.data));
+    http.get(endpoints.checkLatency(id)).then(res => (data = res.data?.data));
   });
 </script>
 

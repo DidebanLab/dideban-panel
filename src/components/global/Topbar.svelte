@@ -1,14 +1,8 @@
 <script>
   import { onMount } from 'svelte';
-  import { endpoints } from '../../endpoints.svelte';
-  import { http } from '../../services/http.svelte';
   import { theme } from '../../stores/theme.svelte';
   import { page } from '$app/stores';
   let alerts = $state([]);
-
-  // onMount(() => {
-  //   http.get(endpoints.alerts).then(res => (alerts = res.data));
-  // });
 </script>
 
 <div class="mt-20 2xl:mt-4">

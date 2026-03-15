@@ -68,7 +68,7 @@
       detail = { ...detail, config: { ...pingConfig } };
     }
 
-    http.patch(`${endpoints.checks}/${data.id}`, detail).then(res => {
+    http.patch(endpoints.singleCheck(data.id), detail).then(res => {
       alertStore.addAlert({
         message: `checker ${res.data.data.name} updated successfully.`,
         type: 'successful',

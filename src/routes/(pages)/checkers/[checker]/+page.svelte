@@ -61,7 +61,7 @@
           }),
       );
 
-      http.get(endpoints.checks + `/${id}`).then(res => {
+      http.get(endpoints.singleCheck(id)).then(res => {
         data = res.data?.data;
         enabled = res.data?.data.enabled;
       });
@@ -74,7 +74,7 @@
       );
     }
 
-    http.get(endpoints.checks + `/${id}/summary/yearly`).then(res => (summary = res.data?.data));
+    http.get(endpoints.checkSummaryYearly(id)).then(res => (summary = res.data?.data));
   });
 
   function nextDate(data, year, month, day) {

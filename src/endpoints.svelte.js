@@ -3,14 +3,20 @@ export const endpoints = {
   checksStats: '/checks/stats',
   agents: '/agents',
   checks: '/checks',
+  singleCheck: id => `/checks/${id}`,
   checksSummaryDate: (id, date) => `/checks/${id}/summary/${date}`,
+  checkLatency: id => `/checks/${id}/latency`,
+  checkApdexHistory: id => `/checks/${id}/apdex`,
   checkHistory: id => `/checks/${id}/history`,
+  checkHistoryDetail: (checkId, historyId) => `/checks/${checkId}/history/${historyId}`,
   checkHistogram: id => `/checks/${id}/histogram`,
+  checkSummaryYearly: id => `/checks/${id}/summary/yearly`,
+  singleAgent: id => `/agents/${id}`,
   agentMetric: id => `/agents/${id}/metrics`,
   agentHistory: id => `/agents/${id}/history`,
   agentHistoryDetail: (agentId, historyId) => `/agents/${agentId}/history/${historyId}`,
   agentCollectDuration: agentId => `/agents/${agentId}/collect-duration`,
-  checkApdexHistory: id => `/checks/${id}/apdex`,
+  agentSummaryYearly: id => `/agents/${id}/summary/yearly`,
   agentSummaryDate: (id, date) => `/agents/${id}/summary/${date}`,
   //---------------
 
@@ -20,5 +26,4 @@ export const endpoints = {
   statusOverview: '.../',
 
   alerts: '/',
-  uptimeHistory: '/uptime/',
 };
