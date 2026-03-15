@@ -24,94 +24,7 @@
   let historyDetail = $state();
   let apdex = $state();
   let summary = $state();
-  let summaryWithDate = $state({
-    date: '2026-01-31',
-    overall: {
-      uptime_percent: 99,
-      apdex_score: 94,
-      apdex_rating: 'Excellent',
-      total_checks: 1440,
-      avg_response_time: 145,
-    },
-    uptime_series: [
-      99,
-      100,
-      98,
-      null,
-      100,
-      99,
-      100,
-      98,
-      99,
-      100,
-      99,
-      98,
-      100,
-      99,
-      98,
-      100,
-      99,
-      98,
-      100,
-      99,
-      98,
-      100,
-      99,
-      100,
-    ],
-    apdex_series: [
-      {
-        start_time: '00:00:00',
-        end_time: '01:00:00',
-        apdex_score: 95,
-        apdex_rating: 'Excellent',
-        total_checks: 60,
-        total_satisfied: 55,
-        total_tolerating: 4,
-        total_frustrated: 1,
-      },
-      {
-        start_time: '01:00:00',
-        end_time: '02:00:00',
-        apdex_score: 92,
-        apdex_rating: 'Excellent',
-        total_checks: 60,
-        total_satisfied: 52,
-        total_tolerating: 6,
-        total_frustrated: 2,
-      },
-    ],
-    histogram: {
-      buckets: [
-        {
-          range_start: 0,
-          range_end: 400,
-          count: 1200,
-        },
-        {
-          range_start: 400,
-          range_end: 1600,
-          count: 180,
-        },
-        {
-          range_start: 1600,
-          range_end: 4800,
-          count: 45,
-        },
-        {
-          range_start: 4800,
-          range_end: 8000,
-          count: 10,
-        },
-        {
-          range_start: 8000,
-          range_end: -1,
-          count: 5,
-        },
-      ],
-      error_count: 35,
-    },
-  });
+  let summaryWithDate = $state();
 
   const MONTHS = [
     'January',
@@ -344,7 +257,7 @@
                   opener({
                     id: 'delete-checker',
                     content: DeleteChecker,
-                    props: { data },
+                    props: { name: data?.name, id: data?.id },
                   });
                 }}>
                 <img src="/icons/trash.png" alt="trash" width="20" height="20" /></button>
@@ -436,20 +349,37 @@
                 {/if}
               </div>
             </div>
-
-            <span
-              class="text-2xl {summaryWithDate?.overall.uptime_percent ||
-              history?.uptime_percent >= 90
-                ? 'text-[#008236]'
-                : summaryWithDate?.overall.uptime_percent || history?.uptime_percent >= 80
-                  ? 'text-[#00D492]'
-                  : summaryWithDate?.overall.uptime_percent || history?.uptime_percent >= 70
-                    ? 'text-[#FDC700]'
-                    : summaryWithDate?.overall.uptime_percent || history?.uptime_percent >= 50
-                      ? 'text-[#F97316]'
-                      : 'text-[#EF4444]'}">
-              {summaryWithDate?.overall.uptime_percent || history?.uptime_percent}%
-            </span>
+            {#if date}
+              <span
+                class="text-2xl {summaryWithDate?.overall.uptime_percent
+                  ? summaryWithDate?.overall.uptime_percent >= 90
+                    ? 'text-[#008236]'
+                    : summaryWithDate?.overall.uptime_percent >= 80
+                      ? 'text-[#00D492]'
+                      : summaryWithDate?.overall.uptime_percent >= 70
+                        ? 'text-[#FDC700]'
+                        : summaryWithDate?.overall.uptime_percent >= 50
+                          ? 'text-[#F97316]'
+                          : 'text-[#EF4444]'
+                  : 'text-white/20'}">
+                {summaryWithDate?.overall.uptime_percent
+                  ? summaryWithDate?.overall.uptime_percent + '%'
+                  : 'No Data'}
+              </span>
+            {:else}
+              <span
+                class="text-2xl {history?.uptime_percent >= 90
+                  ? 'text-[#008236]'
+                  : history?.uptime_percent >= 80
+                    ? 'text-[#00D492]'
+                    : history?.uptime_percent >= 70
+                      ? 'text-[#FDC700]'
+                      : history?.uptime_percent >= 50
+                        ? 'text-[#F97316]'
+                        : 'text-[#EF4444]'}">
+                {history?.uptime_percent}%
+              </span>
+            {/if}
           </div>
 
           <div
@@ -575,18 +505,20 @@
                 <button
                   type="button"
                   aria-label="detail of status"
-                  class="w-full h-6 transition-all cursor-pointer relative group {uptime >= 90
-                    ? 'hover:bg-[#008236]/70 bg-[#008236]'
-                    : uptime >= 80
-                      ? 'hover:bg-[#00D492]/70 bg-[#00D492]'
-                      : uptime >= 70
-                        ? 'hover:bg-[#FDC700]/70 bg-[#FDC700]'
-                        : uptime >= 50
-                          ? 'hover:bg-[#F97316]/70 bg-[#F97316]'
-                          : 'hover:bg-[#EF4444]/70 bg-[#EF4444]'}">
+                  class="w-full h-6 transition-all cursor-pointer relative group {uptime
+                    ? uptime >= 90
+                      ? 'hover:bg-[#008236]/70 bg-[#008236]'
+                      : uptime >= 80
+                        ? 'hover:bg-[#00D492]/70 bg-[#00D492]'
+                        : uptime >= 70
+                          ? 'hover:bg-[#FDC700]/70 bg-[#FDC700]'
+                          : uptime >= 50
+                            ? 'hover:bg-[#F97316]/70 bg-[#F97316]'
+                            : 'hover:bg-[#EF4444]/70 bg-[#EF4444]'
+                    : 'bg-white/10'}">
                   <div
                     class="absolute top-1/2 start-1/2 -translate-1/2 text-xs text-white transition-all">
-                    {uptime}%
+                    {uptime && uptime + '%'}
                   </div>
 
                   <div class="h-2 w-px bg-white/10 absolute -end-px -bottom-3"></div>
@@ -647,73 +579,86 @@
         <div class="flex justify-between items-start">
           <div class="w-fit flex flex-col justify-start items-start">
             <span class="text-lg text-black dark:text-white"> Apdex history</span>
-            <div class="flex justify-start items-center gap-1">
-              <span class="text-sm text-[#99a1af]">Detail Information</span>
 
-              <button class="group relative">
-                <img
-                  class="cursor-pointer"
-                  width="20"
-                  height="20"
-                  src="/icons/question.png"
-                  alt="question" />
-                <div
-                  class="absolute *:text-nowrap bg-black/50 backdrop-blur-2xl hidden group-hover:flex text-white/30 text-sm ms-2 start-full bottom-0 border border-white/10 rounded-xl py-3 px-4 flex-col gap-1">
-                  <div class="flex justify-between items-center gap-1 w-full">
-                    <span>Total Satisfied :</span>
-                    <span class="text-white"
-                      >{date
-                        ? summaryWithDate?.overall?.total_satisfied
-                        : apdex?.total_satisfied}</span>
+            {#if date ? summaryWithDate?.overall?.total_satisfied || summaryWithDate?.overall?.total_tolerating || summaryWithDate?.overall?.total_frustrated : apdex?.total_satisfied || apdex?.total_tolerating || apdex?.total_frustrated}
+              <div class="flex justify-start items-center gap-1">
+                <span class="text-sm text-[#99a1af]">Detail Information</span>
+
+                <button class="group relative">
+                  <img
+                    class="cursor-pointer"
+                    width="20"
+                    height="20"
+                    src="/icons/question.png"
+                    alt="question" />
+                  <div
+                    class="absolute *:text-nowrap bg-black/50 backdrop-blur-2xl hidden group-hover:flex text-white/30 text-sm ms-2 start-full bottom-0 border border-white/10 rounded-xl py-3 px-4 flex-col gap-1">
+                    {#if date ? summaryWithDate?.overall?.total_satisfied : apdex?.total_satisfied}
+                      <div class="flex justify-between items-center gap-1 w-full">
+                        <span>Total Satisfied :</span>
+                        <span class="text-white"
+                          >{date
+                            ? summaryWithDate?.overall?.total_satisfied
+                            : apdex?.total_satisfied}</span>
+                      </div>
+                    {/if}
+                    {#if date ? summaryWithDate?.overall?.total_tolerating : apdex?.total_tolerating}
+                      <div class="flex justify-between items-center gap-1 w-full">
+                        <span>Total Tolerating :</span>
+                        <span class="text-white">
+                          {date
+                            ? summaryWithDate?.overall?.total_tolerating
+                            : apdex?.total_tolerating}</span>
+                      </div>
+                    {/if}
+                    {#if date ? summaryWithDate?.overall?.total_frustrated : apdex?.total_frustrated}
+                      <div class="flex justify-between items-center gap-1 w-full">
+                        <span>Total Frustrated :</span>
+                        <span class="text-white">
+                          {date
+                            ? summaryWithDate?.overall?.total_frustrated
+                            : apdex?.total_frustrated}</span>
+                      </div>
+                    {/if}
                   </div>
-                  <div class="flex justify-between items-center gap-1 w-full">
-                    <span>Total Tolerating :</span>
-                    <span class="text-white">
-                      {date
-                        ? summaryWithDate?.overall?.total_tolerating
-                        : apdex?.total_tolerating}</span>
-                  </div>
-                  <div class="flex justify-between items-center gap-1 w-full">
-                    <span>Total Frustrated :</span>
-                    <span class="text-white">
-                      {date
-                        ? summaryWithDate?.overall?.total_frustrated
-                        : apdex?.total_frustrated}</span>
-                  </div>
-                </div>
-              </button>
-            </div>
+                </button>
+              </div>{/if}
           </div>
+
           {#if date}
-            <div class="flex text-2xl justify-end gap-2 items-center">
-              <span
-                class={summaryWithDate?.overall?.apdex_rating?.toLowerCase() === 'excellent'
-                  ? 'text-green-500'
-                  : summaryWithDate?.overall?.apdex_rating?.toLowerCase() === 'good'
-                    ? 'text-[#00D492]'
-                    : summaryWithDate?.overall?.apdex_rating?.toLowerCase() === 'fair'
-                      ? 'text-[#FDC700]'
-                      : summaryWithDate?.overall?.apdex_rating?.toLowerCase() === 'poor'
-                        ? 'text-[#F97316]'
-                        : 'text-[#F87171]'}>
-                {summaryWithDate?.overall?.apdex_rating}
-              </span>
+            {#if summaryWithDate?.overall?.apdex_score}
+              <div class="flex text-2xl justify-end gap-2 items-center">
+                <span
+                  class={summaryWithDate?.overall?.apdex_rating?.toLowerCase() === 'excellent'
+                    ? 'text-green-500'
+                    : summaryWithDate?.overall?.apdex_rating?.toLowerCase() === 'good'
+                      ? 'text-[#00D492]'
+                      : summaryWithDate?.overall?.apdex_rating?.toLowerCase() === 'fair'
+                        ? 'text-[#FDC700]'
+                        : summaryWithDate?.overall?.apdex_rating?.toLowerCase() === 'poor'
+                          ? 'text-[#F97316]'
+                          : 'text-[#F87171]'}>
+                  {summaryWithDate?.overall?.apdex_rating}
+                </span>
 
-              <span class="h-7 w-px bg-white/15"></span>
+                <span class="h-7 w-px bg-white/15"></span>
 
-              <span
-                class={summaryWithDate?.overall?.apdex_score >= 90
-                  ? 'text-[#008236]'
-                  : summaryWithDate?.overall?.apdex_score >= 80
-                    ? 'text-[#00D492]'
-                    : summaryWithDate?.overall?.apdex_score >= 70
-                      ? 'text-[#FDC700]'
-                      : summaryWithDate?.overall?.apdex_score >= 50
-                        ? 'text-[#F97316]'
-                        : 'text-[#EF4444]'}>
-                {summaryWithDate?.overall?.apdex_score}%</span>
-            </div>
-          {:else}
+                <span
+                  class={summaryWithDate?.overall?.apdex_score >= 90
+                    ? 'text-[#008236]'
+                    : summaryWithDate?.overall?.apdex_score >= 80
+                      ? 'text-[#00D492]'
+                      : summaryWithDate?.overall?.apdex_score >= 70
+                        ? 'text-[#FDC700]'
+                        : summaryWithDate?.overall?.apdex_score >= 50
+                          ? 'text-[#F97316]'
+                          : 'text-[#EF4444]'}>
+                  {summaryWithDate?.overall?.apdex_score}%</span>
+              </div>
+            {:else}
+              <span class="text-white/20 text-2xl"> No Data </span>
+            {/if}
+          {:else if apdex?.apdex_score}
             <div class="flex text-2xl justify-end gap-2 items-center">
               <span
                 class={apdex?.apdex_rating?.toLowerCase() === 'excellent'
@@ -742,6 +687,8 @@
                         : 'text-[#EF4444]'}>
                 {summaryWithDate?.overall?.apdex_score || apdex?.apdex_score}%</span>
             </div>
+          {:else}
+            <span class="text-white/20 text-2xl"> No Data </span>
           {/if}
         </div>
 
@@ -888,16 +835,30 @@
               </div>
             </div>
           {/each}
+          {#if date && !summaryWithDate?.overall.apdex_score}
+            {#each Array(24) as _, i}
+              <div aria-hidden="true" class="w-full h-6 rounded-[1px] bg-white/10 relative">
+                <div class="h-2 w-px bg-white/10 absolute -end-px -bottom-3"></div>
+                <div class="h-2 w-px text-white/20 absolute end-3.25 text-xs -bottom-7">
+                  {(i + 1).toString().padStart(2, '0')}:00
+                </div>
+              </div>
+            {/each}
+          {/if}
         </div>
       </div>
 
       <div
         class="relative w-full flex flex-col p-6 pb-13 gap-4 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
-        <div class="flex flex-col">
-          <span class="text-black dark:text-white text-xl">Apdex Histogram</span><span
-            class="text-sm text-[#99a1af]">Application health reflected in Apdex levels</span>
+        <div class="flex justify-between w-full items-start">
+          <div class="flex flex-col">
+            <span class="text-black dark:text-white text-xl">Apdex Histogram</span><span
+              class="text-sm text-[#99a1af]">Application health reflected in Apdex levels</span>
+          </div>
+          {#if date && !(summaryWithDate?.histogram?.error_count || summaryWithDate?.histogram?.buckets.some(item => item?.count))}
+            <span class="text-2xl text-white/20"> No Data </span>
+          {/if}
         </div>
-
         <div class="relative w-full z-10 flex gap-0.5 justify-start items-end mt-4">
           <div class="absolute -bottom-1 w-full h-px bg-white/15"></div>
 
@@ -931,9 +892,11 @@
           {/each}
 
           <div
-            style="height: {(10 /
-              (date ? summaryWithDate?.histogram?.max_count : histogram?.max_count)) *
-              100}px;"
+            style="height: {Boolean(
+              date ? summaryWithDate?.histogram?.error_count : histogram?.error_count,
+            )
+              ? (10 / (date ? summaryWithDate?.histogram?.max_count : histogram?.max_count)) * 100
+              : 0}px;"
             class="border-t-4 w-[5%] rounded-t-xs cursor-pointer relative bg-[#410000] border-t-[#4b0000] hover:bg-[#410000]/70">
             <div class="absolute start-1/2 -translate-x-1/2 -top-6 text-sm text-white">
               {date ? summaryWithDate?.histogram?.error_count : histogram?.error_count}
