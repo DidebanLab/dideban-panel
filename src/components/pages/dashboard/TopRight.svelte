@@ -3,27 +3,9 @@
   import { http } from '../../../services/http.svelte';
   import { endpoints } from '../../../endpoints.svelte';
 
-  let agentsStats = $state({
-    total: 8,
-    enabled: 6,
-    disabled: 2,
-    status: {
-      online: 4,
-      offline: 4,
-    },
-  });
+  let agentsStats = $state();
 
-  let checksStats = $state({
-    total: 12,
-    enabled: 10,
-    disabled: 2,
-    status: {
-      up: 7,
-      down: 2,
-      error: 1,
-      timeout: 0,
-    },
-  });
+  let checksStats = $state();
 
   onMount(() => {
     http.get(endpoints.agentsStats).then(res => {
@@ -49,13 +31,13 @@
             <span class="text-[#F87171] pe-2">Disabled</span>
             <span class="bg-white/20 h-4 w-px"></span>
             <span class="text-black dark:text-white w-4.5 flex justify-end items-center"
-              >{agentsStats.disabled}</span>
+              >{agentsStats?.disabled || 0}</span>
           </div>
           <div class="flex justify-center gap-1 items-center text-xs">
             <span class="text-[#00bc7d] pe-2">Enabled</span>
             <span class="bg-white/20 h-4 w-px"></span>
             <span class="text-black dark:text-white w-4.5 flex justify-end items-center"
-              >{agentsStats.enabled}</span>
+              >{agentsStats?.enabled || 0}</span>
           </div>
         </div>
       </div>
@@ -80,7 +62,7 @@
           </div>
 
           <span class="text-4xl xl:text-2xl 2xl:text-3xl p-4 xl:p-3 2xl:p-2.5 text-[#3b82f6]"
-            >{agentsStats.total}</span>
+            >{agentsStats?.total||0}</span>
           <img
             class="opacity-5 absolute bottom-0 end-0"
             width="70"
@@ -106,7 +88,7 @@
           </div>
 
           <span class="text-4xl xl:text-2xl 2xl:text-3xl p-4 xl:p-3 2xl:p-2.5 text-[#00bc7d]"
-            >{agentsStats.status.online}</span>
+            >{agentsStats?.status.online||0}</span>
           <img
             class="opacity-5 absolute bottom-0 end-0"
             width="70"
@@ -130,7 +112,7 @@
             <span class="text-base text-black dark:text-white">Offline</span>
           </div>
           <span class="text-4xl xl:text-2xl 2xl:text-3xl p-4 xl:p-3 2xl:p-2.5 text-[#F87171]"
-            >{agentsStats.status.offline}</span>
+            >{agentsStats?.status.offline||0}</span>
           <img
             class="opacity-5 absolute bottom-0 end-0"
             width="70"
@@ -149,13 +131,13 @@
             <span class="text-[#F87171] pe-2">Disabled</span>
             <span class="bg-white/20 h-4 w-px"></span>
             <span class="text-black dark:text-white w-4.5 flex justify-end items-center"
-              >{checksStats.disabled}</span>
+              >{checksStats?.disabled||0}</span>
           </div>
           <div class="flex justify-center gap-1 items-center text-xs">
             <span class="text-[#00bc7d] pe-2">Enabled</span>
             <span class="bg-white/20 h-4 w-px"></span>
             <span class="text-black dark:text-white w-4.5 flex justify-end items-center"
-              >{checksStats.enabled}</span>
+              >{checksStats?.enabled||0}</span>
           </div>
         </div>
       </div>
@@ -180,7 +162,7 @@
           </div>
 
           <span class="text-4xl xl:text-2xl 2xl:text-3xl p-4 xl:p-3 2xl:p-2.5 text-[#3b82f6]"
-            >{checksStats.total}</span>
+            >{checksStats?.total||0}</span>
           <img
             class="opacity-5 absolute bottom-0 end-0"
             width="70"
@@ -206,7 +188,7 @@
           </div>
 
           <span class="text-4xl xl:text-2xl 2xl:text-3xl p-4 xl:p-3 2xl:p-2.5 text-[#00bc7d]"
-            >{checksStats.status.up}</span>
+            >{checksStats?.status?.up||0}</span>
           <img
             class="opacity-5 absolute bottom-0 end-0"
             width="70"
@@ -230,7 +212,7 @@
             <span class="text-base text-black dark:text-white">Down</span>
           </div>
           <span class="text-4xl xl:text-2xl 2xl:text-3xl p-4 xl:p-3 2xl:p-2.5 text-[#F87171]"
-            >{checksStats.status.down}</span>
+            >{checksStats?.status?.down||0}</span>
           <img
             class="opacity-5 absolute bottom-0 end-0"
             width="70"
@@ -254,7 +236,7 @@
             <span class="text-base text-black dark:text-white">Timeout</span>
           </div>
           <span class="text-4xl xl:text-2xl 2xl:text-3xl p-4 xl:p-3 2xl:p-2.5 text-[#fdc700]"
-            >{checksStats.status.timeout}</span>
+            >{checksStats?.status?.timeout||0}</span>
           <img
             class="opacity-5 absolute bottom-0 end-0"
             width="70"
