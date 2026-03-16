@@ -136,6 +136,7 @@
             <button
               class="cursor-pointer flex justify-center items-center absolute top-1/2 -translate-y-1/2 end-0"
               onclick={() => {
+                navigator.clipboard.writeText(token);
                 isCopy = true;
               }}
               type="button">
