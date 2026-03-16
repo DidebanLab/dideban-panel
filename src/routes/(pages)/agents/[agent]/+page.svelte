@@ -3,7 +3,6 @@
   import Latency from '../../../../components/common/Latency.svelte';
   import { opener } from '../../../../stores/modal.svelte';
   import { page } from '$app/stores';
-  import EditChecker from '../../../../components/pages/dashboard/statusOverview/EditChecker.svelte';
   import { onMount } from 'svelte';
   import { http } from '../../../../services/http.svelte';
   import responseTimeColor from '../../../../utils/responseTimeColor.js';
@@ -13,6 +12,7 @@
   import Chart from '../../../../components/pages/agent/Chart.svelte';
   import ConfirmEditAgent from '../../../../components/pages/agent/ConfirmEditAgent.svelte';
   import DeleteAgent from '../../../../components/pages/agent/DeleteAgent.svelte';
+  import EditAgent from '../../../../components/pages/agent/EditAgent.svelte';
 
   const REQUIRED_COUNT = $state(innerWidth < 640 ? 31 : 96);
   const id = $page.params.agent;
@@ -1153,9 +1153,14 @@
                 type="button"
                 onclick={() => {
                   opener({
-                    id: 'edit-checker',
-                    content: EditChecker,
-                    props: { data },
+                    id: 'edit-agent',
+                    content: EditAgent,
+                    props: {
+                      name: data?.name,
+                      interval_seconds: data?.interval_seconds,
+                      enabled: data?.enabled,
+                      id: data?.id,
+                    },
                   });
                 }}>
                 <img src="/icons/edit.png" alt="edit" width="24" height="24" />

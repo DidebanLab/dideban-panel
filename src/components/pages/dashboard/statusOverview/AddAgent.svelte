@@ -59,7 +59,7 @@
         <input
           bind:this={nameInput}
           bind:value={form.name}
-          placeholder="Please enter the checker name"
+          placeholder="Please enter the agent name"
           class="px-3 h-9 w-full bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-lg placeholder:text-gray-400/40 text-gray-400 text-sm outline-none tracking-wide"
           type="text" />
         {#if !agentNameRegex.test(form.name)}

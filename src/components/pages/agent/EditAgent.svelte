@@ -10,11 +10,11 @@
   import { closer } from '../../../stores/modal.svelte';
   import { page } from '$app/stores';
 
-  const { name } = $props();
+  const { name, interval_seconds, enabled, id } = $props();
   const form = $state({
-    enabled: true,
-    name: null,
-    interval_seconds: 10,
+    enabled,
+    name,
+    interval_seconds,
   });
 
   let nameInput;
@@ -25,7 +25,7 @@
 
   function editAgentHandler() {
     http
-      .patch(endpoints.singleAgent($page.params.agent), {
+      .patch(endpoints.singleAgent(id), {
         ...form,
       })
       .then(res => {
@@ -36,7 +36,7 @@
 
         closer({ id: 'edit-agent' });
 
-        location.href = `/agents/${$page.params.agent}`;
+        location.href = `/agents/${id}`;
       });
   }
 </script>
@@ -55,7 +55,7 @@
       <input
         bind:this={nameInput}
         bind:value={form.name}
-        placeholder="Please enter the checker name"
+        placeholder="Please enter the agent name"
         class="px-3 h-9 w-full bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-lg placeholder:text-gray-400/40 text-gray-400 text-sm outline-none tracking-wide"
         type="text" />
       {#if !agentNameRegex.test(form.name)}
@@ -120,10 +120,11 @@
 
     <div class="w-full flex justify-between items-center md:mt-10">
       <button
-        disabled={!(form.name && form.interval_seconds && agentNameRegex.test(form.name))}
-        onclick={() => {
-          addAgentHandler();
-        }}
+        disabled={!(form.name && form.interval_seconds && agentNameRegex.test(form.name)) ||
+          (form.name === name &&
+            form.interval_seconds === interval_seconds &&
+            form.enabled === enabled)}
+        onclick={() => editAgentHandler()}
         type="button"
         class="me-auto w-fit px-10 text-sm text-[#10b981] h-8.5 flex justify-center items-center rounded-md cursor-pointer bg-[#22c55e]/10 hover:opacity-60 border border-[#00bc7d]/10 disabled:opacity-50 disabled:dark:opacity-30 disabled:cursor-not-allowed">
         Add Agent
