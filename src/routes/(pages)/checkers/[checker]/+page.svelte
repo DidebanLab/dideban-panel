@@ -783,13 +783,7 @@
                   <div class="relative">
                     <div
                       class="absolute -bottom-7 start-1/2 -translate-x-1/2 text-white/20 text-xs text-nowrap">
-                      {date
-                        ? detail?.start_time?.slice(0, 5)
-                        : new Date(detail?.start_time).toLocaleString('en-CA', {
-                            hour: '2-digit',
-                            minute: '2-digit',
-                            hour12: false,
-                          })}
+                      { detail?.start_time.slice(0,5)}
                     </div>
                   </div>
                 </div>
@@ -800,13 +794,8 @@
                   <div class="relative">
                     <div
                       class="absolute -bottom-7 start-1/2 -translate-x-1/2 text-white/20 text-xs text-nowrap">
-                      {date
-                        ? detail?.end_time
-                        : new Date(detail?.end_time).toLocaleString('en-CA', {
-                            hour: '2-digit',
-                            minute: '2-digit',
-                            hour12: false,
-                          })}
+                      { detail?.end_time.slice(0,5)
+                       }
                     </div>
                   </div>
                 </div>
@@ -870,33 +859,16 @@
                   <div class="flex justify-between items-center gap-1 w-full">
                     <span>From</span>
                     <span class="text-white/30">
-                      {date
-                        ? detail.start_time
-                        : `:${new Date(detail?.start_time).toLocaleString('en-CA', {
-                            year: 'numeric',
-                            month: '2-digit',
-                            day: '2-digit',
-                            hour: '2-digit',
-                            minute: '2-digit',
-                            second: '2-digit',
-                            hour12: false,
-                          })}`}</span>
+                      {
+                        detail.start_time
+                      }
+                       </span>
                   </div>
 
                   <div class="flex justify-between items-center gap-1 w-full">
                     <span>Until</span>
                     <span class="text-white/30">
-                      {date
-                        ? detail?.end_time
-                        : `:${new Date(detail?.end_time).toLocaleString('en-CA', {
-                            year: 'numeric',
-                            month: '2-digit',
-                            day: '2-digit',
-                            hour: '2-digit',
-                            minute: '2-digit',
-                            second: '2-digit',
-                            hour12: false,
-                          })}`}</span>
+                      { detail?.end_time}</span>
                   </div>
                 </div>
               </div>
