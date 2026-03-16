@@ -18,6 +18,7 @@ export const endpoints = {
   agentCollectDuration: agentId => `/agents/${agentId}/collect-duration`,
   agentSummaryYearly: id => `/agents/${id}/summary/yearly`,
   agentSummaryDate: (id, date) => `/agents/${id}/summary/${date}`,
+  agentChart:id => `/agents/${id}/chart`,
   //---------------
 
   login: '',
