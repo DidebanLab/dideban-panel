@@ -32,7 +32,7 @@
           content: AddAgent,
         });
       }}
-      class="w-12 sm:w-fit h-10 flex justify-center gap-2 px-4 items-center bg-[#22c55e]/10 rounded-lg text-xl text-[#10b981] cursor-pointer">
+      class="w-12 sm:w-34.25 h-10 flex justify-center gap-2 px-4 items-center bg-[#22c55e]/10 rounded-lg text-xl text-[#10b981] cursor-pointer">
       <span class="text-nowrap text-sm hidden sm:flex justify-center items-center">Add Agent</span>
       +
     </button>
