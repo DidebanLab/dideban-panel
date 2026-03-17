@@ -3,7 +3,7 @@
   import Latency from '../../../../components/common/Latency.svelte';
   import { opener } from '../../../../stores/modal.svelte';
   import { page } from '$app/stores';
-  import { onMount } from 'svelte';
+  import { onMount, untrack } from 'svelte';
   import { http } from '../../../../services/http.svelte';
   import responseTimeColor from '../../../../utils/responseTimeColor.js';
   import { alertStore } from '../../../../stores/alert.svelte.js';
@@ -17,1385 +17,27 @@
   const REQUIRED_COUNT = $state(innerWidth < 640 ? 31 : 96);
   let hours = $state(24);
   const id = $page.params.agent;
+  let date = $state();
   let data = $state();
   let chart = $state();
   let pointIndexHoverd = $state();
   let metricPointDetail = $state();
   let isMouseInside = $state(false);
-
   let enabled = $state();
-  let date = $state(null);
   let history = $state();
   let missingCount = $derived(Math.max(0, REQUIRED_COUNT - (history?.data?.length ?? 0)));
   let historyDetail = $state();
   let collectDuration = $state();
   let summary = $state();
-  let summaryWithDate = $state({
-    date: '2026-02-04',
-    overall: {
-      total_collects: 2880,
-      uptime_percent: 94,
-      avg_collect_duration_ms: 285,
-      rate: 'Good',
-      min_collect_duration_ms: 0,
-      max_collect_duration_ms: 549,
-    },
-    collect_duration_series: [
-      {
-        start_time: '00:00:00',
-        end_time: '01:00:00',
-        collects: 120,
-        uptime_percent: 96,
-        avg_collect_duration_ms: 273,
-        rate: 'Good',
-        min_collect_duration_ms: 0,
-        max_collect_duration_ms: 542,
-      },
-      {
-        start_time: '01:00:00',
-        end_time: '02:00:00',
-        collects: 120,
-        uptime_percent: 91,
-        avg_collect_duration_ms: 279,
-        rate: 'Good',
-        min_collect_duration_ms: 0,
-        max_collect_duration_ms: 541,
-      },
-      {
-        start_time: '02:00:00',
-        end_time: '03:00:00',
-        collects: 120,
-        uptime_percent: 95,
-        avg_collect_duration_ms: 282,
-        rate: 'Good',
-        min_collect_duration_ms: 0,
-        max_collect_duration_ms: 543,
-      },
-      {
-        start_time: '03:00:00',
-        end_time: '04:00:00',
-        collects: 120,
-        uptime_percent: 95,
-        avg_collect_duration_ms: 281,
-        rate: 'Good',
-        min_collect_duration_ms: 0,
-        max_collect_duration_ms: 545,
-      },
-      {
-        start_time: '04:00:00',
-        end_time: '05:00:00',
-        collects: 120,
-        uptime_percent: 90,
-        avg_collect_duration_ms: 283,
-        rate: 'Good',
-        min_collect_duration_ms: 0,
-        max_collect_duration_ms: 545,
-      },
-      {
-        start_time: '05:00:00',
-        end_time: '06:00:00',
-        collects: 120,
-        uptime_percent: 93,
-        avg_collect_duration_ms: 277,
-        rate: 'Good',
-        min_collect_duration_ms: 0,
-        max_collect_duration_ms: 546,
-      },
-      {
-        start_time: '06:00:00',
-        end_time: '07:00:00',
-        collects: 120,
-        uptime_percent: 95,
-        avg_collect_duration_ms: 277,
-        rate: 'Good',
-        min_collect_duration_ms: 0,
-        max_collect_duration_ms: 536,
-      },
-      {
-        start_time: '07:00:00',
-        end_time: '08:00:00',
-        collects: 120,
-        uptime_percent: 94,
-        avg_collect_duration_ms: 286,
-        rate: 'Good',
-        min_collect_duration_ms: 0,
-        max_collect_duration_ms: 549,
-      },
-      {
-        start_time: '08:00:00',
-        end_time: '09:00:00',
-        collects: 120,
-        uptime_percent: 95,
-        avg_collect_duration_ms: 289,
-        rate: 'Good',
-        min_collect_duration_ms: 0,
-        max_collect_duration_ms: 549,
-      },
-      {
-        start_time: '09:00:00',
-        end_time: '10:00:00',
-        collects: 120,
-        uptime_percent: 94,
-        avg_collect_duration_ms: 279,
-        rate: 'Good',
-        min_collect_duration_ms: 0,
-        max_collect_duration_ms: 543,
-      },
-      {
-        start_time: '10:00:00',
-        end_time: '11:00:00',
-        collects: 120,
-        uptime_percent: 96,
-        avg_collect_duration_ms: 290,
-        rate: 'Good',
-        min_collect_duration_ms: 0,
-        max_collect_duration_ms: 545,
-      },
-      {
-        start_time: '11:00:00',
-        end_time: '12:00:00',
-        collects: 120,
-        uptime_percent: 94,
-        avg_collect_duration_ms: 301,
-        rate: 'Good',
-        min_collect_duration_ms: 0,
-        max_collect_duration_ms: 546,
-      },
-      {
-        start_time: '12:00:00',
-        end_time: '13:00:00',
-        collects: 120,
-        uptime_percent: 96,
-        avg_collect_duration_ms: 277,
-        rate: 'Good',
-        min_collect_duration_ms: 0,
-        max_collect_duration_ms: 545,
-      },
-      {
-        start_time: '13:00:00',
-        end_time: '14:00:00',
-        collects: 120,
-        uptime_percent: 95,
-        avg_collect_duration_ms: 275,
-        rate: 'Good',
-        min_collect_duration_ms: 0,
-        max_collect_duration_ms: 548,
-      },
-      {
-        start_time: '14:00:00',
-        end_time: '15:00:00',
-        collects: 120,
-        uptime_percent: 97,
-        avg_collect_duration_ms: 287,
-        rate: 'Good',
-        min_collect_duration_ms: 0,
-        max_collect_duration_ms: 546,
-      },
-      {
-        start_time: '15:00:00',
-        end_time: '16:00:00',
-        collects: 120,
-        uptime_percent: 94,
-        avg_collect_duration_ms: 288,
-        rate: 'Good',
-        min_collect_duration_ms: 0,
-        max_collect_duration_ms: 538,
-      },
-      {
-        start_time: '16:00:00',
-        end_time: '17:00:00',
-        collects: 120,
-        uptime_percent: 94,
-        avg_collect_duration_ms: 313,
-        rate: 'Good',
-        min_collect_duration_ms: 0,
-        max_collect_duration_ms: 542,
-      },
-      {
-        start_time: '17:00:00',
-        end_time: '18:00:00',
-        collects: 120,
-        uptime_percent: 90,
-        avg_collect_duration_ms: 267,
-        rate: 'Good',
-        min_collect_duration_ms: 0,
-        max_collect_duration_ms: 546,
-      },
-      {
-        start_time: '18:00:00',
-        end_time: '19:00:00',
-        collects: 120,
-        uptime_percent: 96,
-        avg_collect_duration_ms: 290,
-        rate: 'Good',
-        min_collect_duration_ms: 0,
-        max_collect_duration_ms: 546,
-      },
-      {
-        start_time: '19:00:00',
-        end_time: '20:00:00',
-        collects: 120,
-        uptime_percent: 97,
-        avg_collect_duration_ms: 308,
-        rate: 'Good',
-        min_collect_duration_ms: 0,
-        max_collect_duration_ms: 549,
-      },
-      {
-        start_time: '20:00:00',
-        end_time: '21:00:00',
-        collects: 120,
-        uptime_percent: 95,
-        avg_collect_duration_ms: 289,
-        rate: 'Good',
-        min_collect_duration_ms: 0,
-        max_collect_duration_ms: 549,
-      },
-      {
-        start_time: '21:00:00',
-        end_time: '22:00:00',
-        collects: 120,
-        uptime_percent: 94,
-        avg_collect_duration_ms: 285,
-        rate: 'Good',
-        min_collect_duration_ms: 0,
-        max_collect_duration_ms: 538,
-      },
-      {
-        start_time: '22:00:00',
-        end_time: '23:00:00',
-        collects: 120,
-        uptime_percent: 95,
-        avg_collect_duration_ms: 282,
-        rate: 'Good',
-        min_collect_duration_ms: 0,
-        max_collect_duration_ms: 542,
-      },
-      {
-        start_time: '23:00:00',
-        end_time: '00:00:00',
-        collects: 120,
-        uptime_percent: 95,
-        avg_collect_duration_ms: 290,
-        rate: 'Good',
-        min_collect_duration_ms: 0,
-        max_collect_duration_ms: 547,
-      },
-    ],
-    uptime_series: [
-      {
-        start_time: '00:00:00',
-        end_time: '01:00:00',
-        collect_count: 120,
-        uptime_percent: 96,
-        avg_cpu_usage: 33,
-        avg_memory_usage: 48,
-        avg_disk_usage: 39,
-        avg_collect_duration_ms: 273,
-      },
-      {
-        start_time: '01:00:00',
-        end_time: '02:00:00',
-        collect_count: 120,
-        uptime_percent: 91,
-        avg_cpu_usage: 32,
-        avg_memory_usage: 44,
-        avg_disk_usage: 36,
-        avg_collect_duration_ms: 279,
-      },
-      {
-        start_time: '02:00:00',
-        end_time: '03:00:00',
-        collect_count: 120,
-        uptime_percent: 95,
-        avg_cpu_usage: 34,
-        avg_memory_usage: 45,
-        avg_disk_usage: 40,
-        avg_collect_duration_ms: 282,
-      },
-      {
-        start_time: '03:00:00',
-        end_time: '04:00:00',
-        collect_count: 120,
-        uptime_percent: 95,
-        avg_cpu_usage: 33,
-        avg_memory_usage: 47,
-        avg_disk_usage: 36,
-        avg_collect_duration_ms: 281,
-      },
-      {
-        start_time: '04:00:00',
-        end_time: '05:00:00',
-        collect_count: 120,
-        uptime_percent: 90,
-        avg_cpu_usage: 34,
-        avg_memory_usage: 44,
-        avg_disk_usage: 37,
-        avg_collect_duration_ms: 283,
-      },
-      {
-        start_time: '05:00:00',
-        end_time: '06:00:00',
-        collect_count: 120,
-        uptime_percent: 93,
-        avg_cpu_usage: 33,
-        avg_memory_usage: 45,
-        avg_disk_usage: 38,
-        avg_collect_duration_ms: 277,
-      },
-      {
-        start_time: '06:00:00',
-        end_time: '07:00:00',
-        collect_count: 120,
-        uptime_percent: 95,
-        avg_cpu_usage: 32,
-        avg_memory_usage: 49,
-        avg_disk_usage: 34,
-        avg_collect_duration_ms: 277,
-      },
-      {
-        start_time: '07:00:00',
-        end_time: '08:00:00',
-        collect_count: 120,
-        uptime_percent: 94,
-        avg_cpu_usage: 31,
-        avg_memory_usage: 46,
-        avg_disk_usage: 35,
-        avg_collect_duration_ms: 286,
-      },
-      {
-        start_time: '08:00:00',
-        end_time: '09:00:00',
-        collect_count: 120,
-        uptime_percent: 95,
-        avg_cpu_usage: 35,
-        avg_memory_usage: 43,
-        avg_disk_usage: 41,
-        avg_collect_duration_ms: 289,
-      },
-      {
-        start_time: '09:00:00',
-        end_time: '10:00:00',
-        collect_count: 120,
-        uptime_percent: 94,
-        avg_cpu_usage: 36,
-        avg_memory_usage: 45,
-        avg_disk_usage: 37,
-        avg_collect_duration_ms: 279,
-      },
-      {
-        start_time: '10:00:00',
-        end_time: '11:00:00',
-        collect_count: 120,
-        uptime_percent: 96,
-        avg_cpu_usage: 33,
-        avg_memory_usage: 48,
-        avg_disk_usage: 40,
-        avg_collect_duration_ms: 290,
-      },
-      {
-        start_time: '11:00:00',
-        end_time: '12:00:00',
-        collect_count: 120,
-        uptime_percent: 94,
-        avg_cpu_usage: 34,
-        avg_memory_usage: 44,
-        avg_disk_usage: 37,
-        avg_collect_duration_ms: 301,
-      },
-      {
-        start_time: '12:00:00',
-        end_time: '13:00:00',
-        collect_count: 120,
-        uptime_percent: 96,
-        avg_cpu_usage: 33,
-        avg_memory_usage: 47,
-        avg_disk_usage: 40,
-        avg_collect_duration_ms: 277,
-      },
-      {
-        start_time: '13:00:00',
-        end_time: '14:00:00',
-        collect_count: 120,
-        uptime_percent: 95,
-        avg_cpu_usage: 35,
-        avg_memory_usage: 46,
-        avg_disk_usage: 40,
-        avg_collect_duration_ms: 275,
-      },
-      {
-        start_time: '14:00:00',
-        end_time: '15:00:00',
-        collect_count: 120,
-        uptime_percent: 97,
-        avg_cpu_usage: 31,
-        avg_memory_usage: 50,
-        avg_disk_usage: 37,
-        avg_collect_duration_ms: 287,
-      },
-      {
-        start_time: '15:00:00',
-        end_time: '16:00:00',
-        collect_count: 120,
-        uptime_percent: 94,
-        avg_cpu_usage: 32,
-        avg_memory_usage: 44,
-        avg_disk_usage: 36,
-        avg_collect_duration_ms: 288,
-      },
-      {
-        start_time: '16:00:00',
-        end_time: '17:00:00',
-        collect_count: 120,
-        uptime_percent: 94,
-        avg_cpu_usage: 35,
-        avg_memory_usage: 48,
-        avg_disk_usage: 39,
-        avg_collect_duration_ms: 313,
-      },
-      {
-        start_time: '17:00:00',
-        end_time: '18:00:00',
-        collect_count: 120,
-        uptime_percent: 90,
-        avg_cpu_usage: 32,
-        avg_memory_usage: 44,
-        avg_disk_usage: 36,
-        avg_collect_duration_ms: 267,
-      },
-      {
-        start_time: '18:00:00',
-        end_time: '19:00:00',
-        collect_count: 120,
-        uptime_percent: 96,
-        avg_cpu_usage: 33,
-        avg_memory_usage: 48,
-        avg_disk_usage: 36,
-        avg_collect_duration_ms: 290,
-      },
-      {
-        start_time: '19:00:00',
-        end_time: '20:00:00',
-        collect_count: 120,
-        uptime_percent: 97,
-        avg_cpu_usage: 38,
-        avg_memory_usage: 49,
-        avg_disk_usage: 41,
-        avg_collect_duration_ms: 308,
-      },
-      {
-        start_time: '20:00:00',
-        end_time: '21:00:00',
-        collect_count: 120,
-        uptime_percent: 95,
-        avg_cpu_usage: 35,
-        avg_memory_usage: 44,
-        avg_disk_usage: 37,
-        avg_collect_duration_ms: 289,
-      },
-      {
-        start_time: '21:00:00',
-        end_time: '22:00:00',
-        collect_count: 120,
-        uptime_percent: 94,
-        avg_cpu_usage: 33,
-        avg_memory_usage: 44,
-        avg_disk_usage: 36,
-        avg_collect_duration_ms: 285,
-      },
-      {
-        start_time: '22:00:00',
-        end_time: '23:00:00',
-        collect_count: 120,
-        uptime_percent: 95,
-        avg_cpu_usage: 35,
-        avg_memory_usage: 45,
-        avg_disk_usage: 38,
-        avg_collect_duration_ms: 282,
-      },
-      {
-        start_time: '23:00:00',
-        end_time: '00:00:00',
-        collect_count: 120,
-        uptime_percent: 95,
-        avg_cpu_usage: 33,
-        avg_memory_usage: 48,
-        avg_disk_usage: 38,
-        avg_collect_duration_ms: 290,
-      },
-    ],
-    chart_series: [
-      {
-        id: 142366,
-        agent_id: 1,
-        is_offline: false,
-        collect_duration_ms: 436,
-        cpu_load_1: 3.32,
-        cpu_load_5: 2.5,
-        cpu_load_15: 1.98,
-        cpu_usage_percent: 58,
-        memory_total_mb: 10240,
-        memory_used_mb: 3584,
-        memory_available_mb: 6656,
-        memory_usage_percent: 35,
-        disk_total_gb: 1200,
-        disk_used_gb: 588,
-        disk_usage_percent: 49,
-        collected_at: '2026-02-04T00:00:11.9318181+03:30',
-      },
-      {
-        id: 142426,
-        agent_id: 1,
-        is_offline: false,
-        collect_duration_ms: 201,
-        cpu_load_1: 3.33,
-        cpu_load_5: 2.76,
-        cpu_load_15: 2,
-        cpu_usage_percent: 32,
-        memory_total_mb: 14336,
-        memory_used_mb: 8314,
-        memory_available_mb: 6022,
-        memory_usage_percent: 58,
-        disk_total_gb: 1000,
-        disk_used_gb: 410,
-        disk_usage_percent: 41,
-        collected_at: '2026-02-04T00:30:11.9318181+03:30',
-      },
-      {
-        id: 142486,
-        agent_id: 1,
-        is_offline: false,
-        collect_duration_ms: 398,
-        cpu_load_1: 3.26,
-        cpu_load_5: 2.57,
-        cpu_load_15: 1.94,
-        cpu_usage_percent: 83,
-        memory_total_mb: 11264,
-        memory_used_mb: 6871,
-        memory_available_mb: 4393,
-        memory_usage_percent: 61,
-        disk_total_gb: 1800,
-        disk_used_gb: 972,
-        disk_usage_percent: 54,
-        collected_at: '2026-02-04T01:00:11.9318181+03:30',
-      },
-      {
-        id: 142546,
-        agent_id: 1,
-        is_offline: false,
-        collect_duration_ms: 517,
-        cpu_load_1: 3.57,
-        cpu_load_5: 2.98,
-        cpu_load_15: 2.24,
-        cpu_usage_percent: 38,
-        memory_total_mb: 8192,
-        memory_used_mb: 3604,
-        memory_available_mb: 4588,
-        memory_usage_percent: 44,
-        disk_total_gb: 1600,
-        disk_used_gb: 864,
-        disk_usage_percent: 54,
-        collected_at: '2026-02-04T01:30:11.9318181+03:30',
-      },
-      {
-        id: 142606,
-        agent_id: 1,
-        is_offline: false,
-        collect_duration_ms: 256,
-        cpu_load_1: 2.16,
-        cpu_load_5: 1.49,
-        cpu_load_15: 1.12,
-        cpu_usage_percent: 44,
-        memory_total_mb: 9216,
-        memory_used_mb: 5160,
-        memory_available_mb: 4056,
-        memory_usage_percent: 56,
-        disk_total_gb: 1300,
-        disk_used_gb: 481,
-        disk_usage_percent: 37,
-        collected_at: '2026-02-04T02:00:11.9318181+03:30',
-      },
-      {
-        id: 142666,
-        agent_id: 1,
-        is_offline: false,
-        collect_duration_ms: 113,
-        cpu_load_1: 2.56,
-        cpu_load_5: 2.17,
-        cpu_load_15: 1.46,
-        cpu_usage_percent: 13,
-        memory_total_mb: 14336,
-        memory_used_mb: 7311,
-        memory_available_mb: 7025,
-        memory_usage_percent: 51,
-        disk_total_gb: 1800,
-        disk_used_gb: 648,
-        disk_usage_percent: 36,
-        collected_at: '2026-02-04T02:30:11.9318181+03:30',
-      },
-      {
-        id: 142726,
-        agent_id: 1,
-        is_offline: false,
-        collect_duration_ms: 382,
-        cpu_load_1: 0.34,
-        cpu_load_5: 0.28,
-        cpu_load_15: 0.11,
-        cpu_usage_percent: 17,
-        memory_total_mb: 10240,
-        memory_used_mb: 7884,
-        memory_available_mb: 2356,
-        memory_usage_percent: 77,
-        disk_total_gb: 1100,
-        disk_used_gb: 407,
-        disk_usage_percent: 37,
-        collected_at: '2026-02-04T03:00:11.9318181+03:30',
-      },
-      {
-        id: 142786,
-        agent_id: 1,
-        is_offline: false,
-        collect_duration_ms: 200,
-        cpu_load_1: 3.16,
-        cpu_load_5: 2.52,
-        cpu_load_15: 1.96,
-        cpu_usage_percent: 40,
-        memory_total_mb: 13312,
-        memory_used_mb: 5724,
-        memory_available_mb: 7588,
-        memory_usage_percent: 43,
-        disk_total_gb: 1300,
-        disk_used_gb: 780,
-        disk_usage_percent: 60,
-        collected_at: '2026-02-04T03:30:11.9318181+03:30',
-      },
-      {
-        id: 142846,
-        agent_id: 1,
-        is_offline: false,
-        collect_duration_ms: 466,
-        cpu_load_1: 4.28,
-        cpu_load_5: 3.09,
-        cpu_load_15: 2.47,
-        cpu_usage_percent: 45,
-        memory_total_mb: 11264,
-        memory_used_mb: 7997,
-        memory_available_mb: 3267,
-        memory_usage_percent: 71,
-        disk_total_gb: 1000,
-        disk_used_gb: 460,
-        disk_usage_percent: 46,
-        collected_at: '2026-02-04T04:00:11.9318181+03:30',
-      },
-      {
-        id: 142906,
-        agent_id: 1,
-        is_offline: false,
-        collect_duration_ms: 390,
-        cpu_load_1: 2.99,
-        cpu_load_5: 2.1,
-        cpu_load_15: 1.59,
-        cpu_usage_percent: 40,
-        memory_total_mb: 9216,
-        memory_used_mb: 2672,
-        memory_available_mb: 6544,
-        memory_usage_percent: 29,
-        disk_total_gb: 1000,
-        disk_used_gb: 390,
-        disk_usage_percent: 39,
-        collected_at: '2026-02-04T04:30:11.9318181+03:30',
-      },
-      {
-        id: 142966,
-        agent_id: 1,
-        is_offline: false,
-        collect_duration_ms: 437,
-        cpu_load_1: 1.72,
-        cpu_load_5: 1.4,
-        cpu_load_15: 1.06,
-        cpu_usage_percent: 36,
-        memory_total_mb: 9216,
-        memory_used_mb: 1290,
-        memory_available_mb: 7926,
-        memory_usage_percent: 14,
-        disk_total_gb: 1200,
-        disk_used_gb: 720,
-        disk_usage_percent: 60,
-        collected_at: '2026-02-04T05:00:11.9318181+03:30',
-      },
-      {
-        id: 143026,
-        agent_id: 1,
-        is_offline: false,
-        collect_duration_ms: 375,
-        cpu_load_1: 1.4,
-        cpu_load_5: 1.08,
-        cpu_load_15: 0.79,
-        cpu_usage_percent: 42,
-        memory_total_mb: 13312,
-        memory_used_mb: 8519,
-        memory_available_mb: 4793,
-        memory_usage_percent: 64,
-        disk_total_gb: 1100,
-        disk_used_gb: 374,
-        disk_usage_percent: 34,
-        collected_at: '2026-02-04T05:30:11.9318181+03:30',
-      },
-      {
-        id: 143086,
-        agent_id: 1,
-        is_offline: false,
-        collect_duration_ms: 397,
-        cpu_load_1: 3.86,
-        cpu_load_5: 3.06,
-        cpu_load_15: 2.21,
-        cpu_usage_percent: 18,
-        memory_total_mb: 13312,
-        memory_used_mb: 6123,
-        memory_available_mb: 7189,
-        memory_usage_percent: 46,
-        disk_total_gb: 1100,
-        disk_used_gb: 198,
-        disk_usage_percent: 18,
-        collected_at: '2026-02-04T06:00:11.9318181+03:30',
-      },
-      {
-        id: 143146,
-        agent_id: 1,
-        is_offline: false,
-        collect_duration_ms: 420,
-        cpu_load_1: 1.21,
-        cpu_load_5: 1.04,
-        cpu_load_15: 0.66,
-        cpu_usage_percent: 46,
-        memory_total_mb: 12288,
-        memory_used_mb: 5283,
-        memory_available_mb: 7005,
-        memory_usage_percent: 43,
-        disk_total_gb: 1600,
-        disk_used_gb: 848,
-        disk_usage_percent: 53,
-        collected_at: '2026-02-04T06:30:11.9318181+03:30',
-      },
-      {
-        id: 143206,
-        agent_id: 1,
-        is_offline: false,
-        collect_duration_ms: 236,
-        cpu_load_1: 4.26,
-        cpu_load_5: 3.45,
-        cpu_load_15: 2.41,
-        cpu_usage_percent: 62,
-        memory_total_mb: 14336,
-        memory_used_mb: 6451,
-        memory_available_mb: 7885,
-        memory_usage_percent: 45,
-        disk_total_gb: 1100,
-        disk_used_gb: 275,
-        disk_usage_percent: 25,
-        collected_at: '2026-02-04T07:00:11.9318181+03:30',
-      },
-      {
-        id: 143266,
-        agent_id: 1,
-        is_offline: false,
-        collect_duration_ms: 109,
-        cpu_load_1: 1.2,
-        cpu_load_5: 1.1,
-        cpu_load_15: 0.73,
-        cpu_usage_percent: 37,
-        memory_total_mb: 11264,
-        memory_used_mb: 4618,
-        memory_available_mb: 6646,
-        memory_usage_percent: 41,
-        disk_total_gb: 1900,
-        disk_used_gb: 627,
-        disk_usage_percent: 33,
-        collected_at: '2026-02-04T07:30:11.9318181+03:30',
-      },
-      {
-        id: 143326,
-        agent_id: 1,
-        is_offline: false,
-        collect_duration_ms: 73,
-        cpu_load_1: 3.47,
-        cpu_load_5: 2.84,
-        cpu_load_15: 1.95,
-        cpu_usage_percent: 57,
-        memory_total_mb: 13312,
-        memory_used_mb: 8386,
-        memory_available_mb: 4926,
-        memory_usage_percent: 63,
-        disk_total_gb: 1800,
-        disk_used_gb: 522,
-        disk_usage_percent: 29,
-        collected_at: '2026-02-04T08:00:11.9318181+03:30',
-      },
-      {
-        id: 143386,
-        agent_id: 1,
-        is_offline: false,
-        collect_duration_ms: 334,
-        cpu_load_1: 3.65,
-        cpu_load_5: 2.62,
-        cpu_load_15: 1.98,
-        cpu_usage_percent: 52,
-        memory_total_mb: 12288,
-        memory_used_mb: 8110,
-        memory_available_mb: 4178,
-        memory_usage_percent: 66,
-        disk_total_gb: 1600,
-        disk_used_gb: 496,
-        disk_usage_percent: 31,
-        collected_at: '2026-02-04T08:30:11.9318181+03:30',
-      },
-      {
-        id: 143446,
-        agent_id: 1,
-        is_offline: false,
-        collect_duration_ms: 424,
-        cpu_load_1: 3.45,
-        cpu_load_5: 2.91,
-        cpu_load_15: 2.16,
-        cpu_usage_percent: 40,
-        memory_total_mb: 10240,
-        memory_used_mb: 5120,
-        memory_available_mb: 5120,
-        memory_usage_percent: 50,
-        disk_total_gb: 1400,
-        disk_used_gb: 322,
-        disk_usage_percent: 23,
-        collected_at: '2026-02-04T09:00:11.9318181+03:30',
-      },
-      {
-        id: 143506,
-        agent_id: 1,
-        is_offline: false,
-        collect_duration_ms: 477,
-        cpu_load_1: 3.09,
-        cpu_load_5: 2.49,
-        cpu_load_15: 1.84,
-        cpu_usage_percent: 38,
-        memory_total_mb: 13312,
-        memory_used_mb: 4526,
-        memory_available_mb: 8786,
-        memory_usage_percent: 34,
-        disk_total_gb: 1900,
-        disk_used_gb: 684,
-        disk_usage_percent: 36,
-        collected_at: '2026-02-04T09:30:11.9318181+03:30',
-      },
-      {
-        id: 143566,
-        agent_id: 1,
-        is_offline: false,
-        collect_duration_ms: 519,
-        cpu_load_1: 3,
-        cpu_load_5: 2.3,
-        cpu_load_15: 1.76,
-        cpu_usage_percent: 11,
-        memory_total_mb: 13312,
-        memory_used_mb: 7188,
-        memory_available_mb: 6124,
-        memory_usage_percent: 54,
-        disk_total_gb: 1300,
-        disk_used_gb: 130,
-        disk_usage_percent: 10,
-        collected_at: '2026-02-04T10:00:11.9318181+03:30',
-      },
-      {
-        id: 143626,
-        agent_id: 1,
-        is_offline: false,
-        collect_duration_ms: 156,
-        cpu_load_1: 0.84,
-        cpu_load_5: 0.73,
-        cpu_load_15: 0.54,
-        cpu_usage_percent: 18,
-        memory_total_mb: 12288,
-        memory_used_mb: 4055,
-        memory_available_mb: 8233,
-        memory_usage_percent: 33,
-        disk_total_gb: 1300,
-        disk_used_gb: 585,
-        disk_usage_percent: 45,
-        collected_at: '2026-02-04T10:30:11.9318181+03:30',
-      },
-      {
-        id: 143686,
-        agent_id: 1,
-        is_offline: false,
-        collect_duration_ms: 232,
-        cpu_load_1: 1.87,
-        cpu_load_5: 1.3,
-        cpu_load_15: 0.84,
-        cpu_usage_percent: 26,
-        memory_total_mb: 11264,
-        memory_used_mb: 6307,
-        memory_available_mb: 4957,
-        memory_usage_percent: 56,
-        disk_total_gb: 1400,
-        disk_used_gb: 336,
-        disk_usage_percent: 24,
-        collected_at: '2026-02-04T11:00:11.9318181+03:30',
-      },
-      {
-        id: 143746,
-        agent_id: 1,
-        is_offline: false,
-        collect_duration_ms: 479,
-        cpu_load_1: 2,
-        cpu_load_5: 1.64,
-        cpu_load_15: 1.19,
-        cpu_usage_percent: 15,
-        memory_total_mb: 9216,
-        memory_used_mb: 5437,
-        memory_available_mb: 3779,
-        memory_usage_percent: 59,
-        disk_total_gb: 1600,
-        disk_used_gb: 1408,
-        disk_usage_percent: 88,
-        collected_at: '2026-02-04T11:30:11.9318181+03:30',
-      },
-      {
-        id: 143806,
-        agent_id: 1,
-        is_offline: false,
-        collect_duration_ms: 482,
-        cpu_load_1: 4.01,
-        cpu_load_5: 3.07,
-        cpu_load_15: 2.42,
-        cpu_usage_percent: 30,
-        memory_total_mb: 14336,
-        memory_used_mb: 2723,
-        memory_available_mb: 11613,
-        memory_usage_percent: 19,
-        disk_total_gb: 1200,
-        disk_used_gb: 468,
-        disk_usage_percent: 39,
-        collected_at: '2026-02-04T12:00:11.9318181+03:30',
-      },
-      {
-        id: 143866,
-        agent_id: 1,
-        is_offline: false,
-        collect_duration_ms: 84,
-        cpu_load_1: 3.84,
-        cpu_load_5: 2.77,
-        cpu_load_15: 2.06,
-        cpu_usage_percent: 50,
-        memory_total_mb: 10240,
-        memory_used_mb: 3993,
-        memory_available_mb: 6247,
-        memory_usage_percent: 39,
-        disk_total_gb: 1200,
-        disk_used_gb: 552,
-        disk_usage_percent: 46,
-        collected_at: '2026-02-04T12:30:11.9318181+03:30',
-      },
-      {
-        id: 143926,
-        agent_id: 1,
-        is_offline: false,
-        collect_duration_ms: 358,
-        cpu_load_1: 2.2,
-        cpu_load_5: 1.72,
-        cpu_load_15: 1.16,
-        cpu_usage_percent: 23,
-        memory_total_mb: 14336,
-        memory_used_mb: 2723,
-        memory_available_mb: 11613,
-        memory_usage_percent: 19,
-        disk_total_gb: 1000,
-        disk_used_gb: 160,
-        disk_usage_percent: 16,
-        collected_at: '2026-02-04T13:00:11.9318181+03:30',
-      },
-      {
-        id: 143986,
-        agent_id: 1,
-        is_offline: false,
-        collect_duration_ms: 109,
-        cpu_load_1: 0.74,
-        cpu_load_5: 0.64,
-        cpu_load_15: 0.59,
-        cpu_usage_percent: 50,
-        memory_total_mb: 8192,
-        memory_used_mb: 1392,
-        memory_available_mb: 6800,
-        memory_usage_percent: 17,
-        disk_total_gb: 1900,
-        disk_used_gb: 1501,
-        disk_usage_percent: 79,
-        collected_at: '2026-02-04T13:30:11.9318181+03:30',
-      },
-      {
-        id: 144046,
-        agent_id: 1,
-        is_offline: false,
-        collect_duration_ms: 528,
-        cpu_load_1: 1.42,
-        cpu_load_5: 1.15,
-        cpu_load_15: 0.87,
-        cpu_usage_percent: 28,
-        memory_total_mb: 9216,
-        memory_used_mb: 3409,
-        memory_available_mb: 5807,
-        memory_usage_percent: 37,
-        disk_total_gb: 1100,
-        disk_used_gb: 352,
-        disk_usage_percent: 32,
-        collected_at: '2026-02-04T14:00:11.9318181+03:30',
-      },
-      {
-        id: 144106,
-        agent_id: 1,
-        is_offline: true,
-        collect_duration_ms: 0,
-        cpu_load_1: 0,
-        cpu_load_5: 0,
-        cpu_load_15: 0,
-        cpu_usage_percent: 0,
-        memory_total_mb: 0,
-        memory_used_mb: 0,
-        memory_available_mb: 0,
-        memory_usage_percent: 0,
-        disk_total_gb: 0,
-        disk_used_gb: 0,
-        disk_usage_percent: 0,
-        collected_at: '2026-02-04T14:30:11.9318181+03:30',
-      },
-      {
-        id: 144166,
-        agent_id: 1,
-        is_offline: false,
-        collect_duration_ms: 394,
-        cpu_load_1: 3.82,
-        cpu_load_5: 3.24,
-        cpu_load_15: 2.39,
-        cpu_usage_percent: 27,
-        memory_total_mb: 10240,
-        memory_used_mb: 9523,
-        memory_available_mb: 717,
-        memory_usage_percent: 93,
-        disk_total_gb: 1500,
-        disk_used_gb: 120,
-        disk_usage_percent: 8,
-        collected_at: '2026-02-04T15:00:11.9318181+03:30',
-      },
-      {
-        id: 144226,
-        agent_id: 1,
-        is_offline: false,
-        collect_duration_ms: 223,
-        cpu_load_1: 3.96,
-        cpu_load_5: 3.03,
-        cpu_load_15: 2.16,
-        cpu_usage_percent: 48,
-        memory_total_mb: 8192,
-        memory_used_mb: 5816,
-        memory_available_mb: 2376,
-        memory_usage_percent: 71,
-        disk_total_gb: 1500,
-        disk_used_gb: 465,
-        disk_usage_percent: 31,
-        collected_at: '2026-02-04T15:30:11.9318181+03:30',
-      },
-      {
-        id: 144286,
-        agent_id: 1,
-        is_offline: false,
-        collect_duration_ms: 69,
-        cpu_load_1: 2.52,
-        cpu_load_5: 1.96,
-        cpu_load_15: 1.4,
-        cpu_usage_percent: 25,
-        memory_total_mb: 10240,
-        memory_used_mb: 4812,
-        memory_available_mb: 5428,
-        memory_usage_percent: 47,
-        disk_total_gb: 1300,
-        disk_used_gb: 364,
-        disk_usage_percent: 28,
-        collected_at: '2026-02-04T16:00:11.9318181+03:30',
-      },
-      {
-        id: 144346,
-        agent_id: 1,
-        is_offline: false,
-        collect_duration_ms: 112,
-        cpu_load_1: 2.38,
-        cpu_load_5: 1.74,
-        cpu_load_15: 1.3,
-        cpu_usage_percent: 43,
-        memory_total_mb: 12288,
-        memory_used_mb: 7864,
-        memory_available_mb: 4424,
-        memory_usage_percent: 64,
-        disk_total_gb: 1000,
-        disk_used_gb: 330,
-        disk_usage_percent: 33,
-        collected_at: '2026-02-04T16:30:11.9318181+03:30',
-      },
-      {
-        id: 144406,
-        agent_id: 1,
-        is_offline: false,
-        collect_duration_ms: 231,
-        cpu_load_1: 1.1,
-        cpu_load_5: 0.97,
-        cpu_load_15: 0.67,
-        cpu_usage_percent: 87,
-        memory_total_mb: 13312,
-        memory_used_mb: 5191,
-        memory_available_mb: 8121,
-        memory_usage_percent: 39,
-        disk_total_gb: 1400,
-        disk_used_gb: 798,
-        disk_usage_percent: 57,
-        collected_at: '2026-02-04T17:00:11.9318181+03:30',
-      },
-      {
-        id: 144466,
-        agent_id: 1,
-        is_offline: false,
-        collect_duration_ms: 482,
-        cpu_load_1: 1.21,
-        cpu_load_5: 1.1,
-        cpu_load_15: 0.71,
-        cpu_usage_percent: 22,
-        memory_total_mb: 14336,
-        memory_used_mb: 5877,
-        memory_available_mb: 8459,
-        memory_usage_percent: 41,
-        disk_total_gb: 1300,
-        disk_used_gb: 286,
-        disk_usage_percent: 22,
-        collected_at: '2026-02-04T17:30:11.9318181+03:30',
-      },
-      {
-        id: 144526,
-        agent_id: 1,
-        is_offline: false,
-        collect_duration_ms: 359,
-        cpu_load_1: 1.46,
-        cpu_load_5: 1.05,
-        cpu_load_15: 0.68,
-        cpu_usage_percent: 48,
-        memory_total_mb: 9216,
-        memory_used_mb: 2949,
-        memory_available_mb: 6267,
-        memory_usage_percent: 32,
-        disk_total_gb: 1300,
-        disk_used_gb: 247,
-        disk_usage_percent: 19,
-        collected_at: '2026-02-04T18:00:11.9318181+03:30',
-      },
-      {
-        id: 144586,
-        agent_id: 1,
-        is_offline: false,
-        collect_duration_ms: 305,
-        cpu_load_1: 4.24,
-        cpu_load_5: 3.16,
-        cpu_load_15: 2.5,
-        cpu_usage_percent: 49,
-        memory_total_mb: 10240,
-        memory_used_mb: 5017,
-        memory_available_mb: 5223,
-        memory_usage_percent: 49,
-        disk_total_gb: 1400,
-        disk_used_gb: 1246,
-        disk_usage_percent: 89,
-        collected_at: '2026-02-04T18:30:11.9318181+03:30',
-      },
-      {
-        id: 144646,
-        agent_id: 1,
-        is_offline: false,
-        collect_duration_ms: 439,
-        cpu_load_1: 0.97,
-        cpu_load_5: 0.81,
-        cpu_load_15: 0.5,
-        cpu_usage_percent: 11,
-        memory_total_mb: 14336,
-        memory_used_mb: 9318,
-        memory_available_mb: 5018,
-        memory_usage_percent: 65,
-        disk_total_gb: 1000,
-        disk_used_gb: 180,
-        disk_usage_percent: 18,
-        collected_at: '2026-02-04T19:00:11.9318181+03:30',
-      },
-      {
-        id: 144706,
-        agent_id: 1,
-        is_offline: false,
-        collect_duration_ms: 450,
-        cpu_load_1: 0.96,
-        cpu_load_5: 0.61,
-        cpu_load_15: 0.53,
-        cpu_usage_percent: 21,
-        memory_total_mb: 8192,
-        memory_used_mb: 3276,
-        memory_available_mb: 4916,
-        memory_usage_percent: 40,
-        disk_total_gb: 1700,
-        disk_used_gb: 952,
-        disk_usage_percent: 56,
-        collected_at: '2026-02-04T19:30:11.9318181+03:30',
-      },
-      {
-        id: 144766,
-        agent_id: 1,
-        is_offline: false,
-        collect_duration_ms: 210,
-        cpu_load_1: 1.88,
-        cpu_load_5: 1.23,
-        cpu_load_15: 0.98,
-        cpu_usage_percent: 53,
-        memory_total_mb: 13312,
-        memory_used_mb: 5857,
-        memory_available_mb: 7455,
-        memory_usage_percent: 44,
-        disk_total_gb: 1000,
-        disk_used_gb: 530,
-        disk_usage_percent: 53,
-        collected_at: '2026-02-04T20:00:11.9318181+03:30',
-      },
-      {
-        id: 144826,
-        agent_id: 1,
-        is_offline: false,
-        collect_duration_ms: 327,
-        cpu_load_1: 0.7,
-        cpu_load_5: 0.31,
-        cpu_load_15: 0.28,
-        cpu_usage_percent: 23,
-        memory_total_mb: 14336,
-        memory_used_mb: 3153,
-        memory_available_mb: 11183,
-        memory_usage_percent: 22,
-        disk_total_gb: 1900,
-        disk_used_gb: 627,
-        disk_usage_percent: 33,
-        collected_at: '2026-02-04T20:30:11.9318181+03:30',
-      },
-      {
-        id: 144886,
-        agent_id: 1,
-        is_offline: true,
-        collect_duration_ms: 0,
-        cpu_load_1: 0,
-        cpu_load_5: 0,
-        cpu_load_15: 0,
-        cpu_usage_percent: 0,
-        memory_total_mb: 0,
-        memory_used_mb: 0,
-        memory_available_mb: 0,
-        memory_usage_percent: 0,
-        disk_total_gb: 0,
-        disk_used_gb: 0,
-        disk_usage_percent: 0,
-        collected_at: '2026-02-04T21:00:11.9318181+03:30',
-      },
-      {
-        id: 144946,
-        agent_id: 1,
-        is_offline: false,
-        collect_duration_ms: 372,
-        cpu_load_1: 3.19,
-        cpu_load_5: 2.63,
-        cpu_load_15: 2.05,
-        cpu_usage_percent: 26,
-        memory_total_mb: 11264,
-        memory_used_mb: 6758,
-        memory_available_mb: 4506,
-        memory_usage_percent: 60,
-        disk_total_gb: 1200,
-        disk_used_gb: 708,
-        disk_usage_percent: 59,
-        collected_at: '2026-02-04T21:30:11.9318181+03:30',
-      },
-      {
-        id: 145006,
-        agent_id: 1,
-        is_offline: false,
-        collect_duration_ms: 546,
-        cpu_load_1: 0.83,
-        cpu_load_5: 0.52,
-        cpu_load_15: 0.35,
-        cpu_usage_percent: 58,
-        memory_total_mb: 10240,
-        memory_used_mb: 3891,
-        memory_available_mb: 6349,
-        memory_usage_percent: 38,
-        disk_total_gb: 1800,
-        disk_used_gb: 414,
-        disk_usage_percent: 23,
-        collected_at: '2026-02-04T22:00:11.9318181+03:30',
-      },
-      {
-        id: 145066,
-        agent_id: 1,
-        is_offline: false,
-        collect_duration_ms: 262,
-        cpu_load_1: 1.45,
-        cpu_load_5: 1.12,
-        cpu_load_15: 0.92,
-        cpu_usage_percent: 23,
-        memory_total_mb: 13312,
-        memory_used_mb: 4526,
-        memory_available_mb: 8786,
-        memory_usage_percent: 34,
-        disk_total_gb: 1500,
-        disk_used_gb: 420,
-        disk_usage_percent: 28,
-        collected_at: '2026-02-04T22:30:11.9318181+03:30',
-      },
-      {
-        id: 145126,
-        agent_id: 1,
-        is_offline: false,
-        collect_duration_ms: 370,
-        cpu_load_1: 1.08,
-        cpu_load_5: 1.06,
-        cpu_load_15: 0.75,
-        cpu_usage_percent: 56,
-        memory_total_mb: 12288,
-        memory_used_mb: 6021,
-        memory_available_mb: 6267,
-        memory_usage_percent: 49,
-        disk_total_gb: 1100,
-        disk_used_gb: 473,
-        disk_usage_percent: 43,
-        collected_at: '2026-02-04T23:00:11.9318181+03:30',
-      },
-      {
-        id: 145186,
-        agent_id: 1,
-        is_offline: false,
-        collect_duration_ms: 172,
-        cpu_load_1: 3.83,
-        cpu_load_5: 2.81,
-        cpu_load_15: 2.12,
-        cpu_usage_percent: 52,
-        memory_total_mb: 11264,
-        memory_used_mb: 2816,
-        memory_available_mb: 8448,
-        memory_usage_percent: 25,
-        disk_total_gb: 1000,
-        disk_used_gb: 590,
-        disk_usage_percent: 59,
-        collected_at: '2026-02-04T23:30:11.9318181+03:30',
-      },
-    ],
-    time_range: {
-      from: '2026-02-04T00:00:00+03:30',
-      to: '2026-02-05T00:00:00+03:30',
-      hours: 24,
-    },
-  });
+  let summaryWithDate = $state();
+  function getDate(initialDate) {
+    const d = new Date(initialDate);
+    const year = String(d.getUTCFullYear());
+    const month = String(d.getUTCMonth() + 1).padStart(2, '0');
+    const day = String(d.getUTCDate() + 1).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+  }
 
   const MONTHS = [
     'January',
@@ -1417,6 +59,11 @@
   }
 
   onMount(() => {
+    http.get(endpoints.singleAgent(id)).then(res => {
+      data = res.data?.data;
+      enabled = res.data?.data.enabled;
+    });
+    http.get(endpoints.agentSummaryYearly(id)).then(res => (summary = res.data?.data));
     if (!date) {
       http
         .get(endpoints.agentHistory(id), {
@@ -1426,84 +73,24 @@
           history = { ...res.data, data: res.data?.data.slice(-REQUIRED_COUNT) };
         });
     }
-    http.get(endpoints.singleAgent(id)).then(res => {
-      data = res.data?.data;
-      enabled = res.data?.data.enabled;
-    });
-    http.get(endpoints.agentSummaryYearly(id)).then(res => (summary = res.data?.data));
   });
-
-  function nextDate(data, year, month, day) {
-    const maxDay = Object.keys(
-      data.filter(item => Number(item?.month) === Number(month))[0].history,
-    ).length;
-    let nextDay = Number(day);
-    let nextMonth = Number(month);
-    let nextYear = Number(year);
-    if (Number(day) === maxDay) {
-      nextDay = 1;
-      if (nextMonth === 12) {
-        nextMonth = 1;
-        nextYear = nextYear + 1;
-      } else {
-        nextMonth = nextMonth + 1;
-      }
-    } else {
-      nextDay = nextDay + 1;
-    }
-
-    goto(`/agents/${id}?year=${nextYear}&month=${nextMonth}&day=${nextDay}`);
-  }
-
-  function preDate(data, year, month, day) {
-    let perDay = Number(day);
-    let perMonth = Number(month);
-    let perYear = Number(year);
-
-    if (perDay === 1) {
-      if (perMonth === 1) {
-        perMonth = 12;
-        perYear = perYear - 1;
-      } else {
-        perMonth = perMonth - 1;
-      }
-      const prevMonthData = data.find(
-        item => Number(item?.year) === perYear && Number(item?.month) === perMonth,
-      );
-
-      if (prevMonthData && prevMonthData.history) {
-        const daysInMonth = Math.max(...Object.keys(prevMonthData.history).map(Number));
-        perDay = daysInMonth;
-      } else {
-        return;
-      }
-    } else {
-      perDay = perDay - 1;
-    }
-
-    goto(`/agents/${id}?year=${perYear}&month=${perMonth}&day=${perDay}`);
-  }
   $effect(() => {
-    const year = $page.url.searchParams.get('year');
-    let month = $page.url.searchParams.get('month');
-    let day = $page.url.searchParams.get('day');
+    if ($page.url.searchParams.get('date')) {
+      date = getDate($page.url.searchParams.get('date'));
 
-    if (month?.length < 2) month = `0${month}`;
-    if (day?.length < 2) day = `0${day}`;
-
-    if (year && month && day) {
-      historyDetail = null;
-      date = { year, month, day };
-      http.get(endpoints.agentSummaryDate(id, `${year}-${month}-${day}`)).then(res => {
-        summaryWithDate = res.data?.data;
-      });
-    } else {
-      date = null;
+      http
+        .get(endpoints.agentSummaryDate(id, date))
+        .then(res => {
+          summaryWithDate = res.data.data;
+        })
+        .catch(() => {
+          console.log('error');
+        });
     }
   });
 
   $effect(() => {
-    if (pointIndexHoverd && id) {
+    if (pointIndexHoverd && id && !date) {
       http
         .get(
           endpoints.agentHistoryDetail(
@@ -1529,9 +116,64 @@
       })
       .then(res => (chart = res.data?.data));
   });
+  function nextDate(dateData, initialDate) {
+    const d = getDate(initialDate);
+    const year = d.getUTCFullYear();
+    const month = d.getUTCMonth() + 1;
+    const day = d.getUTCDate();
+
+    const maxDay = Object.keys(
+      dateData.filter(item => Number(item?.month) === Number(month))[0].history,
+    ).length;
+    let nextDay = Number(day);
+    let nextMonth = Number(month);
+    let nextYear = Number(year);
+    if (Number(day) === maxDay) {
+      nextDay = 1;
+      if (nextMonth === 12) {
+        nextMonth = 1;
+        nextYear = nextYear + 1;
+      } else {
+        nextMonth = nextMonth + 1;
+      }
+    } else {
+      nextDay = nextDay + 1;
+    }
+
+    goto(`/agents/${id}?date=${nextYear}-${nextMonth}-${nextDay}`);
+  }
+  function preDate(dateData, date) {
+    let perDay = Number(date?.day);
+    let perMonth = Number(date?.month);
+    let perYear = Number(date?.year);
+
+    if (perDay === 1) {
+      if (perMonth === 1) {
+        perMonth = 12;
+        perYear = perYear - 1;
+      } else {
+        perMonth = perMonth - 1;
+      }
+      const prevMonthData = dateData.find(
+        item => Number(item?.year) === perYear && Number(item?.month) === perMonth,
+      );
+
+      if (prevMonthData && prevMonthData.history) {
+        const daysInMonth = Math.max(...Object.keys(prevMonthData.history).map(Number));
+        perDay = daysInMonth;
+      } else {
+        return;
+      }
+    } else {
+      perDay = perDay - 1;
+    }
+
+    goto(`/agents/${id}?date=${perYear}-${perMonth}-${perDay}`);
+  }
 </script>
 
 <section class="w-full m-auto h-auto flex flex-col col-span-10">
+  <div class="text-white text-4xl">{summaryWithDate?.date || 100}</div>
   <!-- Content of dashboard page -->
   <div class="w-full flex flex-col gap-7.75 p-7.75 py-2">
     <div
@@ -1554,12 +196,7 @@
             <button
               aria-label="prev date"
               onclick={() => {
-                preDate(
-                  summary,
-                  $page.url.searchParams.get('year'),
-                  $page.url.searchParams.get('month'),
-                  $page.url.searchParams.get('day'),
-                );
+                preDate(summary, date);
               }}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -1576,20 +213,14 @@
 
             <!-- Date -->
             <div class="px-4 py-1.5 rounded-lg tracking-wide text-nowrap text-[#3b82f6]">
-              {getMonthName($page.url.searchParams.get('month'))}
-              {$page.url.searchParams.get('day')} , {$page.url.searchParams.get('year')}
+              {date}
             </div>
 
             <!-- Next -->
             <button
               aria-label="next date"
               onclick={() => {
-                nextDate(
-                  summary,
-                  $page.url.searchParams.get('year'),
-                  $page.url.searchParams.get('month'),
-                  $page.url.searchParams.get('day'),
-                );
+                nextDate(summary, date);
               }}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -1631,7 +262,7 @@
             <div class="flex justify-center items-center gap-1.75">
               <button
                 class="cursor-pointer"
-                aria-label="delete checker"
+                aria-label="delete agent"
                 type="button"
                 onclick={() => {
                   opener({
@@ -2002,9 +633,7 @@
                     ? 'bg-green-700'
                     : 'bg-[#FFFFFF]/10'}">
                   <div
-                    class="absolute w-fit group-hover:flex hidden bottom-10 start-1/2 -translate-x-1/2 rounded-xl text-white bg-white/40 dark:bg-black/80 backdrop-blur-md dark:backdrop-blur-3xl border-[#0D0D0D]/5 border dark:border-white/10 px-3 py-2 flex-col justify-start items-start {uptime.collect_count
-                      ? 'gap-1.5'
-                      : 'gap-2.5'}">
+                    class="absolute w-fit group-hover:flex hidden bottom-10 start-1/2 -translate-x-1/2 rounded-xl text-white bg-white/40 dark:bg-black/80 backdrop-blur-md dark:backdrop-blur-3xl border-[#0D0D0D]/5 border dark:border-white/10 px-3 py-2 flex-col justify-start items-start gap-1.5">
                     {#if uptime.avg_collect_duration_ms}
                       <div
                         class="w-full flex justify-between items-center gap-2.5 border-b border-b-[#0D0D0D]/10 dark:border-b-white/15 pb-1.5">
@@ -2022,7 +651,7 @@
                       </div>
                     {/if}
 
-                    {#if uptime?.avg_cpu_usag}
+                    {#if uptime?.avg_cpu_usage}
                       <div class="flex flex-col items-center w-full gap-1">
                         <div class="w-full flex justify-start items-center gap-2.5">
                           <span
@@ -2033,28 +662,29 @@
                               class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
                               >Cpu :</span>
                             <span
-                              class="flex justify-center items-center text-sm text-nowrap {uptime?.avg_cpu_usag >
+                              class="flex justify-center items-center text-sm text-nowrap {uptime?.avg_cpu_usage >
                               LIMITATIONS.cpu.error
                                 ? 'text-[#F87171]'
-                                : uptime?.avg_cpu_usag > LIMITATIONS.cpu.warn
+                                : uptime?.avg_cpu_usage > LIMITATIONS.cpu.warn
                                   ? 'text-[#F97316]'
-                                  : 'text-green-700'}">{uptime?.avg_cpu_usag}%</span>
+                                  : 'text-green-700'}">{uptime?.avg_cpu_usage}%</span>
                           </div>
                         </div>
                         <div class="w-full h-0.5 rounded-full bg-black/10 dark:bg-white/10">
                           <div
-                            class="h-full rounded-full {uptime?.avg_cpu_usag > LIMITATIONS.cpu.error
+                            class="h-full rounded-full {uptime?.avg_cpu_usage >
+                            LIMITATIONS.cpu.error
                               ? 'bg-[#F87171]'
-                              : uptime?.avg_cpu_usag > LIMITATIONS.cpu.warn
+                              : uptime?.avg_cpu_usage > LIMITATIONS.cpu.warn
                                 ? 'bg-[#F97316]'
                                 : 'bg-green-700'}"
                             style="width: {Math.min(
-                              uptime?.avg_cpu_usag,
+                              uptime?.avg_cpu_usage,
                               100,
-                            )}%;box-shadow: 0 0 10px 1px {uptime?.avg_cpu_usag >
+                            )}%;box-shadow: 0 0 10px 1px {uptime?.avg_cpu_usage >
                             LIMITATIONS.cpu.error
                               ? '#F87171'
-                              : uptime?.avg_cpu_usag > LIMITATIONS.cpu.warn
+                              : uptime?.avg_cpu_usage > LIMITATIONS.cpu.warn
                                 ? '#F97316'
                                 : '#008236'};">
                           </div>
@@ -2103,7 +733,7 @@
                       </div>
                     {/if}
 
-                    {#if avg_disk_usage}
+                    {#if uptime?.avg_disk_usage}
                       <div class="flex flex-col items-center w-full gap-1 pb-1.5">
                         <div class="w-full flex justify-start items-center gap-2.5">
                           <span
@@ -2114,33 +744,48 @@
                               class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
                               >Disk :</span>
                             <span
-                              class="flex justify-center items-center text-sm text-nowrap {avg_disk_usage >
+                              class="flex justify-center items-center text-sm text-nowrap {uptime?.avg_disk_usage >
                               LIMITATIONS.disk.error
                                 ? 'text-[#F87171]'
-                                : avg_disk_usage > LIMITATIONS.disk.warn
+                                : uptime?.avg_disk_usage > LIMITATIONS.disk.warn
                                   ? 'text-[#F97316]'
-                                  : 'text-green-700'}">{avg_disk_usage}%</span>
+                                  : 'text-green-700'}">{uptime?.avg_disk_usage}%</span>
                           </div>
                         </div>
                         <div class="w-full h-0.5 rounded-full bg-black/10 dark:bg-white/10">
                           <div
-                            class="h-full rounded-full {avg_disk_usage > LIMITATIONS.disk.error
+                            class="h-full rounded-full {uptime?.avg_disk_usage >
+                            LIMITATIONS.disk.error
                               ? 'bg-[#F87171]'
-                              : avg_disk_usage > LIMITATIONS.disk.warn
+                              : uptime?.avg_disk_usage > LIMITATIONS.disk.warn
                                 ? 'bg-[#F97316]'
                                 : 'bg-green-700'}"
                             style="width: {Math.min(
-                              avg_disk_usage,
+                              uptime?.avg_disk_usage,
                               100,
-                            )}%;box-shadow: 0 0 10px 1px {avg_disk_usage > LIMITATIONS.disk.error
+                            )}%;box-shadow: 0 0 10px 1px {uptime?.avg_disk_usage >
+                            LIMITATIONS.disk.error
                               ? '#F87171'
-                              : avg_disk_usage > LIMITATIONS.disk.warn
+                              : uptime?.avg_disk_usage > LIMITATIONS.disk.warn
                                 ? '#F97316'
                                 : '#008236'};">
                           </div>
                         </div>
                       </div>
                     {/if}
+                    {#if uptime?.start_time && uptime?.end_time}
+                      <div
+                        class="w-full flex flex-col justify-start items-start text-xs pt-1.5 text-[#6a7282] text-center text-nowrap border-t border-t-[#0D0D0D]/10 dark:border-t-white/15">
+                        <div class="flex justify-between items-center gap-1 w-full">
+                          <span>From</span>
+                          <span class="text-white/30">{uptime?.start_time} </span>
+                        </div>
+
+                        <div class="flex justify-between items-center gap-1 w-full">
+                          <span>Until</span>
+                          <span class="text-white/30"> {uptime?.end_time}</span>
+                        </div>
+                      </div>{/if}
                   </div>
                   <div class="h-2 w-px bg-white/10 absolute -end-px -bottom-3"></div>
 
@@ -3640,9 +2285,7 @@
                   <button
                     onclick={() => {
                       const newUrl = new URL($page.url);
-                      newUrl.searchParams.set('year', item?.year);
-                      newUrl.searchParams.set('month', item?.month);
-                      newUrl.searchParams.set('day', day);
+                      newUrl.searchParams.set('date', `${item?.year}-${item?.month}-${day}`);
 
                       goto(newUrl, {
                         keepfocus: true,

@@ -40,12 +40,10 @@
         mouseMove: (event, chartContext, config) => {
           // ✅ اگر موس قبلاً وارد نشده بود، پیام را چاپ کن
           if (!isMouseInside) {
-            console.log('سلام');
             isMouseInside = true; // ✅ تغییر وضعیت به "داخل نمودار"
           }
         },
         mouseLeave: (event, chartContext, config) => {
-          console.log('خداحافظ');
           isMouseInside = false; // ✅ بازنشانی وضعیت برای دفعه بعد
         },
       },
