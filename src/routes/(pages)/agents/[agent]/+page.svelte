@@ -67,17 +67,22 @@
       data = res.data?.data;
       enabled = res.data?.data.enabled;
     });
+  });
+
+
+  $effect(()=>{})
+  $effect(() => {
     http.get(endpoints.agentSummaryYearly(id)).then(res => {
       const current = res.data.data.find(i => Object.values(i.history).includes(-1));
       const day = Object.keys(current.history).find(key => current.history[key] === -1);
       toDay = `${current.year}-${current.month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
-
-      console.log(toDay);
+      if (getDate($page.url.searchParams.get('date')).string === toDay) {
+        goto(`/agents/${id}`);
+      }
 
       summary = res.data?.data;
     });
-  });
-  $effect(() => {
+
     if ($page.url.searchParams.get('date')) {
       date = getDate($page.url.searchParams.get('date')).string;
 
@@ -88,7 +93,7 @@
         };
       });
     } else {
-      date=null
+      date = null;
       http
         .get(endpoints.agentHistory(id), {
           params: { short: true, detail: true, page_size: REQUIRED_COUNT },
@@ -123,7 +128,13 @@
   });
 
   function nextDate(dateData) {
-    const d = getDate($page.url.searchParams.get('date')).date;
+    let d;
+
+    if ($page.url.searchParams.get('date')) {
+      d = getDate($page.url.searchParams.get('date')).date;
+    } else {
+      d = getDate(toDay).date;
+    }
     const year = d.year;
     const month = d.month;
     const day = d.day;
