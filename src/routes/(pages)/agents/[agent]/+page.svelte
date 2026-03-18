@@ -93,7 +93,6 @@
       http.get(endpoints.agentSummaryDate(id, date)).then(res => {
         summaryWithDate = {
           ...res.data.data,
-          collect_duration_series: res.data?.data?.collect_duration_series?.reverse(),
           uptime_series: res.data?.data?.uptime_series?.reverse(),
         };
       });
@@ -994,7 +993,7 @@
                     <div class="relative">
                       <div
                         class="absolute -bottom-7 start-1/2 -translate-x-1/2 text-white/20 text-xs text-nowrap">
-                        {detail?.end_time.slice(0, 5)}
+                        24:00
                       </div>
                     </div>
                   </div>
@@ -2358,6 +2357,8 @@
                     Number(date?.day) === Number(day)}
                   <button
                     onclick={() => {
+                      if (!date && today) return;
+
                       const newUrl = new URL($page.url);
                       newUrl.searchParams.set('date', `${item?.year}-${item?.month}-${day}`);
 
@@ -2381,40 +2382,43 @@
                       : ''}
                     class="text-white aspect-square transition-all w-full flex items-center justify-center relative border border-white/15 group {isSpecialModeWithDate
                       ? 'animate-pulse'
-                      : 'cursor-pointer'} {value >= 90
-                      ? 'bg-[#008236]'
-                      : value >= 80
-                        ? 'bg-[#00863864]'
-                        : value >= 70
-                          ? 'bg-[#FDC700]'
-                          : value >= 50
-                            ? 'bg-[#F97316]'
-                            : value !== null
-                              ? 'bg-[#EF4444]'
-                              : ' shadow-inner shadow-white/5 cursor-default!'} ">
-                    <div
-                      class="hidden absolute min-w-40 text-sm -top-20 border border-white/15 px-3 py-2 flex-col gap-1 bg-black/80 backdrop-blur-2xl rounded-xl z-10 {value !==
-                        null && !isSpecialModeWithDate
-                        ? 'group-hover:flex'
-                        : ''}">
-                      <div class="flex justify-between items-center">
-                        <span class="text-[#6a7282] text-nowrap">Uptime :</span>
-                        <span
-                          class="text-nowrap {value >= 90
-                            ? 'text-[#008236]'
-                            : value >= 80
-                              ? 'text-[#00D492]'
-                              : value >= 70
-                                ? 'text-[#FDC700]'
-                                : value >= 50
-                                  ? 'text-[#F97316]'
-                                  : 'text-[#EF4444]'}">{value}%</span>
-                      </div>
+                      : 'cursor-pointer'} {value
+                      ? value >= 90
+                        ? 'bg-[#008236]'
+                        : value >= 80
+                          ? 'bg-[#00863864]'
+                          : value >= 70
+                            ? 'bg-[#FDC700]'
+                            : value >= 50
+                              ? 'bg-[#F97316]'
+                              : value == !-1
+                                ? 'bg-[#EF4444]'
+                                : 'shadow-inner shadow-white/5 cursor-not-allowed! opacity-50'
+                      : ' shadow-inner shadow-white/5 cursor-default!'} ">
+                    {#if value && value == !-1}
+                      <div
+                        class="hidden absolute min-w-40 text-sm -top-20 border border-white/15 px-3 py-2 flex-col gap-1 bg-black/80 backdrop-blur-2xl rounded-xl z-10 {value !==
+                          null && !isSpecialModeWithDate
+                          ? 'group-hover:flex'
+                          : ''}">
+                        <div class="flex justify-between items-center">
+                          <span class="text-[#6a7282] text-nowrap">Uptime :</span>
+                          <span
+                            class="text-nowrap {value >= 90
+                              ? 'text-[#008236]'
+                              : value >= 80
+                                ? 'text-[#00D492]'
+                                : value >= 70
+                                  ? 'text-[#FDC700]'
+                                  : value >= 50
+                                    ? 'text-[#F97316]'
+                                    : 'text-[#EF4444]'}">{value}%</span>
+                        </div>
 
-                      <span
-                        class="text-white/30 text-nowrap border-t pt-1 border-t-white/15 text-start"
-                        >{item?.year}/{item?.month}/{day}</span>
-                    </div>
+                        <span
+                          class="text-white/30 text-nowrap border-t pt-1 border-t-white/15 text-start"
+                          >{item?.year}/{item?.month}/{day}</span>
+                      </div>{/if}
                     <span class="absolute start-1/2 top-1/2 -translate-1/2">-</span>
                   </button>
                 {/each}
