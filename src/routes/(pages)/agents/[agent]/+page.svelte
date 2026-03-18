@@ -33,10 +33,10 @@
   function getDate(initialDate) {
     const d = new Date(initialDate);
     const year = String(d.getFullYear());
-    const month = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate() ).padStart(2, '0');
+    const month = String(d.getMonth() + 1);
+    const day = String(d.getDate());
 
-    return `${year}-${month}-${day}`;
+    return { string: `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`,date:{year,month,day} };
   }
 
   const MONTHS = [
@@ -80,21 +80,15 @@
   });
   $effect(() => {
     if ($page.url.searchParams.get('date')) {
-      
-      date = getDate($page.url.searchParams.get('date'));
-      console.log(date);
+      date = getDate($page.url.searchParams.get('date')).string;
 
-      http
-        .get(endpoints.agentSummaryDate(id, date))
-        .then(res => {
-          summaryWithDate = {
-            ...res.data.data,
-            collect_duration_series: res.data?.data?.collect_duration_series?.reverse(),
-            uptime_series: res.data?.data?.uptime_series?.reverse(),
-          };
-        })
-
-  
+      http.get(endpoints.agentSummaryDate(id, date)).then(res => {
+        summaryWithDate = {
+          ...res.data.data,
+          collect_duration_series: res.data?.data?.collect_duration_series?.reverse(),
+          uptime_series: res.data?.data?.uptime_series?.reverse(),
+        };
+      });
     }
   });
 
@@ -125,11 +119,11 @@
       })
       .then(res => (chart = res.data?.data));
   });
-  function nextDate(dateData, initialDate) {
-    const d = getDate(initialDate);
-    const year = d.getUTCFullYear();
-    const month = d.getUTCMonth() + 1;
-    const day = d.getUTCDate();
+  function nextDate(dateData) {
+    const d = getDate($page.url.searchParams.get('date')).date;
+    const year = d.year;
+    const month = d.month;
+    const day = d.day;
 
     const maxDay = Object.keys(
       dateData.filter(item => Number(item?.month) === Number(month))[0].history,
@@ -151,25 +145,39 @@
 
     goto(`/agents/${id}?date=${nextYear}-${nextMonth}-${nextDay}`);
   }
-  function preDate(dateData, date) {
-    let perDay = Number(date?.day);
-    let perMonth = Number(date?.month);
-    let perYear = Number(date?.year);
+  function preDate(dateData) {
+    const d = getDate($page.url.searchParams.get('date')).date;
+
+    let perDay =Number( d.day);
+    let perMonth = Number(d.month);
+    let perYear = Number(d.year);
+
+
+      
+
 
     if (perDay === 1) {
+ 
+    
+
+ 
       if (perMonth === 1) {
         perMonth = 12;
         perYear = perYear - 1;
       } else {
         perMonth = perMonth - 1;
       }
-      const prevMonthData = dateData.find(
+  
+   const prevMonthData = dateData?.find(
         item => Number(item?.year) === perYear && Number(item?.month) === perMonth,
       );
 
       if (prevMonthData && prevMonthData.history) {
-        const daysInMonth = Math.max(...Object.keys(prevMonthData.history).map(Number));
+        const daysInMonth = Math.max(...Object.keys(prevMonthData.history).map(key => parseInt(key)));
         perDay = daysInMonth;
+
+        console.log(daysInMonth);
+        
       } else {
         return;
       }
@@ -196,54 +204,53 @@
               ? 'text-green-700'
               : 'text-[#F87171]'}">{data?.status}</span>
         </div>
-        {#if date}
-          <div
-            class="flex items-center justify-between px-3 gap-4 bg-white/5 text-sm absolute top-0 rounded-md start-1/2 -translate-x-1/2 min-w-40 h-9.5 shadow-sm shadow-[#3b82f6]/50">
-            <!-- Prev -->
 
-            <button
-              aria-label="prev date"
-              onclick={() => {
-                preDate(summary, date);
-              }}>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="w-4 h-4 hover:opacity-65 cursor-pointer"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="white">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M15 19l-7-7 7-7" />
-              </svg></button>
+        <div
+          class="flex items-center justify-between px-3 gap-4 bg-white/5 text-sm absolute top-0 rounded-md start-1/2 -translate-x-1/2 min-w-40 h-9.5 shadow-sm shadow-[#3b82f6]/50">
+          <!-- Prev -->
 
-            <!-- Date -->
-            <div class="px-4 py-1.5 rounded-lg tracking-wide text-nowrap text-[#3b82f6]">
-              {date}
-            </div>
+          <button
+            aria-label="prev date"
+            onclick={() => {
+              preDate(summary);
+            }}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-4 h-4 hover:opacity-65 cursor-pointer"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="white">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 19l-7-7 7-7" />
+            </svg></button>
 
-            <!-- Next -->
-            <button
-              aria-label="next date"
-              onclick={() => {
-                nextDate(summary, date);
-              }}>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="w-4 h-4 hover:opacity-65 cursor-pointer"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="white">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M9 5l7 7-7 7" />
-              </svg></button>
+          <!-- Date -->
+          <div class="px-4 py-1.5 rounded-lg tracking-wide text-nowrap text-[#3b82f6]">
+            {date}
           </div>
-        {/if}
+
+          <!-- Next -->
+          <button
+            aria-label="next date"
+            onclick={() => {
+              nextDate(summary);
+            }}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-4 h-4 hover:opacity-65 cursor-pointer"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="white">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 5l7 7-7 7" />
+            </svg></button>
+        </div>
 
         {#if date}
           <button
@@ -1442,8 +1449,8 @@
                   {:else}
                     <span
                       class="text-xs {summaryWithDate?.chart_series[
-                        summaryWithDate.chart_series.length - 1
-                      ].cpu_load_15
+                        summaryWithDate?.chart_series?.length - 1
+                      ]?.cpu_load_15
                         ? summaryWithDate?.chart_series[summaryWithDate.chart_series.length - 1]
                             .cpu_load_15 > LIMITATIONS.cpu.error
                           ? 'text-[#F87171]'
@@ -1453,9 +1460,9 @@
                             : 'text-green-700'
                         : 'text-[#F87171]'}"
                       >{summaryWithDate?.chart_series[summaryWithDate.chart_series.length - 1]
-                        .cpu_load_15
+                        ?.cpu_load_15
                         ? summaryWithDate?.chart_series[summaryWithDate.chart_series.length - 1]
-                            .cpu_load_15 + '%'
+                            ?.cpu_load_15 + '%'
                         : 'Unknown'}</span>
                   {/if}
                 </div>
@@ -1465,7 +1472,8 @@
                 class="w-full rounded-md relative h-6 flex justify-start items-center overflow-hidden bg-white/5">
                 {#if isMouseInside}
                   <div
-                    style="width:{summaryWithDate?.chart_series?.[pointIndexHoverd]?.cpu_usage_percent}%;"
+                    style="width:{summaryWithDate?.chart_series?.[pointIndexHoverd]
+                      ?.cpu_usage_percent}%;"
                     class="h-full rounded-s-md transition-all {summaryWithDate?.chart_series[
                       pointIndexHoverd
                     ]?.cpu_usage_percent === 100
@@ -1638,7 +1646,9 @@
                             ? 'text-[#F97316]'
                             : 'text-green-700'
                         : 'text-[#F87171]'}"
-                      >{chart?.last_history?.cpu_load_15 ?chart?.last_history?.cpu_load_15 + '%' : 'Unknown'}</span>
+                      >{chart?.last_history?.cpu_load_15
+                        ? chart?.last_history?.cpu_load_15 + '%'
+                        : 'Unknown'}</span>
                   {/if}
                 </div>
               </div>
