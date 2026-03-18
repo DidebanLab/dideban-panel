@@ -32,9 +32,9 @@
   let summaryWithDate = $state();
   function getDate(initialDate) {
     const d = new Date(initialDate);
-    const year = String(d.getUTCFullYear());
-    const month = String(d.getUTCMonth() + 1).padStart(2, '0');
-    const day = String(d.getUTCDate() + 1).padStart(2, '0');
+    const year = String(d.getFullYear());
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate() ).padStart(2, '0');
 
     return `${year}-${month}-${day}`;
   }
@@ -80,7 +80,9 @@
   });
   $effect(() => {
     if ($page.url.searchParams.get('date')) {
+      
       date = getDate($page.url.searchParams.get('date'));
+      console.log(date);
 
       http
         .get(endpoints.agentSummaryDate(id, date))
@@ -91,9 +93,8 @@
             uptime_series: res.data?.data?.uptime_series?.reverse(),
           };
         })
-        .catch(() => {
-          console.log('error');
-        });
+
+  
     }
   });
 
@@ -1637,7 +1638,7 @@
                             ? 'text-[#F97316]'
                             : 'text-green-700'
                         : 'text-[#F87171]'}"
-                      >{chart?.last_history?.cpu_load_15 ? '%' : 'Unknown'}</span>
+                      >{chart?.last_history?.cpu_load_15 ?chart?.last_history?.cpu_load_15 + '%' : 'Unknown'}</span>
                   {/if}
                 </div>
               </div>
