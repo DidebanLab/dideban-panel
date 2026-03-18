@@ -13,6 +13,10 @@
   import ConfirmEditAgent from '../../../../components/pages/agent/ConfirmEditAgent.svelte';
   import DeleteAgent from '../../../../components/pages/agent/DeleteAgent.svelte';
   import EditAgent from '../../../../components/pages/agent/EditAgent.svelte';
+  import getDate from '../../../../utils/getDate.js';
+  import getMonthName from '../../../../utils/getMonth.js';
+  import nextDate from '../../../../utils/nextDate.js';
+  import preDate from '../../../../utils/preDate.js';
 
   const REQUIRED_COUNT = $state(innerWidth < 640 ? 31 : 96);
   const id = $page.params.agent;
@@ -31,36 +35,6 @@
   let summary = $state();
   let toDay = $state();
   let summaryWithDate = $state();
-  function getDate(initialDate) {
-    const d = new Date(initialDate);
-    const year = String(d.getFullYear());
-    const month = String(d.getMonth() + 1);
-    const day = String(d.getDate());
-
-    return {
-      string: `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`,
-      date: { year, month, day },
-    };
-  }
-
-  const MONTHS = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
-  ];
-
-  function getMonthName(month) {
-    return MONTHS[month - 1];
-  }
 
   onMount(() => {
     http.get(endpoints.singleAgent(id)).then(res => {
@@ -69,8 +43,6 @@
     });
   });
 
-
-  $effect(()=>{})
   $effect(() => {
     http.get(endpoints.agentSummaryYearly(id)).then(res => {
       const current = res.data.data.find(i => Object.values(i.history).includes(-1));
@@ -102,7 +74,7 @@
           history = { ...res.data, data: res.data?.data.slice(-REQUIRED_COUNT) };
         });
 
-      if (pointIndexHoverd && id && !date) {
+      if (pointIndexHoverd && id) {
         http
           .get(
             endpoints.agentHistoryDetail(
@@ -126,78 +98,6 @@
         .then(res => (chart = res.data?.data));
     }
   });
-
-  function nextDate(dateData) {
-    let d;
-
-    if ($page.url.searchParams.get('date')) {
-      d = getDate($page.url.searchParams.get('date')).date;
-    } else {
-      d = getDate(toDay).date;
-    }
-    const year = d.year;
-    const month = d.month;
-    const day = d.day;
-
-    const maxDay = Object.keys(
-      dateData.filter(item => Number(item?.month) === Number(month))[0].history,
-    ).length;
-    let nextDay = Number(day);
-    let nextMonth = Number(month);
-    let nextYear = Number(year);
-    if (Number(day) === maxDay) {
-      nextDay = 1;
-      if (nextMonth === 12) {
-        nextMonth = 1;
-        nextYear = nextYear + 1;
-      } else {
-        nextMonth = nextMonth + 1;
-      }
-    } else {
-      nextDay = nextDay + 1;
-    }
-
-    goto(`/agents/${id}?date=${nextYear}-${nextMonth}-${nextDay}`);
-  }
-  function preDate(dateData) {
-    let d;
-
-    if ($page.url.searchParams.get('date')) {
-      d = getDate($page.url.searchParams.get('date')).date;
-    } else {
-      d = getDate(toDay).date;
-    }
-
-    let perDay = Number(d.day);
-    let perMonth = Number(d.month);
-    let perYear = Number(d.year);
-
-    if (perDay === 1) {
-      if (perMonth === 1) {
-        perMonth = 12;
-        perYear = perYear - 1;
-      } else {
-        perMonth = perMonth - 1;
-      }
-
-      const prevMonthData = dateData?.find(
-        item => Number(item?.year) === perYear && Number(item?.month) === perMonth,
-      );
-
-      if (prevMonthData && prevMonthData.history) {
-        const daysInMonth = Math.max(
-          ...Object.keys(prevMonthData.history).map(key => parseInt(key)),
-        );
-        perDay = daysInMonth;
-      } else {
-        return;
-      }
-    } else {
-      perDay = perDay - 1;
-    }
-
-    goto(`/agents/${id}?date=${perYear}-${perMonth}-${perDay}`);
-  }
 </script>
 
 <section class="w-full m-auto h-auto flex flex-col col-span-10">
@@ -223,7 +123,8 @@
             <button
               aria-label="prev date"
               onclick={() => {
-                preDate(summary);
+                summaryWithDate = null;
+                preDate(summary, $page.url.searchParams.get('date'), toDay, 'agent', id);
               }}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -248,7 +149,8 @@
             <button
               aria-label="next date"
               onclick={() => {
-                nextDate(summary);
+                summaryWithDate = null;
+                nextDate(summary, $page.url.searchParams.get('date'), toDay, 'agent', id);
               }}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"

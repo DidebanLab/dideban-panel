@@ -11,6 +11,10 @@
   import ConfirmEditChecker from '../../../../components/pages/checker/ConfirmEditChecker.svelte';
   import { alertStore } from '../../../../stores/alert.svelte';
   import { goto } from '$app/navigation';
+  import nextDate from '../../../../utils/nextDate';
+  import preDate from '../../../../utils/preDate';
+  import getMonthName from '../../../../utils/getMonth';
+  import getDate from '../../../../utils/getDate';
 
   const REQUIRED_COUNT = $state(innerWidth < 640 ? 31 : 96);
   const id = $page.params.checker;
@@ -18,6 +22,7 @@
   let hours = $state(24);
   let enabled = $state();
   let date = $state(null);
+  let toDay = $state();
   let histogram = $state();
   let history = $state();
   let missingCount = $derived(Math.max(0, REQUIRED_COUNT - (history?.data?.length ?? 0)));
@@ -26,104 +31,28 @@
   let summary = $state();
   let summaryWithDate = $state();
 
-  const MONTHS = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
-  ];
-
-  function getMonthName(month) {
-    return MONTHS[month - 1];
-  }
-
   onMount(() => {
-    if (!date) {
-      http
-        .get(endpoints.checkHistory(id), {
-          params: { short: true, detail: true, page_size: REQUIRED_COUNT },
-        })
-        .then(res => (history = { ...res.data, data: res.data?.data.slice(-REQUIRED_COUNT) }));
-
-      http.get(endpoints.singleCheck(id)).then(res => {
-        data = res.data?.data;
-        enabled = res.data?.data.enabled;
-      });
-    }
-
-    http.get(endpoints.checkSummaryYearly(id)).then(res => (summary = res.data?.data));
+    http.get(endpoints.singleCheck(id)).then(res => {
+      data = res.data?.data;
+      enabled = res.data?.data.enabled;
+    });
   });
 
-  function nextDate(data, year, month, day) {
-    const maxDay = Object.keys(
-      data.filter(item => Number(item.month) === Number(month))[0].history,
-    ).length;
-    let nextDay = Number(day);
-    let nextMonth = Number(month);
-    let nextYear = Number(year);
-    if (Number(day) === maxDay) {
-      nextDay = 1;
-      if (nextMonth === 12) {
-        nextMonth = 1;
-        nextYear = nextYear + 1;
-      } else {
-        nextMonth = nextMonth + 1;
-      }
-    } else {
-      nextDay = nextDay + 1;
-    }
-
-    goto(`/checkers/${id}?year=${nextYear}&month=${nextMonth}&day=${nextDay}`);
-  }
-
-  function preDate(data, year, month, day) {
-    let perDay = Number(day);
-    let perMonth = Number(month);
-    let perYear = Number(year);
-
-    if (perDay === 1) {
-      if (perMonth === 1) {
-        perMonth = 12;
-        perYear = perYear - 1;
-      } else {
-        perMonth = perMonth - 1;
-      }
-      const prevMonthData = data.find(
-        item => Number(item.year) === perYear && Number(item.month) === perMonth,
-      );
-
-      if (prevMonthData && prevMonthData.history) {
-        const daysInMonth = Math.max(...Object.keys(prevMonthData.history).map(Number));
-        perDay = daysInMonth;
-      } else {
-        return;
-      }
-    } else {
-      perDay = perDay - 1;
-    }
-
-    goto(`/checkers/${id}?year=${perYear}&month=${perMonth}&day=${perDay}`);
-  }
   $effect(() => {
-    const year = $page.url.searchParams.get('year');
-    let month = $page.url.searchParams.get('month');
-    let day = $page.url.searchParams.get('day');
+    http.get(endpoints.checkSummaryYearly(id)).then(res => {
+      const current = res.data.data.find(i => Object.values(i.history).includes(-1));
+      const day = Object.keys(current.history).find(key => current.history[key] === -1);
+      toDay = `${current.year}-${current.month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+      if (getDate($page.url.searchParams.get('date')).string === toDay) {
+        goto(`/checkers/${id}`);
+      }
 
-    if (month?.length < 2) month = `0${month}`;
-    if (day?.length < 2) day = `0${day}`;
+      summary = res.data?.data;
+    });
 
-    if (year && month && day) {
-      historyDetail = null;
-      date = { year, month, day };
-      http.get(endpoints.checksSummaryDate(id, `${year}-${month}-${day}`)).then(res => {
+    if ($page.url.searchParams.get('date')) {
+      date = getDate($page.url.searchParams.get('date')).string;
+      http.get(endpoints.checksSummaryDate(id, date)).then(res => {
         summaryWithDate = {
           ...res.data?.data,
           histogram: {
@@ -134,8 +63,13 @@
       });
     } else {
       date = null;
+      http
+        .get(endpoints.checkHistory(id), {
+          params: { short: true, detail: true, page_size: REQUIRED_COUNT },
+        })
+        .then(res => (history = { ...res.data, data: res.data?.data.slice(-REQUIRED_COUNT) }));
     }
-    //---
+
     http.get(endpoints.checkApdexHistory(id), { params: { hours } }).then(
       res =>
         (apdex = {
@@ -199,20 +133,15 @@
             </span>
           {/if}
         </div>
-        {#if date}
+        {#if date ? date : toDay}
           <div
             class="flex items-center justify-between px-3 gap-4 bg-white/5 text-sm absolute top-0 rounded-md start-1/2 -translate-x-1/2 min-w-40 h-9.5 shadow-sm shadow-[#3b82f6]/50">
             <!-- Prev -->
-
             <button
               aria-label="prev date"
               onclick={() => {
-                preDate(
-                  summary,
-                  $page.url.searchParams.get('year'),
-                  $page.url.searchParams.get('month'),
-                  $page.url.searchParams.get('day'),
-                );
+                summaryWithDate = null;
+                preDate(summary, $page.url.searchParams.get('date'), toDay, 'check', id);
               }}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -225,24 +154,20 @@
                   stroke-linejoin="round"
                   stroke-width="2"
                   d="M15 19l-7-7 7-7" />
-              </svg></button>
+              </svg>
+            </button>
 
             <!-- Date -->
             <div class="px-4 py-1.5 rounded-lg tracking-wide text-nowrap text-[#3b82f6]">
-              {getMonthName($page.url.searchParams.get('month'))}
-              {$page.url.searchParams.get('day')} , {$page.url.searchParams.get('year')}
+              {date || toDay}
             </div>
 
             <!-- Next -->
             <button
               aria-label="next date"
               onclick={() => {
-                nextDate(
-                  summary,
-                  $page.url.searchParams.get('year'),
-                  $page.url.searchParams.get('month'),
-                  $page.url.searchParams.get('day'),
-                );
+                summaryWithDate = null;
+                nextDate(summary, $page.url.searchParams.get('date'), toDay, 'check', id);
               }}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -255,9 +180,9 @@
                   stroke-linejoin="round"
                   stroke-width="2"
                   d="M9 5l7 7-7 7" />
-              </svg></button>
-          </div>
-        {/if}
+              </svg>
+            </button>
+          </div>{/if}
 
         {#if date}
           <button
@@ -783,7 +708,7 @@
                   <div class="relative">
                     <div
                       class="absolute -bottom-7 start-1/2 -translate-x-1/2 text-white/20 text-xs text-nowrap">
-                      { detail?.start_time.slice(0,5)}
+                      {detail?.start_time.slice(0, 5)}
                     </div>
                   </div>
                 </div>
@@ -794,8 +719,7 @@
                   <div class="relative">
                     <div
                       class="absolute -bottom-7 start-1/2 -translate-x-1/2 text-white/20 text-xs text-nowrap">
-                      { detail?.end_time.slice(0,5)
-                       }
+                      {detail?.end_time.slice(0, 5)}
                     </div>
                   </div>
                 </div>
@@ -859,16 +783,13 @@
                   <div class="flex justify-between items-center gap-1 w-full">
                     <span>From</span>
                     <span class="text-white/30">
-                      {
-                        detail.start_time
-                      }
-                       </span>
+                      {detail.start_time}
+                    </span>
                   </div>
 
                   <div class="flex justify-between items-center gap-1 w-full">
                     <span>Until</span>
-                    <span class="text-white/30">
-                      { detail?.end_time}</span>
+                    <span class="text-white/30"> {detail?.end_time}</span>
                   </div>
                 </div>
               </div>
@@ -955,32 +876,29 @@
             {@const historyMap = new Map(Object.entries(item?.history ?? {}))}
             <div class="flex flex-col gap-4">
               <div class="flex justify-between items-center w-full border-b border-b-white/15 pb-1">
-                <span class="text-sm text-white"> {getMonthName(item.month)}</span>
+                <span class="text-sm text-white"> {getMonthName(item?.month)}</span>
                 <div class="flex flex-col">
                   <div
-                    class="text-xs items-center justify-end gap-1 flex {item?.apdex_rate?.toLowerCase() ===
-                    'excellent'
-                      ? 'text-green-500'
-                      : item?.apdex_rate?.toLowerCase() === 'good'
+                    class="text-xs items-center justify-end gap-1 flex {item?.uptime >= 90
+                      ? 'text-[#008236]'
+                      : item?.uptime >= 80
                         ? 'text-[#00D492]'
-                        : item?.apdex_rate?.toLowerCase() === 'fair'
+                        : item?.uptime >= 70
                           ? 'text-[#FDC700]'
-                          : item?.apdex_rate?.toLowerCase() === 'poor'
+                          : item?.uptime >= 50
                             ? 'text-[#F97316]'
-                            : 'text-[#F87171]'}">
-                    {#if item?.apdex_score === 0}
+                            : 'text-[#EF4444]'}">
+                    {#if item?.uptime === 0}
                       <span class="text-white/20 text-xs">No Data</span>
                     {:else}
-                      <span class="opacity-50"> {item?.apdex_rate}</span>
-                      <span class="bg-white/15 w-px h-4"></span>
-                      <span> {item?.apdex_score}%</span>
+                      <span> {item?.uptime}%</span>
                     {/if}
                   </div>
                 </div>
               </div>
 
               <div class="grid grid-cols-7 grid-rows-5 gap-4 w-full">
-                <div style="grid-column: span {new Date(item.year, item.month - 1, 1).getDay()};">
+                <div style="grid-column: span {new Date(item?.year, item?.month - 1, 1).getDay()};">
                 </div>
                 {#each historyMap as [day, value], i}
                   {@const isSpecialModeWithDate =
@@ -990,10 +908,15 @@
                     Number(date?.day) === Number(day)}
                   <button
                     onclick={() => {
+                      if (value === -1) {
+                        goto(`/checkers/${id}`, {
+                          keepfocus: true,
+                          noScroll: true,
+                        });
+                        return;
+                      }
                       const newUrl = new URL($page.url);
-                      newUrl.searchParams.set('year', item?.year);
-                      newUrl.searchParams.set('month', item?.month);
-                      newUrl.searchParams.set('day', day);
+                      newUrl.searchParams.set('date', `${item?.year}-${item?.month}-${day}`);
 
                       goto(newUrl, {
                         keepfocus: true,
@@ -1005,7 +928,7 @@
                           value >= 90
                             ? 'rgba(0, 130, 54, 0.4)'
                             : value >= 80
-                              ? 'rgba(0, 212, 146, 0.4)'
+                              ? '#00863864'
                               : value >= 70
                                 ? 'rgba(253, 199, 0, 0.4)'
                                 : value >= 50
@@ -1015,39 +938,47 @@
                       : ''}
                     class="text-white aspect-square transition-all w-full flex items-center justify-center relative border border-white/15 group {isSpecialModeWithDate
                       ? 'animate-pulse'
-                      : 'cursor-pointer'} {value >= 90
-                      ? 'bg-[#008236]'
-                      : value >= 80
-                        ? 'bg-[#00D492]'
-                        : value >= 70
-                          ? 'bg-[#FDC700]'
-                          : value >= 50
-                            ? 'bg-[#F97316]'
-                            : value !== null
-                              ? 'bg-[#EF4444]'
-                              : ' shadow-inner shadow-white/5 cursor-default!'} ">
+                      : 'cursor-pointer'} {value
+                      ? value >= 90
+                        ? 'bg-[#008236]'
+                        : value >= 80
+                          ? 'bg-[#00863864]'
+                          : value >= 70
+                            ? 'bg-[#FDC700]'
+                            : value >= 50
+                              ? 'bg-[#F97316]'
+                              : value == !-1
+                                ? 'bg-[#EF4444]'
+                                : 'shadow-inner shadow-white/5 cursor-not-allowed! border-white/70!'
+                      : ' shadow-inner shadow-white/5 cursor-default!'} ">
                     <div
                       class="hidden absolute min-w-40 text-sm -top-20 border border-white/15 px-3 py-2 flex-col gap-1 bg-black/80 backdrop-blur-2xl rounded-xl z-10 {value !==
                         null && !isSpecialModeWithDate
                         ? 'group-hover:flex'
                         : ''}">
-                      <div class="flex justify-between items-center">
-                        <span class="text-[#6a7282] text-nowrap">Uptime :</span>
-                        <span
-                          class="text-nowrap {value >= 90
-                            ? 'text-[#008236]'
-                            : value >= 80
-                              ? 'text-[#00D492]'
-                              : value >= 70
-                                ? 'text-[#FDC700]'
-                                : value >= 50
-                                  ? 'text-[#F97316]'
-                                  : 'text-[#EF4444]'}">{value}%</span>
-                      </div>
+                      {#if value === -1}
+                        <span class="text-[#6a7282] text-nowrap">Today</span>
+                      {:else}
+                        <div class="flex justify-between items-center">
+                          <span class="text-[#6a7282] text-nowrap">Uptime :</span>
+                          <span
+                            class="text-nowrap {value >= 90
+                              ? 'text-[#008236]'
+                              : value >= 80
+                                ? 'text-[#00D492]'
+                                : value >= 70
+                                  ? 'text-[#FDC700]'
+                                  : value >= 50
+                                    ? 'text-[#F97316]'
+                                    : 'text-[#EF4444]'}"
+                            >{value}%
+                          </span>
+                        </div>
 
-                      <span
-                        class="text-white/30 text-nowrap border-t pt-1 border-t-white/15 text-start"
-                        >{item?.year}/{item?.month}/{day}</span>
+                        <span
+                          class="text-white/30 text-nowrap border-t pt-1 border-t-white/15 text-start"
+                          >{item?.year}/{item?.month}/{day}</span>
+                      {/if}
                     </div>
                     <span class="absolute start-1/2 top-1/2 -translate-1/2">-</span>
                   </button>
@@ -1055,7 +986,8 @@
               </div>
             </div>
           {/each}
-        </div>{/if}
+        </div>
+      {/if}
     </div>
   </div>
 </section>
