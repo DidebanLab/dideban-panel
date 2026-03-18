@@ -19,7 +19,7 @@
 <div
   class="w-full relative rounded-[14px] sm:bg-[#FFFFFF] sm:dark:bg-[#0D0D0D] sm:border border-[#0D0D0D]/5 dark:border-white/5">
   <div
-    class="px-6 sm:py-6 sm:border-b border-[#0D0D0D]/5 dark:border-[#222222] sm:bg-[#FFFFFF] sm:dark:bg-[#0D0D0D] w-full flex justify-between items-start">
+    class="px-6 sm:py-6 sm:border-b border-[#0D0D0D]/5 dark:border-[#222222] sm:bg-[#FFFFFF] sm:dark:bg-[#0D0D0D] w-full flex justify-between items-start rounded-t-[14px]">
     <div class="flex flex-col gap-1">
       <span class="text-lg sm:text-xl dark:text-white">Agents status</span>
       <span class="text-sm text-[#99a1af] capitalize">Infrastructure Nodes & Cluster Health</span>
