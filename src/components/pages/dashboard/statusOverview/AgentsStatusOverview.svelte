@@ -17,9 +17,9 @@
 </script>
 
 <div
-  class="w-full relative rounded-[14px] bg-[#FFFFFF] dark:bg-[#0D0D0D] sm:border border-[#0D0D0D]/5 dark:border-white/5 mt-6 sm:mt-0">
+  class="w-full relative rounded-[14px] sm:bg-[#FFFFFF] sm:dark:bg-[#0D0D0D] sm:border border-[#0D0D0D]/5 dark:border-white/5">
   <div
-    class="px-6 sm:py-6 sm:border-b border-[#0D0D0D]/5 dark:border-[#222222] bg-[#FFFFFF] dark:bg-[#0D0D0D] w-full flex justify-between items-start">
+    class="px-6 sm:py-6 sm:border-b border-[#0D0D0D]/5 dark:border-[#222222] sm:bg-[#FFFFFF] sm:dark:bg-[#0D0D0D] w-full flex justify-between items-start">
     <div class="flex flex-col gap-1">
       <span class="text-lg sm:text-xl dark:text-white">Agents status</span>
       <span class="text-sm text-[#99a1af] capitalize">Infrastructure Nodes & Cluster Health</span>
@@ -32,7 +32,7 @@
           content: AddAgent,
         });
       }}
-      class="w-12 sm:w-34.25 h-10 flex justify-center gap-2 px-4 items-center bg-[#22c55e]/10 rounded-lg text-xl text-[#10b981] cursor-pointer">
+      class="w-10 sm:w-34.25 h-10 flex justify-center gap-2 px-4 items-center bg-[#22c55e]/10 rounded-lg text-xl text-[#10b981] cursor-pointer">
       <span class="text-nowrap text-sm hidden sm:flex justify-center items-center">Add Agent</span>
       +
     </button>
@@ -42,12 +42,12 @@
     {#each agents as item (item.id)}
       {@const error = item.status === 'offline'}
       <div
-        class="relative h-32.75 border rounded-[14px] flex flex-col py-4 xl:py-6 gap-7 {error
+        class="relative h-29 sm:h-32.75 border rounded-[14px] flex flex-col py-4 xl:py-6 gap-7 {error
           ? 'bg-[#EF4444]/5 border-[#EF4444]/15'
           : 'border-[#0D0D0D]/5 dark:border-[#00bc7d]/10 bg-[#F9FAFB] dark:bg-[#121212]'}">
         <div class="flex justify-start items-center px-4.25 gap-4">
           <div
-            class="flex justify-center items-center size-12 rounded-2xl {error
+            class="hidden sm:flex justify-center items-center size-12 rounded-2xl {error
               ? 'bg-[#EF4444]/10'
               : 'bg-[#00d492]/10'}">
             <svg
@@ -104,8 +104,8 @@
           </div>
 
           <div class="flex flex-col justify-center items-start gap-1">
-            <a href="/agents/{item.id}" class="text-lg dark:text-white capitalize">{item.name}</a>
-            <div class="text-xs flex justify-center items-center gap-1 text-[#707B76]/40">
+            <a href="/agents/{item.id}" class="text-sm sm:text-lg dark:text-white capitalize">{item.name}</a>
+            <div class="text-xs flex justify-center items-center gap-1 text-[#707B76]/40 text-nowrap">
               <img width="17" height="17" src="/icons/clock.png" alt="clock" />
               {new Date(item.last_seen).toLocaleString('en-CA', {
                 year: 'numeric',

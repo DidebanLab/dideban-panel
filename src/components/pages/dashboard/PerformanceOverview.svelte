@@ -48,7 +48,7 @@
     http
       .get(endpoints.agentMetric(id), {
         params: {
-          max_points:isMobile ? 31 : 60
+          max_points: 60,
         },
       })
       .then(res => {
@@ -58,7 +58,7 @@
 </script>
 
 <div
-  class="w-full h-full px-6 sm:pt-6 sm:pb-1.5 rounded-[14px] dark:bg-[#0D0D0D] bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
+  class="w-full h-full px-6 sm:pt-6 sm:pb-1.5 rounded-[14px] sm:dark:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
   <div class="flex relative flex-col gap-4 items-start justify-between w-full">
     {#each agents as agent (agent?.id)}
       {#if isActive?.id === agent?.id}

@@ -22,7 +22,7 @@
   <div
     class="flex flex-col lg:flex-row 3xl:flex-col min-[1920px]:flex-col min-[1920px]:justify-between gap-6 sm:gap-4 w-full">
     <div
-      class="px-6 sm:pb-6 pt-1 sm:pt-5 w-full flex flex-col gap-4 bg-white dark:bg-transparent sm:border border-[#0D0D0D]/5 dark:border-white/5 rounded-[14px] relative overflow-hidden h-full">
+      class="px-6 sm:pb-6 pt-1 sm:pt-5 w-full flex flex-col gap-4 sm:bg-white dark:bg-transparent sm:border border-[#0D0D0D]/5 dark:border-white/5 rounded-[14px] relative overflow-hidden h-full">
       <div class="flex justify-between items-center gap-3 w-full">
         <span class="text-lg sm:text-xl dark:text-white">Agents</span>
 
@@ -122,7 +122,7 @@
       </div>
     </div>
     <div
-      class="px-6 sm:pb-6 pt-1 sm:pt-5 w-full flex flex-col gap-4 bg-white dark:bg-transparent sm:border border-[#0D0D0D]/5 dark:border-white/5 rounded-[14px] relative overflow-hidden h-full">
+      class="px-6 sm:pb-6 pt-1 sm:pt-5 w-full flex flex-col gap-4 sm:bg-white dark:bg-transparent sm:border border-[#0D0D0D]/5 dark:border-white/5 rounded-[14px] relative overflow-hidden h-full">
       <div class="flex justify-between items-center gap-3 w-full">
         <span class="text-lg sm:text-xl dark:text-white">Checkers</span>
 
