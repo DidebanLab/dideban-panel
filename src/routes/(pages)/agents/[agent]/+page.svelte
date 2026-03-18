@@ -15,8 +15,8 @@
   import EditAgent from '../../../../components/pages/agent/EditAgent.svelte';
 
   const REQUIRED_COUNT = $state(innerWidth < 640 ? 31 : 96);
-  let hours = $state(24);
   const id = $page.params.agent;
+  let hours = $state(24);
   let date = $state();
   let data = $state();
   let chart = $state();
@@ -58,6 +58,10 @@
     return MONTHS[month - 1];
   }
 
+  $effect(() => {
+    console.log(isMouseInside);
+  });
+
   onMount(() => {
     http.get(endpoints.singleAgent(id)).then(res => {
       data = res.data?.data;
@@ -81,7 +85,11 @@
       http
         .get(endpoints.agentSummaryDate(id, date))
         .then(res => {
-          summaryWithDate = res.data.data;
+          summaryWithDate = {
+            ...res.data.data,
+            collect_duration_series: res.data?.data?.collect_duration_series?.reverse(),
+            uptime_series: res.data?.data?.uptime_series?.reverse(),
+          };
         })
         .catch(() => {
           console.log('error');
@@ -173,7 +181,6 @@
 </script>
 
 <section class="w-full m-auto h-auto flex flex-col col-span-10">
-  <div class="text-white text-4xl">{summaryWithDate?.date || 100}</div>
   <!-- Content of dashboard page -->
   <div class="w-full flex flex-col gap-7.75 p-7.75 py-2">
     <div
@@ -794,7 +801,7 @@
                   </div>
                 </button>
               {/each}
-              {#each Array(24 - summaryWithDate?.uptime_series?.length) as _, i}
+              {#each Array(24 - (summaryWithDate?.uptime_series?.length || 0)) as _, i}
                 <div
                   aria-hidden="true"
                   class="w-full relative h-4 rounded-[1px] bg-black/20 dark:bg-[#FFFFFF]/10 opacity-70">
@@ -1270,11 +1277,11 @@
           </div>
           {#if Boolean(date ? summaryWithDate?.chart_series?.length > 0 : chart?.points?.length > 0)}
             {@const memoryData = date
-              ? [...summaryWithDate?.chart_series.map(item => item?.memory_usage_percent).reverse()]
+              ? [...summaryWithDate?.chart_series.map(item => item?.memory_usage_percent)]
               : [...chart?.points?.map(item => item?.[2]).reverse()]}
 
             {@const cpuData = date
-              ? [...summaryWithDate?.chart_series.map(item => item?.cpu_usage_percent).reverse()]
+              ? [...summaryWithDate?.chart_series.map(item => item?.cpu_usage_percent)]
               : [...chart?.points?.map(item => item?.[1]).reverse()]}
             <Chart
               bind:isMouseInside
@@ -1322,17 +1329,21 @@
                         : 'Unknown'}</span>
                   {:else}
                     <span
-                      class="text-xs {summaryWithDate?.overall?.last_collected.cpu_usage_percent
-                        ? summaryWithDate?.overall?.last_collected.cpu_usage_percent >
-                          LIMITATIONS.cpu.error
+                      class="text-xs {summaryWithDate?.chart_series[
+                        summaryWithDate.chart_series.length - 1
+                      ]?.cpu_usage_percent
+                        ? summaryWithDate?.chart_series[summaryWithDate.chart_series.length - 1]
+                            ?.cpu_usage_percent > LIMITATIONS.cpu.error
                           ? 'text-[#F87171]'
-                          : summaryWithDate?.overall?.last_collected.cpu_usage_percent >
-                              LIMITATIONS.cpu.warn
+                          : summaryWithDate?.chart_series[summaryWithDate.chart_series.length - 1]
+                                ?.cpu_usage_percent > LIMITATIONS.cpu.warn
                             ? 'text-[#F97316]'
                             : 'text-green-700'
                         : 'text-[#F87171]'}"
-                      >{summaryWithDate?.overall?.last_collected.cpu_usage_percent
-                        ? summaryWithDate?.overall?.last_collected.cpu_usage_percent + '%'
+                      >{summaryWithDate?.chart_series[summaryWithDate.chart_series.length - 1]
+                        ?.cpu_usage_percent
+                        ? summaryWithDate?.chart_series[summaryWithDate.chart_series.length - 1]
+                            ?.cpu_usage_percent + '%'
                         : 'Unknown'}</span>
                   {/if}
                 </div>
@@ -1355,17 +1366,21 @@
                         : 'Unknown'}</span>
                   {:else}
                     <span
-                      class="text-xs {summaryWithDate?.overall?.last_collected.cpu_load_1
-                        ? summaryWithDate?.overall?.last_collected.cpu_load_1 >
-                          LIMITATIONS.cpu.error
+                      class="text-xs {summaryWithDate?.chart_series[
+                        summaryWithDate.chart_series.length - 1
+                      ]?.cpu_load_1
+                        ? summaryWithDate?.chart_series[summaryWithDate.chart_series.length - 1]
+                            ?.cpu_load_1 > LIMITATIONS.cpu.error
                           ? 'text-[#F87171]'
-                          : summaryWithDate?.overall?.last_collected.cpu_load_1 >
-                              LIMITATIONS.cpu.warn
+                          : summaryWithDate?.chart_series[summaryWithDate.chart_series.length - 1]
+                                ?.cpu_load_1 > LIMITATIONS.cpu.warn
                             ? 'text-[#F97316]'
                             : 'text-green-700'
                         : 'text-[#F87171]'}"
-                      >{summaryWithDate?.overall?.last_collected.cpu_load_1
-                        ? summaryWithDate?.overall?.last_collected.cpu_load_1 + '%'
+                      >{summaryWithDate?.chart_series[summaryWithDate.chart_series.length - 1]
+                        ?.cpu_load_1
+                        ? summaryWithDate?.chart_series[summaryWithDate.chart_series.length - 1]
+                            ?.cpu_load_1 + '%'
                         : 'Unknown'}</span>
                   {/if}
                 </div>
@@ -1388,17 +1403,21 @@
                         : 'Unknown'}</span>
                   {:else}
                     <span
-                      class="text-xs {summaryWithDate?.overall?.last_collected.cpu_load_5
-                        ? summaryWithDate?.overall?.last_collected.cpu_load_5 >
-                          LIMITATIONS.cpu.error
+                      class="text-xs {summaryWithDate?.chart_series[
+                        summaryWithDate.chart_series.length - 1
+                      ]?.cpu_load_5
+                        ? summaryWithDate?.chart_series[summaryWithDate.chart_series.length - 1]
+                            ?.cpu_load_5 > LIMITATIONS.cpu.error
                           ? 'text-[#F87171]'
-                          : summaryWithDate?.overall?.last_collected.cpu_load_5 >
-                              LIMITATIONS.cpu.warn
+                          : summaryWithDate?.chart_series[summaryWithDate.chart_series.length - 1]
+                                ?.cpu_load_5 > LIMITATIONS.cpu.warn
                             ? 'text-[#F97316]'
                             : 'text-green-700'
                         : 'text-[#F87171]'}"
-                      >{summaryWithDate?.overall?.last_collected.cpu_load_5
-                        ? summaryWithDate?.overall?.last_collected.cpu_load_5 + '%'
+                      >{summaryWithDate?.chart_series[summaryWithDate.chart_series.length - 1]
+                        ?.cpu_load_5
+                        ? summaryWithDate?.chart_series[summaryWithDate.chart_series.length - 1]
+                            ?.cpu_load_5 + '%'
                         : 'Unknown'}</span>
                   {/if}
                 </div>
@@ -1421,17 +1440,21 @@
                         : 'Unknown'}</span>
                   {:else}
                     <span
-                      class="text-xs {summaryWithDate?.overall?.last_collected.cpu_load_15
-                        ? summaryWithDate?.overall?.last_collected.cpu_load_15 >
-                          LIMITATIONS.cpu.error
+                      class="text-xs {summaryWithDate?.chart_series[
+                        summaryWithDate.chart_series.length - 1
+                      ].cpu_load_15
+                        ? summaryWithDate?.chart_series[summaryWithDate.chart_series.length - 1]
+                            .cpu_load_15 > LIMITATIONS.cpu.error
                           ? 'text-[#F87171]'
-                          : summaryWithDate?.overall?.last_collected.cpu_load_15 >
-                              LIMITATIONS.cpu.warn
+                          : summaryWithDate?.chart_series[summaryWithDate.chart_series.length - 1]
+                                .cpu_load_15 > LIMITATIONS.cpu.warn
                             ? 'text-[#F97316]'
                             : 'text-green-700'
                         : 'text-[#F87171]'}"
-                      >{summaryWithDate?.overall?.last_collected.cpu_load_15
-                        ? summaryWithDate?.overall?.last_collected.cpu_load_15 + '%'
+                      >{summaryWithDate?.chart_series[summaryWithDate.chart_series.length - 1]
+                        .cpu_load_15
+                        ? summaryWithDate?.chart_series[summaryWithDate.chart_series.length - 1]
+                            .cpu_load_15 + '%'
                         : 'Unknown'}</span>
                   {/if}
                 </div>
@@ -1441,11 +1464,10 @@
                 class="w-full rounded-md relative h-6 flex justify-start items-center overflow-hidden bg-white/5">
                 {#if isMouseInside}
                   <div
-                    style="width:{summaryWithDate?.chart_series?.[pointIndexHoverd]
-                      .cpu_usage_percent}%;"
+                    style="width:{summaryWithDate?.chart_series?.[pointIndexHoverd]?.cpu_usage_percent}%;"
                     class="h-full rounded-s-md transition-all {summaryWithDate?.chart_series[
                       pointIndexHoverd
-                    ].cpu_usage_percent === 100
+                    ]?.cpu_usage_percent === 100
                       ? 'rounded-e-md'
                       : ''} {summaryWithDate?.chart_series?.[pointIndexHoverd]?.cpu_usage_percent >
                     LIMITATIONS.cpu.error
@@ -1458,7 +1480,7 @@
 
                   <div
                     class="absolute z-10 flex justify-center items-center rounded-full end-2 top-1/2 -translate-y-1/2 text-xs {summaryWithDate
-                      ?.chart_series?.[pointIndexHoverd]?.cpu_usage_percen
+                      ?.chart_series?.[pointIndexHoverd]?.cpu_usage_percent
                       ? 'text-white'
                       : 'text-[#F87171]'}">
                     {summaryWithDate?.chart_series?.[pointIndexHoverd]?.cpu_usage_percent
@@ -1467,26 +1489,31 @@
                   </div>
                 {:else}
                   <div
-                    style="width:{summaryWithDate?.overall?.last_collected?.cpu_usage_percent}%;"
-                    class="h-full rounded-s-md transition-all {summaryWithDate?.overall
-                      .last_collected?.cpu_usage_percent === 100
+                    style="width:{summaryWithDate?.chart_series[
+                      summaryWithDate.chart_series.length - 1
+                    ]?.cpu_usage_percent}%;"
+                    class="h-full rounded-s-md transition-all {summaryWithDate?.chart_series?.[
+                      summaryWithDate.chart_series.length - 1
+                    ]?.cpu_usage_percent === 100
                       ? 'rounded-e-md'
-                      : ''} {summaryWithDate?.overall?.last_collected?.cpu_usage_percent >
-                    LIMITATIONS.cpu.error
+                      : ''} {summaryWithDate?.chart_series[summaryWithDate.chart_series.length - 1]
+                      ?.cpu_usage_percent > LIMITATIONS.cpu.error
                       ? 'bg-[#EF4444]'
-                      : summaryWithDate?.overall?.last_collected?.cpu_usage_percent >
-                          LIMITATIONS.cpu.warn
+                      : summaryWithDate?.chart_series[summaryWithDate.chart_series.length - 1]
+                            ?.cpu_usage_percent > LIMITATIONS.cpu.warn
                         ? 'bg-[#F97316]'
                         : 'bg-green-700'}">
                   </div>
 
                   <div
                     class="absolute z-10 flex justify-center items-center rounded-full end-2 top-1/2 -translate-y-1/2 text-xs {summaryWithDate
-                      ?.overall?.last_collected?.cpu_usage_percent
+                      ?.chart_series[summaryWithDate.chart_series.length - 1]?.cpu_usage_percent
                       ? 'text-white'
                       : 'text-[#F87171]'}">
-                    {summaryWithDate?.overall?.last_collected?.cpu_usage_percent
-                      ? summaryWithDate?.overall?.last_collected?.cpu_usage_percent + '%'
+                    {summaryWithDate?.chart_series[summaryWithDate.chart_series.length - 1]
+                      ?.cpu_usage_percent
+                      ? summaryWithDate?.chart_series[summaryWithDate.chart_series.length - 1]
+                          ?.cpu_usage_percent + '%'
                       : 'Unknown'}
                   </div>
                 {/if}
@@ -1641,7 +1668,7 @@
                 {:else}
                   <div
                     style="width:{chart?.last_history?.cpu_usage_percent}%;"
-                    class="h-full rounded-s-md transition-all {chart?.last_collected
+                    class="h-full rounded-s-md transition-all {chart?.last_history
                       ?.cpu_usage_percent === 100
                       ? 'rounded-e-md'
                       : ''} {chart?.last_history?.cpu_usage_percent > LIMITATIONS.cpu.error
@@ -1696,17 +1723,22 @@
                         : 'Unknown'}</span>
                   {:else}
                     <span
-                      class="text-xs {summaryWithDate?.overall?.last_collected?.memory_usage_percent
-                        ? summaryWithDate?.overall?.last_collected?.memory_usage_percent >
-                          LIMITATIONS.memory.error
+                      class="text-xs {summaryWithDate?.chart_series?.[
+                        summaryWithDate?.chart_series.length - 1
+                      ]?.memory_usage_percent
+                        ? summaryWithDate?.chart_series?.[summaryWithDate?.chart_series.length - 1]
+                            ?.memory_usage_percent > LIMITATIONS.memory.error
                           ? 'text-[#F87171]'
-                          : summaryWithDate?.overall?.last_collected?.memory_usage_percent >
-                              LIMITATIONS.memory.warn
+                          : summaryWithDate?.chart_series?.[
+                                summaryWithDate?.chart_series.length - 1
+                              ]?.memory_usage_percent > LIMITATIONS.memory.warn
                             ? 'text-[#F97316]'
                             : 'text-green-700'
                         : 'text-[#F87171]'}"
-                      >{summaryWithDate?.overall?.last_collected?.memory_usage_percent
-                        ? summaryWithDate?.overall?.last_collected?.memory_usage_percent + '%'
+                      >{summaryWithDate?.chart_series?.[summaryWithDate?.chart_series.length - 1]
+                        ?.memory_usage_percent
+                        ? summaryWithDate?.chart_series?.[summaryWithDate?.chart_series.length - 1]
+                            ?.memory_usage_percent + '%'
                         : 'Unknown'}</span>
                   {/if}
                 </div>
@@ -1722,9 +1754,10 @@
                       </span>{:else}
                       <span class="text-xs text-[#F87171]">Unknown</span>
                     {/if}
-                  {:else if summaryWithDate?.overall?.last_collected?.memory_total_mb}
+                  {:else if summaryWithDate?.chart_series?.[summaryWithDate?.chart_series.length - 1]?.memory_total_mb}
                     <span class="text-xs text-white"
-                      >{summaryWithDate?.overall?.last_collected?.memory_total_mb}
+                      >{summaryWithDate?.chart_series?.[summaryWithDate?.chart_series.length - 1]
+                        ?.memory_total_mb}
 
                       <sub class="text-white/40">Mb</sub>
                     </span>{:else}
@@ -1741,9 +1774,10 @@
                         <sub class="text-white/40">Mb</sub>
                       </span>{:else}
                       <span class="text-xs text-[#F87171]">Unknown</span>{/if}
-                  {:else if summaryWithDate?.overall?.last_collected?.memory_used_mb}
+                  {:else if summaryWithDate?.chart_series?.[summaryWithDate?.chart_series.length - 1]?.memory_used_mb}
                     <span class="text-xs text-white"
-                      >{summaryWithDate?.overall?.last_collected?.memory_used_mb}
+                      >{summaryWithDate?.chart_series?.[summaryWithDate?.chart_series.length - 1]
+                        ?.memory_used_mb}
                       <sub class="text-white/40">Mb</sub>
                     </span>{:else}<span class="text-xs text-[#F87171]">Unknown</span>{/if}
                 </div>
@@ -1756,9 +1790,10 @@
                         >{summaryWithDate?.chart_series?.[pointIndexHoverd]?.memory_available_mb}
                         <sub class="text-white/40">Mb</sub>
                       </span>{:else}<span class="text-xs text-[#F87171]">Unknown</span>{/if}
-                  {:else if summaryWithDate?.overall?.last_collected?.memory_available_mb}
+                  {:else if summaryWithDate?.chart_series?.[summaryWithDate?.chart_series.length - 1]?.memory_available_mb}
                     <span class="text-xs text-white"
-                      >{summaryWithDate?.overall?.last_collected?.memory_available_mb}
+                      >{summaryWithDate?.chart_series?.[summaryWithDate?.chart_series.length - 1]
+                        ?.memory_available_mb}
                       <sub class="text-white/40">Mb</sub>
                     </span>{:else}<span class="text-xs text-[#F87171]">Unknown</span>{/if}
                 </div>
@@ -1795,26 +1830,33 @@
                   </div>
                 {:else}
                   <div
-                    style="width:{summaryWithDate?.overall?.last_collected?.memory_usage_percent}%;"
-                    class="h-full rounded-s-md transition-all {chart?.last_collected
-                      ?.memory_usage_percent === 100
+                    style="width:{summaryWithDate?.chart_series?.[
+                      summaryWithDate?.chart_series.length - 1
+                    ]?.memory_usage_percent}%;"
+                    class="h-full rounded-s-md transition-all {summaryWithDate?.chart_series?.[
+                      summaryWithDate?.chart_series.length - 1
+                    ]?.memory_usage_percent === 100
                       ? 'rounded-e-md'
-                      : ''} {summaryWithDate?.overall?.last_collected?.memory_usage_percent >
-                    LIMITATIONS.memory.error
+                      : ''} {summaryWithDate?.chart_series?.[
+                      summaryWithDate?.chart_series.length - 1
+                    ]?.memory_usage_percent > LIMITATIONS.memory.error
                       ? 'bg-[#EF4444]'
-                      : summaryWithDate?.overall?.last_collected?.memory_usage_percent >
-                          LIMITATIONS.memory.warn
+                      : summaryWithDate?.chart_series?.[summaryWithDate?.chart_series.length - 1]
+                            ?.memory_usage_percent > LIMITATIONS.memory.warn
                         ? 'bg-[#F97316]'
                         : 'bg-green-700'}">
                   </div>
 
                   <div
                     class="absolute z-10 flex justify-center items-center rounded-full end-2 top-1/2 -translate-y-1/2 text-xs {summaryWithDate
-                      ?.overall?.last_collected?.memory_usage_percent
+                      ?.chart_series?.[summaryWithDate?.chart_series.length - 1]
+                      ?.memory_usage_percent
                       ? 'text-white'
                       : 'text-[#F87171]'}">
-                    {summaryWithDate?.overall?.last_collected?.memory_usage_percent
-                      ? summaryWithDate?.overall?.last_collected?.memory_usage_percent + '%'
+                    {summaryWithDate?.chart_series?.[summaryWithDate?.chart_series.length - 1]
+                      ?.memory_usage_percent
+                      ? summaryWithDate?.chart_series?.[summaryWithDate?.chart_series.length - 1]
+                          ?.memory_usage_percent + '%'
                       : 'Unknown'}
                   </div>
                 {/if}
@@ -1937,7 +1979,7 @@
                 {:else}
                   <div
                     style="width:{chart?.last_history?.memory_usage_percent}%;"
-                    class="h-full rounded-s-md transition-all {chart?.last_collected
+                    class="h-full rounded-s-md transition-all {chart?.last_history
                       ?.memory_usage_percent === 100
                       ? 'rounded-e-md'
                       : ''} {chart?.last_history?.memory_usage_percent > LIMITATIONS.memory.error
@@ -1991,17 +2033,21 @@
                         : 'Unknown'}</span>
                   {:else}
                     <span
-                      class="text-xs {summaryWithDate?.overall?.last_collected?.disk_usage_percent
-                        ? summaryWithDate?.overall?.last_collected?.disk_usage_percent >
-                          LIMITATIONS.disk.error
+                      class="text-xs {summaryWithDate?.chart_series?.[
+                        summaryWithDate.chart_series.length - 1
+                      ]?.disk_usage_percent
+                        ? summaryWithDate?.chart_series?.[summaryWithDate.chart_series.length - 1]
+                            ?.disk_usage_percent > LIMITATIONS.disk.error
                           ? 'text-[#F87171]'
-                          : summaryWithDate?.overall?.last_collected?.disk_usage_percent >
-                              LIMITATIONS.disk.warn
+                          : summaryWithDate?.chart_series?.[summaryWithDate.chart_series.length - 1]
+                                ?.disk_usage_percent > LIMITATIONS.disk.warn
                             ? 'text-[#F97316]'
                             : 'text-green-700'
                         : 'text-[#F87171]'}"
-                      >{summaryWithDate?.overall?.last_collected?.disk_usage_percent
-                        ? summaryWithDate?.overall?.last_collected?.disk_usage_percent + '%'
+                      >{summaryWithDate?.chart_series?.[summaryWithDate.chart_series.length - 1]
+                        ?.disk_usage_percent
+                        ? summaryWithDate?.chart_series?.[summaryWithDate.chart_series.length - 1]
+                            ?.disk_usage_percent + '%'
                         : 'Unknown'}</span>
                   {/if}
                 </div>
@@ -2014,9 +2060,10 @@
                         >{summaryWithDate?.chart_series?.[pointIndexHoverd]?.disk_total_gb}
                         <sub class="text-white/40">Gb</sub></span
                       >{:else}<span class="text-xs text-[#F87171]">Unknown</span>{/if}
-                  {:else if summaryWithDate?.overall?.last_collected?.disk_total_gb}
+                  {:else if summaryWithDate?.chart_series?.[summaryWithDate.chart_series.length - 1]?.disk_total_gb}
                     <span class="text-xs text-white"
-                      >{summaryWithDate?.overall?.last_collected?.disk_total_gb}
+                      >{summaryWithDate?.chart_series?.[summaryWithDate.chart_series.length - 1]
+                        ?.disk_total_gb}
                       <sub class="text-white/40">Gb</sub></span
                     >{:else}<span class="text-xs text-[#F87171]">Unknown</span>{/if}
                 </div>
@@ -2029,9 +2076,10 @@
                         >{summaryWithDate?.chart_series?.[pointIndexHoverd]?.disk_used_gb}
                         <sub class="text-white/40"> Gb</sub></span
                       >{:else}<span class="text-xs text-[#F87171]">Unknown</span>{/if}
-                  {:else if summaryWithDate?.overall?.last_collected?.disk_used_gb}
+                  {:else if summaryWithDate?.chart_series?.[summaryWithDate.chart_series.length - 1]?.disk_used_gb}
                     <span class="text-xs text-white"
-                      >{summaryWithDate?.overall?.last_collected?.disk_used_gb}
+                      >{summaryWithDate?.chart_series?.[summaryWithDate.chart_series.length - 1]
+                        ?.disk_used_gb}
                       <sub class="text-white/40"> Gb</sub></span
                     >{:else}<span class="text-xs text-[#F87171]">Unknown</span>{/if}
                 </div>
@@ -2044,10 +2092,12 @@
                           summaryWithDate?.chart_series?.[pointIndexHoverd]?.disk_used_gb}
                         <sub class="text-white/40"> Gb</sub></span
                       >{:else}<span class="text-xs text-[#F87171]">Unknown</span>{/if}
-                  {:else if summaryWithDate?.overall?.last_collected?.disk_total_gb && summaryWithDate?.overall?.last_collected?.disk_used_gb}
+                  {:else if summaryWithDate?.chart_series?.[summaryWithDate.chart_series.length - 1]?.disk_total_gb && summaryWithDate?.chart_series?.[summaryWithDate.chart_series.length - 1]?.disk_used_gb}
                     <span class="text-xs text-white"
-                      >{summaryWithDate?.overall?.last_collected?.disk_total_gb -
-                        summaryWithDate?.overall?.last_collected?.disk_used_gb}
+                      >{summaryWithDate?.chart_series?.[summaryWithDate.chart_series.length - 1]
+                        ?.disk_total_gb -
+                        summaryWithDate?.chart_series?.[summaryWithDate.chart_series.length - 1]
+                          ?.disk_used_gb}
                       <sub class="text-white/40"> Gb</sub></span
                     >{:else}<span class="text-xs text-[#F87171]">Unknown</span>{/if}
                 </div>
@@ -2085,26 +2135,32 @@
                 <div
                   class="w-full rounded-md relative h-6 flex justify-start items-center overflow-hidden bg-white/5">
                   <div
-                    style="width:{summaryWithDate?.overall?.last_collected?.disk_usage_percent}%;"
-                    class="h-full rounded-s-md transition-all {summaryWithDate?.overall
-                      .last_collected?.disk_usage_percent === 100
+                    style="width:{summaryWithDate?.chart_series?.[
+                      summaryWithDate.chart_series.length - 1
+                    ]?.disk_usage_percent}%;"
+                    class="h-full rounded-s-md transition-all {summaryWithDate?.chart_series?.[
+                      summaryWithDate.chart_series.length - 1
+                    ]?.disk_usage_percent === 100
                       ? 'rounded-e-md'
-                      : ''} {summaryWithDate?.overall?.last_collected?.disk_usage_percent >
-                    LIMITATIONS.disk.error
+                      : ''} {summaryWithDate?.chart_series?.[
+                      summaryWithDate.chart_series.length - 1
+                    ]?.disk_usage_percent > LIMITATIONS.disk.error
                       ? 'bg-[#EF4444]'
-                      : summaryWithDate?.overall?.last_collected?.disk_usage_percent >
-                          LIMITATIONS.disk.warn
+                      : summaryWithDate?.chart_series?.[summaryWithDate.chart_series.length - 1]
+                            ?.disk_usage_percent > LIMITATIONS.disk.warn
                         ? 'bg-[#F97316]'
                         : 'bg-green-700'}">
                   </div>
 
                   <div
                     class="absolute z-10 flex justify-center items-center rounded-full end-2 top-1/2 -translate-y-1/2 text-xs {summaryWithDate
-                      ?.overall?.last_collected?.disk_usage_percent
+                      ?.chart_series?.[summaryWithDate.chart_series.length - 1]?.disk_usage_percent
                       ? 'text-white'
                       : 'text-[#F87171]'}">
-                    {summaryWithDate?.overall?.last_collected?.disk_usage_percent
-                      ? summaryWithDate?.overall?.last_collected?.disk_usage_percent + '%'
+                    {summaryWithDate?.chart_series?.[summaryWithDate.chart_series.length - 1]
+                      ?.disk_usage_percent
+                      ? summaryWithDate?.chart_series?.[summaryWithDate.chart_series.length - 1]
+                          ?.disk_usage_percent + '%'
                       : 'Unknown'}
                   </div>
                 </div>{/if}
