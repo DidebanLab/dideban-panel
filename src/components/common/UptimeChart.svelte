@@ -90,12 +90,15 @@
         labels: {
           show: true,
           datetimeUTC: false,
+          style: {
+            colors:  'rgba(250,250,250,0.2)',
+            fontSize: '12px',
+          },
         },
         axisBorder: {
           show: true,
-          color: 'rgba(250,250,250,0.1)', // رنگ قرمز برای خط پایین
-          height: 0.5, // ضخامت خط
-          offsetY: 2,
+          color: 'rgba(250,250,250,0.2)',
+          height: 0.5,
         },
         axisTicks: {
           show: true,
@@ -172,6 +175,4 @@
   :global(.apexcharts-tooltip-title) {
     display: none;
   }
-
- 
 </style>

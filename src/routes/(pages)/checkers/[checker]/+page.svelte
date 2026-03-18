@@ -16,7 +16,7 @@
   import getMonthName from '../../../../utils/getMonth';
   import getDate from '../../../../utils/getDate';
 
-  const REQUIRED_COUNT = $state(innerWidth < 640 ? 31 : 96);
+  const REQUIRED_COUNT = $state(innerWidth < 1280 ? 31 : 96);
   const id = $page.params.checker;
   let data = $state();
   let hours = $state(24);
@@ -93,49 +93,153 @@
   <div class="w-full flex flex-col gap-7.75 p-7.75 py-2">
     <div
       class="w-full flex flex-col justify-start items-start gap-6 border border-[#0D0D0D]/5 dark:border-white/5 p-6 rounded-xl">
-      <div class="w-full flex justify-between items-start relative">
-        <div class="flex flex-col justify-center items-start">
-          {#if data?.name}
-            <span class="text-black dark:text-white text-xl capitalize">{data?.name}</span
-            >{:else}<div class="flex justify-center items-center gap-2">
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 20 20"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg">
-                <path
-                  d="M10.0003 18.3332C14.6027 18.3332 18.3337 14.6022 18.3337 9.99984C18.3337 5.39746 14.6027 1.6665 10.0003 1.6665C5.39795 1.6665 1.66699 5.39746 1.66699 9.99984C1.66699 14.6022 5.39795 18.3332 10.0003 18.3332Z"
-                  stroke="#B4242B"
-                  stroke-width="1.66667"
-                  stroke-linecap="round"
-                  stroke-linejoin="round" />
-                <path
-                  d="M10 6.6665V9.99984"
-                  stroke="#B4242B"
-                  stroke-width="1.66667"
-                  stroke-linecap="round"
-                  stroke-linejoin="round" />
-                <path
-                  d="M10 13.3335H10.0083"
-                  stroke="#B4242B"
-                  stroke-width="1.66667"
-                  stroke-linecap="round"
-                  stroke-linejoin="round" />
-              </svg>
-              <span class="text-xl text-red-500/70 mt-0.5">Check with Id {id} Not Found</span>
-            </div>{/if}
+      <div
+        class="w-full flex flex-col gap-4 lg:gap-6 lg:flex-row justify-between items-center lg:items-start relative">
+        <div class="w-full flex justify-between items-start">
+          <div class="flex flex-col justify-center items-start">
+            {#if data?.name}
+              <span class="text-black dark:text-white text-lg sm:text-xl capitalize"
+                >{data?.name}</span
+              >{:else}<div class="flex justify-center items-center gap-2">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M10.0003 18.3332C14.6027 18.3332 18.3337 14.6022 18.3337 9.99984C18.3337 5.39746 14.6027 1.6665 10.0003 1.6665C5.39795 1.6665 1.66699 5.39746 1.66699 9.99984C1.66699 14.6022 5.39795 18.3332 10.0003 18.3332Z"
+                    stroke="#B4242B"
+                    stroke-width="1.66667"
+                    stroke-linecap="round"
+                    stroke-linejoin="round" />
+                  <path
+                    d="M10 6.6665V9.99984"
+                    stroke="#B4242B"
+                    stroke-width="1.66667"
+                    stroke-linecap="round"
+                    stroke-linejoin="round" />
+                  <path
+                    d="M10 13.3335H10.0083"
+                    stroke="#B4242B"
+                    stroke-width="1.66667"
+                    stroke-linecap="round"
+                    stroke-linejoin="round" />
+                </svg>
+                <span class="text-xl text-red-500/70 mt-0.5">Check with Id {id} Not Found</span>
+              </div>{/if}
 
-          {#if data?.target}
-            <span
-              class="flex justify-center items-center text-nowrap tracking-wider text-white/40 text-sm"
-              >{data?.target}
-            </span>
+            {#if data?.target}
+              <span
+                class="flex justify-center items-center text-nowrap tracking-wider text-white/40 text-sm"
+                >{data?.target}
+              </span>
+            {/if}
+          </div>
+
+          {#if date}
+            <button
+              onclick={() => {
+                goto(`/checkers/${id}`);
+              }}
+              class="flex items-center gap-2 ps-4 bg-emerald-500/10 animate-pulse hover:animate-none pe-2.5 h-8 text-xs rounded-full outline outline-offset-1 outline-emerald-500/60 text-emerald-400 cursor-pointer">
+              Back to Today
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-3.25 h-3.25 rotate-180"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+          {:else if data}
+            <div class="flex justify-center items-center gap-3">
+              <div class="flex justify-center items-center gap-1.75">
+                <button
+                  class="cursor-pointer"
+                  aria-label="delete checker"
+                  type="button"
+                  onclick={() => {
+                    opener({
+                      id: 'delete-checker',
+                      content: DeleteChecker,
+                      props: { name: data?.name, id: data?.id },
+                    });
+                  }}>
+                  <img src="/icons/trash.png" alt="trash" width="20" height="20" /></button>
+                <button
+                  class="cursor-pointer"
+                  aria-label="edit config"
+                  type="button"
+                  onclick={() => {
+                    opener({
+                      id: 'edit-check',
+                      content: EditChecker,
+                      props: { data },
+                    });
+                  }}>
+                  <img src="/icons/edit.png" alt="edit" width="24" height="24" />
+                </button>
+              </div>
+
+              <div class="h-9 w-px bg-white/20"></div>
+              {#key enabled}
+                <div
+                  class="py-2 w-30 flex justify-center items-center gap-2 bg-[#0D0D0D]/5 dark:bg-white/5 border border-[#e5e7eb] dark:border-white/5 rounded-[14px]">
+                  <span class="text-xs text-[#99a1af]">
+                    {enabled ? 'Enabled' : 'Disabled'}
+                  </span>
+
+                  <button
+                    onclick={() => {
+                      if (enabled) {
+                        opener({
+                          id: 'confirm-edit',
+                          content: ConfirmEditChecker,
+                          props: {
+                            name: data?.name,
+                          },
+                        });
+                      } else {
+                        http
+                          .patch(endpoints.singleCheck(data?.id), {
+                            enabled: true,
+                          })
+                          .then(res => {
+                            alertStore.addAlert({
+                              message: `Checker ${data?.name} activation updated successfully.`,
+                              type: 'successful',
+                            });
+
+                            location.href = `/checkers/${data?.id}`;
+                          });
+                      }
+                    }}
+                    aria-label="activation toggle"
+                    class="w-11 h-6 rounded-full relative cursor-pointer {enabled
+                      ? 'bg-[#00bc7d]/20 border border-[#00bc7d]/30'
+                      : 'bg-[#6a7282]/10 border border-[#6a7282]/20 '}">
+                    <div
+                      style={enabled ? 'box-shadow: 0 0 5px 0.5px #00bc7d' : ''}
+                      class="absolute top-1/2 -translate-y-1/2 left-px size-5 rounded-full transition-transform duration-300 ease-in-out {enabled
+                        ? 'translate-x-5 bg-[#00bc7d]'
+                        : 'translate-x-0 bg-[#4d4d4d]'}">
+                    </div>
+                  </button>
+                </div>
+              {/key}
+            </div>
           {/if}
         </div>
+
         {#if date ? date : toDay}
           <div
-            class="flex items-center justify-between px-3 gap-4 bg-white/5 text-sm absolute top-0 rounded-md start-1/2 -translate-x-1/2 min-w-40 h-9.5 shadow-sm shadow-[#3b82f6]/50">
+            class="flex items-center justify-between px-3 gap-4 bg-white/5 text-sm lg:absolute lg:top-0 rounded-md lg:start-1/2 lg:-translate-x-1/2 w-full lg:w-fit lg:min-w-40 h-9.5 shadow-sm shadow-[#3b82f6]/50">
             <!-- Prev -->
             <button
               aria-label="prev date"
@@ -182,104 +286,6 @@
                   d="M9 5l7 7-7 7" />
               </svg>
             </button>
-          </div>{/if}
-
-        {#if date}
-          <button
-            onclick={() => {
-              goto(`/checkers/${id}`);
-            }}
-            class="flex items-center gap-2 ps-4 bg-emerald-500/10 animate-pulse hover:animate-none pe-2.5 h-8 text-xs rounded-full outline outline-offset-1 outline-emerald-500/60 text-emerald-400 cursor-pointer">
-            Back to Today
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="w-3.25 h-3.25 rotate-180"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
-        {:else if data}
-          <div class="flex justify-center items-center gap-3">
-            <div class="flex justify-center items-center gap-1.75">
-              <button
-                class="cursor-pointer"
-                aria-label="delete checker"
-                type="button"
-                onclick={() => {
-                  opener({
-                    id: 'delete-checker',
-                    content: DeleteChecker,
-                    props: { name: data?.name, id: data?.id },
-                  });
-                }}>
-                <img src="/icons/trash.png" alt="trash" width="20" height="20" /></button>
-              <button
-                class="cursor-pointer"
-                aria-label="edit config"
-                type="button"
-                onclick={() => {
-                  opener({
-                    id: 'edit-check',
-                    content: EditChecker,
-                    props: { data },
-                  });
-                }}>
-                <img src="/icons/edit.png" alt="edit" width="24" height="24" />
-              </button>
-            </div>
-
-            <div class="h-9 w-px bg-white/20"></div>
-            {#key enabled}
-              <div
-                class="py-2 w-30 flex justify-center items-center gap-2 bg-[#0D0D0D]/5 dark:bg-white/5 border border-[#e5e7eb] dark:border-white/5 rounded-[14px]">
-                <span class="text-xs text-[#99a1af]">
-                  {enabled ? 'Enabled' : 'Disabled'}
-                </span>
-
-                <button
-                  onclick={() => {
-                    if (enabled) {
-                      opener({
-                        id: 'confirm-edit',
-                        content: ConfirmEditChecker,
-                        props: {
-                          name: data?.name,
-                        },
-                      });
-                    } else {
-                      http
-                        .patch(endpoints.singleCheck(data?.id), {
-                          enabled: true,
-                        })
-                        .then(res => {
-                          alertStore.addAlert({
-                            message: `Checker ${data?.name} activation updated successfully.`,
-                            type: 'successful',
-                          });
-
-                          location.href = `/checkers/${data?.id}`;
-                        });
-                    }
-                  }}
-                  aria-label="activation toggle"
-                  class="w-11 h-6 rounded-full relative cursor-pointer {enabled
-                    ? 'bg-[#00bc7d]/20 border border-[#00bc7d]/30'
-                    : 'bg-[#6a7282]/10 border border-[#6a7282]/20 '}">
-                  <div
-                    style={enabled ? 'box-shadow: 0 0 5px 0.5px #00bc7d' : ''}
-                    class="absolute top-1/2 -translate-y-1/2 left-px size-5 rounded-full transition-transform duration-300 ease-in-out {enabled
-                      ? 'translate-x-5 bg-[#00bc7d]'
-                      : 'translate-x-0 bg-[#4d4d4d]'}">
-                  </div>
-                </button>
-              </div>
-            {/key}
           </div>
         {/if}
       </div>
@@ -386,7 +392,7 @@
                       historyDetailDetail = null;
                     }
                   }}
-                  class="w-4 h-4 rounded-[1px] hover:h-6 transition-all cursor-pointer relative group {status ===
+                  class="w-full h-4 rounded-[1px] hover:h-6 transition-all cursor-pointer relative group {status ===
                     'error' || status === 'down'
                     ? 'bg-[#EF4444]'
                     : status === 'timeout'
@@ -466,7 +472,7 @@
               {#each Array(missingCount) as _, i}
                 <div
                   aria-hidden="true"
-                  class="w-4 h-4 rounded-[1px] bg-black/20 dark:bg-[#FFFFFF]/10 opacity-70">
+                  class="w-full h-4 rounded-[1px] bg-black/20 dark:bg-[#FFFFFF]/10 opacity-70">
                 </div>
               {/each}
             {:else}
@@ -486,10 +492,12 @@
                               ? 'hover:bg-[#F97316]/70 bg-[#F97316]'
                               : 'hover:bg-[#EF4444]/70 bg-[#EF4444]'
                       : 'bg-white/5'}">
-                    <div
-                      class="absolute top-1/2 start-1/2 -translate-1/2 text-xs text-white transition-all">
-                      {uptime && uptime + '%'}
-                    </div>
+                    {#if uptime}
+                      <div
+                        class="absolute top-1/2 start-1/2 -translate-1/2 text-xs text-white transition-all">
+                        {uptime + '%'}
+                      </div>
+                    {/if}
 
                     <div class="h-2 w-px bg-white/10 absolute -end-px -bottom-3"></div>
 
@@ -703,7 +711,7 @@
                   {detail?.apdex_score}%
                 </div>
               {/if}
-              {#if i !== 0 && i % (date ? 1 : length < 30 ? 1 : 3) === 0}
+              {#if i !== 0 && i % (date ? 1 : innerWidth >= 1920 ? (length < 30 ? 1 : 3) : innerWidth >= 1536 ? (length < 30 ? 2 : 4) : innerWidth >= 1024 ? (length < 30 ? 3 : 8) : innerWidth >= 640 ? (length < 30 ? 5 : 12) : 10) === 0}
                 <div class="absolute -bottom-3 start-0 h-2 w-px bg-white/10">
                   <div class="relative">
                     <div
@@ -883,7 +891,7 @@
       </div>
       {#if summary}
         <div
-          class="w-full grid grid-cols-6 gap-8 border border-[#0D0D0D]/5 dark:border-white/5 p-6 rounded-xl">
+          class="w-full grid grid-cols-4 xl:grid-cols-6 gap-8 border border-[#0D0D0D]/5 dark:border-white/5 p-6 rounded-xl">
           {#each summary as item, i}
             {@const historyMap = new Map(Object.entries(item?.history ?? {}))}
             <div class="flex flex-col gap-4">
@@ -909,7 +917,8 @@
                 </div>
               </div>
 
-              <div class="grid grid-cols-7 grid-rows-5 gap-4 w-full">
+              <div
+                class="grid grid-cols-7 grid-rows-5 lg:gap-3 xl:gap-2.25 2xl:gap-2 3xl:gap-4 w-full">
                 <div style="grid-column: span {new Date(item?.year, item?.month - 1, 1).getDay()};">
                 </div>
                 {#each historyMap as [day, value], i}
