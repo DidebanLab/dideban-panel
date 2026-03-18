@@ -76,15 +76,6 @@
 
       summary = res.data?.data;
     });
-    if (!date) {
-      http
-        .get(endpoints.agentHistory(id), {
-          params: { short: true, detail: true, page_size: REQUIRED_COUNT },
-        })
-        .then(res => {
-          history = { ...res.data, data: res.data?.data.slice(-REQUIRED_COUNT) };
-        });
-    }
   });
   $effect(() => {
     if ($page.url.searchParams.get('date')) {
@@ -96,36 +87,41 @@
           uptime_series: res.data?.data?.uptime_series?.reverse(),
         };
       });
-    }
-  });
-
-  $effect(() => {
-    if (pointIndexHoverd && id && !date) {
+    } else {
+      date=null
       http
-        .get(
-          endpoints.agentHistoryDetail(
-            id,
-            [...chart?.points?.map(item => item?.[0]).reverse()][pointIndexHoverd],
-          ),
-        )
-        .then(res => (metricPointDetail = res.data?.data));
+        .get(endpoints.agentHistory(id), {
+          params: { short: true, detail: true, page_size: REQUIRED_COUNT },
+        })
+        .then(res => {
+          history = { ...res.data, data: res.data?.data.slice(-REQUIRED_COUNT) };
+        });
+
+      if (pointIndexHoverd && id && !date) {
+        http
+          .get(
+            endpoints.agentHistoryDetail(
+              id,
+              [...chart?.points?.map(item => item?.[0]).reverse()][pointIndexHoverd],
+            ),
+          )
+          .then(res => (metricPointDetail = res.data?.data));
+      }
+      http
+        .get(endpoints.agentCollectDuration(id), { params: { hours } })
+        .then(res => (collectDuration = res.data?.data));
+
+      http
+        .get(endpoints.agentChart(id), {
+          params: {
+            hours,
+            max_points: 60,
+          },
+        })
+        .then(res => (chart = res.data?.data));
     }
   });
 
-  $effect(() => {
-    http
-      .get(endpoints.agentCollectDuration(id), { params: { hours } })
-      .then(res => (collectDuration = res.data?.data));
-
-    http
-      .get(endpoints.agentChart(id), {
-        params: {
-          hours,
-          max_points: 60,
-        },
-      })
-      .then(res => (chart = res.data?.data));
-  });
   function nextDate(dateData) {
     const d = getDate($page.url.searchParams.get('date')).date;
     const year = d.year;
@@ -650,166 +646,166 @@
                 <button
                   type="button"
                   aria-label="detail of status"
-                  class="w-full h-6 rounded-[1px] hover:h-7 transition-all cursor-pointer relative group {uptime.collect_count
-                    ? 'bg-green-700'
+                  class="w-full h-6 rounded-[1px] transition-all cursor-pointer relative group {uptime.collect_count
+                    ? 'bg-green-700 hover:h-7'
                     : 'bg-[#FFFFFF]/10'}">
-                
-                {#if uptime.avg_collect_duration_ms}<div
-                    class="absolute w-fit group-hover:flex hidden bottom-10 start-1/2 -translate-x-1/2 rounded-xl text-white bg-white/40 dark:bg-black/80 backdrop-blur-md dark:backdrop-blur-3xl border-[#0D0D0D]/5 border dark:border-white/10 px-3 py-2 flex-col justify-start items-start gap-1.5">
-                    {#if uptime.avg_collect_duration_ms}
-                      <div
-                        class="w-full flex justify-between items-center gap-2.5 border-b border-b-[#0D0D0D]/10 dark:border-b-white/15 pb-1.5">
-                        <span
-                          class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
-                          >Latency :</span>
-                        <span
-                          class="flex justify-center items-center text-sm text-nowrap {uptime.avg_collect_duration_ms >
-                          LIMITATIONS.collect_duration_ms.error
-                            ? 'text-[#F87171]'
-                            : uptime.avg_collect_duration_ms > LIMITATIONS.collect_duration_ms.warn
-                              ? 'text-[#F97316]'
-                              : 'text-green-700'}"
-                          >{uptime.avg_collect_duration_ms}<sub>ms</sub></span>
-                      </div>
-                    {/if}
-
-                    {#if uptime?.avg_cpu_usage}
-                      <div class="flex flex-col items-center w-full gap-1">
-                        <div class="w-full flex justify-start items-center gap-2.5">
+                  {#if uptime.avg_collect_duration_ms}<div
+                      class="absolute w-fit group-hover:flex hidden bottom-10 start-1/2 -translate-x-1/2 rounded-xl text-white bg-white/40 dark:bg-black/80 backdrop-blur-md dark:backdrop-blur-3xl border-[#0D0D0D]/5 border dark:border-white/10 px-3 py-2 flex-col justify-start items-start gap-1.5">
+                      {#if uptime.avg_collect_duration_ms}
+                        <div
+                          class="w-full flex justify-between items-center gap-2.5 border-b border-b-[#0D0D0D]/10 dark:border-b-white/15 pb-1.5">
                           <span
-                            style="box-shadow: 0 0 10px 1px #ad46ff;"
-                            class="size-1.5 rounded-full bg-[#ad46ff]"></span>
-                          <div class="flex-1 flex justify-between items-center gap-2.5">
+                            class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
+                            >Latency :</span>
+                          <span
+                            class="flex justify-center items-center text-sm text-nowrap {uptime.avg_collect_duration_ms >
+                            LIMITATIONS.collect_duration_ms.error
+                              ? 'text-[#F87171]'
+                              : uptime.avg_collect_duration_ms >
+                                  LIMITATIONS.collect_duration_ms.warn
+                                ? 'text-[#F97316]'
+                                : 'text-green-700'}"
+                            >{uptime.avg_collect_duration_ms}<sub>ms</sub></span>
+                        </div>
+                      {/if}
+
+                      {#if uptime?.avg_cpu_usage}
+                        <div class="flex flex-col items-center w-full gap-1">
+                          <div class="w-full flex justify-start items-center gap-2.5">
                             <span
-                              class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
-                              >Cpu :</span>
-                            <span
-                              class="flex justify-center items-center text-sm text-nowrap {uptime?.avg_cpu_usage >
+                              style="box-shadow: 0 0 10px 1px #ad46ff;"
+                              class="size-1.5 rounded-full bg-[#ad46ff]"></span>
+                            <div class="flex-1 flex justify-between items-center gap-2.5">
+                              <span
+                                class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
+                                >Cpu :</span>
+                              <span
+                                class="flex justify-center items-center text-sm text-nowrap {uptime?.avg_cpu_usage >
+                                LIMITATIONS.cpu.error
+                                  ? 'text-[#F87171]'
+                                  : uptime?.avg_cpu_usage > LIMITATIONS.cpu.warn
+                                    ? 'text-[#F97316]'
+                                    : 'text-green-700'}">{uptime?.avg_cpu_usage}%</span>
+                            </div>
+                          </div>
+                          <div class="w-full h-0.5 rounded-full bg-black/10 dark:bg-white/10">
+                            <div
+                              class="h-full rounded-full {uptime?.avg_cpu_usage >
                               LIMITATIONS.cpu.error
-                                ? 'text-[#F87171]'
+                                ? 'bg-[#F87171]'
                                 : uptime?.avg_cpu_usage > LIMITATIONS.cpu.warn
-                                  ? 'text-[#F97316]'
-                                  : 'text-green-700'}">{uptime?.avg_cpu_usage}%</span>
+                                  ? 'bg-[#F97316]'
+                                  : 'bg-green-700'}"
+                              style="width: {Math.min(
+                                uptime?.avg_cpu_usage,
+                                100,
+                              )}%;box-shadow: 0 0 10px 1px {uptime?.avg_cpu_usage >
+                              LIMITATIONS.cpu.error
+                                ? '#F87171'
+                                : uptime?.avg_cpu_usage > LIMITATIONS.cpu.warn
+                                  ? '#F97316'
+                                  : '#008236'};">
+                            </div>
                           </div>
                         </div>
-                        <div class="w-full h-0.5 rounded-full bg-black/10 dark:bg-white/10">
-                          <div
-                            class="h-full rounded-full {uptime?.avg_cpu_usage >
-                            LIMITATIONS.cpu.error
-                              ? 'bg-[#F87171]'
-                              : uptime?.avg_cpu_usage > LIMITATIONS.cpu.warn
-                                ? 'bg-[#F97316]'
-                                : 'bg-green-700'}"
-                            style="width: {Math.min(
-                              uptime?.avg_cpu_usage,
-                              100,
-                            )}%;box-shadow: 0 0 10px 1px {uptime?.avg_cpu_usage >
-                            LIMITATIONS.cpu.error
-                              ? '#F87171'
-                              : uptime?.avg_cpu_usage > LIMITATIONS.cpu.warn
-                                ? '#F97316'
-                                : '#008236'};">
-                          </div>
-                        </div>
-                      </div>
-                    {/if}
+                      {/if}
 
-                    {#if uptime.avg_memory_usage}
-                      <div class="flex flex-col items-center w-full gap-1">
-                        <div class="w-full flex justify-start items-center gap-2.5">
-                          <span
-                            style="box-shadow: 0 0 10px 1px #2b7fff;"
-                            class="size-1.5 rounded-full bg-[#2b7fff]"></span>
-                          <div class="flex-1 flex justify-between items-center gap-2.5">
+                      {#if uptime.avg_memory_usage}
+                        <div class="flex flex-col items-center w-full gap-1">
+                          <div class="w-full flex justify-start items-center gap-2.5">
                             <span
-                              class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
-                              >Memory :</span>
-                            <span
-                              class="flex justify-center items-center text-sm text-nowrap {uptime.avg_memory_usage >
+                              style="box-shadow: 0 0 10px 1px #2b7fff;"
+                              class="size-1.5 rounded-full bg-[#2b7fff]"></span>
+                            <div class="flex-1 flex justify-between items-center gap-2.5">
+                              <span
+                                class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
+                                >Memory :</span>
+                              <span
+                                class="flex justify-center items-center text-sm text-nowrap {uptime.avg_memory_usage >
+                                LIMITATIONS.memory.error
+                                  ? 'text-[#F87171]'
+                                  : uptime.avg_memory_usage > LIMITATIONS.memory.warn
+                                    ? 'text-[#F97316]'
+                                    : 'text-green-700'}">{uptime.avg_memory_usage}%</span>
+                            </div>
+                          </div>
+                          <div class="w-full h-0.5 rounded-full bg-black/10 dark:bg-white/10">
+                            <div
+                              class="h-full rounded-full {uptime.avg_memory_usage >
                               LIMITATIONS.memory.error
-                                ? 'text-[#F87171]'
+                                ? 'bg-[#F87171]'
                                 : uptime.avg_memory_usage > LIMITATIONS.memory.warn
-                                  ? 'text-[#F97316]'
-                                  : 'text-green-700'}">{uptime.avg_memory_usage}%</span>
+                                  ? 'bg-[#F97316]'
+                                  : 'bg-green-700'}"
+                              style="width: {Math.min(
+                                uptime.avg_memory_usage,
+                                100,
+                              )}%;box-shadow: 0 0 10px 1px {uptime.avg_memory_usage >
+                              LIMITATIONS.memory.error
+                                ? '#F87171'
+                                : uptime.avg_memory_usage > LIMITATIONS.memory.warn
+                                  ? '#F97316'
+                                  : '#008236'};">
+                            </div>
                           </div>
                         </div>
-                        <div class="w-full h-0.5 rounded-full bg-black/10 dark:bg-white/10">
-                          <div
-                            class="h-full rounded-full {uptime.avg_memory_usage >
-                            LIMITATIONS.memory.error
-                              ? 'bg-[#F87171]'
-                              : uptime.avg_memory_usage > LIMITATIONS.memory.warn
-                                ? 'bg-[#F97316]'
-                                : 'bg-green-700'}"
-                            style="width: {Math.min(
-                              uptime.avg_memory_usage,
-                              100,
-                            )}%;box-shadow: 0 0 10px 1px {uptime.avg_memory_usage >
-                            LIMITATIONS.memory.error
-                              ? '#F87171'
-                              : uptime.avg_memory_usage > LIMITATIONS.memory.warn
-                                ? '#F97316'
-                                : '#008236'};">
-                          </div>
-                        </div>
-                      </div>
-                    {/if}
+                      {/if}
 
-                    {#if uptime?.avg_disk_usage}
-                      <div class="flex flex-col items-center w-full gap-1 pb-1.5">
-                        <div class="w-full flex justify-start items-center gap-2.5">
-                          <span
-                            style="box-shadow: 0 0 10px 1px #22c55e;"
-                            class="size-1.5 rounded-full bg-[#00bc7d]"></span>
-                          <div class="flex-1 flex justify-between items-center gap-2.5">
+                      {#if uptime?.avg_disk_usage}
+                        <div class="flex flex-col items-center w-full gap-1 pb-1.5">
+                          <div class="w-full flex justify-start items-center gap-2.5">
                             <span
-                              class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
-                              >Disk :</span>
-                            <span
-                              class="flex justify-center items-center text-sm text-nowrap {uptime?.avg_disk_usage >
+                              style="box-shadow: 0 0 10px 1px #22c55e;"
+                              class="size-1.5 rounded-full bg-[#00bc7d]"></span>
+                            <div class="flex-1 flex justify-between items-center gap-2.5">
+                              <span
+                                class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
+                                >Disk :</span>
+                              <span
+                                class="flex justify-center items-center text-sm text-nowrap {uptime?.avg_disk_usage >
+                                LIMITATIONS.disk.error
+                                  ? 'text-[#F87171]'
+                                  : uptime?.avg_disk_usage > LIMITATIONS.disk.warn
+                                    ? 'text-[#F97316]'
+                                    : 'text-green-700'}">{uptime?.avg_disk_usage}%</span>
+                            </div>
+                          </div>
+                          <div class="w-full h-0.5 rounded-full bg-black/10 dark:bg-white/10">
+                            <div
+                              class="h-full rounded-full {uptime?.avg_disk_usage >
                               LIMITATIONS.disk.error
-                                ? 'text-[#F87171]'
+                                ? 'bg-[#F87171]'
                                 : uptime?.avg_disk_usage > LIMITATIONS.disk.warn
-                                  ? 'text-[#F97316]'
-                                  : 'text-green-700'}">{uptime?.avg_disk_usage}%</span>
+                                  ? 'bg-[#F97316]'
+                                  : 'bg-green-700'}"
+                              style="width: {Math.min(
+                                uptime?.avg_disk_usage,
+                                100,
+                              )}%;box-shadow: 0 0 10px 1px {uptime?.avg_disk_usage >
+                              LIMITATIONS.disk.error
+                                ? '#F87171'
+                                : uptime?.avg_disk_usage > LIMITATIONS.disk.warn
+                                  ? '#F97316'
+                                  : '#008236'};">
+                            </div>
                           </div>
                         </div>
-                        <div class="w-full h-0.5 rounded-full bg-black/10 dark:bg-white/10">
-                          <div
-                            class="h-full rounded-full {uptime?.avg_disk_usage >
-                            LIMITATIONS.disk.error
-                              ? 'bg-[#F87171]'
-                              : uptime?.avg_disk_usage > LIMITATIONS.disk.warn
-                                ? 'bg-[#F97316]'
-                                : 'bg-green-700'}"
-                            style="width: {Math.min(
-                              uptime?.avg_disk_usage,
-                              100,
-                            )}%;box-shadow: 0 0 10px 1px {uptime?.avg_disk_usage >
-                            LIMITATIONS.disk.error
-                              ? '#F87171'
-                              : uptime?.avg_disk_usage > LIMITATIONS.disk.warn
-                                ? '#F97316'
-                                : '#008236'};">
+                      {/if}
+                      {#if uptime?.start_time && uptime?.end_time}
+                        <div
+                          class="w-full flex flex-col justify-start items-start text-xs pt-1.5 text-[#6a7282] text-center text-nowrap border-t border-t-[#0D0D0D]/10 dark:border-t-white/15">
+                          <div class="flex justify-between items-center gap-1 w-full">
+                            <span>From</span>
+                            <span class="text-white/30">{uptime?.start_time} </span>
                           </div>
-                        </div>
-                      </div>
-                    {/if}
-                    {#if uptime?.start_time && uptime?.end_time}
-                      <div
-                        class="w-full flex flex-col justify-start items-start text-xs pt-1.5 text-[#6a7282] text-center text-nowrap border-t border-t-[#0D0D0D]/10 dark:border-t-white/15">
-                        <div class="flex justify-between items-center gap-1 w-full">
-                          <span>From</span>
-                          <span class="text-white/30">{uptime?.start_time} </span>
-                        </div>
 
-                        <div class="flex justify-between items-center gap-1 w-full">
-                          <span>Until</span>
-                          <span class="text-white/30"> {uptime?.end_time}</span>
-                        </div>
-                      </div>{/if}
-                  </div>{/if}
-                
+                          <div class="flex justify-between items-center gap-1 w-full">
+                            <span>Until</span>
+                            <span class="text-white/30"> {uptime?.end_time}</span>
+                          </div>
+                        </div>{/if}
+                    </div>{/if}
+
                   <div class="h-2 w-px bg-white/10 absolute -end-px -bottom-3"></div>
 
                   <div class="h-2 w-px text-white/20 absolute end-3.25 text-xs -bottom-7">
@@ -966,21 +962,21 @@
                 style="height: {(detail?.avg_collect_duration_ms * 100) /
                   summaryWithDate?.overall?.max_collect_duration_ms /
                   1.5}px;"
-                class="w-full rounded-[1px] cursor-pointer relative group border-t-4 transition-all {detail?.rate?.toLowerCase() ===
-                'excellent'
+                class="w-full rounded-[1px] cursor-pointer relative group border-t-4 transition-all {detail?.avg_collect_duration_ms >=
+                90
                   ? 'bg-green-500 border-t-green-700 hover:bg-green-700'
-                  : detail?.rate?.toLowerCase() === 'good'
+                  : detail?.avg_collect_duration_ms >= 80
                     ? 'bg-[#00D492] border-t-[#009667] hover:bg-[#00ad76]'
-                    : detail?.rate?.toLowerCase() === 'fair'
+                    : detail?.avg_collect_duration_ms >= 70
                       ? 'bg-[#FDC700] border-t-[#c79c00] hover:bg-[#ffd745]'
-                      : detail?.rate?.toLowerCase() === 'poor'
+                      : detail?.avg_collect_duration_ms >= 50
                         ? 'bg-[#F97316] border-t-[#c25e17] hover:bg-[#cf5600]'
                         : 'bg-[#F87171] border-t-[#ba4646] hover:bg-[#ff5757]'}">
-              {#if detail?.avg_collect_duration_ms}
-                <div class="text-white absolute start-1/2 -translate-1/2 -top-5 text-xs">
-                  {detail?.avg_collect_duration_ms}<sub>ms</sub>
-                </div>
-              {/if}  
+                {#if detail?.avg_collect_duration_ms}
+                  <div class="text-white absolute start-1/2 -translate-1/2 -top-5 text-xs">
+                    {detail?.avg_collect_duration_ms}<sub>ms</sub>
+                  </div>
+                {/if}
                 {#if i !== 0 && i % 1 === 0}
                   <div class="absolute -bottom-3 start-0 h-2 w-px bg-white/10">
                     <div class="relative">
@@ -1003,83 +999,81 @@
                   </div>
                 {/if}
 
-
                 {#if detail?.avg_collect_duration_ms}
-                   <div
-                  class="absolute z-10 w-fit group-hover:flex hidden bottom-10 start-1/2 -translate-x-1/2 rounded-xl text-white bg-white/40 dark:bg-black/80 backdrop-blur-md dark:backdrop-blur-3xl border-[#0D0D0D]/5 border dark:border-white/10 px-3 py-2 flex-col justify-start items-start gap-1">
-                  <div class="w-full flex justify-between items-center gap-2.5">
-                    <span
-                      class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
-                      >Collect Rating :</span>
-                    <span
-                      class="flex justify-center items-center text-sm text-nowrap capitalize {detail?.rate?.toLowerCase() ===
-                      'excellent'
-                        ? 'text-green-500'
-                        : detail?.rate?.toLowerCase() === 'good'
-                          ? 'text-[#00D492]'
-                          : detail?.rate?.toLowerCase() === 'fair'
-                            ? 'text-[#FDC700]'
-                            : detail?.rate?.toLowerCase() === 'poor'
-                              ? 'text-[#F97316]'
-                              : 'text-[#F87171]'}">{detail?.rate}</span>
-                  </div>
-                  <div class="w-full flex justify-between items-center gap-2.5">
-                    <span
-                      class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
-                      >Collect AV (ms) :</span>
-                    <span
-                      class="flex justify-center items-center text-sm text-nowrap {detail?.rate?.toLowerCase() ===
-                      'excellent'
-                        ? 'text-green-500'
-                        : detail?.rate?.toLowerCase() === 'good'
-                          ? 'text-[#00D492]'
-                          : detail?.rate?.toLowerCase() === 'fair'
-                            ? 'text-[#FDC700]'
-                            : detail?.rate?.toLowerCase() === 'poor'
-                              ? 'text-[#F97316]'
-                              : 'text-[#F87171]'}"
-                      >{detail?.avg_collect_duration_ms}<sub>ms</sub></span>
-                  </div>
-
-                  <div class="w-full flex justify-between items-center gap-2.5">
-                    <span
-                      class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
-                      >Lowest Duration :</span>
-                    <span class="flex justify-center items-center text-sm text-nowrap text-white"
-                      >{detail?.min_collect_duration_ms}<sub>ms</sub></span>
-                  </div>
-
-                  <div class="w-full flex justify-between items-center gap-2.5">
-                    <span
-                      class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
-                      >Mostest Duration :</span>
-                    <span class="flex justify-center items-center text-sm text-nowrap text-white"
-                      >{detail?.max_collect_duration_ms}<sub>ms</sub></span>
-                  </div>
-
-                  <div class="w-full flex justify-between items-center gap-2.5">
-                    <span
-                      class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
-                      >Collects :</span>
-                    <span class="flex justify-center items-center text-sm text-nowrap text-white"
-                      >{detail?.collects}</span>
-                  </div>
-
                   <div
-                    class="w-full flex flex-col justify-start items-start text-xs pt-1.5 text-[#6a7282] text-center text-nowrap border-t border-t-[#0D0D0D]/10 dark:border-t-white/15">
-                    <div class="flex justify-between items-center gap-1 w-full">
-                      <span>From</span>
-                      <span class="text-white/30">{detail?.start_time.slice(0, 5)} </span>
+                    class="absolute z-10 w-fit group-hover:flex hidden bottom-10 start-1/2 -translate-x-1/2 rounded-xl text-white bg-white/40 dark:bg-black/80 backdrop-blur-md dark:backdrop-blur-3xl border-[#0D0D0D]/5 border dark:border-white/10 px-3 py-2 flex-col justify-start items-start gap-1">
+                    <div class="w-full flex justify-between items-center gap-2.5">
+                      <span
+                        class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
+                        >Collect Rating :</span>
+                      <span
+                        class="flex justify-center items-center text-sm text-nowrap capitalize {detail?.rate?.toLowerCase() ===
+                        'excellent'
+                          ? 'text-green-500'
+                          : detail?.rate?.toLowerCase() === 'good'
+                            ? 'text-[#00D492]'
+                            : detail?.rate?.toLowerCase() === 'fair'
+                              ? 'text-[#FDC700]'
+                              : detail?.rate?.toLowerCase() === 'poor'
+                                ? 'text-[#F97316]'
+                                : 'text-[#F87171]'}">{detail?.rate}</span>
+                    </div>
+                    <div class="w-full flex justify-between items-center gap-2.5">
+                      <span
+                        class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
+                        >Collect AV (ms) :</span>
+                      <span
+                        class="flex justify-center items-center text-sm text-nowrap {detail?.rate?.toLowerCase() ===
+                        'excellent'
+                          ? 'text-green-500'
+                          : detail?.rate?.toLowerCase() === 'good'
+                            ? 'text-[#00D492]'
+                            : detail?.rate?.toLowerCase() === 'fair'
+                              ? 'text-[#FDC700]'
+                              : detail?.rate?.toLowerCase() === 'poor'
+                                ? 'text-[#F97316]'
+                                : 'text-[#F87171]'}"
+                        >{detail?.avg_collect_duration_ms}<sub>ms</sub></span>
                     </div>
 
-                    <div class="flex justify-between items-center gap-1 w-full">
-                      <span>Until</span>
-                      <span class="text-white/30"> {detail?.end_time.slice(0, 5)}</span>
+                    <div class="w-full flex justify-between items-center gap-2.5">
+                      <span
+                        class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
+                        >Lowest Duration :</span>
+                      <span class="flex justify-center items-center text-sm text-nowrap text-white"
+                        >{detail?.min_collect_duration_ms}<sub>ms</sub></span>
+                    </div>
+
+                    <div class="w-full flex justify-between items-center gap-2.5">
+                      <span
+                        class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
+                        >Mostest Duration :</span>
+                      <span class="flex justify-center items-center text-sm text-nowrap text-white"
+                        >{detail?.max_collect_duration_ms}<sub>ms</sub></span>
+                    </div>
+
+                    <div class="w-full flex justify-between items-center gap-2.5">
+                      <span
+                        class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
+                        >Collects :</span>
+                      <span class="flex justify-center items-center text-sm text-nowrap text-white"
+                        >{detail?.collects}</span>
+                    </div>
+
+                    <div
+                      class="w-full flex flex-col justify-start items-start text-xs pt-1.5 text-[#6a7282] text-center text-nowrap border-t border-t-[#0D0D0D]/10 dark:border-t-white/15">
+                      <div class="flex justify-between items-center gap-1 w-full">
+                        <span>From</span>
+                        <span class="text-white/30">{detail?.start_time.slice(0, 5)} </span>
+                      </div>
+
+                      <div class="flex justify-between items-center gap-1 w-full">
+                        <span>Until</span>
+                        <span class="text-white/30"> {detail?.end_time.slice(0, 5)}</span>
+                      </div>
                     </div>
                   </div>
-                </div>
                 {/if}
-               
               </div>
             {/each}
           {:else}
@@ -2366,6 +2360,13 @@
                     Number(date?.day) === Number(day)}
                   <button
                     onclick={() => {
+                      if (value === -1) {
+                        goto(`/agents/${id}`, {
+                          keepfocus: true,
+                          noScroll: true,
+                        });
+                        return;
+                      }
                       const newUrl = new URL($page.url);
                       newUrl.searchParams.set('date', `${item?.year}-${item?.month}-${day}`);
 
