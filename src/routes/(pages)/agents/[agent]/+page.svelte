@@ -107,7 +107,36 @@
       class="w-full flex flex-col justify-start items-start gap-6 border border-[#0D0D0D]/5 dark:border-white/5 p-6 rounded-xl">
       <div class="w-full flex justify-between items-start relative">
         <div class="flex flex-col justify-center items-start">
-          <span class="text-black dark:text-white text-xl capitalize">{data?.name}</span>
+          {#if data?.name}
+            <span class="text-black dark:text-white text-xl capitalize">{data?.name}</span
+            >{:else}<div class="flex justify-center items-center gap-2">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M10.0003 18.3332C14.6027 18.3332 18.3337 14.6022 18.3337 9.99984C18.3337 5.39746 14.6027 1.6665 10.0003 1.6665C5.39795 1.6665 1.66699 5.39746 1.66699 9.99984C1.66699 14.6022 5.39795 18.3332 10.0003 18.3332Z"
+                  stroke="#B4242B"
+                  stroke-width="1.66667"
+                  stroke-linecap="round"
+                  stroke-linejoin="round" />
+                <path
+                  d="M10 6.6665V9.99984"
+                  stroke="#B4242B"
+                  stroke-width="1.66667"
+                  stroke-linecap="round"
+                  stroke-linejoin="round" />
+                <path
+                  d="M10 13.3335H10.0083"
+                  stroke="#B4242B"
+                  stroke-width="1.66667"
+                  stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </svg>
+              <span class="text-xl text-red-500/70 mt-0.5">Agent with Id {id} Not Found</span>
+            </div>{/if}
 
           <span
             class="flex justify-center items-center text-nowrap tracking-wider text-sm {data?.status ===
@@ -562,7 +591,8 @@
                   class="w-full h-6 rounded-[1px] transition-all cursor-pointer relative group {uptime.collect_count
                     ? 'bg-green-700 hover:h-7'
                     : 'bg-[#FFFFFF]/10'}">
-                  {#if uptime.avg_collect_duration_ms}<div
+                  {#if uptime.avg_collect_duration_ms}
+                    <div
                       class="absolute w-fit group-hover:flex hidden bottom-10 start-1/2 -translate-x-1/2 rounded-xl text-white bg-white/40 dark:bg-black/80 backdrop-blur-md dark:backdrop-blur-3xl border-[#0D0D0D]/5 border dark:border-white/10 px-3 py-2 flex-col justify-start items-start gap-1.5">
                       {#if uptime.avg_collect_duration_ms}
                         <div
@@ -729,7 +759,7 @@
               {#each Array(24 - (summaryWithDate?.uptime_series?.length || 0)) as _, i}
                 <div
                   aria-hidden="true"
-                  class="w-full relative h-4 rounded-[1px] bg-black/20 dark:bg-[#FFFFFF]/10 opacity-70">
+                  class="w-full relative h-4 rounded-[1px] bg-black/20 dark:bg-[#FFFFFF]/10">
                   <div class="h-2 w-px bg-white/10 absolute -end-px -bottom-3"></div>
                   <div class="h-2 w-px text-white/20 absolute end-3.25 text-xs -bottom-7">
                     {((summaryWithDate?.uptime_series?.length || 24) - i)
@@ -1103,16 +1133,18 @@
               </div>
             {/each}
           {/if}
-          {#if date ? summaryWithDate?.collect_duration_series?.length < 1 : collectDuration?.series?.length < 1}
-            {#each Array(24) as _, i}
-              <div aria-hidden="true" class="w-full h-6 rounded-[1px] bg-white/5 relative">
-                <div class="h-2 w-px bg-white/10 absolute -end-px -bottom-3"></div>
-                <div class="h-2 w-px text-white/20 absolute end-3.25 text-xs -bottom-7">
-                  {(i + 1).toString().padStart(2, '0')}:00
-                </div>
+
+          {#each Array(Math.max(0, 24 - ((date ? summaryWithDate?.collect_duration_series?.length : collectDuration?.series?.length) ?? 0))) as _, i}
+            <div
+              class="h-1 w-full rounded-[1px] cursor-pointer relative group border-t-4 transition-all bg-[#F87171] border-t-[#ba4646] hover:bg-[#ff5757]">
+              <div class="h-2 w-px bg-white/10 absolute -end-px -bottom-3"></div>
+              <div class="h-2 w-px text-white/20 absolute end-3.25 text-xs -bottom-7">
+                {String(i + 1)
+                  .toString()
+                  .padStart(2, '0')}:00
               </div>
-            {/each}
-          {/if}
+            </div>
+          {/each}
         </div>
       </div>
 

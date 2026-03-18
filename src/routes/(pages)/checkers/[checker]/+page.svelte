@@ -562,7 +562,7 @@
       {/if}
 
       <div
-        class="relative w-full flex flex-col p-6 pb-13 gap-4 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
+        class="relative w-full flex flex-col p-6 pb-13 gap-8 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
         <div class="flex justify-between items-start">
           <div class="w-fit flex flex-col justify-start items-start">
             <span class="text-lg text-black dark:text-white"> Apdex history</span>
@@ -698,6 +698,11 @@
                     : detail?.apdex_score >= 50
                       ? 'bg-[#F97316] border-t-[#c25e17] hover:bg-[#cf5600]'
                       : 'bg-[#F87171] border-t-[#ba4646] hover:bg-[#ff5757]'}">
+              {#if date && detail?.apdex_score}
+                <div class="text-white absolute start-1/2 -translate-x-1/2 -top-6 text-xs">
+                  {detail?.apdex_score}%
+                </div>
+              {/if}
               {#if i !== 0 && i % (date ? 1 : length < 30 ? 1 : 3) === 0}
                 <div class="absolute -bottom-3 start-0 h-2 w-px bg-white/10">
                   <div class="relative">
@@ -753,7 +758,9 @@
                             ? 'text-[#FDC700]'
                             : detail?.apdex_rating?.toLowerCase() === 'poor'
                               ? 'text-[#F97316]'
-                              : 'text-[#F87171]'}">{detail?.apdex_score}%</span>
+                              : 'text-[#F87171]'}"
+                      >{detail?.apdex_score}%
+                    </span>
                   </div>
 
                   <div class="w-full flex justify-between items-center gap-2.5">
@@ -801,7 +808,9 @@
 
           {#if date ? !summaryWithDate?.overall.apdex_score : !apdex?.apdex_score}
             {#each Array(24) as _, i}
-              <div aria-hidden="true" class="w-full h-6 rounded-[1px] bg-white/5 relative">
+              <div
+                aria-hidden="true"
+                class="h-1 w-full rounded-[1px] cursor-pointer relative border-t-4 transition-all bg-[#F87171] border-t-[#ba4646]">
                 <div class="h-2 w-px bg-white/10 absolute -end-px -bottom-3"></div>
                 <div class="h-2 w-px text-white/20 absolute end-3.25 text-xs -bottom-7">
                   {(i + 1).toString().padStart(2, '0')}:00
