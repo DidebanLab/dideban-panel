@@ -29,6 +29,7 @@
   let historyDetail = $state();
   let collectDuration = $state();
   let summary = $state();
+  let toDay = $state();
   let summaryWithDate = $state();
   function getDate(initialDate) {
     const d = new Date(initialDate);
@@ -36,7 +37,10 @@
     const month = String(d.getMonth() + 1);
     const day = String(d.getDate());
 
-    return { string: `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`,date:{year,month,day} };
+    return {
+      string: `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`,
+      date: { year, month, day },
+    };
   }
 
   const MONTHS = [
@@ -58,16 +62,20 @@
     return MONTHS[month - 1];
   }
 
-  $effect(() => {
-    console.log(isMouseInside);
-  });
-
   onMount(() => {
     http.get(endpoints.singleAgent(id)).then(res => {
       data = res.data?.data;
       enabled = res.data?.data.enabled;
     });
-    http.get(endpoints.agentSummaryYearly(id)).then(res => (summary = res.data?.data));
+    http.get(endpoints.agentSummaryYearly(id)).then(res => {
+      const current = res.data.data.find(i => Object.values(i.history).includes(-1));
+      const day = Object.keys(current.history).find(key => current.history[key] === -1);
+      toDay = `${current.year}-${current.month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+
+      console.log(toDay);
+
+      summary = res.data?.data;
+    });
     if (!date) {
       http
         .get(endpoints.agentHistory(id), {
@@ -146,38 +154,35 @@
     goto(`/agents/${id}?date=${nextYear}-${nextMonth}-${nextDay}`);
   }
   function preDate(dateData) {
-    const d = getDate($page.url.searchParams.get('date')).date;
+    let d;
 
-    let perDay =Number( d.day);
+    if ($page.url.searchParams.get('date')) {
+      d = getDate($page.url.searchParams.get('date')).date;
+    } else {
+      d = getDate(toDay).date;
+    }
+
+    let perDay = Number(d.day);
     let perMonth = Number(d.month);
     let perYear = Number(d.year);
 
-
-      
-
-
     if (perDay === 1) {
- 
-    
-
- 
       if (perMonth === 1) {
         perMonth = 12;
         perYear = perYear - 1;
       } else {
         perMonth = perMonth - 1;
       }
-  
-   const prevMonthData = dateData?.find(
+
+      const prevMonthData = dateData?.find(
         item => Number(item?.year) === perYear && Number(item?.month) === perMonth,
       );
 
       if (prevMonthData && prevMonthData.history) {
-        const daysInMonth = Math.max(...Object.keys(prevMonthData.history).map(key => parseInt(key)));
+        const daysInMonth = Math.max(
+          ...Object.keys(prevMonthData.history).map(key => parseInt(key)),
+        );
         perDay = daysInMonth;
-
-        console.log(daysInMonth);
-        
       } else {
         return;
       }
@@ -205,52 +210,54 @@
               : 'text-[#F87171]'}">{data?.status}</span>
         </div>
 
-        <div
-          class="flex items-center justify-between px-3 gap-4 bg-white/5 text-sm absolute top-0 rounded-md start-1/2 -translate-x-1/2 min-w-40 h-9.5 shadow-sm shadow-[#3b82f6]/50">
-          <!-- Prev -->
+        {#if date ? date : toDay}
+          <div
+            class="flex items-center justify-between px-3 gap-4 bg-white/5 text-sm absolute top-0 rounded-md start-1/2 -translate-x-1/2 min-w-40 h-9.5 shadow-sm shadow-[#3b82f6]/50">
+            <!-- Prev -->
+            <button
+              aria-label="prev date"
+              onclick={() => {
+                preDate(summary);
+              }}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-4 h-4 hover:opacity-65 cursor-pointer"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="white">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
 
-          <button
-            aria-label="prev date"
-            onclick={() => {
-              preDate(summary);
-            }}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="w-4 h-4 hover:opacity-65 cursor-pointer"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="white">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M15 19l-7-7 7-7" />
-            </svg></button>
+            <!-- Date -->
+            <div class="px-4 py-1.5 rounded-lg tracking-wide text-nowrap text-[#3b82f6]">
+              {date || toDay}
+            </div>
 
-          <!-- Date -->
-          <div class="px-4 py-1.5 rounded-lg tracking-wide text-nowrap text-[#3b82f6]">
-            {date}
-          </div>
-
-          <!-- Next -->
-          <button
-            aria-label="next date"
-            onclick={() => {
-              nextDate(summary);
-            }}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="w-4 h-4 hover:opacity-65 cursor-pointer"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="white">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9 5l7 7-7 7" />
-            </svg></button>
-        </div>
+            <!-- Next -->
+            <button
+              aria-label="next date"
+              onclick={() => {
+                nextDate(summary);
+              }}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-4 h-4 hover:opacity-65 cursor-pointer"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="white">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>{/if}
 
         {#if date}
           <button

@@ -6,7 +6,7 @@
   import { onMount } from 'svelte';
 
   let agents = $state();
-  let activeIndex = $state(1);
+  let activeIndex = $state(0);
   const isActive = $derived(agents[activeIndex]);
   let agentMetric = $state();
   const isMobile = $state(innerWidth < 645);
@@ -48,7 +48,7 @@
     http
       .get(endpoints.agentMetric(id), {
         params: {
-          size: isMobile ? 31 : 50,
+          max_points:isMobile ? 31 : 60
         },
       })
       .then(res => {
