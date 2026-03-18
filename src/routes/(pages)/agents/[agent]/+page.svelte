@@ -653,7 +653,8 @@
                   class="w-full h-6 rounded-[1px] hover:h-7 transition-all cursor-pointer relative group {uptime.collect_count
                     ? 'bg-green-700'
                     : 'bg-[#FFFFFF]/10'}">
-                  <div
+                
+                {#if uptime.avg_collect_duration_ms}<div
                     class="absolute w-fit group-hover:flex hidden bottom-10 start-1/2 -translate-x-1/2 rounded-xl text-white bg-white/40 dark:bg-black/80 backdrop-blur-md dark:backdrop-blur-3xl border-[#0D0D0D]/5 border dark:border-white/10 px-3 py-2 flex-col justify-start items-start gap-1.5">
                     {#if uptime.avg_collect_duration_ms}
                       <div
@@ -807,7 +808,8 @@
                           <span class="text-white/30"> {uptime?.end_time}</span>
                         </div>
                       </div>{/if}
-                  </div>
+                  </div>{/if}
+                
                   <div class="h-2 w-px bg-white/10 absolute -end-px -bottom-3"></div>
 
                   <div class="h-2 w-px text-white/20 absolute end-3.25 text-xs -bottom-7">
@@ -974,9 +976,11 @@
                       : detail?.rate?.toLowerCase() === 'poor'
                         ? 'bg-[#F97316] border-t-[#c25e17] hover:bg-[#cf5600]'
                         : 'bg-[#F87171] border-t-[#ba4646] hover:bg-[#ff5757]'}">
+              {#if detail?.avg_collect_duration_ms}
                 <div class="text-white absolute start-1/2 -translate-1/2 -top-5 text-xs">
                   {detail?.avg_collect_duration_ms}<sub>ms</sub>
                 </div>
+              {/if}  
                 {#if i !== 0 && i % 1 === 0}
                   <div class="absolute -bottom-3 start-0 h-2 w-px bg-white/10">
                     <div class="relative">
@@ -998,7 +1002,10 @@
                     </div>
                   </div>
                 {/if}
-                <div
+
+
+                {#if detail?.avg_collect_duration_ms}
+                   <div
                   class="absolute z-10 w-fit group-hover:flex hidden bottom-10 start-1/2 -translate-x-1/2 rounded-xl text-white bg-white/40 dark:bg-black/80 backdrop-blur-md dark:backdrop-blur-3xl border-[#0D0D0D]/5 border dark:border-white/10 px-3 py-2 flex-col justify-start items-start gap-1">
                   <div class="w-full flex justify-between items-center gap-2.5">
                     <span
@@ -1071,6 +1078,8 @@
                     </div>
                   </div>
                 </div>
+                {/if}
+               
               </div>
             {/each}
           {:else}
@@ -2357,8 +2366,6 @@
                     Number(date?.day) === Number(day)}
                   <button
                     onclick={() => {
-                      if (!date && today) return;
-
                       const newUrl = new URL($page.url);
                       newUrl.searchParams.set('date', `${item?.year}-${item?.month}-${day}`);
 
@@ -2393,14 +2400,16 @@
                               ? 'bg-[#F97316]'
                               : value == !-1
                                 ? 'bg-[#EF4444]'
-                                : 'shadow-inner shadow-white/5 cursor-not-allowed! opacity-50'
+                                : 'shadow-inner shadow-white/5 cursor-not-allowed! border-white/70!'
                       : ' shadow-inner shadow-white/5 cursor-default!'} ">
-                    {#if value && value == !-1}
-                      <div
-                        class="hidden absolute min-w-40 text-sm -top-20 border border-white/15 px-3 py-2 flex-col gap-1 bg-black/80 backdrop-blur-2xl rounded-xl z-10 {value !==
-                          null && !isSpecialModeWithDate
-                          ? 'group-hover:flex'
-                          : ''}">
+                    <div
+                      class="hidden absolute min-w-40 text-sm -top-20 border border-white/15 px-3 py-2 flex-col gap-1 bg-black/80 backdrop-blur-2xl rounded-xl z-10 {value !==
+                        null && !isSpecialModeWithDate
+                        ? 'group-hover:flex'
+                        : ''}">
+                      {#if value === -1}
+                        <span class="text-[#6a7282] text-nowrap">Today</span>
+                      {:else}
                         <div class="flex justify-between items-center">
                           <span class="text-[#6a7282] text-nowrap">Uptime :</span>
                           <span
@@ -2418,7 +2427,8 @@
                         <span
                           class="text-white/30 text-nowrap border-t pt-1 border-t-white/15 text-start"
                           >{item?.year}/{item?.month}/{day}</span>
-                      </div>{/if}
+                      {/if}
+                    </div>
                     <span class="absolute start-1/2 top-1/2 -translate-1/2">-</span>
                   </button>
                 {/each}
