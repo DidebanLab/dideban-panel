@@ -142,8 +142,8 @@
               onclick={() => {
                 goto(`/checkers/${id}`);
               }}
-              class="flex items-center gap-2 ps-4 bg-emerald-500/10 animate-pulse hover:animate-none pe-2.5 h-8 text-xs rounded-full outline outline-offset-1 outline-emerald-500/60 text-emerald-400 cursor-pointer">
-              Back to Today
+              class="text-nowrap flex items-center gap-1 sm:gap-2 ps-4 bg-emerald-500/10 animate-pulse hover:animate-none mt-1.25 sm:mt-0 pe-2.5 h-6 sm:h-8 text-xs rounded-full outline outline-offset-1 outline-emerald-500/60 text-emerald-400 cursor-pointer">
+              <span class="hidden sm:inline">Back to </span>Today
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 class="w-3.25 h-3.25 rotate-180"
@@ -158,7 +158,8 @@
               </svg>
             </button>
           {:else if data}
-            <div class="flex flex-col-reverse sm:flex-row justify-start items-end sm:justify-center sm:items-center gap-1.5 sm:gap-3">
+            <div
+              class="flex flex-col-reverse sm:flex-row justify-start items-end sm:justify-center sm:items-center gap-1.5 sm:gap-3">
               <div class="flex justify-center items-center gap-1.75">
                 <button
                   class="cursor-pointer"
@@ -171,7 +172,12 @@
                       props: { name: data?.name, id: data?.id },
                     });
                   }}>
-                  <img class="size-4 sm:size-5" src="/icons/trash.png" alt="trash" width="20" height="20" /></button>
+                  <img
+                    class="size-4 sm:size-5"
+                    src="/icons/trash.png"
+                    alt="trash"
+                    width="20"
+                    height="20" /></button>
                 <button
                   class="cursor-pointer"
                   aria-label="edit config"
@@ -183,7 +189,12 @@
                       props: { data },
                     });
                   }}>
-                  <img class="size-5 sm:size-6" src="/icons/edit.png" alt="edit" width="24" height="24" />
+                  <img
+                    class="size-5 sm:size-6"
+                    src="/icons/edit.png"
+                    alt="edit"
+                    width="24"
+                    height="24" />
                 </button>
               </div>
 
@@ -221,7 +232,7 @@
                       }
                     }}
                     aria-label="activation toggle"
-                    class="w-7.5 h-4 sm:w-11  sm:h-6 rounded-full relative cursor-pointer {enabled
+                    class="w-7.5 h-4 sm:w-11 sm:h-6 rounded-full relative cursor-pointer {enabled
                       ? 'bg-[#00bc7d]/20 border border-[#00bc7d]/30'
                       : 'bg-[#6a7282]/10 border border-[#6a7282]/20 '}">
                     <div
@@ -292,10 +303,10 @@
 
       <div class="flex flex-col gap-4 w-full">
         <div
-          class="relative flex flex-col px-4.25 py-4 sm:px-6 sm:py-6 gap-4 rounded-[14px] dark:bg-[#0D0D0D] bg-[#FFFFFF] border border-[#0D0D0D]/5 dark:border-white/5 {date &&
+          class="relative flex flex-col gap-4 border-[#0D0D0D]/5 dark:border-white/5 {date &&
           data
-            ? 'h-29 sm:h-43'
-            : 'h-29 sm:h-35'}">
+            ? 'sm:h-43 sm:rounded-[14px] sm:dark:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border sm:px-6 sm:py-6'
+            : 'h-29 sm:h-35 rounded-[14px] dark:bg-[#0D0D0D] bg-[#FFFFFF] border  px-4.25 py-4 sm:px-6 sm:py-6'}">
           <div class="w-full flex justify-between items-start">
             <div class="w-fit flex flex-col justify-start items-start">
               <span class="text-lg text-black dark:text-white">Uptime</span>
@@ -358,9 +369,9 @@
           </div>
 
           <div
-            class=" w-full z-10 flex flex-row-reverse gap-0.5 justify-between items-end absolute start-1/2 -translate-x-1/2 px-4.25 sm:px-6 {date
-              ? 'bottom-4 sm:bottom-14'
-              : 'bottom-4 sm:bottom-6'}">
+            class="w-full z-10 flex gap-0.5 justify-start items-end {date
+              ? 'overflow-x-auto overflow-y-hidden 3xl:overflow-x-visible 3xl:overflow-y-visible relative pb-10 3xl:pb-0'
+              : 'bottom-4 sm:bottom-6 absolute start-1/2 -translate-x-1/2 px-4.25 sm:px-6'}">
             {#if !date}
               {#each history?.data as detail (detail[0])}
                 {@const status = detail[1]}
@@ -481,7 +492,7 @@
                   <button
                     type="button"
                     aria-label="detail of status"
-                    class="w-full h-6 transition-all cursor-pointer relative group {uptime
+                    class="min-w-[40.5px] sm:min-w-[60.5px] w-full h-6 transition-all cursor-pointer relative group {uptime
                       ? uptime >= 90
                         ? 'hover:bg-[#008236]/70 bg-[#008236]'
                         : uptime >= 80
@@ -502,7 +513,7 @@
                     <div class="h-2 w-px bg-white/10 absolute -end-px -bottom-3"></div>
 
                     <div class="h-2 w-px text-white/20 absolute end-3.25 text-xs -bottom-7">
-                      {(summaryWithDate.uptime_series.length - i).toString().padStart(2, '0')}:00
+                      {(i + 1).toString().padStart(2, '0')}:00
                     </div>
                   </button>
                 {/each}
@@ -517,7 +528,7 @@
                 {/each}
               {/if}
 
-              <div class="absolute -bottom-1 start-1/2 -translate-x-1/2 w-full px-6">
+              <div class="absolute -bottom-1 start-1/2 -translate-x-1/2 w-full">
                 <div class="h-px w-full bg-white/10"></div>
               </div>
             {/if}
@@ -570,7 +581,7 @@
       {/if}
 
       <div
-        class="relative w-full flex flex-col sm:p-6 xl:pb-13 gap-8 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
+        class="relative w-full flex flex-col sm:p-6 xl:pb-13 gap-4 sm:gap-8 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
         <div class="flex justify-between items-start">
           <div class="w-fit flex flex-col justify-start items-start">
             <span class="text-lg text-black dark:text-white"> Apdex history</span>
@@ -687,7 +698,8 @@
           {/if}
         </div>
 
-        <div class="relative w-full z-10 flex gap-0.5 justify-start items-end overflow-x-auto overflow-y-hidden pb-10 3xl:overflow-x-visible 3xl:overflow-y-visible 3xl:pb-0 ">
+        <div
+          class="relative w-full z-10 flex gap-0.5 justify-start items-end overflow-x-auto overflow-y-hidden pb-8 pt-4 3xl:overflow-x-visible 3xl:overflow-y-visible 3xl:py-0 ">
           <div class="w-full absolute -bottom-1 h-px bg-white/10"></div>
 
           {#each date ? summaryWithDate?.apdex_series : apdex?.apdex_series as detail, i}
@@ -696,7 +708,7 @@
               : apdex?.apdex_series.length}
             <div
               style="height: {detail?.apdex_score / 2}px;"
-              class="min-w-[13.5px] w-full rounded-[1px] cursor-pointer relative group border-t-4 transition-all {detail?.apdex_score >=
+              class="w-full rounded-[1px] cursor-pointer relative group border-t-4 transition-all {detail?.apdex_score >=
               90
                 ? 'bg-green-500 border-t-green-700 hover:bg-green-700'
                 : detail?.apdex_score >= 80
@@ -705,13 +717,13 @@
                     ? 'bg-[#FDC700] border-t-[#c79c00] hover:bg-[#ffd745]'
                     : detail?.apdex_score >= 50
                       ? 'bg-[#F97316] border-t-[#c25e17] hover:bg-[#cf5600]'
-                      : 'bg-[#F87171] border-t-[#ba4646] hover:bg-[#ff5757]'}">
+                      : 'bg-[#F87171] border-t-[#ba4646] hover:bg-[#ff5757]'} {date?"min-w-[40.5px]":"min-w-[13.5px]"}">
               {#if date && detail?.apdex_score}
                 <div class="text-white absolute start-1/2 -translate-x-1/2 -top-6 text-xs">
                   {detail?.apdex_score}%
                 </div>
               {/if}
-              {#if i !== 0 && i % (date ? 1 :  (length < 30 ? 1 : 3)) === 0}
+              {#if i !== 0 && i % (date ? 1 : length < 30 ? 1 : 3) === 0}
                 <div class="absolute -bottom-3 start-0 h-2 w-px bg-white/10">
                   <div class="relative">
                     <div
@@ -865,7 +877,8 @@
               </div>
               {#if detail?.range_start !== 0}
                 <div class="absolute -bottom-3 text-xs -start-px bg-white/15 h-2 w-px"></div>
-                <div class="absolute -bottom-7 text-[9px] sm:text-xs -start-3 text-white/20 text-nowrap">
+                <div
+                  class="absolute -bottom-7 text-[9px] sm:text-xs -start-3 text-white/20 text-nowrap">
                   {detail?.range_start}ms
                 </div>
               {/if}
@@ -884,8 +897,13 @@
             </div>
             <div class="absolute -bottom-3 text-xs -start-px bg-white/15 h-2 w-px"></div>
             <div class="absolute -bottom-3 text-xs end-0 bg-white/15 h-2 w-px"></div>
-            <div class="absolute -bottom-7 text-[9px] sm:text-xs -start-3 text-white/20 text-nowrap">+8s</div>
-            <div class="absolute -bottom-7 text-[9px] sm:text-xs -end-1 text-white/20 text-nowrap">Errors</div>
+            <div
+              class="absolute -bottom-7 text-[9px] sm:text-xs -start-3 text-white/20 text-nowrap">
+              +8s
+            </div>
+            <div class="absolute -bottom-7 text-[9px] sm:text-xs -end-1 text-white/20 text-nowrap">
+              Errors
+            </div>
           </div>
         </div>
       </div>
