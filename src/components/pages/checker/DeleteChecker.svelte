@@ -51,7 +51,7 @@
   </div>
 
   <div class="w-full h-px bg-[#F87171]/20 mt-2.5"></div>
-  <div class="flex justify-between items-end w-full gap-10">
+  <div class="flex flex-col sm:flex-row justify-between items-end w-full gap-2 sm:gap-10">
     <div class="flex flex-col justify-start items-start gap-2 pt-2 w-full">
       <span class="text-black dark:text-white text-base">Delete This Checker</span>
       {#if step === 1}

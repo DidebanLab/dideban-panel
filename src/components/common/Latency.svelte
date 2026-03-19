@@ -16,6 +16,7 @@
       .get(endpoints.checkLatency(id), {
         params: {
           hours,
+          max_points:60
         },
       })
       .then(res => (data = res.data?.data));
@@ -31,17 +32,17 @@
     <div class="w-full flex gap-1 flex-col justify-start items-start">
       <span class="text-lg md:text-xl text-black dark:text-white"> Latency</span>
       <div class="text-xs text-white/70 flex gap-1.5">
-        <span class="text-white/40">Total Checks :</span>
+        <span class="text-white/40 text-nowrap">Total Checks :</span>
         {data?.total_checks || "-"}
       </div>
     </div>
     {#if data?.avg_response_time}
-      <div class="text-sm py-2 px-3 rounded-full border text-white border-white/5 text-nowrap">
-        <span class="text-white/40 me-1"> Avg Response Time: </span>
+      <div class="text-xs sm:text-sm py-1.5 sm:py-2 px-2 sm:px-3 rounded-full border text-white border-white/5 text-nowrap">
+        <span class="text-white/40 text-nowrap me-1"> Avg Response Time: </span>
         {data?.avg_response_time} ms
       </div>
     {:else}
-      <span class="text-white/20 text-2xl text-nowrap"> No Data </span>
+      <span class="text-white/20 text-lg sm:text-2xl text-nowrap"> No Data </span>
     {/if}
   </div>
   {#if data?.latency_series?.length > 0}

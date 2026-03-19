@@ -65,7 +65,7 @@
         detail = { ...detail, config };
       }
     } else if (form.type === 'ping') {
-      detail = { ...detail, config: { ...pingConfig } };
+      detail = { ...detail, config: { ...pingConfig, size: +pingConfig.size } };
     }
 
     http.patch(endpoints.singleCheck(data.id), detail).then(res => {

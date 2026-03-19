@@ -28,12 +28,12 @@
     verify_ssl: true,
     headers: [{ key: '', value: '' }],
   });
-  let pingConfig = $state({ count: 3, size: 200, interval: 100 });
+  let pingConfig = $state({ count: 3, size: 56, interval: 300 });
   let form = $state({
     name: null,
     target: null,
-    timeout_seconds: 10,
-    interval_seconds: 20,
+    timeout_seconds: 5,
+    interval_seconds: 60,
     enabled: true,
     type: 'http',
   });

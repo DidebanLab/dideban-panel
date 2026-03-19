@@ -90,15 +90,15 @@
 
 <section class="w-full m-auto h-auto flex flex-col col-span-10">
   <!-- Content of dashboard page -->
-  <div class="w-full flex flex-col gap-7.75 p-7.75 py-2">
+  <div class="w-full flex flex-col gap-7.75 sm:p-7.75 sm:py-2">
     <div
-      class="w-full flex flex-col justify-start items-start gap-6 border border-[#0D0D0D]/5 dark:border-white/5 p-6 rounded-xl">
+      class="w-full flex flex-col justify-start items-start gap-6 sm:border border-[#0D0D0D]/5 dark:border-white/5 px-6 pt-1 pb-6 sm:py-6 rounded-xl">
       <div
         class="w-full flex flex-col gap-4 lg:gap-6 lg:flex-row justify-between items-center lg:items-start relative">
         <div class="w-full flex justify-between items-start">
           <div class="flex flex-col justify-center items-start">
             {#if data?.name}
-              <span class="text-black dark:text-white text-lg sm:text-xl capitalize"
+              <span class="text-black dark:text-white text-lg sm:text-xl capitalize text-nowrap"
                 >{data?.name}</span
               >{:else}<div class="flex justify-center items-center gap-2">
                 <svg
@@ -158,7 +158,7 @@
               </svg>
             </button>
           {:else if data}
-            <div class="flex justify-center items-center gap-3">
+            <div class="flex flex-col-reverse sm:flex-row justify-start items-end sm:justify-center sm:items-center gap-1.5 sm:gap-3">
               <div class="flex justify-center items-center gap-1.75">
                 <button
                   class="cursor-pointer"
@@ -171,7 +171,7 @@
                       props: { name: data?.name, id: data?.id },
                     });
                   }}>
-                  <img src="/icons/trash.png" alt="trash" width="20" height="20" /></button>
+                  <img class="size-4 sm:size-5" src="/icons/trash.png" alt="trash" width="20" height="20" /></button>
                 <button
                   class="cursor-pointer"
                   aria-label="edit config"
@@ -183,15 +183,15 @@
                       props: { data },
                     });
                   }}>
-                  <img src="/icons/edit.png" alt="edit" width="24" height="24" />
+                  <img class="size-5 sm:size-6" src="/icons/edit.png" alt="edit" width="24" height="24" />
                 </button>
               </div>
 
-              <div class="h-9 w-px bg-white/20"></div>
+              <div class="h-9 w-px bg-white/ hidden sm:block"></div>
               {#key enabled}
                 <div
-                  class="py-2 w-30 flex justify-center items-center gap-2 bg-[#0D0D0D]/5 dark:bg-white/5 border border-[#e5e7eb] dark:border-white/5 rounded-[14px]">
-                  <span class="text-xs text-[#99a1af]">
+                  class="sm:py-2 w-fit sm:w-30 flex justify-center items-center gap-2 sm:bg-[#0D0D0D]/5 sm:dark:bg-white/5 sm:border border-[#e5e7eb] dark:border-white/5 sm:rounded-[14px] mt-1 sm:mt-0">
+                  <span class=" text-[11px] sm:text-xs text-[#99a1af]">
                     {enabled ? 'Enabled' : 'Disabled'}
                   </span>
 
@@ -221,13 +221,13 @@
                       }
                     }}
                     aria-label="activation toggle"
-                    class="w-11 h-6 rounded-full relative cursor-pointer {enabled
+                    class="w-7 h-4 sm:w-11  sm:h-6 rounded-full relative cursor-pointer {enabled
                       ? 'bg-[#00bc7d]/20 border border-[#00bc7d]/30'
                       : 'bg-[#6a7282]/10 border border-[#6a7282]/20 '}">
                     <div
                       style={enabled ? 'box-shadow: 0 0 5px 0.5px #00bc7d' : ''}
-                      class="absolute top-1/2 -translate-y-1/2 left-px size-5 rounded-full transition-transform duration-300 ease-in-out {enabled
-                        ? 'translate-x-5 bg-[#00bc7d]'
+                      class="absolute top-1/2 -translate-y-1/2 left-px size-3 sm:size-5 rounded-full transition-transform duration-300 ease-in-out {enabled
+                        ? 'translate-x-3 sm:translate-x-5 bg-[#00bc7d]'
                         : 'translate-x-0 bg-[#4d4d4d]'}">
                     </div>
                   </button>
@@ -292,10 +292,10 @@
 
       <div class="flex flex-col gap-4 w-full">
         <div
-          class="relative flex flex-col p-6 gap-4 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5 {date &&
+          class="relative flex flex-col px-4.25 py-4 sm:px-6 sm:py-6 gap-4 rounded-[14px] dark:bg-[#0D0D0D] bg-[#FFFFFF] border border-[#0D0D0D]/5 dark:border-white/5 {date &&
           data
-            ? 'h-43'
-            : 'h-35'}">
+            ? 'h-29 sm:h-43'
+            : 'h-29 sm:h-35'}">
           <div class="w-full flex justify-between items-start">
             <div class="w-fit flex flex-col justify-start items-start">
               <span class="text-lg text-black dark:text-white">Uptime</span>
@@ -322,7 +322,7 @@
             {#if date}
               {#if summaryWithDate?.overall.uptime_percent}
                 <span
-                  class="text-2xl {summaryWithDate?.overall.uptime_percent
+                  class="text-xl sm:text-2xl {summaryWithDate?.overall.uptime_percent
                     ? summaryWithDate?.overall.uptime_percent >= 90
                       ? 'text-[#008236]'
                       : summaryWithDate?.overall.uptime_percent >= 80
@@ -338,11 +338,11 @@
                     : 'No Data'}
                 </span>
               {:else}
-                <span class="text-2xl text-white/20">No Data</span>
+                <span class="text-xl sm:text-2xl text-white/20">No Data</span>
               {/if}
             {:else if history?.uptime_percent}
               <span
-                class="text-2xl {history?.uptime_percent >= 90
+                class="text-xl sm:text-2xl {history?.uptime_percent >= 90
                   ? 'text-[#008236]'
                   : history?.uptime_percent >= 80
                     ? 'text-[#00D492]'
@@ -353,14 +353,14 @@
                         : 'text-[#EF4444]'}">
                 {history?.uptime_percent}%
               </span>{:else}
-              <span class="text-2xl text-white/20">No Data</span>
+              <span class="text-xl sm:text-2xl text-white/20">No Data</span>
             {/if}
           </div>
 
           <div
-            class=" w-full z-10 flex flex-row-reverse gap-0.5 justify-between items-end absolute start-1/2 -translate-x-1/2 px-6 {date
-              ? 'bottom-14'
-              : 'bottom-6'}">
+            class=" w-full z-10 flex flex-row-reverse gap-0.5 justify-between items-end absolute start-1/2 -translate-x-1/2 px-4.25 sm:px-6 {date
+              ? 'bottom-4 sm:bottom-14'
+              : 'bottom-4 sm:bottom-6'}">
             {#if !date}
               {#each history?.data as detail (detail[0])}
                 {@const status = detail[1]}
@@ -527,7 +527,7 @@
 
       {#if !date && data?.interval_seconds * 2 <= 43200}
         <div
-          class="flex mx-auto sticky top-6 shadow-sm shadow-[#3b82f6]/50 z-20 text-white/20 gap-6 py-2 justify-between px-6 text-sm items-center rounded-lg dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
+          class="flex mx-auto sticky top-6 shadow-sm shadow-[#3b82f6]/50 z-20 text-white/20 w-full sm:w-fit gap-3 sm:gap-6 py-2 justify-between px-6 text-sm items-center rounded-lg dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
           {#if data?.interval_seconds * 2 <= 3600}
             <button
               onclick={() => (hours = 1)}
@@ -570,7 +570,7 @@
       {/if}
 
       <div
-        class="relative w-full flex flex-col p-6 pb-13 gap-8 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
+        class="relative w-full flex flex-col sm:p-6 sm:pb-13 gap-8 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
         <div class="flex justify-between items-start">
           <div class="w-fit flex flex-col justify-start items-start">
             <span class="text-lg text-black dark:text-white"> Apdex history</span>
@@ -622,7 +622,7 @@
 
           {#if date}
             {#if summaryWithDate?.overall?.apdex_score}
-              <div class="flex text-2xl justify-end gap-2 items-center">
+              <div class="flex text-xl sm:text-2xl justify-end gap-2 items-center">
                 <span
                   class={summaryWithDate?.overall?.apdex_rating?.toLowerCase() === 'excellent'
                     ? 'text-green-500'
@@ -654,7 +654,7 @@
               <span class="text-white/20 text-2xl"> No Data </span>
             {/if}
           {:else if apdex?.apdex_score}
-            <div class="flex text-2xl justify-end gap-2 items-center">
+            <div class="flex text-xl sm:text-2xl justify-end gap-2 items-center">
               <span
                 class={apdex?.apdex_rating?.toLowerCase() === 'excellent'
                   ? 'text-green-500'
@@ -830,10 +830,10 @@
       </div>
 
       <div
-        class="relative w-full flex flex-col p-6 pb-13 gap-4 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
+        class="relative w-full flex flex-col pt-8 sm:p-6 sm:pt-6 sm:pb-13 gap-4 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
         <div class="flex justify-between w-full items-start">
           <div class="flex flex-col">
-            <span class="text-black dark:text-white text-xl">Apdex Histogram</span><span
+            <span class="text-black dark:text-white text-lg sm:text-xl">Apdex Histogram</span><span
               class="text-sm text-[#99a1af]">Application health reflected in Apdex levels</span>
           </div>
           {#if date ? !(summaryWithDate?.histogram?.error_count || summaryWithDate?.histogram?.buckets.some(item => item?.count)) : !histogram}
@@ -850,22 +850,22 @@
                 100}px;"
               class="border-t-4 rounded-t-xs cursor-pointer relative transition-all {detail?.range_end ===
               -1
-                ? 'w-[5%] bg-[#F87171] border-t-[#ba4646] hover:bg-[#ff5757]'
+                ? 'w-[12%] md:w-[5%] bg-[#F87171] border-t-[#ba4646] hover:bg-[#ff5757]'
                 : detail?.range_end === 400
-                  ? 'w-[5%] bg-green-700 border-t-green-900 hover:bg-green-800'
+                  ? 'w-[12%] md:w-[5%] bg-green-700 border-t-green-900 hover:bg-green-800'
                   : detail?.range_end === 1600
-                    ? 'w-[15%] bg-[#00D492] border-t-[#009667] hover:bg-[#00ad76]'
+                    ? 'w-[12%] md:w-[15%] bg-[#00D492] border-t-[#009667] hover:bg-[#00ad76]'
                     : detail?.range_end === 4800
-                      ? 'w-[35%] bg-[#FDC700] border-t-[#c79c00] hover:bg-[#ffd745]'
+                      ? 'w-[26%] md:w-[35%] bg-[#FDC700] border-t-[#c79c00] hover:bg-[#ffd745]'
                       : detail?.range_end === 8000
-                        ? 'w-[35%] bg-[#F97316] border-t-[#c25e17] hover:bg-[#cf5600]'
+                        ? 'w-[26%] md:w-[35%] bg-[#F97316] border-t-[#c25e17] hover:bg-[#cf5600]'
                         : ''}">
-              <div class="absolute start-1/2 -translate-x-1/2 -top-6 text-sm text-white">
+              <div class="absolute start-1/2 -translate-x-1/2 -top-6 text-xs md:text-sm text-white">
                 {detail?.count}
               </div>
               {#if detail?.range_start !== 0}
                 <div class="absolute -bottom-3 text-xs -start-px bg-white/15 h-2 w-px"></div>
-                <div class="absolute -bottom-7 text-xs -start-3 text-white/20 text-nowrap">
+                <div class="absolute -bottom-7 text-[9px] sm:text-xs -start-3 text-white/20 text-nowrap">
                   {detail?.range_start}ms
                 </div>
               {/if}
@@ -878,25 +878,25 @@
             )
               ? (10 / (date ? summaryWithDate?.histogram?.max_count : histogram?.max_count)) * 100
               : 0}px;"
-            class="border-t-4 w-[5%] rounded-t-xs cursor-pointer relative bg-[#410000] border-t-[#4b0000] hover:bg-[#410000]/70">
-            <div class="absolute start-1/2 -translate-x-1/2 -top-6 text-sm text-white">
+            class="border-t-4 w-[12%] md:w-[5%] rounded-t-xs cursor-pointer relative bg-[#410000] border-t-[#4b0000] hover:bg-[#410000]/70">
+            <div class="absolute start-1/2 -translate-x-1/2 -top-6 text-xs md:text-sm text-white">
               {date ? summaryWithDate?.histogram?.error_count || 0 : histogram?.error_count || 0}
             </div>
             <div class="absolute -bottom-3 text-xs -start-px bg-white/15 h-2 w-px"></div>
             <div class="absolute -bottom-3 text-xs end-0 bg-white/15 h-2 w-px"></div>
-            <div class="absolute -bottom-7 text-xs -start-3 text-white/20 text-nowrap">+8ms</div>
-            <div class="absolute -bottom-7 text-xs -end-1 text-white/20 text-nowrap">Errors</div>
+            <div class="absolute -bottom-7 text-[9px] sm:text-xs -start-3 text-white/20 text-nowrap">+8ms</div>
+            <div class="absolute -bottom-7 text-[9px] sm:text-xs -end-1 text-white/20 text-nowrap">Errors</div>
           </div>
         </div>
       </div>
       {#if summary}
         <div
-          class="w-full grid grid-cols-4 xl:grid-cols-6 gap-8 border border-[#0D0D0D]/5 dark:border-white/5 p-6 rounded-xl">
+          class="w-full grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6 gap-6 md:gap-8 sm:border border-[#0D0D0D]/5 dark:border-white/5 sm:p-6 rounded-xl mt-9 sm:mt-0">
           {#each summary as item, i}
             {@const historyMap = new Map(Object.entries(item?.history ?? {}))}
             <div class="flex flex-col gap-4">
               <div class="flex justify-between items-center w-full border-b border-b-white/15 pb-1">
-                <span class="text-sm text-white"> {getMonthName(item?.month)}</span>
+                <span class="text-xs sm:text-sm text-white"> {getMonthName(item?.month)}</span>
                 <div class="flex flex-col">
                   <div
                     class="text-xs items-center justify-end gap-1 flex {item?.uptime >= 90
@@ -918,7 +918,7 @@
               </div>
 
               <div
-                class="grid grid-cols-7 grid-rows-5 lg:gap-3 xl:gap-2.25 2xl:gap-2 3xl:gap-4 w-full">
+                class="grid grid-cols-7 grid-rows-5 gap-1.75 lg:gap-3 xl:gap-2.25 2xl:gap-2 3xl:gap-4 w-full">
                 <div style="grid-column: span {new Date(item?.year, item?.month - 1, 1).getDay()};">
                 </div>
                 {#each historyMap as [day, value], i}
