@@ -90,9 +90,9 @@
 
 <section class="w-full m-auto h-auto flex flex-col col-span-10">
   <!-- Content of dashboard page -->
-  <div class="w-full flex flex-col gap-7.75 sm:p-7.75 sm:py-2">
+  <div class="w-full flex flex-col gap-7.75 px-6 sm:p-7.75 sm:py-2">
     <div
-      class="w-full flex flex-col justify-start items-start gap-6 sm:border border-[#0D0D0D]/5 dark:border-white/5 px-6 pt-1 pb-6 sm:py-6 rounded-xl">
+      class="w-full flex flex-col justify-start items-start gap-6 lg:border border-[#0D0D0D]/5 dark:border-white/5 lg:px-6 pt-1 pb-6 lg:py-6 lg:rounded-xl">
       <div
         class="w-full flex flex-col gap-4 lg:gap-6 lg:flex-row justify-between items-center lg:items-start relative">
         <div class="w-full flex justify-between items-start">
@@ -221,13 +221,13 @@
                       }
                     }}
                     aria-label="activation toggle"
-                    class="w-7 h-4 sm:w-11  sm:h-6 rounded-full relative cursor-pointer {enabled
+                    class="w-7.5 h-4 sm:w-11  sm:h-6 rounded-full relative cursor-pointer {enabled
                       ? 'bg-[#00bc7d]/20 border border-[#00bc7d]/30'
                       : 'bg-[#6a7282]/10 border border-[#6a7282]/20 '}">
                     <div
                       style={enabled ? 'box-shadow: 0 0 5px 0.5px #00bc7d' : ''}
                       class="absolute top-1/2 -translate-y-1/2 left-px size-3 sm:size-5 rounded-full transition-transform duration-300 ease-in-out {enabled
-                        ? 'translate-x-3 sm:translate-x-5 bg-[#00bc7d]'
+                        ? 'translate-x-3.25 sm:translate-x-5 bg-[#00bc7d]'
                         : 'translate-x-0 bg-[#4d4d4d]'}">
                     </div>
                   </button>
@@ -322,7 +322,7 @@
             {#if date}
               {#if summaryWithDate?.overall.uptime_percent}
                 <span
-                  class="text-xl sm:text-2xl {summaryWithDate?.overall.uptime_percent
+                  class="text-lg sm:text-2xl {summaryWithDate?.overall.uptime_percent
                     ? summaryWithDate?.overall.uptime_percent >= 90
                       ? 'text-[#008236]'
                       : summaryWithDate?.overall.uptime_percent >= 80
@@ -338,11 +338,11 @@
                     : 'No Data'}
                 </span>
               {:else}
-                <span class="text-xl sm:text-2xl text-white/20">No Data</span>
+                <span class="text-lg sm:text-2xl text-white/20">No Data</span>
               {/if}
             {:else if history?.uptime_percent}
               <span
-                class="text-xl sm:text-2xl {history?.uptime_percent >= 90
+                class="text-lg sm:text-2xl {history?.uptime_percent >= 90
                   ? 'text-[#008236]'
                   : history?.uptime_percent >= 80
                     ? 'text-[#00D492]'
@@ -353,7 +353,7 @@
                         : 'text-[#EF4444]'}">
                 {history?.uptime_percent}%
               </span>{:else}
-              <span class="text-xl sm:text-2xl text-white/20">No Data</span>
+              <span class="text-lg sm:text-2xl text-white/20">No Data</span>
             {/if}
           </div>
 
@@ -570,7 +570,7 @@
       {/if}
 
       <div
-        class="relative w-full flex flex-col sm:p-6 sm:pb-13 gap-8 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
+        class="relative w-full flex flex-col sm:p-6 xl:pb-13 gap-8 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
         <div class="flex justify-between items-start">
           <div class="w-fit flex flex-col justify-start items-start">
             <span class="text-lg text-black dark:text-white"> Apdex history</span>
@@ -622,7 +622,7 @@
 
           {#if date}
             {#if summaryWithDate?.overall?.apdex_score}
-              <div class="flex text-xl sm:text-2xl justify-end gap-2 items-center">
+              <div class="flex text-lg sm:text-2xl justify-end gap-2 items-center">
                 <span
                   class={summaryWithDate?.overall?.apdex_rating?.toLowerCase() === 'excellent'
                     ? 'text-green-500'
@@ -654,7 +654,7 @@
               <span class="text-white/20 text-2xl"> No Data </span>
             {/if}
           {:else if apdex?.apdex_score}
-            <div class="flex text-xl sm:text-2xl justify-end gap-2 items-center">
+            <div class="flex text-lg sm:text-2xl justify-end gap-2 items-center">
               <span
                 class={apdex?.apdex_rating?.toLowerCase() === 'excellent'
                   ? 'text-green-500'
@@ -687,7 +687,7 @@
           {/if}
         </div>
 
-        <div class="relative w-full z-10 flex gap-0.5 justify-start items-end">
+        <div class="relative w-full z-10 flex gap-0.5 justify-start items-end overflow-x-auto overflow-y-hidden pb-10 3xl:overflow-x-visible 3xl:overflow-y-visible 3xl:pb-0 ">
           <div class="w-full absolute -bottom-1 h-px bg-white/10"></div>
 
           {#each date ? summaryWithDate?.apdex_series : apdex?.apdex_series as detail, i}
@@ -696,7 +696,7 @@
               : apdex?.apdex_series.length}
             <div
               style="height: {detail?.apdex_score / 2}px;"
-              class="w-full rounded-[1px] cursor-pointer relative group border-t-4 transition-all {detail?.apdex_score >=
+              class="min-w-[13.5px] w-full rounded-[1px] cursor-pointer relative group border-t-4 transition-all {detail?.apdex_score >=
               90
                 ? 'bg-green-500 border-t-green-700 hover:bg-green-700'
                 : detail?.apdex_score >= 80
@@ -711,7 +711,7 @@
                   {detail?.apdex_score}%
                 </div>
               {/if}
-              {#if i !== 0 && i % (date ? 1 : innerWidth >= 1920 ? (length < 30 ? 1 : 3) : innerWidth >= 1536 ? (length < 30 ? 2 : 4) : innerWidth >= 1024 ? (length < 30 ? 3 : 8) : innerWidth >= 640 ? (length < 30 ? 5 : 12) : 10) === 0}
+              {#if i !== 0 && i % (date ? 1 :  (length < 30 ? 1 : 3)) === 0}
                 <div class="absolute -bottom-3 start-0 h-2 w-px bg-white/10">
                   <div class="relative">
                     <div
@@ -850,15 +850,15 @@
                 100}px;"
               class="border-t-4 rounded-t-xs cursor-pointer relative transition-all {detail?.range_end ===
               -1
-                ? 'w-[12%] md:w-[5%] bg-[#F87171] border-t-[#ba4646] hover:bg-[#ff5757]'
+                ? 'w-[12%] lg:w-[5%] bg-[#F87171] border-t-[#ba4646] hover:bg-[#ff5757]'
                 : detail?.range_end === 400
-                  ? 'w-[12%] md:w-[5%] bg-green-700 border-t-green-900 hover:bg-green-800'
+                  ? 'w-[12%] lg:w-[5%] bg-green-700 border-t-green-900 hover:bg-green-800'
                   : detail?.range_end === 1600
-                    ? 'w-[12%] md:w-[15%] bg-[#00D492] border-t-[#009667] hover:bg-[#00ad76]'
+                    ? 'w-[12%] lg:w-[15%] bg-[#00D492] border-t-[#009667] hover:bg-[#00ad76]'
                     : detail?.range_end === 4800
-                      ? 'w-[26%] md:w-[35%] bg-[#FDC700] border-t-[#c79c00] hover:bg-[#ffd745]'
+                      ? 'w-[26%] lg:w-[35%] bg-[#FDC700] border-t-[#c79c00] hover:bg-[#ffd745]'
                       : detail?.range_end === 8000
-                        ? 'w-[26%] md:w-[35%] bg-[#F97316] border-t-[#c25e17] hover:bg-[#cf5600]'
+                        ? 'w-[26%] lg:w-[35%] bg-[#F97316] border-t-[#c25e17] hover:bg-[#cf5600]'
                         : ''}">
               <div class="absolute start-1/2 -translate-x-1/2 -top-6 text-xs md:text-sm text-white">
                 {detail?.count}
@@ -878,13 +878,13 @@
             )
               ? (10 / (date ? summaryWithDate?.histogram?.max_count : histogram?.max_count)) * 100
               : 0}px;"
-            class="border-t-4 w-[12%] md:w-[5%] rounded-t-xs cursor-pointer relative bg-[#410000] border-t-[#4b0000] hover:bg-[#410000]/70">
+            class="border-t-4 w-[12%] lg:w-[5%] rounded-t-xs cursor-pointer relative bg-[#410000] border-t-[#4b0000] hover:bg-[#410000]/70">
             <div class="absolute start-1/2 -translate-x-1/2 -top-6 text-xs md:text-sm text-white">
               {date ? summaryWithDate?.histogram?.error_count || 0 : histogram?.error_count || 0}
             </div>
             <div class="absolute -bottom-3 text-xs -start-px bg-white/15 h-2 w-px"></div>
             <div class="absolute -bottom-3 text-xs end-0 bg-white/15 h-2 w-px"></div>
-            <div class="absolute -bottom-7 text-[9px] sm:text-xs -start-3 text-white/20 text-nowrap">+8ms</div>
+            <div class="absolute -bottom-7 text-[9px] sm:text-xs -start-3 text-white/20 text-nowrap">+8s</div>
             <div class="absolute -bottom-7 text-[9px] sm:text-xs -end-1 text-white/20 text-nowrap">Errors</div>
           </div>
         </div>
