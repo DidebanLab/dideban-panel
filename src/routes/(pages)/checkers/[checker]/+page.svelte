@@ -17,6 +17,7 @@
   import Uptime from '../../../../components/pages/checker/Uptime.svelte';
   import TimeRangeSelector from '../../../../components/common/TimeRangeSelector.svelte';
   import ApdexHistory from '../../../../components/pages/checker/ApdexHistory.svelte';
+  import ApdexHistogram from '../../../../components/pages/checker/ApdexHistogram.svelte';
 
   const id = $page.params.checker;
   let data = $state();
@@ -24,7 +25,6 @@
   let enabled = $state();
   let date = $state(null);
   let toDay = $state();
-  let histogram = $state();
   let summary = $state();
   let summaryWithDate = $state();
 
@@ -66,15 +66,6 @@
         };
       });
     }
-
-    //----
-    http.get(endpoints.checkHistogram(id), { params: { hours } }).then(
-      res =>
-        (histogram = {
-          ...res.data?.data,
-          max_count: Math.max(...res.data?.data?.histogram.map(i => i.count), 1),
-        }),
-    );
   });
 </script>
 
@@ -252,72 +243,8 @@
 
       <ApdexHistory {id} {hours} {summaryWithDate} {date} />
 
-      <div
-        class="relative w-full flex flex-col pt-8 sm:p-6 sm:pt-6 sm:pb-13 gap-4 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
-        <div class="flex justify-between w-full items-start">
-          <div class="flex flex-col">
-            <span class="text-black dark:text-white text-lg sm:text-xl">Apdex Histogram</span><span
-              class="text-sm text-[#99a1af]">Application health reflected in Apdex levels</span>
-          </div>
-          {#if date ? !(summaryWithDate?.histogram?.error_count || summaryWithDate?.histogram?.buckets.some(item => item?.count)) : !histogram}
-            <span class="text-2xl text-white/20"> No Data </span>
-          {/if}
-        </div>
-        <div class="relative w-full z-10 flex gap-0.5 justify-start items-end mt-4">
-          <div class="absolute -bottom-1 w-full h-px bg-white/15"></div>
+      <ApdexHistogram {id} {hours} {summaryWithDate} {date} />
 
-          {#each (date ? summaryWithDate?.histogram?.buckets : histogram?.histogram) || [{ range_start: 0, range_end: 400, count: 0 }, { range_start: 400, range_end: 1600, count: 0 }, { range_start: 1600, range_end: 4800, count: 0 }, { range_start: 4800, range_end: 8000, count: 0 }, { range_start: 8000, range_end: -1, count: 0 }] as detail, i}
-            <div
-              style="height: {(detail?.count /
-                (date ? summaryWithDate?.histogram?.max_count : histogram?.max_count)) *
-                100}px;"
-              class="border-t-4 rounded-t-xs cursor-pointer relative transition-all {detail?.range_end ===
-              -1
-                ? 'w-[12%] lg:w-[10%] xl:w-[5%] bg-[#F87171] border-t-[#ba4646] hover:bg-[#ff5757]'
-                : detail?.range_end === 400
-                  ? 'w-[12%] lg:w-[10%] xl:w-[5%] bg-green-700 border-t-green-900 hover:bg-green-800'
-                  : detail?.range_end === 1600
-                    ? 'w-[12%] lg:w-[10%] xl:w-[15%] bg-[#00D492] border-t-[#009667] hover:bg-[#00ad76]'
-                    : detail?.range_end === 4800
-                      ? 'w-[26%] lg:w-[30%] xl:w-[35%] bg-[#FDC700] border-t-[#c79c00] hover:bg-[#ffd745]'
-                      : detail?.range_end === 8000
-                        ? 'w-[26%] lg:w-[30%] xl:w-[35%] bg-[#F97316] border-t-[#c25e17] hover:bg-[#cf5600]'
-                        : ''}">
-              <div class="absolute start-1/2 -translate-x-1/2 -top-6 text-xs md:text-sm text-white">
-                {detail?.count}
-              </div>
-              {#if detail?.range_start !== 0}
-                <div class="absolute -bottom-3 text-xs -start-px bg-white/15 h-2 w-px"></div>
-                <div
-                  class="absolute -bottom-7 text-[9px] sm:text-xs -start-3 text-white/20 text-nowrap">
-                  {detail?.range_start}ms
-                </div>
-              {/if}
-            </div>
-          {/each}
-
-          <div
-            style="height: {Boolean(
-              date ? summaryWithDate?.histogram?.error_count : histogram?.error_count,
-            )
-              ? (10 / (date ? summaryWithDate?.histogram?.max_count : histogram?.max_count)) * 100
-              : 0}px;"
-            class="border-t-4 w-[12%] lg:w-[10%] xl:w-[5%] rounded-t-xs cursor-pointer relative bg-[#410000] border-t-[#4b0000] hover:bg-[#410000]/70">
-            <div class="absolute start-1/2 -translate-x-1/2 -top-6 text-xs md:text-sm text-white">
-              {date ? summaryWithDate?.histogram?.error_count || 0 : histogram?.error_count || 0}
-            </div>
-            <div class="absolute -bottom-3 text-xs -start-px bg-white/15 h-2 w-px"></div>
-            <div class="absolute -bottom-3 text-xs end-0 bg-white/15 h-2 w-px"></div>
-            <div
-              class="absolute -bottom-7 text-[9px] sm:text-xs -start-3 text-white/20 text-nowrap">
-              +8s
-            </div>
-            <div class="absolute -bottom-7 text-[9px] sm:text-xs -end-1 text-white/20 text-nowrap">
-              Errors
-            </div>
-          </div>
-        </div>
-      </div>
       {#if summary}
         <div
           class="w-full grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6 gap-6 md:gap-8 sm:border border-[#0D0D0D]/5 dark:border-white/5 sm:p-6 rounded-xl mt-9 sm:mt-0">
