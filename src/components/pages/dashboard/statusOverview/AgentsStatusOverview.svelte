@@ -6,14 +6,14 @@
   import { http } from '../../../../services/http.svelte.js';
   import { endpoints } from '../../../../endpoints.svelte.js';
 
-  let agentsCountAdded = $state();
+  let trigger = $state();
   let isMobile = $state(innerWidth < 640);
   let agents = $state(null);
   let history = $state(null);
   let historyDetail = $state(null);
 
   $effect(() => {
-    const trigger = agentsCountAdded;
+    const update = trigger;
     http.get(endpoints.agents).then(res => (agents = res.data.data));
   });
 </script>
@@ -34,7 +34,7 @@
           content: AddAgent,
           props: {
             onAdded: () => {
-              agentsCountAdded += 1;
+              trigger += 1;
             },
           },
         });

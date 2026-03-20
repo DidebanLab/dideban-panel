@@ -6,13 +6,13 @@
   import { http } from '../../../../services/http.svelte.js';
   import { endpoints } from '../../../../endpoints.svelte.js';
   import responseTimeColor from '../../../../utils/responseTimeColor.js';
-  let checksCountAdded = $state(0);
+  let trigger = $state(0);
   let history = $state(null);
   let data = $state(null);
   let isMobile = $state(innerWidth < 640);
 
   $effect(() => {
-    const trigger = checksCountAdded;
+    const update = trigger;
     http.get(endpoints.checks).then(res => (data = res.data.data));
   });
 </script>
@@ -33,7 +33,7 @@
           content: AddChecker,
           props: {
             onAdded: () => {
-              checksCountAdded += 1;
+              trigger += 1;
             },
           },
         });

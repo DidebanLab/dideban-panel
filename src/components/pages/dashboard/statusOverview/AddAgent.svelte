@@ -33,6 +33,7 @@
       })
       .then(res => {
         onAdded?.();
+
         token = res.data.data.auth_token;
         alertStore.addAlert({
           message: `Agent ${res.data.data.name} has been added successfully.`,

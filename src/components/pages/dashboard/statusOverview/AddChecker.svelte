@@ -64,6 +64,7 @@
 
     http.post(endpoints.checks, detail).then(res => {
       onAdded?.();
+
       alertStore.addAlert({
         message: `checker ${res.data.data.name} has been added successfully.`,
         type: 'successful',
