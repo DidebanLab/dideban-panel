@@ -1,6 +1,7 @@
 <script>
   import { endpoints } from '../../../endpoints.svelte';
   import { http } from '../../../services/http.svelte';
+  import responseTimeColor from '../../../utils/responseTimeColor';
 
   let { id, date, summaryWithDate } = $props();
   let history = $state();
@@ -14,7 +15,7 @@
         .get(endpoints.checkHistory(id), {
           params: { short: true, detail: true, page_size: required },
         })
-        .then(res => (history = { ...res.data, data: res.data?.data.slice(-required) }));
+        .then(res => (history = { ...res.data, data: res.data?.data?.reverse() }));
     }
   });
 </script>
@@ -90,6 +91,12 @@
       ? 'overflow-x-auto overflow-y-hidden 3xl:overflow-x-visible 3xl:overflow-y-visible relative pb-10 3xl:pb-0'
       : 'bottom-4 sm:bottom-6 absolute start-1/2 -translate-x-1/2 px-4.25 sm:px-6'}">
     {#if !date}
+      {#each Array(missing) as _, i}
+        <div
+          aria-hidden="true"
+          class="w-full h-4 rounded-[1px] bg-black/20 dark:bg-[#FFFFFF]/10 opacity-70">
+        </div>
+      {/each}
       {#each history?.data as detail (detail[0])}
         {@const status = detail[1]}
 
@@ -191,12 +198,6 @@
             </div>
           {/if}
         </button>
-      {/each}
-      {#each Array(missing) as _, i}
-        <div
-          aria-hidden="true"
-          class="w-full h-4 rounded-[1px] bg-black/20 dark:bg-[#FFFFFF]/10 opacity-70">
-        </div>
       {/each}
     {:else}
       {#if summaryWithDate?.uptime_series}
