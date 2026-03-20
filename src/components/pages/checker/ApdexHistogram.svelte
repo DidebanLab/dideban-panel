@@ -10,7 +10,7 @@
         res =>
           (histogram = {
             ...res.data?.data,
-            max_count: Math.max(...res.data?.data?.histogram.map(i => i.count), 1),
+            max_count: Math.max(...res.data?.data?.histogram.map(i => i.count), 0),
           }),
       );
     }
@@ -64,7 +64,11 @@
       style="height: {Boolean(
         date ? summaryWithDate?.histogram?.error_count : histogram?.error_count,
       )
-        ? (10 / (date ? summaryWithDate?.histogram?.max_count : histogram?.max_count)) * 100
+        ? (date ? summaryWithDate?.histogram?.max_count : histogram?.max_count)
+          ? ((date ? summaryWithDate?.histogram?.error_count : histogram?.error_count) /
+              (date ? summaryWithDate?.histogram?.max_count : histogram?.max_count)) *
+            100
+          : 60
         : 0}px;"
       class="border-t-4 w-[12%] lg:w-[10%] xl:w-[5%] rounded-t-xs cursor-pointer relative bg-[#410000] border-t-[#4b0000] hover:bg-[#410000]/70">
       <div class="absolute start-1/2 -translate-x-1/2 -top-6 text-xs md:text-sm text-white">
