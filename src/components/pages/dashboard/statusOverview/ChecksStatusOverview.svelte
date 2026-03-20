@@ -6,14 +6,13 @@
   import { http } from '../../../../services/http.svelte.js';
   import { endpoints } from '../../../../endpoints.svelte.js';
   import responseTimeColor from '../../../../utils/responseTimeColor.js';
-
-  let history = $state();
-
-  let data = $state();
-
+  let checksCountAdded = $state(0);
+  let history = $state(null);
+  let data = $state(null);
   let isMobile = $state(innerWidth < 640);
 
-  onMount(() => {
+  $effect(() => {
+    const trigger = checksCountAdded;
     http.get(endpoints.checks).then(res => (data = res.data.data));
   });
 </script>
@@ -32,6 +31,11 @@
         opener({
           id: `create-checks`,
           content: AddChecker,
+          props: {
+            onAdded: () => {
+              checksCountAdded += 1;
+            },
+          },
         });
       }}
       class="w-10 sm:w-34.25 h-10 flex justify-center gap-2 px-4 items-center bg-[#22c55e]/10 rounded-lg text-xl text-[#10b981] cursor-pointer">
@@ -41,7 +45,8 @@
     </button>
   </div>
 
-  <div class="w-full grid grid-cols-1 xl:grid-cols-2 3xl:grid-cols-3 gap-4 custom-scroll p-6 pb-0 sm:pb-6">
+  <div
+    class="w-full grid grid-cols-1 xl:grid-cols-2 3xl:grid-cols-3 gap-4 custom-scroll p-6 pb-0 sm:pb-6">
     {#each data as item (item.id)}
       {@const error = item.status === 'error' || item.status === 'down'}
       {@const warn = item.status === 'timeout'}
@@ -114,17 +119,23 @@
 
           <div class="flex flex-col justify-center items-start gap-1">
             <a href="/checkers/{item.id}" class="text-sm sm:text-lg dark:text-white">{item.name}</a>
-            <div class="text-xs flex justify-center items-center gap-1 text-[#707B76]/40 text-nowrap">
+
+            <div
+              class="text-xs flex justify-center items-center gap-1 text-[#707B76]/40 text-nowrap">
               <img width="17" height="17" src="/icons/clock.png" alt="clock" />
-              {new Date(data[data.length - 1].last_checked).toLocaleString('en-CA', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit',
-                hour12: false,
-              })}
+              {#if data[data.length - 1].last_checked}
+                {new Date(data[data.length - 1].last_checked).toLocaleString('en-CA', {
+                  year: 'numeric',
+                  month: '2-digit',
+                  day: '2-digit',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  second: '2-digit',
+                  hour12: false,
+                })}
+              {:else}
+                <span>Unknown</span>
+              {/if}
             </div>
           </div>
           <div class="flex justify-center items-center gap-2 ms-auto mb-auto">

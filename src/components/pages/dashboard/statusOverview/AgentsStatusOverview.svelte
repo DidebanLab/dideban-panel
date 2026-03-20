@@ -6,12 +6,14 @@
   import { http } from '../../../../services/http.svelte.js';
   import { endpoints } from '../../../../endpoints.svelte.js';
 
+  let agentsCountAdded = $state();
   let isMobile = $state(innerWidth < 640);
-  let agents = $state();
-  let history = $state();
-  let historyDetail = $state();
+  let agents = $state(null);
+  let history = $state(null);
+  let historyDetail = $state(null);
 
-  onMount(() => {
+  $effect(() => {
+    const trigger = agentsCountAdded;
     http.get(endpoints.agents).then(res => (agents = res.data.data));
   });
 </script>
@@ -30,6 +32,11 @@
         opener({
           id: 'create-agents',
           content: AddAgent,
+          props: {
+            onAdded: () => {
+              agentsCountAdded += 1;
+            },
+          },
         });
       }}
       class="w-10 sm:w-34.25 h-10 flex justify-center gap-2 px-4 items-center bg-[#22c55e]/10 rounded-lg text-xl text-[#10b981] cursor-pointer">
@@ -104,18 +111,26 @@
           </div>
 
           <div class="flex flex-col justify-center items-start gap-1">
-            <a href="/agents/{item.id}" class="text-sm sm:text-lg dark:text-white capitalize">{item.name}</a>
-            <div class="text-xs flex justify-center items-center gap-1 text-[#707B76]/40 text-nowrap">
+            <a href="/agents/{item.id}" class="text-sm sm:text-lg dark:text-white capitalize"
+              >{item.name}</a>
+
+            <div
+              class="text-xs flex justify-center items-center gap-1 text-[#707B76]/40 text-nowrap">
               <img width="17" height="17" src="/icons/clock.png" alt="clock" />
-              {new Date(item.last_seen).toLocaleString('en-CA', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit',
-                hour12: false,
-              })}
+
+              {#if item.last_seen}
+                {new Date(item.last_seen).toLocaleString('en-CA', {
+                  year: 'numeric',
+                  month: '2-digit',
+                  day: '2-digit',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  second: '2-digit',
+                  hour12: false,
+                })}
+              {:else}
+                <span>Unknown</span>
+              {/if}
             </div>
           </div>
           <div class="flex justify-center items-center gap-2 ms-auto mb-auto">

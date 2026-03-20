@@ -14,7 +14,7 @@
 </script>
 
 <div
-  class="relative w-full flex flex-col sm:p-6 xl:pb-13 gap-4 sm:gap-8 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
+  class="relative w-full flex flex-col hover:z-30 sm:p-6 xl:pb-13 gap-4 sm:gap-8 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
   <div class="flex justify-between items-start">
     <div class="w-fit flex flex-col justify-start items-start">
       <span class="text-lg text-black dark:text-white"> Apdex history</span>

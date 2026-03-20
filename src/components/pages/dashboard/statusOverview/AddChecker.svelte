@@ -9,6 +9,8 @@
   import { fly } from 'svelte/transition';
   import { checkerNameRegex, checkerTargetRegexes } from '../../../../validators.svelte';
 
+  let { onAdded } = $props();
+
   function normalizeHeaders(headersArray) {
     return headersArray.reduce((acc, { key, value }) => {
       if (key && value) {
@@ -61,6 +63,7 @@
     }
 
     http.post(endpoints.checks, detail).then(res => {
+      onAdded?.();
       alertStore.addAlert({
         message: `checker ${res.data.data.name} has been added successfully.`,
         type: 'successful',

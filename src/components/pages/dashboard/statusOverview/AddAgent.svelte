@@ -9,6 +9,7 @@
   import { agentNameRegex } from '../../../../validators.svelte';
   import { fly } from 'svelte/transition';
 
+  let { onAdded } = $props();
   const form = $state({
     enabled: true,
     name: null,
@@ -31,6 +32,7 @@
         ...form,
       })
       .then(res => {
+        onAdded?.();
         token = res.data.data.auth_token;
         alertStore.addAlert({
           message: `Agent ${res.data.data.name} has been added successfully.`,
