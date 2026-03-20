@@ -3,7 +3,7 @@
   import { onMount } from 'svelte';
   import { endpoints } from '../../endpoints.svelte';
   import { http } from '../../services/http.svelte';
-  import UptimeChart from './UptimeChart.svelte';
+  import LatencyChart from './LatencyChart.svelte';
 
   const isMobile = $state(innerWidth < 645);
 
@@ -46,7 +46,7 @@
     {/if}
   </div>
   {#if data?.latency_series?.length > 0}
-    <UptimeChart name="Latency" height={250} data={data?.latency_series} unit="ms" />
+    <LatencyChart name="Latency" height={250} data={data?.latency_series} unit="ms" />
     {:else}
 
     <div class="w-full bg-blue-500/50 h-px my-auto"></div>

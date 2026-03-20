@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import Pagination from '../../../components/common/Pagination.svelte';
   import Select from '../../../components/common/Select.svelte';
-  import UptimeChart from '../../../components/common/UptimeChart.svelte';
+  import LatencyChart from '../../../components/common/LatencyChart.svelte';
   import { endpoints } from '../../../endpoints.svelte';
   import { http } from '../../../services/http.svelte';
   import { opener } from '../../../stores/modal.svelte';
@@ -351,7 +351,7 @@
             </div>
             <div
               class="hidden sm:w-45 ms-auto md:w-78 lg:w-45 xl:w-62 sm:flex justify-center items-center h-full rounded-md mt-4 scale-x-105">
-              <UptimeChart
+              <LatencyChart
                 name="Latency"
                 height={isMobile ? 65 : 70}
                 data={[...result.data]}

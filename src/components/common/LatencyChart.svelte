@@ -23,13 +23,13 @@
           tools: {
             download: false,
             selection: true,
-            zoom: true, // دکمه زوم
-            zoomin: true, // دکمه بزرگ‌نمایی
-            zoomout: true, // دکمه کوچک‌نمایی
-            pan: true, // دکمه جابه‌جایی چارت
-            reset: true, // دکمه بازگردانی به حالت اولیه
+            zoom: true, 
+            zoomin: true,
+            zoomout: true, 
+            pan: true, 
+            reset: true, 
           },
-          autoSelected: 'zoom', // حالت پیش‌فرض فعال روی زوم
+          autoSelected: 'zoom', 
         },
       },
 
