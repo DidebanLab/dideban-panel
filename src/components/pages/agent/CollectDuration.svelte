@@ -14,7 +14,7 @@
 </script>
 
 <div
-  class="relative w-full flex flex-col p-6 pb-13 gap-10 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
+  class="relative w-full flex flex-col p-6 pb-13 gap-10 hover:z-30 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
   <div class="flex justify-between items-start">
     <div class="flex flex-col justify-start items-start w-full">
       <span class="text-lg text-black dark:text-white">Collect Duration</span>

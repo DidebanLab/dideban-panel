@@ -14,7 +14,6 @@
 
   $effect(() => {
     if (!date) {
-      let resChart;
       http
         .get(endpoints.agentChart(id), {
           params: {
@@ -24,19 +23,20 @@
         })
         .then(res => {
           chart = res.data?.data;
-          resChart = res.data?.data;
         });
+    }
+  });
 
-      if (pointIndexHoverd && resChart) {
-        http
-          .get(
-            endpoints.agentHistoryDetail(
-              id,
-              [...resChart?.points?.map(item => item?.[0]).reverse()][pointIndexHoverd],
-            ),
-          )
-          .then(res => (metricPointDetail = res.data?.data));
-      }
+  $effect(() => {
+    if (!date && pointIndexHoverd) {
+      http
+        .get(
+          endpoints.agentHistoryDetail(
+            id,
+            [...chart?.points?.map(item => item?.[0]).reverse()][pointIndexHoverd],
+          ),
+        )
+        .then(res => (metricPointDetail = res.data?.data));
     }
   });
 </script>
