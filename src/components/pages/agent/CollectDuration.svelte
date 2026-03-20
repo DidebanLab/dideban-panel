@@ -1,0 +1,333 @@
+<script>
+  import { endpoints } from '../../../endpoints.svelte';
+  import { http } from '../../../services/http.svelte';
+  const { id, date, summaryWithDate, hours } = $props();
+  let collectDuration = $state();
+
+  $effect(() => {
+    if (!date) {
+      http
+        .get(endpoints.agentCollectDuration(id), { params: { hours } })
+        .then(res => (collectDuration = res.data?.data));
+    }
+  });
+</script>
+
+<div
+  class="relative w-full flex flex-col p-6 pb-13 gap-10 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
+  <div class="flex justify-between items-start">
+    <div class="flex flex-col justify-start items-start w-full">
+      <span class="text-lg text-black dark:text-white">Collect Duration</span>
+      <div class="text-xs text-white/70 flex gap-1.5">
+        <span class="text-white/40">Total collects :</span>
+        {(date ? summaryWithDate?.overall?.total_collects : collectDuration?.total_collect) || '-'}
+      </div>
+    </div>
+
+    {#if date}
+      {#if summaryWithDate?.overall?.avg_collect_duration_ms}
+        <div class="flex text-2xl justify-end gap-2 items-center">
+          <span
+            class={summaryWithDate?.overall?.rate?.toLowerCase() === 'excellent'
+              ? 'text-green-500'
+              : summaryWithDate?.overall?.rate?.toLowerCase() === 'good'
+                ? 'text-[#00D492]'
+                : summaryWithDate?.overall?.rate?.toLowerCase() === 'fair'
+                  ? 'text-[#FDC700]'
+                  : summaryWithDate?.overall?.rate?.toLowerCase() === 'poor'
+                    ? 'text-[#F97316]'
+                    : 'text-[#F87171]'}>
+            {summaryWithDate?.overall?.rate}
+          </span>
+
+          <span class="h-7 w-px bg-white/15"></span>
+
+          <span
+            class={summaryWithDate?.overall?.avg_collect_duration_ms >= 90
+              ? 'text-[#008236]'
+              : summaryWithDate?.overall?.avg_collect_duration_ms >= 80
+                ? 'text-[#00D492]'
+                : summaryWithDate?.overall?.avg_collect_duration_ms >= 70
+                  ? 'text-[#FDC700]'
+                  : summaryWithDate?.overall?.avg_collect_duration_ms >= 50
+                    ? 'text-[#F97316]'
+                    : 'text-[#EF4444]'}>
+            {summaryWithDate?.overall?.avg_collect_duration_ms}ms</span>
+        </div>
+      {:else}
+        <span class="text-2xl text-white/20 text-nowrap"> No Data </span>
+      {/if}
+    {:else if collectDuration?.avg_ms}
+      <div class="flex text-2xl justify-end gap-2 items-center">
+        <span
+          class={collectDuration?.rate?.toLowerCase() === 'excellent'
+            ? 'text-green-500'
+            : collectDuration?.rate?.toLowerCase() === 'good'
+              ? 'text-[#00D492]'
+              : collectDuration?.rate?.toLowerCase() === 'fair'
+                ? 'text-[#FDC700]'
+                : collectDuration?.rate?.toLowerCase() === 'poor'
+                  ? 'text-[#F97316]'
+                  : 'text-[#F87171]'}>
+          {collectDuration?.rate}
+        </span>
+
+        <span class="h-7 w-px bg-white/15"></span>
+
+        <span
+          class={collectDuration?.avg_ms >= 90
+            ? 'text-[#008236]'
+            : collectDuration?.avg_ms >= 80
+              ? 'text-[#00D492]'
+              : collectDuration?.avg_ms >= 70
+                ? 'text-[#FDC700]'
+                : collectDuration?.avg_ms >= 50
+                  ? 'text-[#F97316]'
+                  : 'text-[#EF4444]'}>
+          {collectDuration?.avg_ms}ms</span>
+      </div>
+    {:else}
+      <span class="text-2xl text-white/20 text-nowrap"> No Data </span>
+    {/if}
+  </div>
+
+  <div class="relative w-full z-10 flex gap-0.5 justify-start items-end">
+    <div class="w-full absolute -bottom-1 h-px bg-white/10"></div>
+    {#if date}
+      {#each summaryWithDate?.collect_duration_series as detail, i}
+        <div
+          style="height: {(detail?.avg_collect_duration_ms * 100) /
+            summaryWithDate?.overall?.max_collect_duration_ms /
+            1.5}px;"
+          class="w-full rounded-[1px] cursor-pointer relative group border-t-4 transition-all {detail?.avg_collect_duration_ms >=
+          90
+            ? 'bg-green-500 border-t-green-700 hover:bg-green-700'
+            : detail?.avg_collect_duration_ms >= 80
+              ? 'bg-[#00D492] border-t-[#009667] hover:bg-[#00ad76]'
+              : detail?.avg_collect_duration_ms >= 70
+                ? 'bg-[#FDC700] border-t-[#c79c00] hover:bg-[#ffd745]'
+                : detail?.avg_collect_duration_ms >= 50
+                  ? 'bg-[#F97316] border-t-[#c25e17] hover:bg-[#cf5600]'
+                  : 'bg-[#F87171] border-t-[#ba4646] hover:bg-[#ff5757]'}">
+          {#if detail?.avg_collect_duration_ms}
+            <div class="text-white absolute start-1/2 -translate-1/2 -top-5 text-xs">
+              {detail?.avg_collect_duration_ms}<sub>ms</sub>
+            </div>
+          {/if}
+          {#if i !== 0 && i % 1 === 0}
+            <div class="absolute -bottom-3 start-0 h-2 w-px bg-white/10">
+              <div class="relative">
+                <div
+                  class="absolute -bottom-7 start-1/2 -translate-x-1/2 text-white/20 text-xs text-nowrap">
+                  {detail?.start_time.slice(0, 5)}
+                </div>
+              </div>
+            </div>
+          {/if}
+
+          {#if summaryWithDate?.collect_duration_series?.length - 1 === i}
+            <div class="absolute -bottom-3 end-0 h-2 w-px bg-white/10">
+              <div class="relative">
+                <div
+                  class="absolute -bottom-7 start-1/2 -translate-x-1/2 text-white/20 text-xs text-nowrap">
+                  24:00
+                </div>
+              </div>
+            </div>
+          {/if}
+
+          {#if detail?.avg_collect_duration_ms}
+            <div
+              class="absolute z-10 w-fit group-hover:flex hidden bottom-10 start-1/2 -translate-x-1/2 rounded-xl text-white bg-white/40 dark:bg-black/80 backdrop-blur-md dark:backdrop-blur-3xl border-[#0D0D0D]/5 border dark:border-white/10 px-3 py-2 flex-col justify-start items-start gap-1">
+              <div class="w-full flex justify-between items-center gap-2.5">
+                <span class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
+                  >Collect Rating :</span>
+                <span
+                  class="flex justify-center items-center text-sm text-nowrap capitalize {detail?.rate?.toLowerCase() ===
+                  'excellent'
+                    ? 'text-green-500'
+                    : detail?.rate?.toLowerCase() === 'good'
+                      ? 'text-[#00D492]'
+                      : detail?.rate?.toLowerCase() === 'fair'
+                        ? 'text-[#FDC700]'
+                        : detail?.rate?.toLowerCase() === 'poor'
+                          ? 'text-[#F97316]'
+                          : 'text-[#F87171]'}">{detail?.rate}</span>
+              </div>
+              <div class="w-full flex justify-between items-center gap-2.5">
+                <span class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
+                  >Collect AV (ms) :</span>
+                <span
+                  class="flex justify-center items-center text-sm text-nowrap {detail?.rate?.toLowerCase() ===
+                  'excellent'
+                    ? 'text-green-500'
+                    : detail?.rate?.toLowerCase() === 'good'
+                      ? 'text-[#00D492]'
+                      : detail?.rate?.toLowerCase() === 'fair'
+                        ? 'text-[#FDC700]'
+                        : detail?.rate?.toLowerCase() === 'poor'
+                          ? 'text-[#F97316]'
+                          : 'text-[#F87171]'}">{detail?.avg_collect_duration_ms}<sub>ms</sub></span>
+              </div>
+
+              <div class="w-full flex justify-between items-center gap-2.5">
+                <span class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
+                  >Lowest Duration :</span>
+                <span class="flex justify-center items-center text-sm text-nowrap text-white"
+                  >{detail?.min_collect_duration_ms}<sub>ms</sub></span>
+              </div>
+
+              <div class="w-full flex justify-between items-center gap-2.5">
+                <span class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
+                  >Mostest Duration :</span>
+                <span class="flex justify-center items-center text-sm text-nowrap text-white"
+                  >{detail?.max_collect_duration_ms}<sub>ms</sub></span>
+              </div>
+
+              <div class="w-full flex justify-between items-center gap-2.5">
+                <span class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
+                  >Collects :</span>
+                <span class="flex justify-center items-center text-sm text-nowrap text-white"
+                  >{detail?.collects}</span>
+              </div>
+
+              <div
+                class="w-full flex flex-col justify-start items-start text-xs pt-1.5 text-[#6a7282] text-center text-nowrap border-t border-t-[#0D0D0D]/10 dark:border-t-white/15">
+                <div class="flex justify-between items-center gap-1 w-full">
+                  <span>From</span>
+                  <span class="text-white/30">{detail?.start_time.slice(0, 5)} </span>
+                </div>
+
+                <div class="flex justify-between items-center gap-1 w-full">
+                  <span>Until</span>
+                  <span class="text-white/30"> {detail?.end_time.slice(0, 5)}</span>
+                </div>
+              </div>
+            </div>
+          {/if}
+        </div>
+      {/each}
+    {:else}
+      {#each collectDuration?.series as detail, i}
+        <div
+          style="height: {(detail?.avg_ms * 100) / collectDuration.max_ms / 1.5}px;"
+          class="w-full rounded-[1px] cursor-pointer relative group border-t-4 transition-all {detail?.rate?.toLowerCase() ===
+          'excellent'
+            ? 'bg-green-500 border-t-green-700 hover:bg-green-700'
+            : detail?.rate?.toLowerCase() === 'good'
+              ? 'bg-[#00D492] border-t-[#009667] hover:bg-[#00ad76]'
+              : detail?.rate?.toLowerCase() === 'fair'
+                ? 'bg-[#FDC700] border-t-[#c79c00] hover:bg-[#ffd745]'
+                : detail?.rate?.toLowerCase() === 'poor'
+                  ? 'bg-[#F97316] border-t-[#c25e17] hover:bg-[#cf5600]'
+                  : 'bg-[#F87171] border-t-[#ba4646] hover:bg-[#ff5757]'}">
+          {#if i !== 0 && i % 4 === 0}
+            <div class="absolute -bottom-3 start-0 h-2 w-px bg-white/10">
+              <div class="relative">
+                <div
+                  class="absolute -bottom-7 start-1/2 -translate-x-1/2 text-white/20 text-xs text-nowrap">
+                  {new Date(detail?.from).toLocaleString('en-CA', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false,
+                  })}
+                </div>
+              </div>
+            </div>
+          {/if}
+
+          <div
+            class="absolute z-10 w-fit group-hover:flex hidden bottom-10 start-1/2 -translate-x-1/2 rounded-xl text-white bg-white/40 dark:bg-black/80 backdrop-blur-md dark:backdrop-blur-3xl border-[#0D0D0D]/5 border dark:border-white/10 px-3 py-2 flex-col justify-start items-start gap-1">
+            <div class="w-full flex justify-between items-center gap-2.5">
+              <span class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
+                >Collect Rating :</span>
+              <span
+                class="flex justify-center items-center text-sm text-nowrap capitalize {detail?.rate?.toLowerCase() ===
+                'excellent'
+                  ? 'text-green-500'
+                  : detail?.rate?.toLowerCase() === 'good'
+                    ? 'text-[#00D492]'
+                    : detail?.rate?.toLowerCase() === 'fair'
+                      ? 'text-[#FDC700]'
+                      : detail?.rate?.toLowerCase() === 'poor'
+                        ? 'text-[#F97316]'
+                        : 'text-[#F87171]'}">{detail?.rate}</span>
+            </div>
+            <div class="w-full flex justify-between items-center gap-2.5">
+              <span class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
+                >Collect AV (ms) :</span>
+              <span
+                class="flex justify-center items-center text-sm text-nowrap {detail?.rate?.toLowerCase() ===
+                'excellent'
+                  ? 'text-green-500'
+                  : detail?.rate?.toLowerCase() === 'good'
+                    ? 'text-[#00D492]'
+                    : detail?.rate?.toLowerCase() === 'fair'
+                      ? 'text-[#FDC700]'
+                      : detail?.rate?.toLowerCase() === 'poor'
+                        ? 'text-[#F97316]'
+                        : 'text-[#F87171]'}">{detail?.avg_ms}<sub>ms</sub></span>
+            </div>
+
+            <div class="w-full flex justify-between items-center gap-2.5">
+              <span class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
+                >Lowest Duration :</span>
+              <span class="flex justify-center items-center text-sm text-nowrap text-white"
+                >{detail?.min_ms}<sub>ms</sub></span>
+            </div>
+
+            <div class="w-full flex justify-between items-center gap-2.5">
+              <span class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
+                >Mostest Duration :</span>
+              <span class="flex justify-center items-center text-sm text-nowrap text-white"
+                >{detail?.max_ms}<sub>ms</sub></span>
+            </div>
+
+            <div
+              class="w-full flex flex-col justify-start items-start text-xs pt-1.5 text-[#6a7282] text-center text-nowrap border-t border-t-[#0D0D0D]/10 dark:border-t-white/15">
+              <div class="flex justify-between items-center gap-1 w-full">
+                <span>From</span>
+                <span class="text-white/30">
+                  {new Date(detail?.from).toLocaleString('en-CA', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: false,
+                  })}</span>
+              </div>
+
+              <div class="flex justify-between items-center gap-1 w-full">
+                <span>Until</span>
+                <span class="text-white/30">
+                  {new Date(detail?.to).toLocaleString('en-CA', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: false,
+                  })}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      {/each}
+    {/if}
+
+    {#each Array(Math.max(0, 24 - ((date ? summaryWithDate?.collect_duration_series?.length : collectDuration?.series?.length) ?? 0))) as _, i}
+      <div
+        class="h-1 w-full rounded-[1px] cursor-pointer relative group border-t-4 transition-all bg-[#F87171] border-t-[#ba4646] hover:bg-[#ff5757]">
+        <div class="h-2 w-px bg-white/10 absolute -end-px -bottom-3"></div>
+        <div class="h-2 w-px text-white/20 absolute end-3.25 text-xs -bottom-7">
+          {String(i + 1)
+            .toString()
+            .padStart(2, '0')}:00
+        </div>
+      </div>
+    {/each}
+  </div>
+</div>
