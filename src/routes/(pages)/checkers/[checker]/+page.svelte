@@ -15,6 +15,7 @@
   import getDate from '../../../../utils/getDate';
   import DateChanger from '../../../../components/common/DateChanger.svelte';
   import Uptime from '../../../../components/pages/checker/Uptime.svelte';
+  import TimeRangeSelector from '../../../../components/common/TimeRangeSelector.svelte';
 
   const id = $page.params.checker;
   let data = $state();
@@ -251,47 +252,8 @@
 
       <Uptime {id} {date} {summaryWithDate} />
 
-      {#if !date && data?.interval_seconds * 2 <= 43200}
-        <div
-          class="flex mx-auto sticky top-6 shadow-sm shadow-[#3b82f6]/50 z-20 text-white/20 w-full sm:w-fit gap-3 sm:gap-6 py-2 justify-between px-6 text-sm items-center rounded-lg dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
-          {#if data?.interval_seconds * 2 <= 3600}
-            <button
-              onclick={() => (hours = 1)}
-              class="transition-all duration-300 {hours === 1
-                ? 'text-[#3b82f6]'
-                : 'cursor-pointer'}">1h</button>
-
-            <div class="h-5 w-px bg-white/15"></div>
-          {/if}
-          {#if data?.interval_seconds * 2 <= 10800}
-            <button
-              onclick={() => (hours = 3)}
-              class="transition-all duration-300 {hours === 3
-                ? 'text-[#3b82f6]'
-                : 'cursor-pointer'}">3h</button>
-            <div class="h-5 w-px bg-white/15"></div>
-          {/if}
-          {#if data?.interval_seconds * 2 <= 21600}
-            <button
-              onclick={() => (hours = 6)}
-              class="transition-all duration-300 {hours === 6
-                ? 'text-[#3b82f6]'
-                : 'cursor-pointer'}">6h</button>
-            <div class="h-5 w-px bg-white/15"></div>
-          {/if}
-
-          <button
-            onclick={() => (hours = 12)}
-            class="transition-all duration-300 {hours === 12 ? 'text-[#3b82f6]' : 'cursor-pointer'}"
-            >12h</button>
-          <div class="h-5 w-px bg-white/15"></div>
-          <button
-            onclick={() => (hours = 24)}
-            class="transition-all duration-300 {hours === 24 ? 'text-[#3b82f6]' : 'cursor-pointer'}"
-            >24h</button>
-        </div>
-      {/if}
       {#if !date}
+        <TimeRangeSelector bind:value={hours} interval={data?.interval_seconds} />
         <Latency {hours} {id} name={data?.name} />
       {/if}
 
