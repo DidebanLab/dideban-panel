@@ -1,11 +1,12 @@
 <script>
+  import { onMount } from 'svelte';
   import { endpoints } from '../../../endpoints.svelte';
   import { http } from '../../../services/http.svelte';
   import { LIMITATIONS } from '../../config.svelte';
 
   let { id, date, summaryWithDate } = $props();
-  let history = $state();
-  let historyDetail = $state();
+  let history = $state(null);
+  let historyDetail = $state(null);
   const required = $state(innerWidth < 1280 ? 31 : 96);
   let missing = $derived(Math.max(0, required - (history?.data?.length ?? 0)));
 

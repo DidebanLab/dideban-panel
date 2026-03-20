@@ -20,13 +20,13 @@
   import ApdexHistogram from '../../../../components/pages/checker/ApdexHistogram.svelte';
 
   const id = $page.params.checker;
-  let data = $state();
+  let data = $state(null);
   let hours = $state(24);
-  let enabled = $state();
+  let enabled = $state(null);
   let date = $state(null);
-  let toDay = $state();
-  let summary = $state();
-  let summaryWithDate = $state();
+  let toDay = $state(null);
+  let summary = $state(null);
+  let summaryWithDate = $state(null);
 
   onMount(() => {
     http.get(endpoints.singleCheck(id)).then(res => {
