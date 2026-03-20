@@ -17,6 +17,7 @@
   import getMonthName from '../../../../utils/getMonth.js';
   import nextDate from '../../../../utils/nextDate.js';
   import preDate from '../../../../utils/preDate.js';
+  import DateChanger from '../../../../components/common/DateChanger.svelte';
 
   const REQUIRED_COUNT = $state(innerWidth < 640 ? 31 : 96);
   const id = $page.params.agent;
@@ -145,56 +146,10 @@
               : 'text-[#F87171]'}">{data?.status}</span>
         </div>
 
-        {#if date ? date : toDay}
-          <div
-            class="flex items-center justify-between px-3 gap-4 bg-white/5 text-sm absolute top-0 rounded-md start-1/2 -translate-x-1/2 min-w-40 h-9.5 shadow-sm shadow-[#3b82f6]/50">
-            <!-- Prev -->
-            <button
-              aria-label="prev date"
-              onclick={() => {
-                summaryWithDate = null;
-                preDate(summary, $page.url.searchParams.get('date'), toDay, 'agent', id);
-              }}>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="w-4 h-4 hover:opacity-65 cursor-pointer"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="white">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M15 19l-7-7 7-7" />
-              </svg>
-            </button>
-
-            <!-- Date -->
-            <div class="px-4 py-1.5 rounded-lg tracking-wide text-nowrap text-[#3b82f6]">
-              {date || toDay}
-            </div>
-
-            <!-- Next -->
-            <button
-              aria-label="next date"
-              onclick={() => {
-                summaryWithDate = null;
-                nextDate(summary, $page.url.searchParams.get('date'), toDay, 'agent', id);
-              }}>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="w-4 h-4 hover:opacity-65 cursor-pointer"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="white">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
-          </div>{/if}
+       {#if date ? date : toDay}
+          <DateChanger type="agent" bind:value={summaryWithDate} {summary} {id} {toDay} {date} />
+        {/if}
+          
 
         {#if date}
           <button

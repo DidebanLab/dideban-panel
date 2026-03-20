@@ -11,10 +11,9 @@
   import ConfirmEditChecker from '../../../../components/pages/checker/ConfirmEditChecker.svelte';
   import { alertStore } from '../../../../stores/alert.svelte';
   import { goto } from '$app/navigation';
-  import nextDate from '../../../../utils/nextDate';
-  import preDate from '../../../../utils/preDate';
   import getMonthName from '../../../../utils/getMonth';
   import getDate from '../../../../utils/getDate';
+  import DateChanger from '../../../../components/common/DateChanger.svelte';
 
   const REQUIRED_COUNT = $state(innerWidth < 1280 ? 31 : 96);
   const id = $page.params.checker;
@@ -249,62 +248,13 @@
         </div>
 
         {#if date ? date : toDay}
-          <div
-            class="flex items-center justify-between px-3 gap-4 bg-white/5 text-sm lg:absolute lg:top-0 rounded-md lg:start-1/2 lg:-translate-x-1/2 w-full lg:w-fit lg:min-w-40 h-9.5 shadow-sm shadow-[#3b82f6]/50">
-            <!-- Prev -->
-            <button
-              aria-label="prev date"
-              onclick={() => {
-                summaryWithDate = null;
-                preDate(summary, $page.url.searchParams.get('date'), toDay, 'check', id);
-              }}>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="w-4 h-4 hover:opacity-65 cursor-pointer"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="white">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M15 19l-7-7 7-7" />
-              </svg>
-            </button>
-
-            <!-- Date -->
-            <div class="px-4 py-1.5 rounded-lg tracking-wide text-nowrap text-[#3b82f6]">
-              {date || toDay}
-            </div>
-
-            <!-- Next -->
-            <button
-              aria-label="next date"
-              onclick={() => {
-                summaryWithDate = null;
-                nextDate(summary, $page.url.searchParams.get('date'), toDay, 'check', id);
-              }}>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="w-4 h-4 hover:opacity-65 cursor-pointer"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="white">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
-          </div>
+          <DateChanger type="check" bind:value={summaryWithDate} {summary} {id} {toDay} {date} />
         {/if}
       </div>
 
       <div class="flex flex-col gap-4 w-full">
         <div
-          class="relative flex flex-col gap-4 border-[#0D0D0D]/5 dark:border-white/5 {date &&
-          data
+          class="relative flex flex-col gap-4 border-[#0D0D0D]/5 dark:border-white/5 {date && data
             ? 'sm:h-43 sm:rounded-[14px] sm:dark:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border sm:px-6 sm:py-6'
             : 'h-29 sm:h-35 rounded-[14px] dark:bg-[#0D0D0D] bg-[#FFFFFF] border  px-4.25 py-4 sm:px-6 sm:py-6'}">
           <div class="w-full flex justify-between items-start">
@@ -699,7 +649,7 @@
         </div>
 
         <div
-          class="relative w-full z-10 flex gap-0.5 justify-start items-end overflow-x-auto overflow-y-hidden pb-8 pt-4 3xl:overflow-x-visible 3xl:overflow-y-visible 3xl:py-0 ">
+          class="relative w-full z-10 flex gap-0.5 justify-start items-end overflow-x-auto overflow-y-hidden pb-8 pt-4 3xl:overflow-x-visible 3xl:overflow-y-visible 3xl:py-0">
           <div class="w-full absolute -bottom-1 h-px bg-white/10"></div>
 
           {#each date ? summaryWithDate?.apdex_series : apdex?.apdex_series as detail, i}
@@ -717,7 +667,9 @@
                     ? 'bg-[#FDC700] border-t-[#c79c00] hover:bg-[#ffd745]'
                     : detail?.apdex_score >= 50
                       ? 'bg-[#F97316] border-t-[#c25e17] hover:bg-[#cf5600]'
-                      : 'bg-[#F87171] border-t-[#ba4646] hover:bg-[#ff5757]'} {date?"min-w-[40.5px]":"min-w-[13.5px]"}">
+                      : 'bg-[#F87171] border-t-[#ba4646] hover:bg-[#ff5757]'} {date
+                ? 'min-w-[40.5px]'
+                : 'min-w-[13.5px]'}">
               {#if date && detail?.apdex_score}
                 <div class="text-white absolute start-1/2 -translate-x-1/2 -top-6 text-xs">
                   {detail?.apdex_score}%
@@ -891,7 +843,7 @@
             )
               ? (10 / (date ? summaryWithDate?.histogram?.max_count : histogram?.max_count)) * 100
               : 0}px;"
-            class="border-t-4 w-[12%]  lg:w-[10%] xl:w-[5%] rounded-t-xs cursor-pointer relative bg-[#410000] border-t-[#4b0000] hover:bg-[#410000]/70">
+            class="border-t-4 w-[12%] lg:w-[10%] xl:w-[5%] rounded-t-xs cursor-pointer relative bg-[#410000] border-t-[#4b0000] hover:bg-[#410000]/70">
             <div class="absolute start-1/2 -translate-x-1/2 -top-6 text-xs md:text-sm text-white">
               {date ? summaryWithDate?.histogram?.error_count || 0 : histogram?.error_count || 0}
             </div>
