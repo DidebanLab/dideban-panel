@@ -862,15 +862,15 @@
                 100}px;"
               class="border-t-4 rounded-t-xs cursor-pointer relative transition-all {detail?.range_end ===
               -1
-                ? 'w-[12%] lg:w-[5%] bg-[#F87171] border-t-[#ba4646] hover:bg-[#ff5757]'
+                ? 'w-[12%] lg:w-[10%] xl:w-[5%] bg-[#F87171] border-t-[#ba4646] hover:bg-[#ff5757]'
                 : detail?.range_end === 400
-                  ? 'w-[12%] lg:w-[5%] bg-green-700 border-t-green-900 hover:bg-green-800'
+                  ? 'w-[12%] lg:w-[10%] xl:w-[5%] bg-green-700 border-t-green-900 hover:bg-green-800'
                   : detail?.range_end === 1600
-                    ? 'w-[12%] lg:w-[15%] bg-[#00D492] border-t-[#009667] hover:bg-[#00ad76]'
+                    ? 'w-[12%] lg:w-[10%] xl:w-[15%] bg-[#00D492] border-t-[#009667] hover:bg-[#00ad76]'
                     : detail?.range_end === 4800
-                      ? 'w-[26%] lg:w-[35%] bg-[#FDC700] border-t-[#c79c00] hover:bg-[#ffd745]'
+                      ? 'w-[26%] lg:w-[30%] xl:w-[35%] bg-[#FDC700] border-t-[#c79c00] hover:bg-[#ffd745]'
                       : detail?.range_end === 8000
-                        ? 'w-[26%] lg:w-[35%] bg-[#F97316] border-t-[#c25e17] hover:bg-[#cf5600]'
+                        ? 'w-[26%] lg:w-[30%] xl:w-[35%] bg-[#F97316] border-t-[#c25e17] hover:bg-[#cf5600]'
                         : ''}">
               <div class="absolute start-1/2 -translate-x-1/2 -top-6 text-xs md:text-sm text-white">
                 {detail?.count}
@@ -891,7 +891,7 @@
             )
               ? (10 / (date ? summaryWithDate?.histogram?.max_count : histogram?.max_count)) * 100
               : 0}px;"
-            class="border-t-4 w-[12%] lg:w-[5%] rounded-t-xs cursor-pointer relative bg-[#410000] border-t-[#4b0000] hover:bg-[#410000]/70">
+            class="border-t-4 w-[12%]  lg:w-[10%] xl:w-[5%] rounded-t-xs cursor-pointer relative bg-[#410000] border-t-[#4b0000] hover:bg-[#410000]/70">
             <div class="absolute start-1/2 -translate-x-1/2 -top-6 text-xs md:text-sm text-white">
               {date ? summaryWithDate?.histogram?.error_count || 0 : histogram?.error_count || 0}
             </div>
