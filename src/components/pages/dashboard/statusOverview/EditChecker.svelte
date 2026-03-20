@@ -9,14 +9,7 @@
   import { fly } from 'svelte/transition';
   import { checkerNameRegex, checkerTargetRegexes } from '../../../../validators.svelte';
 
-  const { data } = $props();
-
-  function normalizeHeaders(headersArray) {
-    return headersArray.reduce((acc, { key, value }) => {
-      if (key && value) acc[key] = value;
-      return acc;
-    }, {});
-  }
+  const { data, onEdited } = $props();
 
   let nameInput;
 
@@ -48,6 +41,13 @@
     type: data?.type,
   });
 
+  function normalizeHeaders(headersArray) {
+    return headersArray.reduce((acc, { key, value }) => {
+      if (key && value) acc[key] = value;
+      return acc;
+    }, {});
+  }
+
   function editCheckerHandler() {
     let detail = { ...form };
 
@@ -69,14 +69,14 @@
     }
 
     http.patch(endpoints.singleCheck(data.id), detail).then(res => {
+      onEdited?.();
+
       alertStore.addAlert({
         message: `checker ${res.data.data.name} updated successfully.`,
         type: 'successful',
       });
 
       closer({ id: 'edit-check' });
-
-      location.href = `/checkers/${data.id}`;
     });
   }
 

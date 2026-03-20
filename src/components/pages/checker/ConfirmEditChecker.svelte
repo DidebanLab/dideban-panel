@@ -5,7 +5,7 @@
   import { closer } from '../../../stores/modal.svelte';
   import { page } from '$app/stores';
 
-  const { name } = $props();
+  const { name, onEdited } = $props();
 </script>
 
 <div
@@ -57,17 +57,19 @@
             enabled: false,
           })
           .then(res => {
+            onEdited?.();
+
             alertStore.addAlert({
               message: `Checker ${name} activation updated successfully.`,
               type: 'successful',
             });
-
-            setTimeout(() => {
-              location.href = `/checkers/${$page.params.checker}`;
-            }, 1000);
+            
+            closer({
+              id: 'confirm-edit',
+            });
           });
       }}
-      aria-label="delete-confirm"
+      aria-label="confirm-edit"
       class="border outline-none cursor-pointer rounded-md px-4 py-1.5 bg-[#FDC700]/10 text-[#FDC700] hover:opacity-70 border-[#FDC700]/10 text-sm ms-auto"
       >Confirm
     </button>

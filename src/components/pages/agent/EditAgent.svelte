@@ -10,7 +10,7 @@
   import { closer } from '../../../stores/modal.svelte';
   import { page } from '$app/stores';
 
-  const { name, interval_seconds, enabled, id } = $props();
+  const { name, interval_seconds, enabled, id, onEdited } = $props();
   const form = $state({
     enabled,
     name,
@@ -29,14 +29,14 @@
         ...form,
       })
       .then(res => {
+        onEdited?.();
+
         alertStore.addAlert({
           message: `Agent ${name} has been updated successfully.`,
           type: 'successful',
         });
 
         closer({ id: 'edit-agent' });
-
-        location.href = `/agents/${id}`;
       });
   }
 </script>

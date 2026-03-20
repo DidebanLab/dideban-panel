@@ -20,6 +20,7 @@
   import ApdexHistogram from '../../../../components/pages/checker/ApdexHistogram.svelte';
 
   const id = $page.params.checker;
+  let trigger = $state(0);
   let data = $state(null);
   let hours = $state(24);
   let enabled = $state(null);
@@ -29,17 +30,20 @@
   let summaryWithDate = $state(null);
 
   onMount(() => {
-    http.get(endpoints.singleCheck(id)).then(res => {
-      data = res.data?.data;
-      enabled = res.data?.data.enabled;
-    });
-
     http.get(endpoints.checkSummaryYearly(id)).then(res => {
       const current = res.data.data.find(i => Object.values(i.history).includes(-1));
       const day = Object.keys(current.history).find(key => current.history[key] === -1);
       toDay = `${current.year}-${current.month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
 
       summary = res.data?.data;
+    });
+  });
+
+  $effect(() => {
+    const update = trigger;
+    http.get(endpoints.singleCheck(id)).then(res => {
+      data = res.data?.data;
+      enabled = res.data?.data.enabled;
     });
   });
 
@@ -168,7 +172,12 @@
                   opener({
                     id: 'edit-check',
                     content: EditChecker,
-                    props: { data },
+                    props: {
+                      data,
+                      onEdited: () => {
+                        trigger += 1;
+                      },
+                    },
                   });
                 }}>
                 <img
@@ -196,6 +205,9 @@
                         content: ConfirmEditChecker,
                         props: {
                           name: data?.name,
+                          onEdited: () => {
+                            trigger += 1;
+                          },
                         },
                       });
                     } else {
@@ -204,12 +216,11 @@
                           enabled: true,
                         })
                         .then(res => {
+                          trigger += 1;
                           alertStore.addAlert({
                             message: `Checker ${data?.name} activation updated successfully.`,
                             type: 'successful',
                           });
-
-                          location.href = `/checkers/${data?.id}`;
                         });
                     }
                   }}
