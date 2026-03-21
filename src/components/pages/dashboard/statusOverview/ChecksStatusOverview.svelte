@@ -21,13 +21,10 @@
   onMount(async () => {
     await http.get(endpoints.checks).then(res => (checks = res.data.data));
 
-    // ── 2. Subscribe to live updates ─────────────────────────────────────
     subscribe('checks');
 
-    // When any check changes status, update the badge in-place
     on('check.status.changed', handleStatusChanged);
 
-    // When a check is deleted, remove it from the list
     on('check.deleted', handleDeleted);
   });
 

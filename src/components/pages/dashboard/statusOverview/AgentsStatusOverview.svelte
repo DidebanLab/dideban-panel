@@ -1,10 +1,11 @@
 <script>
-  import { onMount } from 'svelte';
+  import { onDestroy, onMount } from 'svelte';
   import { opener } from '../../../../stores/modal.svelte.js';
   import { LIMITATIONS } from '../../../config.svelte.js';
   import AddAgent from './AddAgent.svelte';
   import { http } from '../../../../services/http.svelte.js';
   import { endpoints } from '../../../../endpoints.svelte.js';
+  import { off, on, subscribe, unsubscribe } from '../../../../services/ws.svelte.js';
 
   let trigger = $state();
   let isMobile = $state(innerWidth < 640);
@@ -13,9 +14,34 @@
   let historyDetail = $state(null);
 
   $effect(() => {
-    const update = trigger;
-    http.get(endpoints.agents).then(res => (agents = res.data.data));
+    if (trigger) {
+      http.get(endpoints.agents).then(res => (agents = res.data.data));
+    }
   });
+
+  onMount(async () => {
+    await http.get(endpoints.agents).then(res => (agents = res.data.data));
+
+    subscribe('agents');
+
+    on('agent.status.changed', handleStatusChanged);
+
+    on('agent.deleted', handleDeleted);
+  });
+
+  onDestroy(() => {
+    unsubscribe('agents');
+    off('agent.status.changed', handleStatusChanged);
+    off('agent.deleted', handleDeleted);
+  });
+
+  function handleStatusChanged(data) {
+    agents = agents.map(c => (c.id === data.id ? { ...c, status: data.status } : c));
+  }
+
+  function handleDeleted(data) {
+    agents = agents.filter(c => c.id !== data.id);
+  }
 </script>
 
 <div
