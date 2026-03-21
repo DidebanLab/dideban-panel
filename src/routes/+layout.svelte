@@ -1,12 +1,18 @@
 <script>
   import { page } from '$app/stores';
+  import { onMount } from 'svelte';
   import Alert from '../components/global/Alert.svelte';
   import Modal from '../components/global/Modal.svelte';
   import Sidebar from '../components/global/sidebar/Sidebar.svelte';
   import Topbar from '../components/global/Topbar.svelte';
   import MainLayout from '../components/layouts/MainLayout.svelte';
   import './layout.css';
+  import { connect } from '../services/ws.svelte';
   let { children } = $props();
+
+  onMount(() => {
+    connect();
+  });
 </script>
 
 <svelte:head>

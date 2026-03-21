@@ -1,20 +1,49 @@
 <script>
-  import { onMount } from 'svelte';
+  import { onDestroy, onMount } from 'svelte';
   import { opener } from '../../../../stores/modal.svelte.js';
   import { LIMITATIONS } from '../../../config.svelte.js';
   import AddChecker from './AddChecker.svelte';
   import { http } from '../../../../services/http.svelte.js';
   import { endpoints } from '../../../../endpoints.svelte.js';
   import responseTimeColor from '../../../../utils/responseTimeColor.js';
+  import { subscribe, unsubscribe, on, off } from '../../../../services/ws.svelte.js';
   let trigger = $state(0);
   let history = $state(null);
-  let data = $state(null);
-  let isMobile = $state(innerWidth < 640);
+  let checks = $state(null);
+  let REQUIRED_HISTORY_COUNT = $state(innerWidth < 640 ? 31 : 50);
 
   $effect(() => {
-    const update = trigger;
-    http.get(endpoints.checks).then(res => (data = res.data.data));
+    if (trigger) {
+      http.get(endpoints.checks).then(res => (checks = res.data.data));
+    }
   });
+
+  onMount(async () => {
+    await http.get(endpoints.checks).then(res => (checks = res.data.data));
+
+    // ── 2. Subscribe to live updates ─────────────────────────────────────
+    subscribe('checks');
+
+    // When any check changes status, update the badge in-place
+    on('check.status.changed', handleStatusChanged);
+
+    // When a check is deleted, remove it from the list
+    on('check.deleted', handleDeleted);
+  });
+
+  onDestroy(() => {
+    unsubscribe('checks');
+    off('check.status.changed', handleStatusChanged);
+    off('check.deleted', handleDeleted);
+  });
+
+  function handleStatusChanged(data) {
+    checks = checks.map(c => (c.id === data.id ? { ...c, status: data.status } : c));
+  }
+
+  function handleDeleted(data) {
+    checks = checks.filter(c => c.id !== data.id);
+  }
 </script>
 
 <div
@@ -47,7 +76,7 @@
 
   <div
     class="w-full grid grid-cols-1 xl:grid-cols-2 3xl:grid-cols-3 gap-4 custom-scroll p-6 pb-0 sm:pb-6">
-    {#each data as item (item.id)}
+    {#each checks as item (item.id)}
       {@const error = item.status === 'error' || item.status === 'down'}
       {@const warn = item.status === 'timeout'}
       {@const ok = item.status === 'up'}
@@ -123,8 +152,8 @@
             <div
               class="text-xs flex justify-center items-center gap-1 text-[#707B76]/40 text-nowrap">
               <img width="17" height="17" src="/icons/clock.png" alt="clock" />
-              {#if data[data.length - 1].last_checked}
-                {new Date(data[data.length - 1].last_checked).toLocaleString('en-CA', {
+              {#if checks[checks.length - 1].last_checked}
+                {new Date(checks[checks.length - 1].last_checked).toLocaleString('en-CA', {
                   year: 'numeric',
                   month: '2-digit',
                   day: '2-digit',
@@ -158,10 +187,9 @@
         </div>
         <div
           class="absolute z-10 bottom-4 xl:bottom-6 w-full flex flex-row-reverse gap-0.5 justify-between items-end px-4.25">
-          {#await http.get(endpoints.checkHistory(item.id), { params: { short: true } }) then res}
-            {@const REQUIRED_COUNT = isMobile ? 31 : 50}
-            {@const items = res.data.data.slice(-REQUIRED_COUNT)}
-            {@const missingCount = REQUIRED_COUNT - items.length}
+          {#await http.get( endpoints.checkHistory(item.id), { params: { short: true, page_size: REQUIRED_HISTORY_COUNT } }, ) then res}
+            {@const items = res.data.data}
+            {@const missingCount = REQUIRED_HISTORY_COUNT - items.length}
             {#each items as detail (detail[0])}
               {@const status = detail[1]}
               {@const id = detail[0]}
