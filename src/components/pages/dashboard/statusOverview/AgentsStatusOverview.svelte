@@ -22,15 +22,12 @@
   onMount(async () => {
     await http.get(endpoints.agents).then(res => (agents = res.data.data));
 
-    subscribe('agents');
-
     on('agent.status.changed', handleStatusChanged);
 
     on('agent.deleted', handleDeleted);
   });
 
   onDestroy(() => {
-    unsubscribe('agents');
     off('agent.status.changed', handleStatusChanged);
     off('agent.deleted', handleDeleted);
   });

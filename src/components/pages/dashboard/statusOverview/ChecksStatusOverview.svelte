@@ -21,8 +21,6 @@
   onMount(async () => {
     await http.get(endpoints.checks).then(res => (checks = res.data.data));
 
-    subscribe('checks');
-
     on('check.status.changed', handleStatusChanged);
 
     on('check.deleted', handleDeleted);

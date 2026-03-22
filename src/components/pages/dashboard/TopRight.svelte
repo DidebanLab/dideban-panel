@@ -2,7 +2,7 @@
   import { onDestroy, onMount } from 'svelte';
   import { http } from '../../../services/http.svelte';
   import { endpoints } from '../../../endpoints.svelte';
-  import { off, on, subscribe, unsubscribe } from '../../../services/ws.svelte';
+  import { off, on, unsubscribe } from '../../../services/ws.svelte';
 
   let agentsStats = $state();
   let checksStats = $state();
@@ -16,9 +16,6 @@
     agentsStats = agentaStatsData;
     checksStats = checksStatsData;
 
-    subscribe('checks');
-    subscribe('agents');
-
     on('check.stats.updated', data => {
       checksStats = data;
     });
@@ -28,8 +25,6 @@
   });
 
   onDestroy(() => {
-    unsubscribe('checks');
-    unsubscribe('agents');
     off('check.stats.updated');
     off('agent.stats.updated');
   });

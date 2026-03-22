@@ -1,8 +1,20 @@
 <script>
+  import { onDestroy, onMount } from 'svelte';
   import PerformanceOverview from '../components/pages/dashboard/PerformanceOverview.svelte';
   import AgentsStatusOverview from '../components/pages/dashboard/statusOverview/AgentsStatusOverview.svelte';
   import ChecksStatusOverview from '../components/pages/dashboard/statusOverview/ChecksStatusOverview.svelte';
   import TopRight from '../components/pages/dashboard/TopRight.svelte';
+  import { subscribe, unsubscribe } from '../services/ws.svelte';
+
+  onMount(() => {
+    subscribe('checks');
+    subscribe('agents');
+  });
+
+  onDestroy(() => {
+    unsubscribe('checks');
+    unsubscribe('agents');
+  });
 </script>
 
 <section class="w-full m-auto h-auto flex flex-col">
