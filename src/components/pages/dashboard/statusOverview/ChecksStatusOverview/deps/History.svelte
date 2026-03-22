@@ -18,7 +18,6 @@
       .then(res => (history = res.data?.data?.reverse()));
 
     subscribe(`checks:${checkId}`);
-
     on('check.history.created', handleNewHistory);
   });
 
@@ -30,7 +29,7 @@
   function handleNewHistory(data) {
     if (data.check_id !== checkId) return;
 
-    history = [...history, data].slice(0, MAX_HISTORY);
+    history = [...history, data].slice(0, REQUIRED_HISTORY_COUNT);
   }
 </script>
 

@@ -69,11 +69,11 @@
     agents.map(item => {
       const agentId = item.id;
       unsubscribe(`agents:${agentId}`);
-      off('agent.metric.created', handleMetric);
+      off('agent.metric.created', data => handleMetric(data, agentId));
     });
   });
 
-  function handleMetric(data) {
+  function handleMetric(data, agentId) {
     if (data.agent_id !== agentId) return;
 
     agentMetric = {
