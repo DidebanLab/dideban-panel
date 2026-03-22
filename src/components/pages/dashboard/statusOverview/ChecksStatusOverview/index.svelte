@@ -179,6 +179,7 @@
             </div>
           </div>
         </div>
+
         <History checkId={item.id} />
       </div>
     {/each}

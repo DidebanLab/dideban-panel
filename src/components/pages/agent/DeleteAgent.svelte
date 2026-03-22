@@ -79,7 +79,7 @@
         } else if (step === 2) {
           http.delete(endpoints.singleAgent(id)).then(res => {
             alertStore.addAlert({
-              message: res.data.data.message,
+              message: `Agent with id ${id} deleted.`,
               type: 'successful',
             });
           });
@@ -88,7 +88,9 @@
             id: 'delete-agent',
           });
 
-          goto('/');
+          setTimeout(() => {
+            goto('/');
+          }, 500);
         }
       }}
       aria-label="delete-confirm"

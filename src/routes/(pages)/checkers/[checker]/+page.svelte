@@ -4,7 +4,7 @@
   import { opener } from '../../../../stores/modal.svelte';
   import { page } from '$app/stores';
   import EditChecker from '../../../../components/pages/dashboard/statusOverview/EditChecker.svelte';
-  import { onMount } from 'svelte';
+  import { onDestroy, onMount } from 'svelte';
   import { http } from '../../../../services/http.svelte';
   import { endpoints } from '../../../../endpoints.svelte';
   import DeleteChecker from '../../../../components/pages/checker/DeleteChecker.svelte';

@@ -79,7 +79,7 @@
         } else if (step === 2) {
           http.delete(endpoints.singleCheck(id)).then(res => {
             alertStore.addAlert({
-              message: res.data.data.message,
+              message: `Check with id ${id} deleted.`,
               type: 'successful',
             });
           });
@@ -88,7 +88,9 @@
             id: 'delete-checker',
           });
 
-          goto('/');
+          setTimeout(() => {
+            goto('/');
+          }, 500);
         }
       }}
       aria-label="delete-confirm"
