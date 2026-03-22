@@ -15,7 +15,9 @@
       .get(endpoints.checkHistory(checkId), {
         params: { short: true, page_size: REQUIRED_HISTORY_COUNT },
       })
-      .then(res => (history = res.data?.data?.reverse()));
+      .then(res => {
+        history = res.data?.data?.reverse();
+      });
 
     subscribe(`checks:${checkId}`);
     on('check.history.created', handleNewHistory);
@@ -29,7 +31,7 @@
   function handleNewHistory(data) {
     if (data.check_id !== checkId) return;
 
-    history = [...history, data].slice(0, REQUIRED_HISTORY_COUNT);
+    history = [...history, [data?.id, data.status]].slice(- REQUIRED_HISTORY_COUNT);
   }
 </script>
 
