@@ -5,7 +5,7 @@
   import responseTimeColor from '../../../../../../utils/responseTimeColor';
   import { off, on, subscribe, unsubscribe } from '../../../../../../services/ws.svelte';
 
-  const REQUIRED_HISTORY_COUNT = $state(innerWidth < 640 ? 31 : 50);
+  const REQUIRED_HISTORY_COUNT = $state(innerWidth < 640 ? 31 : 40);
   const { checkId, status, name, checked_at } = $props();
   let history = $state(null);
   let historyDetail = $state(null);
@@ -152,7 +152,7 @@
     {#each Array(REQUIRED_HISTORY_COUNT - (history?.length || 0)) as _, i}
       <div
         aria-hidden="true"
-        class="w-4 h-4 rounded-[1px] bg-black/20 dark:bg-[#FFFFFF]/10 opacity-70">
+        class="w-full h-4 rounded-[1px] bg-black/20 dark:bg-[#FFFFFF]/10 opacity-70">
       </div>
     {/each}
     {#each history as detail (detail[0])}
@@ -177,7 +177,7 @@
         onblur={() => {
           historyDetail = null;
         }}
-        class="w-4 h-4 rounded-[1px] hover:h-6 transition-all cursor-pointer relative group {status ===
+        class="w-full h-4 rounded-[1px] hover:h-6 transition-all cursor-pointer relative group {status ===
           'error' || status === 'down'
           ? 'bg-[#EF4444]'
           : status === 'timeout'
