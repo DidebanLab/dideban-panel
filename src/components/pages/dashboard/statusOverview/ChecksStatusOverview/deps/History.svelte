@@ -35,8 +35,6 @@
   function handleNewHistory(data) {
     if (data.check_id !== checkId) return;
 
-    console.log('slam');
-
     history = [...history, [data?.id, data.status]].slice(-REQUIRED_HISTORY_COUNT);
     lastChecked = data.checked_at;
   }

@@ -1,7 +1,7 @@
 <script>
   import { onDestroy, onMount } from 'svelte';
   import PerformanceOverview from '../components/pages/dashboard/PerformanceOverview.svelte';
-  import AgentsStatusOverview from '../components/pages/dashboard/statusOverview/AgentsStatusOverview.svelte';
+  import AgentsStatusOverview from '../components/pages/dashboard/statusOverview/AgentsStatusOverview/index.svelte';
   import ChecksStatusOverview from '../components/pages/dashboard/statusOverview/ChecksStatusOverview/index.svelte';
   import TopRight from '../components/pages/dashboard/TopRight.svelte';
   import { subscribe, unsubscribe } from '../services/ws.svelte';
@@ -29,6 +29,6 @@
     </div>
     <ChecksStatusOverview />
 
-    <!-- <AgentsStatusOverview /> -->
+    <AgentsStatusOverview />
   </div>
 </section>
