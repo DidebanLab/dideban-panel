@@ -22,15 +22,29 @@
   onMount(async () => {
     await http.get(endpoints.agents).then(res => (agents = res.data.data));
 
+    on('agent.created', handleCreated);
+    on('agent.updated', handleUpdated);
     on('agent.status.changed', handleStatusChanged);
-
     on('agent.deleted', handleDeleted);
   });
 
   onDestroy(() => {
+    off('agent.created', handleCreated);
+    off('agent.updated', handleUpdated);
     off('agent.status.changed', handleStatusChanged);
     off('agent.deleted', handleDeleted);
   });
+
+  function handleCreated(data) {
+    http.get(endpoints.singleAgent(data?.id)).then(res => (agents = [...agents, res.data.data]));
+  }
+
+  function handleUpdated(data) {
+    const initailAgents = agents.filter(item => item.id !== data?.id);
+    http
+      .get(endpoints.singleAgent(data?.id))
+      .then(res => (agents = [res.data.data, ...initailAgents]));
+  }
 
   function handleStatusChanged(data) {
     agents = agents.map(c => (c.id === data.id ? { ...c, status: data.status } : c));

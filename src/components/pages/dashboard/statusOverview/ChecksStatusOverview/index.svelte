@@ -14,22 +14,36 @@
 
   $effect(() => {
     if (trigger) {
-      http.get(endpoints.checks).then(res => (checks = res.data.data));
+      http.get(endpoints.checks).then(res => (checks = [...res.data.data].reverse()));
     }
   });
 
   onMount(async () => {
-    await http.get(endpoints.checks).then(res => (checks = res.data.data));
+    await http.get(endpoints.checks).then(res => (checks = [...res.data.data].reverse()));
 
-    on('check.status.changed', handleStatusChanged);
-
+    on('check.created', handleCreated);
+    on('check.updated', handleUpdated);
     on('check.deleted', handleDeleted);
+    on('check.status.changed', handleStatusChanged);
   });
 
   onDestroy(() => {
-    off('check.status.changed', handleStatusChanged);
+    off('check.created', handleCreated);
+    off('check.updated', handleUpdated);
     off('check.deleted', handleDeleted);
+    off('check.status.changed', handleStatusChanged);
   });
+
+  function handleCreated(data) {
+    http.get(endpoints.singleCheck(data?.id)).then(res => (checks = [res.data.data, ...checks]));
+  }
+
+  function handleUpdated(data) {
+    const initailChecks = checks.filter(item => item.id !== data?.id);
+    http
+      .get(endpoints.singleCheck(data?.id))
+      .then(res => (checks = [res.data.data, ...initailChecks]));
+  }
 
   function handleStatusChanged(data) {
     checks = checks.map(c => (c.id === data.id ? { ...c, status: data.status } : c));

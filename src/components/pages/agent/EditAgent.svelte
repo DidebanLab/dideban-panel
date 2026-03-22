@@ -127,7 +127,7 @@
         onclick={() => editAgentHandler()}
         type="button"
         class="me-auto w-fit px-10 text-sm text-[#10b981] h-8.5 flex justify-center items-center rounded-md cursor-pointer bg-[#22c55e]/10 hover:opacity-60 border border-[#00bc7d]/10 disabled:opacity-50 disabled:dark:opacity-30 disabled:cursor-not-allowed">
-        Add Agent
+        Edit Agent
       </button>
       <div class="flex justify-around items-center gap-3">
         <span class="text-sm w-[47.5px] {form.enabled ? 'text-[#00bc7d]' : 'text-[#6a7282]'}">
