@@ -36,7 +36,7 @@
   });
 
   function handleCreated(data) {
-    http.get(endpoints.singleAgent(data?.id)).then(res => (agents = [...agents, res.data.data]));
+    http.get(endpoints.singleAgent(data?.id)).then(res => (agents = [res.data.data, ...agents]));
   }
 
   function handleUpdated(data) {

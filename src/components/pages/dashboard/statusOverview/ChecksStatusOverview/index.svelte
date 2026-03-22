@@ -14,12 +14,12 @@
 
   $effect(() => {
     if (trigger) {
-      http.get(endpoints.checks).then(res => (checks = [...res.data.data].reverse()));
+      http.get(endpoints.checks).then(res => (checks = res.data.data));
     }
   });
 
   onMount(async () => {
-    await http.get(endpoints.checks).then(res => (checks = [...res.data.data].reverse()));
+    await http.get(endpoints.checks).then(res => (checks = res.data.data));
 
     on('check.created', handleCreated);
     on('check.updated', handleUpdated);
