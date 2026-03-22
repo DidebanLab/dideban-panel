@@ -5,7 +5,7 @@
   import AddAgent from './AddAgent.svelte';
   import { http } from '../../../../services/http.svelte.js';
   import { endpoints } from '../../../../endpoints.svelte.js';
-  import { off, on, subscribe, unsubscribe } from '../../../../services/ws.svelte.js';
+  import { off, on } from '../../../../services/ws.svelte.js';
 
   let trigger = $state();
   let isMobile = $state(innerWidth < 640);

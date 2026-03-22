@@ -6,7 +6,7 @@
   import { http } from '../../../../services/http.svelte.js';
   import { endpoints } from '../../../../endpoints.svelte.js';
   import responseTimeColor from '../../../../utils/responseTimeColor.js';
-  import { subscribe, unsubscribe, on, off } from '../../../../services/ws.svelte.js';
+  import { on, off } from '../../../../services/ws.svelte.js';
   let trigger = $state(0);
   let history = $state(null);
   let checks = $state(null);
@@ -27,7 +27,6 @@
   });
 
   onDestroy(() => {
-    unsubscribe('checks');
     off('check.status.changed', handleStatusChanged);
     off('check.deleted', handleDeleted);
   });

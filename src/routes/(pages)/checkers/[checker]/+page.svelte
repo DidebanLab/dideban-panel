@@ -18,6 +18,7 @@
   import TimeRangeSelector from '../../../../components/common/TimeRangeSelector.svelte';
   import ApdexHistory from '../../../../components/pages/checker/ApdexHistory.svelte';
   import ApdexHistogram from '../../../../components/pages/checker/ApdexHistogram.svelte';
+  import { subscribe, unsubscribe } from '../../../../services/ws.svelte';
 
   const id = $page.params.checker;
   let trigger = $state(0);
@@ -37,6 +38,12 @@
 
       summary = res.data?.data;
     });
+
+    subscribe('checks');
+  });
+
+  onDestroy(() => {
+    unsubscribe('checks');
   });
 
   $effect(() => {

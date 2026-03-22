@@ -2,7 +2,7 @@
   import { onDestroy, onMount } from 'svelte';
   import { http } from '../../../services/http.svelte';
   import { endpoints } from '../../../endpoints.svelte';
-  import { off, on, unsubscribe } from '../../../services/ws.svelte';
+  import { off, on } from '../../../services/ws.svelte';
 
   let agentsStats = $state();
   let checksStats = $state();
