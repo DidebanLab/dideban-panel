@@ -116,7 +116,7 @@
               : history?.uptime_percent >= 50
                 ? 'text-[#F97316]'
                 : 'text-[#EF4444]'}">
-        {history?.uptime_percent}%
+        {parseInt(history?.uptime_percent)}%
       </span>
     {/if}
   </div>
