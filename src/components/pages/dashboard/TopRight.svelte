@@ -2,7 +2,7 @@
   import { onDestroy, onMount } from 'svelte';
   import { http } from '../../../services/http.svelte';
   import { endpoints } from '../../../endpoints.svelte';
-  import { on, subscribe, unsubscribe } from '../../../services/ws.svelte';
+  import { off, on, subscribe, unsubscribe } from '../../../services/ws.svelte';
 
   let agentsStats = $state();
   let checksStats = $state();
@@ -129,7 +129,7 @@
             <span class="text-base text-black dark:text-white">Offline</span>
           </div>
           <span class="text-4xl xl:text-2xl 2xl:text-3xl p-4 xl:p-3 2xl:p-2.5 text-[#F87171]"
-            >{agentsStats?.status.offline || 0}</span>
+            >{agentsStats?.status?.offline || 0}</span>
           <img
             class="opacity-5 absolute bottom-0 end-0"
             width="70"
