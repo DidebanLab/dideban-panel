@@ -1,23 +1,65 @@
 <script>
+  import { onDestroy, onMount } from 'svelte';
   import { endpoints } from '../../../endpoints.svelte';
   import { http } from '../../../services/http.svelte';
   import responseTimeColor from '../../../utils/responseTimeColor';
+  import { off, on, subscribe, unsubscribe } from '../../../services/ws.svelte';
 
-  let { id, date, summaryWithDate } = $props();
-  let history = $state();
-  let historyDetail = $state();
-  const required = $state(innerWidth < 1280 ? 31 : 96);
-  let missing = $derived(Math.max(0, required - (history?.data?.length ?? 0)));
+  const REQUIRED_HISTORY_COUNT = $state(innerWidth < 640 ? 31 : 96);
+  let { checkId, date, summaryWithDate } = $props();
+  let history = $state(null);
+  let historyDetail = $state(null);
+  let lastChecked = $state(null);
 
   $effect(() => {
     if (!date) {
       http
-        .get(endpoints.checkHistory(id), {
-          params: { short: true, detail: true, page_size: required },
+        .get(endpoints.checkHistory(checkId), {
+          params: { short: true, detail: true, page_size: REQUIRED_HISTORY_COUNT },
         })
-        .then(res => (history = { ...res.data, data: res.data?.data?.reverse() }));
+        .then(res => {
+          lastChecked = res.data?.last_checked;
+
+          history = { ...res.data, data: res.data?.data?.reverse() };
+        });
+
+      subscribe(`checks:${checkId}`);
+
+      on('check.history.created', handleNewHistory);
+    } else {
+      off('check.history.created', handleNewHistory);
+      unsubscribe(`checks:${checkId}`);
     }
   });
+
+  onDestroy(() => {
+    off('check.history.created', handleNewHistory);
+    unsubscribe(`checks:${checkId}`);
+  });
+
+  function handleNewHistory(data) {
+    if (data.check_id !== +checkId) return;
+
+    const newHistoryData = [
+      ...history?.data.map(item => [item[0], item[1]]),
+      [data?.id, data?.status],
+    ].slice(-REQUIRED_HISTORY_COUNT);
+
+    const newUptimePercent =
+      (newHistoryData.filter(item => {
+        return item[1] && !['error', 'down'].includes(item[1]);
+      }).length *
+        100) /
+      newHistoryData.map(item => item && item[1]).length;
+
+    history = {
+      ...history,
+      uptime_percent: newUptimePercent,
+      data: newHistoryData,
+    };
+
+    lastChecked = data?.checked_at;
+  }
 </script>
 
 <div
@@ -28,14 +70,14 @@
     <div class="w-fit flex flex-col justify-start items-start">
       <span class="text-lg text-black dark:text-white">Uptime</span>
 
-      {#if date ? summaryWithDate?.date : history?.last_checked}
+      {#if date ? summaryWithDate?.date : lastChecked}
         <div class="flex justify-end items-center gap-2 text-xs text-white/40">
-          <span class="flex justify-center items-center text-nowrap"
-            >{date ? 'Date : ' + summaryWithDate?.date : 'Last Check :'}</span>
+          <span class="flex justify-center items-center text-nowrap">
+            {date ? 'Date : ' + summaryWithDate?.date : 'Last Check :'}</span>
 
           {#if !date}
             <span class="flex justify-center items-center text-nowrap tracking-wider">
-              {new Date(history?.last_checked).toLocaleString('en-CA', {
+              {new Date(lastChecked).toLocaleString('en-CA', {
                 year: 'numeric',
                 month: '2-digit',
                 day: '2-digit',
@@ -50,23 +92,18 @@
     {#if date}
       {#if summaryWithDate?.overall.uptime_percent}
         <span
-          class="text-lg sm:text-2xl {summaryWithDate?.overall.uptime_percent
-            ? summaryWithDate?.overall.uptime_percent >= 90
-              ? 'text-[#008236]'
-              : summaryWithDate?.overall.uptime_percent >= 80
-                ? 'text-[#00D492]'
-                : summaryWithDate?.overall.uptime_percent >= 70
-                  ? 'text-[#FDC700]'
-                  : summaryWithDate?.overall.uptime_percent >= 50
-                    ? 'text-[#F97316]'
-                    : 'text-[#EF4444]'
-            : 'text-white/20'}">
-          {summaryWithDate?.overall.uptime_percent
-            ? summaryWithDate?.overall.uptime_percent + '%'
-            : 'No Data'}
+          class="text-lg sm:text-2xl {summaryWithDate?.overall.uptime_percent >= 90
+            ? 'text-[#008236]'
+            : summaryWithDate?.overall.uptime_percent >= 80
+              ? 'text-[#00D492]'
+              : summaryWithDate?.overall.uptime_percent >= 70
+                ? 'text-[#FDC700]'
+                : summaryWithDate?.overall.uptime_percent >= 50
+                  ? 'text-[#F97316]'
+                  : 'text-[#EF4444]'}">
+          {summaryWithDate?.overall.uptime_percent &&
+            parseInt(summaryWithDate?.overall.uptime_percent) + '%'}
         </span>
-      {:else}
-        <span class="text-lg sm:text-2xl text-white/20">No Data</span>
       {/if}
     {:else if history?.uptime_percent}
       <span
@@ -81,8 +118,6 @@
                 : 'text-[#EF4444]'}">
         {history?.uptime_percent}%
       </span>
-    {:else}
-      <span class="text-lg sm:text-2xl text-white/20">No Data</span>
     {/if}
   </div>
 
@@ -91,7 +126,7 @@
       ? 'overflow-x-auto overflow-y-hidden 3xl:overflow-x-visible 3xl:overflow-y-visible relative pb-10 3xl:pb-0'
       : 'bottom-4 sm:bottom-6 absolute start-1/2 -translate-x-1/2 px-4.25 sm:px-6'}">
     {#if !date}
-      {#each Array(missing) as _, i}
+      {#each Array(Math.max(0, REQUIRED_HISTORY_COUNT - (history?.data?.length || 0))) as _, i}
         <div
           aria-hidden="true"
           class="w-full h-4 rounded-[1px] bg-black/20 dark:bg-[#FFFFFF]/10 opacity-70">
@@ -106,7 +141,7 @@
           onmouseover={() => {
             if (!date) {
               http
-                .get(endpoints.checkHistoryDetail(id, detail[0]))
+                .get(endpoints.checkHistoryDetail(checkId, detail[0]))
                 .then(res => (historyDetail = res.data?.data));
             }
           }}
@@ -118,7 +153,7 @@
           onfocus={() => {
             if (!date) {
               http
-                .get(endpoints.checkHistoryDetail(id, detail[0]))
+                .get(endpoints.checkHistoryDetail(checkId, detail[0]))
                 .then(res => (historyDetail = res.data?.data));
             }
           }}

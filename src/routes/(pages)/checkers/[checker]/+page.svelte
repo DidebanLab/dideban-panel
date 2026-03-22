@@ -38,12 +38,6 @@
 
       summary = res.data?.data;
     });
-
-    subscribe('checks');
-  });
-
-  onDestroy(() => {
-    unsubscribe('checks');
   });
 
   $effect(() => {
@@ -253,7 +247,7 @@
       {/if}
     </div>
 
-    <Uptime {id} {date} {summaryWithDate} />
+    <Uptime checkId={id} {date} {summaryWithDate} />
 
     {#if !date}
       <TimeRangeSelector bind:value={hours} interval={data?.interval_seconds} />

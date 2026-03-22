@@ -45,7 +45,7 @@
   <div
     class="w-full col-span-9 border flex flex-col sm:p-4 md:pb-0 sm:gap-4 md:pt-4 2xl:p-6 2xl:pb-1 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
     <div class="w-full flex justify-between items-start">
-      <div class="w-full flex gap-1 flex-col justify-start items-start">
+      <div class="w-full flex flex-col justify-start items-start">
         <span class="text-lg md:text-xl text-black dark:text-white">Metrics</span>
 
         <div class="flex justify-end items-center gap-2 text-xs text-white/40">
