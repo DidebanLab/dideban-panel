@@ -165,7 +165,7 @@
               </div>
               <div class="w-full flex justify-between items-center gap-2.5">
                 <span class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
-                  >Collect AV (ms) :</span>
+                  >Collect Avg (ms) :</span>
                 <span
                   class="flex justify-center items-center text-sm text-nowrap {detail?.rate?.toLowerCase() ===
                   'excellent'
@@ -264,7 +264,7 @@
             </div>
             <div class="w-full flex justify-between items-center gap-2.5">
               <span class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
-                >Collect AV (ms) :</span>
+                >Collect Avg (ms) :</span>
               <span
                 class="flex justify-center items-center text-sm text-nowrap {detail?.rate?.toLowerCase() ===
                 'excellent'

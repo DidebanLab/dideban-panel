@@ -7,7 +7,7 @@
   import { endpoints } from '../../endpoints.svelte';
   import getDate from '../../utils/getDate';
 
-  let { summary, date , id, value: toDay = $bindable(), type } = $props();
+  let { summary, date, id, value: toDay = $bindable(), type } = $props();
 </script>
 
 {#if summary}
@@ -50,7 +50,7 @@
             <button
               onclick={() => {
                 if (value === -1) {
-                  goto(`/checkers/${id}`, {
+                  goto(`/${type === 'check' ? 'checkers' : 'agents'}/${id}`, {
                     keepfocus: true,
                     noScroll: true,
                   });

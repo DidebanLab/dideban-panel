@@ -4,6 +4,7 @@
   import { http } from '../../../services/http.svelte';
   import { LIMITATIONS } from '../../config.svelte';
   import { off, on, subscribe, unsubscribe } from '../../../services/ws.svelte';
+  import formatNumber from '../../../utils/formatNumber';
 
   const REQUIRED_HISTORY_COUNT = $state(innerWidth < 640 ? 31 : 96);
   let { agentId, date, summaryWithDate } = $props();
@@ -102,7 +103,7 @@
                 : history?.uptime_percent >= 50
                   ? 'text-[#F97316]'
                   : 'text-[#EF4444]'}">
-          {parseInt(history?.uptime_percent)}%
+          {formatNumber(history?.uptime_percent)}%
         </span>
       {/if}
     {:else if summaryWithDate?.overall?.uptime_percent}
@@ -116,7 +117,7 @@
               : summaryWithDate?.overall?.uptime_percent >= 50
                 ? 'text-[#F97316]'
                 : 'text-[#EF4444]'}">
-        {parseInt(summaryWithDate?.overall?.uptime_percent)}%
+        {formatNumber(summaryWithDate?.overall?.uptime_percent)}%
       </span>
     {/if}
   </div>
@@ -204,7 +205,8 @@
                           ? 'text-[#F87171]'
                           : historyDetail.cpu_usage_percent > LIMITATIONS.cpu.warn
                             ? 'text-[#F97316]'
-                            : 'text-green-700'}">{historyDetail.cpu_usage_percent}%</span>
+                            : 'text-green-700'}"
+                        >{formatNumber(historyDetail.cpu_usage_percent)}%</span>
                     </div>
                   </div>
                   <div class="w-full h-0.5 rounded-full bg-black/10 dark:bg-white/10">
@@ -379,7 +381,7 @@
                             ? 'text-[#F87171]'
                             : uptime?.avg_cpu_usage > LIMITATIONS.cpu.warn
                               ? 'text-[#F97316]'
-                              : 'text-green-700'}">{uptime?.avg_cpu_usage}%</span>
+                              : 'text-green-700'}">{formatNumber(uptime?.avg_cpu_usage)}%</span>
                       </div>
                     </div>
                     <div class="w-full h-0.5 rounded-full bg-black/10 dark:bg-white/10">
@@ -418,7 +420,7 @@
                             ? 'text-[#F87171]'
                             : uptime.avg_memory_usage > LIMITATIONS.memory.warn
                               ? 'text-[#F97316]'
-                              : 'text-green-700'}">{uptime.avg_memory_usage}%</span>
+                              : 'text-green-700'}">{formatNumber(uptime.avg_memory_usage)}%</span>
                       </div>
                     </div>
                     <div class="w-full h-0.5 rounded-full bg-black/10 dark:bg-white/10">
@@ -459,7 +461,7 @@
                             ? 'text-[#F87171]'
                             : uptime?.avg_disk_usage > LIMITATIONS.disk.warn
                               ? 'text-[#F97316]'
-                              : 'text-green-700'}">{uptime?.avg_disk_usage}%</span>
+                              : 'text-green-700'}">{formatNumber(uptime?.avg_disk_usage)}%</span>
                       </div>
                     </div>
                     <div class="w-full h-0.5 rounded-full bg-black/10 dark:bg-white/10">

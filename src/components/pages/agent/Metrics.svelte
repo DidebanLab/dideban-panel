@@ -1,6 +1,7 @@
 <script>
   import { endpoints } from '../../../endpoints.svelte';
   import { http } from '../../../services/http.svelte';
+  import formatNumber from '../../../utils/formatNumber';
   import responseTimeColor from '../../../utils/responseTimeColor';
   import { LIMITATIONS } from '../../config.svelte';
   import Chart from './Chart.svelte';
@@ -153,6 +154,7 @@
       <div class="w-full bg-blue-500/50 h-px mt-auto mb-6"></div>
     {/if}
   </div>
+
   <div
     class="col-span-3 border border-[#0D0D0D]/5 dark:border-white/5 p-6 rounded-xl grid grid-cols-1 gap-4 dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF]">
     {#if date}
@@ -177,7 +179,9 @@
                       : 'text-green-700'
                   : 'text-[#F87171]'}"
                 >{summaryWithDate?.chart_series?.[pointIndexHoverd]?.cpu_usage_percent
-                  ? summaryWithDate?.chart_series?.[pointIndexHoverd]?.cpu_usage_percent + '%'
+                  ? formatNumber(
+                      summaryWithDate?.chart_series?.[pointIndexHoverd]?.cpu_usage_percent,
+                    ) + '%'
                   : 'Unknown'}</span>
             {:else}
               <span
@@ -194,13 +198,15 @@
                   : 'text-[#F87171]'}"
                 >{summaryWithDate?.chart_series[summaryWithDate.chart_series.length - 1]
                   ?.cpu_usage_percent
-                  ? summaryWithDate?.chart_series[summaryWithDate.chart_series.length - 1]
-                      ?.cpu_usage_percent + '%'
+                  ? formatNumber(
+                      summaryWithDate?.chart_series[summaryWithDate.chart_series.length - 1]
+                        ?.cpu_usage_percent,
+                    ) + '%'
                   : 'Unknown'}</span>
             {/if}
           </div>
           <div class="w-full flex justify-between items-start gap-1">
-            <span class="text-white/40 text-xs">Av (1m): </span>
+            <span class="text-white/40 text-xs">Avg (1m): </span>
 
             {#if isMouseInside}
               <span
@@ -214,7 +220,8 @@
                       : 'text-green-700'
                   : 'text-[#F87171]'}"
                 >{summaryWithDate?.chart_series?.[pointIndexHoverd]?.cpu_load_1
-                  ? summaryWithDate?.chart_series?.[pointIndexHoverd]?.cpu_load_1 + '%'
+                  ? formatNumber(summaryWithDate?.chart_series?.[pointIndexHoverd]?.cpu_load_1) +
+                    '%'
                   : 'Unknown'}</span>
             {:else}
               <span
@@ -230,13 +237,15 @@
                       : 'text-green-700'
                   : 'text-[#F87171]'}"
                 >{summaryWithDate?.chart_series[summaryWithDate.chart_series.length - 1]?.cpu_load_1
-                  ? summaryWithDate?.chart_series[summaryWithDate.chart_series.length - 1]
-                      ?.cpu_load_1 + '%'
+                  ? formatNumber(
+                      summaryWithDate?.chart_series[summaryWithDate.chart_series.length - 1]
+                        ?.cpu_load_1,
+                    ) + '%'
                   : 'Unknown'}</span>
             {/if}
           </div>
           <div class="w-full flex justify-between items-start gap-1">
-            <span class="text-white/40 text-xs">Av (5m): </span>
+            <span class="text-white/40 text-xs">Avg (5m): </span>
 
             {#if isMouseInside}
               <span
@@ -250,7 +259,8 @@
                       : 'text-green-700'
                   : 'text-[#F87171]'}"
                 >{summaryWithDate?.chart_series?.[pointIndexHoverd]?.cpu_load_5
-                  ? summaryWithDate?.chart_series?.[pointIndexHoverd]?.cpu_load_5 + '%'
+                  ? formatNumber(summaryWithDate?.chart_series?.[pointIndexHoverd]?.cpu_load_5) +
+                    '%'
                   : 'Unknown'}</span>
             {:else}
               <span
@@ -266,13 +276,15 @@
                       : 'text-green-700'
                   : 'text-[#F87171]'}"
                 >{summaryWithDate?.chart_series[summaryWithDate.chart_series.length - 1]?.cpu_load_5
-                  ? summaryWithDate?.chart_series[summaryWithDate.chart_series.length - 1]
-                      ?.cpu_load_5 + '%'
+                  ? formatNumber(
+                      summaryWithDate?.chart_series[summaryWithDate.chart_series.length - 1]
+                        ?.cpu_load_5,
+                    ) + '%'
                   : 'Unknown'}</span>
             {/if}
           </div>
           <div class="w-full flex justify-between items-start gap-1">
-            <span class="text-white/40 text-xs">Av (15m) : </span>
+            <span class="text-white/40 text-xs">Avg (15m) : </span>
 
             {#if isMouseInside}
               <span
@@ -286,7 +298,8 @@
                       : 'text-green-700'
                   : 'text-[#F87171]'}"
                 >{summaryWithDate?.chart_series?.[pointIndexHoverd]?.cpu_load_15
-                  ? summaryWithDate?.chart_series?.[pointIndexHoverd]?.cpu_load_15 + '%'
+                  ? formatNumber(summaryWithDate?.chart_series?.[pointIndexHoverd]?.cpu_load_15) +
+                    '%'
                   : 'Unknown'}</span>
             {:else}
               <span
@@ -303,8 +316,10 @@
                   : 'text-[#F87171]'}"
                 >{summaryWithDate?.chart_series[summaryWithDate.chart_series.length - 1]
                   ?.cpu_load_15
-                  ? summaryWithDate?.chart_series[summaryWithDate.chart_series.length - 1]
-                      ?.cpu_load_15 + '%'
+                  ? formatNumber(
+                      summaryWithDate?.chart_series[summaryWithDate.chart_series.length - 1]
+                        ?.cpu_load_15,
+                    ) + '%'
                   : 'Unknown'}</span>
             {/if}
           </div>
@@ -334,7 +349,9 @@
                 ? 'text-white'
                 : 'text-[#F87171]'}">
               {summaryWithDate?.chart_series?.[pointIndexHoverd]?.cpu_usage_percent
-                ? summaryWithDate?.chart_series?.[pointIndexHoverd]?.cpu_usage_percent + '%'
+                ? formatNumber(
+                    summaryWithDate?.chart_series?.[pointIndexHoverd]?.cpu_usage_percent,
+                  ) + '%'
                 : 'Unknown'}
             </div>
           {:else}
@@ -361,8 +378,10 @@
                 : 'text-[#F87171]'}">
               {summaryWithDate?.chart_series[summaryWithDate.chart_series.length - 1]
                 ?.cpu_usage_percent
-                ? summaryWithDate?.chart_series[summaryWithDate.chart_series.length - 1]
-                    ?.cpu_usage_percent + '%'
+                ? formatNumber(
+                    summaryWithDate?.chart_series[summaryWithDate.chart_series.length - 1]
+                      ?.cpu_usage_percent,
+                  ) + '%'
                 : 'Unknown'}
             </div>
           {/if}
@@ -388,7 +407,7 @@
                       : 'text-green-700'
                   : 'text-[#F87171]'}">
                 {metricPointDetail?.cpu_usage_percent
-                  ? metricPointDetail?.cpu_usage_percent + '%'
+                  ? formatNumber(metricPointDetail?.cpu_usage_percent) + '%'
                   : 'Unknown'}</span>
             {:else}
               <span
@@ -400,12 +419,12 @@
                       : 'text-green-700'
                   : 'text-[#F87171]'}"
                 >{chart?.last_history?.cpu_usage_percent
-                  ? chart?.last_history?.cpu_usage_percent + '%'
+                  ? formatNumber(chart?.last_history?.cpu_usage_percent) + '%'
                   : 'Unknown'}</span>
             {/if}
           </div>
           <div class="w-full flex justify-between items-start gap-1">
-            <span class="text-white/40 text-xs">Av (1m): </span>
+            <span class="text-white/40 text-xs">Avg (1m): </span>
 
             {#if isMouseInside}
               <span
@@ -417,7 +436,7 @@
                       : 'text-green-700'
                   : 'text-[#F87171]'}"
                 >{metricPointDetail?.cpu_load_1
-                  ? metricPointDetail?.cpu_load_1 + '%'
+                  ? formatNumber(metricPointDetail?.cpu_load_1) + '%'
                   : 'Unknown'}</span>
             {:else}
               <span
@@ -429,12 +448,12 @@
                       : 'text-green-700'
                   : 'text-[#F87171]'}"
                 >{chart?.last_history?.cpu_load_1
-                  ? chart?.last_history?.cpu_load_1 + '%'
+                  ? formatNumber(chart?.last_history?.cpu_load_1) + '%'
                   : 'Unknown'}</span>
             {/if}
           </div>
           <div class="w-full flex justify-between items-start gap-1">
-            <span class="text-white/40 text-xs">Av (5m): </span>
+            <span class="text-white/40 text-xs">Avg (5m): </span>
 
             {#if isMouseInside}
               <span
@@ -446,8 +465,9 @@
                       : 'text-green-700'
                   : 'text-[#F87171]'}"
                 >{metricPointDetail?.cpu_load_5
-                  ? metricPointDetail?.cpu_load_5 + '%'
-                  : 'Unknown'}</span>
+                  ? formatNumber(metricPointDetail?.cpu_load_5) + '%'
+                  : 'Unknown'}
+              </span>
             {:else}
               <span
                 class="text-xs {chart?.last_history?.cpu_load_5
@@ -458,12 +478,12 @@
                       : 'text-green-700'
                   : 'text-[#F87171]'}"
                 >{chart?.last_history?.cpu_load_5
-                  ? chart?.last_history?.cpu_load_5 + '%'
+                  ? formatNumber(chart?.last_history?.cpu_load_5) + '%'
                   : 'Unknown'}</span>
             {/if}
           </div>
           <div class="w-full flex justify-between items-start gap-1">
-            <span class="text-white/40 text-xs">Av (15m) : </span>
+            <span class="text-white/40 text-xs">Avg (15m) : </span>
 
             {#if isMouseInside}
               <span
@@ -475,7 +495,7 @@
                       : 'text-green-700'
                   : 'text-[#F87171]'}"
                 >{metricPointDetail?.cpu_load_15
-                  ? metricPointDetail?.cpu_load_15 + '%'
+                  ? formatNumber(metricPointDetail?.cpu_load_15) + '%'
                   : 'Unknown'}</span>
             {:else}
               <span
@@ -487,7 +507,7 @@
                       : 'text-green-700'
                   : 'text-[#F87171]'}"
                 >{chart?.last_history?.cpu_load_15
-                  ? chart?.last_history?.cpu_load_15 + '%'
+                  ? formatNumber(chart?.last_history?.cpu_load_15) + '%'
                   : 'Unknown'}</span>
             {/if}
           </div>
@@ -513,7 +533,7 @@
                 ? 'text-white'
                 : 'text-[#F87171]'}">
               {metricPointDetail?.cpu_usage_percent
-                ? metricPointDetail?.cpu_usage_percent + '%'
+                ? formatNumber(metricPointDetail?.cpu_usage_percent) + '%'
                 : 'Unknown'}
             </div>
           {:else}
@@ -535,7 +555,7 @@
                 ? 'text-white'
                 : 'text-[#F87171]'}">
               {chart?.last_history?.cpu_usage_percent
-                ? chart?.last_history?.cpu_usage_percent + '%'
+                ? formatNumber(chart?.last_history?.cpu_usage_percent) + '%'
                 : 'Unknown'}
             </div>
           {/if}
@@ -569,7 +589,9 @@
                       : 'text-green-700'
                   : 'text-[#F87171]'}">
                 {summaryWithDate?.chart_series?.[pointIndexHoverd]?.memory_usage_percent
-                  ? summaryWithDate?.chart_series?.[pointIndexHoverd]?.memory_usage_percent + '%'
+                  ? formatNumber(
+                      summaryWithDate?.chart_series?.[pointIndexHoverd]?.memory_usage_percent,
+                    ) + '%'
                   : 'Unknown'}</span>
             {:else}
               <span
@@ -586,8 +608,10 @@
                   : 'text-[#F87171]'}"
                 >{summaryWithDate?.chart_series?.[summaryWithDate?.chart_series.length - 1]
                   ?.memory_usage_percent
-                  ? summaryWithDate?.chart_series?.[summaryWithDate?.chart_series.length - 1]
-                      ?.memory_usage_percent + '%'
+                  ? formatNumber(
+                      summaryWithDate?.chart_series?.[summaryWithDate?.chart_series.length - 1]
+                        ?.memory_usage_percent,
+                    ) + '%'
                   : 'Unknown'}</span>
             {/if}
           </div>
@@ -597,7 +621,9 @@
             {#if isMouseInside}
               {#if summaryWithDate?.chart_series?.[pointIndexHoverd]?.memory_total_mb}
                 <span class="text-xs text-white"
-                  >{summaryWithDate?.chart_series?.[pointIndexHoverd]?.memory_total_mb}
+                  >{formatNumber(
+                    summaryWithDate?.chart_series?.[pointIndexHoverd]?.memory_total_mb,
+                  )}
 
                   <sub class="text-white/40">Mb</sub>
                 </span>{:else}
@@ -605,8 +631,10 @@
               {/if}
             {:else if summaryWithDate?.chart_series?.[summaryWithDate?.chart_series.length - 1]?.memory_total_mb}
               <span class="text-xs text-white"
-                >{summaryWithDate?.chart_series?.[summaryWithDate?.chart_series.length - 1]
-                  ?.memory_total_mb}
+                >{formatNumber(
+                  summaryWithDate?.chart_series?.[summaryWithDate?.chart_series.length - 1]
+                    ?.memory_total_mb,
+                )}
 
                 <sub class="text-white/40">Mb</sub>
               </span>{:else}
@@ -618,33 +646,46 @@
 
             {#if isMouseInside}
               {#if summaryWithDate?.chart_series?.[pointIndexHoverd]?.memory_used_mb}
-                <span class="text-xs text-white"
-                  >{summaryWithDate?.chart_series?.[pointIndexHoverd]?.memory_used_mb}
+                <span class="text-xs text-white">
+                  {formatNumber(summaryWithDate?.chart_series?.[pointIndexHoverd]?.memory_used_mb)}
                   <sub class="text-white/40">Mb</sub>
-                </span>{:else}
+                </span>
+              {:else}
                 <span class="text-xs text-[#F87171]">Unknown</span>{/if}
             {:else if summaryWithDate?.chart_series?.[summaryWithDate?.chart_series.length - 1]?.memory_used_mb}
-              <span class="text-xs text-white"
-                >{summaryWithDate?.chart_series?.[summaryWithDate?.chart_series.length - 1]
-                  ?.memory_used_mb}
+              <span class="text-xs text-white">
+                {formatNumber(
+                  summaryWithDate?.chart_series?.[summaryWithDate?.chart_series.length - 1]
+                    ?.memory_used_mb,
+                )}
                 <sub class="text-white/40">Mb</sub>
-              </span>{:else}<span class="text-xs text-[#F87171]">Unknown</span>{/if}
+              </span>
+            {:else}
+              <span class="text-xs text-[#F87171]">Unknown</span>{/if}
           </div>
           <div class="w-full flex justify-between items-start gap-1">
             <span class="text-white/40 text-xs">Available: </span>
 
             {#if isMouseInside}
               {#if summaryWithDate?.chart_series?.[pointIndexHoverd]?.memory_available_mb}
-                <span class="text-xs text-white"
-                  >{summaryWithDate?.chart_series?.[pointIndexHoverd]?.memory_available_mb}
+                <span class="text-xs text-white">
+                  {formatNumber(
+                    summaryWithDate?.chart_series?.[pointIndexHoverd]?.memory_available_mb,
+                  )}
                   <sub class="text-white/40">Mb</sub>
-                </span>{:else}<span class="text-xs text-[#F87171]">Unknown</span>{/if}
+                </span>
+              {:else}
+                <span class="text-xs text-[#F87171]">Unknown</span>{/if}
             {:else if summaryWithDate?.chart_series?.[summaryWithDate?.chart_series.length - 1]?.memory_available_mb}
-              <span class="text-xs text-white"
-                >{summaryWithDate?.chart_series?.[summaryWithDate?.chart_series.length - 1]
-                  ?.memory_available_mb}
+              <span class="text-xs text-white">
+                {formatNumber(
+                  summaryWithDate?.chart_series?.[summaryWithDate?.chart_series.length - 1]
+                    ?.memory_available_mb,
+                )}
                 <sub class="text-white/40">Mb</sub>
-              </span>{:else}<span class="text-xs text-[#F87171]">Unknown</span>{/if}
+              </span>
+            {:else}
+              <span class="text-xs text-[#F87171]">Unknown</span>{/if}
           </div>
         </div>
 
@@ -673,7 +714,9 @@
                 ? 'text-white'
                 : 'text-[#F87171]'}">
               {summaryWithDate?.chart_series?.[pointIndexHoverd]?.memory_usage_percent
-                ? summaryWithDate?.chart_series?.[pointIndexHoverd]?.memory_usage_percent + '%'
+                ? formatNumber(
+                    summaryWithDate?.chart_series?.[pointIndexHoverd]?.memory_usage_percent,
+                  ) + '%'
                 : 'Unknown'}
             </div>
           {:else}
@@ -701,8 +744,10 @@
                 : 'text-[#F87171]'}">
               {summaryWithDate?.chart_series?.[summaryWithDate?.chart_series.length - 1]
                 ?.memory_usage_percent
-                ? summaryWithDate?.chart_series?.[summaryWithDate?.chart_series.length - 1]
-                    ?.memory_usage_percent + '%'
+                ? formatNumber(
+                    summaryWithDate?.chart_series?.[summaryWithDate?.chart_series.length - 1]
+                      ?.memory_usage_percent,
+                  ) + '%'
                 : 'Unknown'}
             </div>
           {/if}
@@ -729,7 +774,7 @@
                       : 'text-green-700'
                   : 'text-[#F87171]'}"
                 >{metricPointDetail?.memory_usage_percent
-                  ? metricPointDetail?.memory_usage_percent + '%'
+                  ? formatNumber(metricPointDetail?.memory_usage_percent) + '%'
                   : 'Unknown'}</span>
             {:else}
               <span
@@ -741,7 +786,7 @@
                       : 'text-green-700'
                   : 'text-[#F87171]'}"
                 >{chart?.last_history?.memory_usage_percent
-                  ? chart?.last_history?.memory_usage_percent + '%'
+                  ? formatNumber(chart?.last_history?.memory_usage_percent) + '%'
                   : 'Unknown'}</span>
             {/if}
           </div>
@@ -751,7 +796,7 @@
             {#if isMouseInside}
               {#if metricPointDetail?.memory_total_mb}
                 <span class="text-xs text-white"
-                  >{metricPointDetail?.memory_total_mb}
+                  >{formatNumber(metricPointDetail?.memory_total_mb)}
 
                   <sub class="text-white/40">Mb</sub>
                 </span>
@@ -759,8 +804,8 @@
                 <span class="text-xs text-[#F87171]">Unknown</span>
               {/if}
             {:else if chart?.last_history?.memory_total_mb}
-              <span class="text-xs text-white"
-                >{chart?.last_history?.memory_total_mb}
+              <span class="text-xs text-white">
+                {formatNumber(chart?.last_history?.memory_total_mb)}
 
                 <sub class="text-white/40">Mb</sub>
               </span>{:else}
@@ -773,12 +818,14 @@
             {#if isMouseInside}
               {#if metricPointDetail?.memory_used_mb}
                 <span class="text-xs text-white"
-                  >{metricPointDetail?.memory_used_mb}
+                  >{formatNumber(metricPointDetail?.memory_used_mb)}
                   <sub class="text-white/40">Mb</sub>
-                </span>{:else}<span class="text-xs text-[#F87171]">Unknown</span>{/if}
+                </span>
+              {:else}
+                <span class="text-xs text-[#F87171]">Unknown</span>{/if}
             {:else if chart?.last_history?.memory_used_mb}
               <span class="text-xs text-white"
-                >{chart?.last_history?.memory_used_mb}
+                >{formatNumber(chart?.last_history?.memory_used_mb)}
                 <sub class="text-white/40">Mb</sub>
               </span>{:else}<span class="text-xs text-[#F87171]">Unknown</span>{/if}
           </div>
@@ -788,12 +835,12 @@
             {#if isMouseInside}
               {#if metricPointDetail?.memory_available_mb}
                 <span class="text-xs text-white"
-                  >{metricPointDetail?.memory_available_mb}
+                  >{formatNumber(metricPointDetail?.memory_available_mb)}
                   <sub class="text-white/40">Mb</sub>
                 </span>{:else}<span class="text-xs text-[#F87171]">Unknown</span>{/if}
             {:else if chart?.last_history?.memory_available_mb}
               <span class="text-xs text-white"
-                >{chart?.last_history?.memory_available_mb}
+                >{formatNumber(chart?.last_history?.memory_available_mb)}
                 <sub class="text-white/40">Mb</sub>
               </span>{:else}<span class="text-xs text-[#F87171]">Unknown</span>{/if}
           </div>
@@ -819,7 +866,7 @@
                 ? 'text-white'
                 : 'text-[#F87171]'}">
               {metricPointDetail?.memory_usage_percent
-                ? metricPointDetail?.memory_usage_percent + '%'
+                ? formatNumber(metricPointDetail?.memory_usage_percent) + '%'
                 : 'Unknown'}
             </div>
           {:else}
@@ -841,7 +888,7 @@
                 ? 'text-white'
                 : 'text-[#F87171]'}">
               {chart?.last_history?.memory_usage_percent
-                ? chart?.last_history?.memory_usage_percent + '%'
+                ? formatNumber(chart?.last_history?.memory_usage_percent) + '%'
                 : 'Unknown'}
             </div>
           {/if}
@@ -874,7 +921,9 @@
                       : 'text-green-700'
                   : 'text-[#F87171]'}"
                 >{summaryWithDate?.chart_series?.[pointIndexHoverd]?.disk_usage_percent
-                  ? summaryWithDate?.chart_series?.[pointIndexHoverd]?.disk_usage_percent + '%'
+                  ? formatNumber(
+                      summaryWithDate?.chart_series?.[pointIndexHoverd]?.disk_usage_percent,
+                    ) + '%'
                   : 'Unknown'}</span>
             {:else}
               <span
@@ -891,8 +940,10 @@
                   : 'text-[#F87171]'}"
                 >{summaryWithDate?.chart_series?.[summaryWithDate.chart_series.length - 1]
                   ?.disk_usage_percent
-                  ? summaryWithDate?.chart_series?.[summaryWithDate.chart_series.length - 1]
-                      ?.disk_usage_percent + '%'
+                  ? formatNumber(
+                      summaryWithDate?.chart_series?.[summaryWithDate.chart_series.length - 1]
+                        ?.disk_usage_percent,
+                    ) + '%'
                   : 'Unknown'}</span>
             {/if}
           </div>
@@ -902,13 +953,15 @@
             {#if isMouseInside}
               {#if summaryWithDate?.chart_series?.[pointIndexHoverd]?.disk_total_gb}
                 <span class="text-xs text-white"
-                  >{summaryWithDate?.chart_series?.[pointIndexHoverd]?.disk_total_gb}
+                  >{formatNumber(summaryWithDate?.chart_series?.[pointIndexHoverd]?.disk_total_gb)}
                   <sub class="text-white/40">Gb</sub></span
                 >{:else}<span class="text-xs text-[#F87171]">Unknown</span>{/if}
             {:else if summaryWithDate?.chart_series?.[summaryWithDate.chart_series.length - 1]?.disk_total_gb}
               <span class="text-xs text-white"
-                >{summaryWithDate?.chart_series?.[summaryWithDate.chart_series.length - 1]
-                  ?.disk_total_gb}
+                >{formatNumber(
+                  summaryWithDate?.chart_series?.[summaryWithDate.chart_series.length - 1]
+                    ?.disk_total_gb,
+                )}
                 <sub class="text-white/40">Gb</sub></span
               >{:else}<span class="text-xs text-[#F87171]">Unknown</span>{/if}
           </div>
@@ -918,13 +971,15 @@
             {#if isMouseInside}
               {#if summaryWithDate?.chart_series?.[pointIndexHoverd]?.disk_used_gb}
                 <span class="text-xs text-white"
-                  >{summaryWithDate?.chart_series?.[pointIndexHoverd]?.disk_used_gb}
+                  >{formatNumber(summaryWithDate?.chart_series?.[pointIndexHoverd]?.disk_used_gb)}
                   <sub class="text-white/40"> Gb</sub></span
                 >{:else}<span class="text-xs text-[#F87171]">Unknown</span>{/if}
             {:else if summaryWithDate?.chart_series?.[summaryWithDate.chart_series.length - 1]?.disk_used_gb}
               <span class="text-xs text-white"
-                >{summaryWithDate?.chart_series?.[summaryWithDate.chart_series.length - 1]
-                  ?.disk_used_gb}
+                >{formatNumber(
+                  summaryWithDate?.chart_series?.[summaryWithDate.chart_series.length - 1]
+                    ?.disk_used_gb,
+                )}
                 <sub class="text-white/40"> Gb</sub></span
               >{:else}<span class="text-xs text-[#F87171]">Unknown</span>{/if}
           </div>
@@ -933,16 +988,20 @@
             {#if isMouseInside}
               {#if summaryWithDate?.chart_series?.[pointIndexHoverd]?.disk_total_gb && summaryWithDate?.chart_series?.[pointIndexHoverd]?.disk_used_gb}
                 <span class="text-xs text-white"
-                  >{summaryWithDate?.chart_series?.[pointIndexHoverd]?.disk_total_gb -
-                    summaryWithDate?.chart_series?.[pointIndexHoverd]?.disk_used_gb}
+                  >{formatNumber(
+                    summaryWithDate?.chart_series?.[pointIndexHoverd]?.disk_total_gb -
+                      summaryWithDate?.chart_series?.[pointIndexHoverd]?.disk_used_gb,
+                  )}
                   <sub class="text-white/40"> Gb</sub></span
                 >{:else}<span class="text-xs text-[#F87171]">Unknown</span>{/if}
             {:else if summaryWithDate?.chart_series?.[summaryWithDate.chart_series.length - 1]?.disk_total_gb && summaryWithDate?.chart_series?.[summaryWithDate.chart_series.length - 1]?.disk_used_gb}
               <span class="text-xs text-white"
-                >{summaryWithDate?.chart_series?.[summaryWithDate.chart_series.length - 1]
-                  ?.disk_total_gb -
+                >{formatNumber(
                   summaryWithDate?.chart_series?.[summaryWithDate.chart_series.length - 1]
-                    ?.disk_used_gb}
+                    ?.disk_total_gb -
+                    summaryWithDate?.chart_series?.[summaryWithDate.chart_series.length - 1]
+                      ?.disk_used_gb,
+                )}
                 <sub class="text-white/40"> Gb</sub></span
               >{:else}<span class="text-xs text-[#F87171]">Unknown</span>{/if}
           </div>
@@ -972,7 +1031,9 @@
                 ? 'text-white'
                 : 'text-[#F87171]'}">
               {summaryWithDate?.chart_series?.[pointIndexHoverd]?.disk_usage_percent
-                ? summaryWithDate?.chart_series?.[pointIndexHoverd]?.disk_usage_percent + '%'
+                ? formatNumber(
+                    summaryWithDate?.chart_series?.[pointIndexHoverd]?.disk_usage_percent,
+                  ) + '%'
                 : 'Unknown'}
             </div>
           </div>
@@ -1002,8 +1063,10 @@
                 : 'text-[#F87171]'}">
               {summaryWithDate?.chart_series?.[summaryWithDate.chart_series.length - 1]
                 ?.disk_usage_percent
-                ? summaryWithDate?.chart_series?.[summaryWithDate.chart_series.length - 1]
-                    ?.disk_usage_percent + '%'
+                ? formatNumber(
+                    summaryWithDate?.chart_series?.[summaryWithDate.chart_series.length - 1]
+                      ?.disk_usage_percent,
+                  ) + '%'
                 : 'Unknown'}
             </div>
           </div>{/if}
@@ -1029,7 +1092,7 @@
                       : 'text-green-700'
                   : 'text-[#F87171]'}"
                 >{metricPointDetail?.disk_usage_percent
-                  ? metricPointDetail?.disk_usage_percent + '%'
+                  ? formatNumber(metricPointDetail?.disk_usage_percent) + '%'
                   : 'Unknown'}</span>
             {:else}
               <span
@@ -1041,7 +1104,7 @@
                       : 'text-green-700'
                   : 'text-[#F87171]'}"
                 >{chart?.last_history?.disk_usage_percent
-                  ? chart?.last_history?.disk_usage_percent + '%'
+                  ? formatNumber(chart?.last_history?.disk_usage_percent) + '%'
                   : 'Unknown'}</span>
             {/if}
           </div>
@@ -1051,14 +1114,14 @@
             {#if isMouseInside}
               {#if metricPointDetail?.disk_total_gb}
                 <span class="text-xs text-white"
-                  >{metricPointDetail?.disk_total_gb}
+                  >{formatNumber(metricPointDetail?.disk_total_gb)}
                   <sub class="text-white/40">Gb</sub></span>
               {:else}
                 <span class="text-xs text-[#F87171]">Unknown</span>
               {/if}
             {:else if chart?.last_history?.disk_total_gb}
               <span class="text-xs text-white"
-                >{chart?.last_history?.disk_total_gb}
+                >{formatNumber(chart?.last_history?.disk_total_gb)}
                 <sub class="text-white/40">Gb</sub></span
               >{:else}<span class="text-xs text-[#F87171]">Unknown</span>{/if}
           </div>
@@ -1067,12 +1130,12 @@
 
             {#if isMouseInside}
               {#if metricPointDetail?.disk_used_gb}<span class="text-xs text-white"
-                  >{metricPointDetail?.disk_used_gb}
+                  >{formatNumber(metricPointDetail?.disk_used_gb)}
                   <sub class="text-white/40"> Gb</sub></span
                 >{:else}<span class="text-xs text-[#F87171]">Unknown</span>{/if}
             {:else if chart?.last_history?.disk_used_gb}
               <span class="text-xs text-white"
-                >{chart?.last_history?.disk_used_gb}
+                >{formatNumber(chart?.last_history?.disk_used_gb)}
                 <sub class="text-white/40"> Gb</sub></span
               >{:else}<span class="text-xs text-[#F87171]">Unknown</span>{/if}
           </div>
@@ -1081,12 +1144,16 @@
             {#if isMouseInside}
               {#if metricPointDetail?.disk_total_gb && metricPointDetail?.disk_used_gb}
                 <span class="text-xs text-white"
-                  >{metricPointDetail?.disk_total_gb - metricPointDetail?.disk_used_gb}
+                  >{formatNumber(
+                    metricPointDetail?.disk_total_gb - metricPointDetail?.disk_used_gb,
+                  )}
                   <sub class="text-white/40"> Gb</sub></span
                 >{:else}<span class="text-xs text-[#F87171]">Unknown</span>{/if}
             {:else if chart?.last_history?.disk_total_gb && chart?.last_history?.disk_used_gb}
               <span class="text-xs text-white"
-                >{chart?.last_history?.disk_total_gb - chart?.last_history?.disk_used_gb}
+                >{formatNumber(
+                  chart?.last_history?.disk_total_gb - chart?.last_history?.disk_used_gb,
+                )}
                 <sub class="text-white/40"> Gb</sub></span
               >{:else}<span class="text-xs text-[#F87171]">Unknown</span>{/if}
           </div>
@@ -1111,7 +1178,7 @@
                 ? 'text-white'
                 : 'text-[#F87171]'}">
               {metricPointDetail?.disk_usage_percent
-                ? metricPointDetail?.disk_usage_percent + '%'
+                ? formatNumber(metricPointDetail?.disk_usage_percent) + '%'
                 : 'Unknown'}
             </div>
           </div>
@@ -1136,10 +1203,11 @@
                 ? 'text-white'
                 : 'text-[#F87171]'}">
               {chart?.last_history?.disk_usage_percent
-                ? chart?.last_history?.disk_usage_percent + '%'
+                ? formatNumber(chart?.last_history?.disk_usage_percent) + '%'
                 : 'Unknown'}
             </div>
-          </div>{/if}
+          </div>
+        {/if}
       </div>{/if}
   </div>
 </div>
