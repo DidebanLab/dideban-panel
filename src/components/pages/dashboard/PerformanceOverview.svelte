@@ -3,8 +3,7 @@
   import { http } from '../../../services/http.svelte';
   import { endpoints } from '../../../endpoints.svelte';
   import { theme } from '../../../stores/theme.svelte';
-  import { onDestroy, onMount } from 'svelte';
-  import { off, on, subscribe, unsubscribe } from '../../../services/ws.svelte';
+  import { onMount } from 'svelte';
 
   const isMobile = $state(innerWidth < 645);
   let agents = $state();
@@ -38,14 +37,6 @@
       .then(res => {
         agents = res.data.data;
       });
-
-    if (agents?.length > 0) {
-      agents?.map(item => {
-        const agentId = item.id;
-        subscribe(`agents:${agentId}`);
-        on('agent.metric.created', handleMetric);
-      });
-    }
   });
 
   $effect(() => {
@@ -64,27 +55,6 @@
         agentMetric = res.data.data;
       });
   });
-
-  onDestroy(() => {
-    agents.map(item => {
-      const agentId = item.id;
-      unsubscribe(`agents:${agentId}`);
-      off('agent.metric.created', data => handleMetric(data, agentId));
-    });
-  });
-
-  function handleMetric(data, agentId) {
-    if (data.agent_id !== agentId) return;
-
-    agentMetric = {
-      ...agentMetric,
-      data: {
-        ...agentMetric?.data,
-        cpu: [...agentMetric?.data?.cpu, data?.cpu_usage_percent].slice(-60),
-        mamory: [...agentMetric?.data?.memory, data?.memory_usage_percent].slice(-60),
-      },
-    };
-  }
 </script>
 
 <div
