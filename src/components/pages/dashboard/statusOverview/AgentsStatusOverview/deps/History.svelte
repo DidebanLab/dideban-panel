@@ -33,7 +33,10 @@
   function handleNewHistory(data) {
     if (data.agent_id !== agentId) return;
 
-    history = [...history, [data?.id, 'online']].slice(-REQUIRED_HISTORY_COUNT);
+    history = [...history, [data?.id, data?.is_offline ? 'offline' : 'online']].slice(
+      -REQUIRED_HISTORY_COUNT,
+    );
+    isOffline = data?.is_offline;
     lastChecked = data.collected_at;
   }
 </script>

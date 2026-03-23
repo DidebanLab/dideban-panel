@@ -224,7 +224,7 @@
             <span class="text-base text-black dark:text-white">Down</span>
           </div>
           <span class="text-4xl xl:text-2xl 2xl:text-3xl p-4 xl:p-3 2xl:p-2.5 text-[#F87171]"
-            >{checksStats?.status?.down || 0}</span>
+            >{(checksStats?.status?.down || 0) + (checksStats?.status?.error || 0) || 0}</span>
           <img
             class="opacity-5 absolute bottom-0 end-0"
             width="70"

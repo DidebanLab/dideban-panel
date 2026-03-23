@@ -22,10 +22,10 @@
   <div class="w-full flex flex-col gap-7.75 sm:p-7.75 sm:pt-2.5">
     <div class="w-full flex flex-col-reverse 3xl:flex-row gap-8 xl:gap-4">
       <div class="w-full 3xl:w-[65%]">
-        <!-- <PerformanceOverview /> -->
+        <PerformanceOverview />
       </div>
 
-      <!-- <TopRight /> -->
+      <TopRight />
     </div>
     <ChecksStatusOverview />
 

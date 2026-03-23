@@ -41,8 +41,7 @@
         <span class="text-white/40 text-nowrap me-1"> Avg Response Time: </span>
         {data?.avg_response_time} ms
       </div>
-    {:else}
-      <span class="text-white/20 text-lg sm:text-2xl text-nowrap"> No Data </span>
+
     {/if}
   </div>
   {#if data?.latency_series?.length > 0}

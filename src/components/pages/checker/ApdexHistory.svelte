@@ -94,8 +94,6 @@
                     : 'text-[#EF4444]'}>
             {summaryWithDate?.overall?.apdex_score}%</span>
         </div>
-      {:else}
-        <span class="text-white/20 text-2xl"> No Data </span>
       {/if}
     {:else if apdex?.apdex_score}
       <div class="flex text-lg sm:text-2xl justify-end gap-2 items-center">
@@ -126,8 +124,6 @@
                   : 'text-[#EF4444]'}>
           {summaryWithDate?.overall?.apdex_score || apdex?.apdex_score}%</span>
       </div>
-    {:else}
-      <span class="text-white/20 text-2xl"> No Data </span>
     {/if}
   </div>
 

@@ -54,8 +54,6 @@
                     : 'text-[#EF4444]'}>
             {summaryWithDate?.overall?.avg_collect_duration_ms}ms</span>
         </div>
-      {:else}
-        <span class="text-2xl text-white/20 text-nowrap"> No Data </span>
       {/if}
     {:else if collectDuration?.avg_ms}
       <div class="flex text-2xl justify-end gap-2 items-center">
@@ -86,14 +84,25 @@
                   : 'text-[#EF4444]'}>
           {collectDuration?.avg_ms}ms</span>
       </div>
-    {:else}
-      <span class="text-2xl text-white/20 text-nowrap"> No Data </span>
     {/if}
   </div>
 
   <div class="relative w-full z-10 flex gap-0.5 justify-start items-end">
     <div class="w-full absolute -bottom-1 h-px bg-white/10"></div>
     {#if date}
+      {#if summaryWithDate?.collect_duration_series}{:else}
+        {#each Array(24) as _, i}
+          <div
+            class="h-1 w-full rounded-[1px] cursor-pointer relative group border-t-4 transition-all bg-[#F87171] border-t-[#ba4646] hover:bg-[#ff5757]">
+            <div class="h-2 w-px bg-white/10 absolute -end-px -bottom-3"></div>
+            <div class="h-2 w-px text-white/20 absolute end-3.25 text-xs -bottom-7">
+              {String(i + 1)
+                .toString()
+                .padStart(2, '0')}:00
+            </div>
+          </div>
+        {/each}
+      {/if}
       {#each summaryWithDate?.collect_duration_series as detail, i}
         <div
           style="height: {(detail?.avg_collect_duration_ms * 100) /
@@ -207,7 +216,7 @@
           {/if}
         </div>
       {/each}
-    {:else}
+    {:else if collectDuration?.series}
       {#each collectDuration?.series as detail, i}
         <div
           style="height: {(detail?.avg_ms * 100) / collectDuration.max_ms / 1.5}px;"
@@ -316,18 +325,18 @@
           </div>
         </div>
       {/each}
-    {/if}
-
-    {#each Array(Math.max(0, 24 - ((date ? summaryWithDate?.collect_duration_series?.length : collectDuration?.series?.length) ?? 0))) as _, i}
-      <div
-        class="h-1 w-full rounded-[1px] cursor-pointer relative group border-t-4 transition-all bg-[#F87171] border-t-[#ba4646] hover:bg-[#ff5757]">
-        <div class="h-2 w-px bg-white/10 absolute -end-px -bottom-3"></div>
-        <div class="h-2 w-px text-white/20 absolute end-3.25 text-xs -bottom-7">
-          {String(i + 1)
-            .toString()
-            .padStart(2, '0')}:00
+    {:else}
+      {#each Array(24) as _, i}
+        <div
+          class="h-1 w-full rounded-[1px] cursor-pointer relative group border-t-4 transition-all bg-[#F87171] border-t-[#ba4646] hover:bg-[#ff5757]">
+          <div class="h-2 w-px bg-white/10 absolute -end-px -bottom-3"></div>
+          <div class="h-2 w-px text-white/20 absolute end-3.25 text-xs -bottom-7">
+            {String(i + 1)
+              .toString()
+              .padStart(2, '0')}:00
+          </div>
         </div>
-      </div>
-    {/each}
+      {/each}
+    {/if}
   </div>
 </div>

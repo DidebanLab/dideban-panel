@@ -230,7 +230,7 @@
         {/if}
       </div>
 
-      <Uptime {id} {date} {summaryWithDate} />
+      <Uptime agentId={+id} {date} {summaryWithDate} />
 
       {#if !date}
         <TimeRangeSelector bind:value={hours} interval={data?.interval_seconds} />

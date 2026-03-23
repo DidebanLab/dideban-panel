@@ -24,9 +24,7 @@
       <span class="text-black dark:text-white text-lg sm:text-xl">Apdex Histogram</span><span
         class="text-sm text-[#99a1af]">Application health reflected in Apdex levels</span>
     </div>
-    {#if date ? !(summaryWithDate?.histogram?.error_count || summaryWithDate?.histogram?.buckets.some(item => item?.count)) : !histogram}
-      <span class="text-2xl text-white/20"> No Data </span>
-    {/if}
+ 
   </div>
   <div class="relative w-full z-10 flex gap-0.5 justify-start items-end mt-4">
     <div class="absolute -bottom-1 w-full h-px bg-white/15"></div>
