@@ -23,7 +23,7 @@
 
   const id = $page.params.checker;
   let trigger = $state(0);
-  let data = $state(null);
+  let check = $state(null);
   let hours = $state(24);
   let enabled = $state(null);
   let date = $state(null);
@@ -41,10 +41,12 @@
     });
 
     subscribe(`checks:${id}`);
+    on('check.updated', handleUpdated);
     on('check.deleted', handleDeleted);
   });
 
   onDestroy(() => {
+    off('check.updated', handleUpdated);
     off('check.deleted', handleDeleted);
     unsubscribe(`checks:${id}`);
   });
@@ -58,10 +60,17 @@
     });
   }
 
+  function handleUpdated(data) {
+    http.get(endpoints.singleCheck(data?.id)).then(res => {
+      check = res.data?.data;
+      enabled = res.data?.data.enabled;
+    });
+  }
+
   $effect(() => {
     const update = trigger;
     http.get(endpoints.singleCheck(id)).then(res => {
-      data = res.data?.data;
+      check = res.data?.data;
       enabled = res.data?.data.enabled;
     });
   });
@@ -102,44 +111,14 @@
       class="w-full flex flex-col gap-4 lg:gap-6 lg:flex-row justify-between items-center lg:items-start relative">
       <div class="w-full flex justify-between items-start">
         <div class="flex flex-col justify-center items-start">
-          {#if data?.name}
-            <span class="text-black dark:text-white text-lg sm:text-xl capitalize text-nowrap"
-              >{data?.name}</span
-            >{:else}<div class="flex justify-center items-center gap-2">
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 20 20"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg">
-                <path
-                  d="M10.0003 18.3332C14.6027 18.3332 18.3337 14.6022 18.3337 9.99984C18.3337 5.39746 14.6027 1.6665 10.0003 1.6665C5.39795 1.6665 1.66699 5.39746 1.66699 9.99984C1.66699 14.6022 5.39795 18.3332 10.0003 18.3332Z"
-                  stroke="#B4242B"
-                  stroke-width="1.66667"
-                  stroke-linecap="round"
-                  stroke-linejoin="round" />
-                <path
-                  d="M10 6.6665V9.99984"
-                  stroke="#B4242B"
-                  stroke-width="1.66667"
-                  stroke-linecap="round"
-                  stroke-linejoin="round" />
-                <path
-                  d="M10 13.3335H10.0083"
-                  stroke="#B4242B"
-                  stroke-width="1.66667"
-                  stroke-linecap="round"
-                  stroke-linejoin="round" />
-              </svg>
-              <span class="text-xl text-red-500/70 mt-0.5">Check with Id {id} Not Found</span>
-            </div>{/if}
+          <span class="text-black dark:text-white text-lg sm:text-xl capitalize text-nowrap">
+            {check?.name}
+          </span>
 
-          {#if data?.target}
-            <span
-              class="flex justify-center items-center text-nowrap tracking-wider text-white/40 text-sm"
-              >{data?.target}
-            </span>
-          {/if}
+          <span
+            class="flex justify-center items-center text-nowrap tracking-wider text-white/40 text-sm"
+            >{check?.target}
+          </span>
         </div>
 
         {#if date}
@@ -162,7 +141,7 @@
                 d="M15 19l-7-7 7-7" />
             </svg>
           </button>
-        {:else if data}
+        {:else if check}
           <div
             class="flex flex-col-reverse sm:flex-row justify-start items-end sm:justify-center sm:items-center gap-1.5 sm:gap-3">
             <div class="flex justify-center items-center gap-1.75">
@@ -192,7 +171,7 @@
                     id: 'edit-check',
                     content: EditChecker,
                     props: {
-                      data,
+                      data: check,
                       onEdited: () => {
                         trigger += 1;
                       },
@@ -223,7 +202,7 @@
                         id: 'confirm-edit',
                         content: ConfirmEditChecker,
                         props: {
-                          name: data?.name,
+                          name: check?.name,
                           onEdited: () => {
                             trigger += 1;
                           },
@@ -231,13 +210,13 @@
                       });
                     } else {
                       http
-                        .patch(endpoints.singleCheck(data?.id), {
+                        .patch(endpoints.singleCheck(check?.id), {
                           enabled: true,
                         })
                         .then(res => {
                           trigger += 1;
                           alertStore.addAlert({
-                            message: `Checker ${data?.name} activation updated successfully.`,
+                            message: `Checker ${check?.name} activation updated successfully.`,
                             type: 'successful',
                           });
                         });
@@ -268,8 +247,8 @@
     <Uptime checkId={id} {date} {summaryWithDate} />
 
     {#if !date}
-      <TimeRangeSelector bind:value={hours} interval={data?.interval_seconds} />
-      <Latency {hours} {id} name={data?.name} />
+      <TimeRangeSelector bind:value={hours} interval={check?.interval_seconds} />
+      <Latency {hours} {id} name={check?.name} />
     {/if}
 
     <ApdexHistory {id} {hours} {summaryWithDate} {date} />
