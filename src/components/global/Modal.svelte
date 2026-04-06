@@ -10,7 +10,10 @@
     aria-label="Close modal"
     onclick={e => {
       e.stopPropagation();
-      closer({ id: modal.id });
+
+      if (modal?.isOutClicker) {
+        closer({ id: modal.id });
+      }
     }}>
     <div onclick={e => e.stopPropagation()}>
       {#if typeof modal.content === 'string'}

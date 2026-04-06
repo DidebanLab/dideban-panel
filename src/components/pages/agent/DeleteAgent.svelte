@@ -88,9 +88,7 @@
             id: 'delete-agent',
           });
 
-          setTimeout(() => {
-            goto('/');
-          }, 500);
+          goto('/');
         }
       }}
       aria-label="delete-confirm"

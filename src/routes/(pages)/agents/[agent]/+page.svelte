@@ -2,7 +2,7 @@
   import { endpoints } from './../../../../endpoints.svelte.js';
   import { opener } from '../../../../stores/modal.svelte';
   import { page } from '$app/stores';
-  import { onMount } from 'svelte';
+  import { onDestroy, onMount } from 'svelte';
   import { http } from '../../../../services/http.svelte';
   import { alertStore } from '../../../../stores/alert.svelte.js';
   import { goto } from '$app/navigation';
@@ -16,6 +16,8 @@
   import Uptime from '../../../../components/pages/agent/Uptime.svelte';
   import CollectDuration from '../../../../components/pages/agent/CollectDuration.svelte';
   import Metrics from '../../../../components/pages/agent/Metrics.svelte';
+  import { off, on, subscribe, unsubscribe } from '../../../../services/ws.svelte.js';
+  import DeleteAlert from '../../../../components/common/DeleteAlert.svelte';
 
   const id = $page.params.agent;
   let trigger = $state(0);
@@ -35,7 +37,24 @@
 
       summary = res.data?.data;
     });
+
+    subscribe(`agents:${id}`);
+    on('agent.deleted', handleDeleted);
   });
+
+  onDestroy(() => {
+    off('agent.deleted', handleDeleted);
+    unsubscribe(`agents:${id}`);
+  });
+
+  function handleDeleted(data) {
+    opener({
+      id: 'delete-alert',
+      isOutClicker: false,
+      content: DeleteAlert,
+      props: { type: 'agent' },
+    });
+  }
 
   $effect(() => {
     const update = trigger;
