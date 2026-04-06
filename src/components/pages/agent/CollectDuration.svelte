@@ -1,6 +1,7 @@
 <script>
   import { endpoints } from '../../../endpoints.svelte';
   import { http } from '../../../services/http.svelte';
+  import formatNumber from '../../../utils/formatNumber';
   const { id, date, summaryWithDate, hours } = $props();
   let collectDuration = $state();
 
@@ -26,63 +27,41 @@
 
     {#if date}
       {#if summaryWithDate?.overall?.avg_collect_duration_ms}
-        <div class="flex text-2xl justify-end gap-2 items-center">
-          <span
-            class={summaryWithDate?.overall?.rate?.toLowerCase() === 'excellent'
-              ? 'text-green-500'
-              : summaryWithDate?.overall?.rate?.toLowerCase() === 'good'
-                ? 'text-[#00D492]'
-                : summaryWithDate?.overall?.rate?.toLowerCase() === 'fair'
-                  ? 'text-[#FDC700]'
-                  : summaryWithDate?.overall?.rate?.toLowerCase() === 'poor'
-                    ? 'text-[#F97316]'
-                    : 'text-[#F87171]'}>
-            {summaryWithDate?.overall?.rate}
-          </span>
+        <div
+          class="flex text-2xl justify-end gap-2 items-center {summaryWithDate?.overall?.rate?.toLowerCase() ===
+          'excellent'
+            ? 'text-green-500'
+            : summaryWithDate?.overall?.rate?.toLowerCase() === 'good'
+              ? 'text-[#00D492]'
+              : summaryWithDate?.overall?.rate?.toLowerCase() === 'fair'
+                ? 'text-[#FDC700]'
+                : summaryWithDate?.overall?.rate?.toLowerCase() === 'poor'
+                  ? 'text-[#F97316]'
+                  : 'text-[#F87171]'}">
+          {summaryWithDate?.overall?.rate}
 
           <span class="h-7 w-px bg-white/15"></span>
 
-          <span
-            class={summaryWithDate?.overall?.avg_collect_duration_ms >= 90
-              ? 'text-[#008236]'
-              : summaryWithDate?.overall?.avg_collect_duration_ms >= 80
-                ? 'text-[#00D492]'
-                : summaryWithDate?.overall?.avg_collect_duration_ms >= 70
-                  ? 'text-[#FDC700]'
-                  : summaryWithDate?.overall?.avg_collect_duration_ms >= 50
-                    ? 'text-[#F97316]'
-                    : 'text-[#EF4444]'}>
-            {summaryWithDate?.overall?.avg_collect_duration_ms}ms</span>
+          {summaryWithDate?.overall?.avg_collect_duration_ms}ms
         </div>
       {/if}
     {:else if collectDuration?.avg_ms}
-      <div class="flex text-2xl justify-end gap-2 items-center">
-        <span
-          class={collectDuration?.rate?.toLowerCase() === 'excellent'
-            ? 'text-green-500'
-            : collectDuration?.rate?.toLowerCase() === 'good'
-              ? 'text-[#00D492]'
-              : collectDuration?.rate?.toLowerCase() === 'fair'
-                ? 'text-[#FDC700]'
-                : collectDuration?.rate?.toLowerCase() === 'poor'
-                  ? 'text-[#F97316]'
-                  : 'text-[#F87171]'}>
-          {collectDuration?.rate}
-        </span>
+      <div
+        class="flex text-2xl justify-end gap-2 items-center {collectDuration?.rate?.toLowerCase() ===
+        'excellent'
+          ? 'text-green-500'
+          : collectDuration?.rate?.toLowerCase() === 'good'
+            ? 'text-[#00D492]'
+            : collectDuration?.rate?.toLowerCase() === 'fair'
+              ? 'text-[#FDC700]'
+              : collectDuration?.rate?.toLowerCase() === 'poor'
+                ? 'text-[#F97316]'
+                : 'text-[#F87171]'}">
+        {collectDuration?.rate}
 
         <span class="h-7 w-px bg-white/15"></span>
 
-        <span
-          class={collectDuration?.avg_ms >= 90
-            ? 'text-[#008236]'
-            : collectDuration?.avg_ms >= 80
-              ? 'text-[#00D492]'
-              : collectDuration?.avg_ms >= 70
-                ? 'text-[#FDC700]'
-                : collectDuration?.avg_ms >= 50
-                  ? 'text-[#F97316]'
-                  : 'text-[#EF4444]'}>
-          {collectDuration?.avg_ms}ms</span>
+        {collectDuration?.avg_ms}ms
       </div>
     {/if}
   </div>
