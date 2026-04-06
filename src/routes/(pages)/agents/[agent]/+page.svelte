@@ -40,15 +40,21 @@
     });
 
     subscribe(`agents:${id}`);
-    on('check.updated', handleUpdated);
+    on('agent.status.changed', handleStatus);
+    on('agent.updated', handleUpdated);
     on('agent.deleted', handleDeleted);
   });
 
   onDestroy(() => {
-    off('check.updated', handleUpdated);
+    off('agent.status.changed', handleStatus);
+    off('agent.updated', handleUpdated);
     off('agent.deleted', handleDeleted);
     unsubscribe(`agents:${id}`);
   });
+
+  function handleStatus(data) {
+    agent = { ...agent, status: data?.status };
+  }
 
   function handleDeleted(data) {
     if (isDeleted) return;
