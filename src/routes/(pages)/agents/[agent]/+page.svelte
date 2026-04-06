@@ -53,6 +53,7 @@
   });
 
   function handleStatus(data) {
+    console.log(data);
     agent = { ...agent, status: data?.status };
   }
 
@@ -108,12 +109,12 @@
   });
 </script>
 
-<section class="w-full m-auto h-auto flex flex-col col-span-10">
-  <!-- Content of dashboard page -->
-  <div class="w-full flex flex-col gap-7.75 p-7.75 py-2">
+<section class="w-full m-auto h-auto flex flex-col col-span-10 gap-7.75 p-7.75 py-2">
+  <div
+    class="w-full flex flex-col justify-start items-start gap-6 border border-[#0D0D0D]/5 dark:border-white/5 p-6 rounded-xl">
     <div
-      class="w-full flex flex-col justify-start items-start gap-6 border border-[#0D0D0D]/5 dark:border-white/5 p-6 rounded-xl">
-      <div class="w-full flex justify-between items-start relative">
+      class="w-full flex flex-col gap-4 lg:gap-6 lg:flex-row justify-between items-center lg:items-start relative">
+      <div class="w-full flex justify-between items-start">
         <div class="flex flex-col justify-center items-start">
           <span class="text-black dark:text-white text-xl capitalize">{agent?.name}</span>
 
@@ -124,17 +125,13 @@
               : 'text-[#F87171]'}">{agent?.status}</span>
         </div>
 
-        {#if date ? date : toDay}
-          <DateChanger type="agent" bind:value={summaryWithDate} {summary} {id} {toDay} {date} />
-        {/if}
-
         {#if date}
           <button
             onclick={() => {
               goto(`/agents/${id}`);
             }}
-            class="flex items-center gap-2 ps-4 bg-emerald-500/10 animate-pulse hover:animate-none pe-2.5 h-8 text-xs rounded-full outline outline-offset-1 outline-emerald-500/60 text-emerald-400 cursor-pointer">
-            Back to Today
+            class="text-nowrap flex items-center gap-1 sm:gap-2 ps-4 bg-emerald-500/10 animate-pulse hover:animate-none mt-1.25 sm:mt-0 pe-2.5 h-6 sm:h-8 text-xs rounded-full outline outline-offset-1 outline-emerald-500/60 text-emerald-400 cursor-pointer">
+            <span class="hidden sm:inline">Back to </span>Today
             <svg
               xmlns="http://www.w3.org/2000/svg"
               class="w-3.25 h-3.25 rotate-180"
@@ -149,7 +146,8 @@
             </svg>
           </button>
         {:else if agent}
-          <div class="flex justify-center items-center gap-3">
+          <div
+            class="flex flex-col-reverse sm:flex-row justify-start items-end sm:justify-center sm:items-center gap-1.5 sm:gap-3">
             <div class="flex justify-center items-center gap-1.75">
               <button
                 class="cursor-pointer"
@@ -162,7 +160,12 @@
                     props: { name: agent?.name, id: agent?.id, onDelete: () => (isDeleted = true) },
                   });
                 }}>
-                <img src="/icons/trash.png" alt="trash" width="20" height="20" /></button>
+                <img
+                  class="size-4 sm:size-5"
+                  src="/icons/trash.png"
+                  alt="trash"
+                  width="20"
+                  height="20" /></button>
               <button
                 class="cursor-pointer"
                 aria-label="edit config"
@@ -182,15 +185,20 @@
                     },
                   });
                 }}>
-                <img src="/icons/edit.png" alt="edit" width="24" height="24" />
+                <img
+                  class="size-5 sm:size-6"
+                  src="/icons/edit.png"
+                  alt="edit"
+                  width="24"
+                  height="24" />
               </button>
             </div>
 
-            <div class="h-9 w-px bg-white/20"></div>
+            <div class="h-9 w-px bg-white/ hidden sm:block"></div>
             {#key enabled}
               <div
-                class="py-2 w-30 flex justify-center items-center gap-2 bg-[#0D0D0D]/5 dark:bg-white/5 border border-[#e5e7eb] dark:border-white/5 rounded-[14px]">
-                <span class="text-xs text-[#99a1af]">
+                class="sm:py-2 w-fit sm:w-30 flex justify-center items-center gap-2 sm:bg-[#0D0D0D]/5 sm:dark:bg-white/5 sm:border border-[#e5e7eb] dark:border-white/5 sm:rounded-[14px] mt-1 sm:mt-0">
+                <span class=" text-[11px] sm:text-xs text-[#99a1af]">
                   {enabled ? 'Enabled' : 'Disabled'}
                 </span>
 
@@ -222,13 +230,13 @@
                     }
                   }}
                   aria-label="activation toggle"
-                  class="w-11 h-6 rounded-full relative cursor-pointer {enabled
+                  class="w-7.5 h-4 sm:w-11 sm:h-6 rounded-full relative cursor-pointer {enabled
                     ? 'bg-[#00bc7d]/20 border border-[#00bc7d]/30'
                     : 'bg-[#6a7282]/10 border border-[#6a7282]/20 '}">
                   <div
                     style={enabled ? 'box-shadow: 0 0 5px 0.5px #00bc7d' : ''}
-                    class="absolute top-1/2 -translate-y-1/2 left-px size-5 rounded-full transition-transform duration-300 ease-in-out {enabled
-                      ? 'translate-x-5 bg-[#00bc7d]'
+                    class="absolute top-1/2 -translate-y-1/2 left-px size-3 sm:size-5 rounded-full transition-transform duration-300 ease-in-out {enabled
+                      ? 'translate-x-3.25 sm:translate-x-5 bg-[#00bc7d]'
                       : 'translate-x-0 bg-[#4d4d4d]'}">
                   </div>
                 </button>
@@ -238,19 +246,23 @@
         {/if}
       </div>
 
-      <Uptime agentId={+id} {date} {summaryWithDate} />
-
-      {#if !date}
-        <TimeRangeSelector bind:value={hours} interval={agent?.interval_seconds} />
-      {/if}
-
-      <CollectDuration {id} {date} {summaryWithDate} {hours} />
-
-      <Metrics {id} {date} {summaryWithDate} {hours} />
-
-      {#if summary}
-        <SummaryCalender bind:value={toDay} type="agent" {summary} {id} {date} />
+      {#if date ? date : toDay}
+        <DateChanger type="agent" bind:value={summaryWithDate} {summary} {id} {toDay} {date} />
       {/if}
     </div>
+
+    <Uptime agentId={+id} {date} {summaryWithDate} />
+
+    {#if !date}
+      <TimeRangeSelector bind:value={hours} interval={agent?.interval_seconds} />
+    {/if}
+
+    <CollectDuration {id} {date} {summaryWithDate} {hours} />
+
+    <Metrics {id} {date} {summaryWithDate} {hours} />
+
+    {#if summary}
+      <SummaryCalender bind:value={toDay} type="agent" {summary} {id} {date} />
+    {/if}
   </div>
 </section>
