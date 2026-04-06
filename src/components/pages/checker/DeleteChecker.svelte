@@ -77,18 +77,17 @@
         if (step === 1) {
           step = 2;
         } else if (step === 2) {
-          goto('/');
-
-          closer({
-            id: 'delete-checker',
-          });
-
           http.delete(endpoints.singleCheck(id)).then(res => {
             alertStore.addAlert({
               message: `Check with id ${id} deleted.`,
               type: 'successful',
             });
           });
+
+          closer({
+            id: 'delete-checker',
+          });
+          goto('/');
         }
       }}
       aria-label="delete-confirm"
