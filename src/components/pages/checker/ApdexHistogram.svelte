@@ -10,7 +10,11 @@
         res =>
           (histogram = {
             ...res.data?.data,
-            max_count: Math.max(...res.data?.data?.histogram.map(i => i.count), 0),
+            max_count: Math.max(
+              res.data?.data?.error_count,
+              ...res.data?.data?.histogram.map(i => i.count),
+              0,
+            ),
           }),
       );
     }
@@ -24,7 +28,6 @@
       <span class="text-black dark:text-white text-lg sm:text-xl">Apdex Histogram</span><span
         class="text-sm text-[#99a1af]">Application health reflected in Apdex levels</span>
     </div>
- 
   </div>
   <div class="relative w-full z-10 flex gap-0.5 justify-start items-end mt-4">
     <div class="absolute -bottom-1 w-full h-px bg-white/15"></div>
