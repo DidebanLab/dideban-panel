@@ -13,7 +13,7 @@
 
   function selectOption(val) {
     value = val;
-    $open = false;
+    open = false;
   }
 
   function handleClickOutside(e) {
