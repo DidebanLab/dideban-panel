@@ -4,6 +4,7 @@
   import { http } from '../../../services/http.svelte';
   import responseTimeColor from '../../../utils/responseTimeColor';
   import { off, on, subscribe, unsubscribe } from '../../../services/ws.svelte';
+  import formatNumber from '../../../utils/formatNumber';
 
   const REQUIRED_HISTORY_COUNT = $state(innerWidth < 640 ? 31 : 96);
   let { checkId, date, summaryWithDate } = $props();
@@ -102,7 +103,7 @@
                   ? 'text-[#F97316]'
                   : 'text-[#EF4444]'}">
           {summaryWithDate?.overall.uptime_percent &&
-            parseInt(summaryWithDate?.overall.uptime_percent) + '%'}
+            formatNumber(summaryWithDate?.overall.uptime_percent) + '%'}
         </span>
       {/if}
     {:else if history?.uptime_percent}
@@ -116,7 +117,7 @@
               : history?.uptime_percent >= 50
                 ? 'text-[#F97316]'
                 : 'text-[#EF4444]'}">
-        {parseInt(history?.uptime_percent)}%
+        {formatNumber(history?.uptime_percent)}%
       </span>
     {/if}
   </div>
