@@ -42,15 +42,21 @@
     });
 
     subscribe(`checks:${id}`);
+    on('check.status.changed', handleStatus);
     on('check.updated', handleUpdated);
     on('check.deleted', handleDeleted);
   });
 
   onDestroy(() => {
+    off('check.status.changed', handleStatus);
     off('check.updated', handleUpdated);
     off('check.deleted', handleDeleted);
     unsubscribe(`checks:${id}`);
   });
+
+  function handleStatus(data) {
+    check = { ...check, status: data?.status };
+  }
 
   function handleDeleted(data) {
     if (isDeleted) return;
@@ -117,11 +123,23 @@
           <span class="text-black dark:text-white text-lg sm:text-xl capitalize text-nowrap">
             {check?.name}
           </span>
+          <div class="flex justify-between items-center gap-2">
+            <span
+              class="text-base capitalize {check?.status === 'error' || check?.status === 'down'
+                ? 'text-[#EF4444]'
+                : check?.status === 'timeout'
+                  ? 'text-[#F97316]'
+                  : check?.status === 'up'
+                    ? 'text-green-700'
+                    : ''}">{check?.status === 'error' ? 'Down' : check?.status}</span>
 
-          <span
-            class="flex justify-center items-center text-nowrap tracking-wider text-white/40 text-sm"
-            >{check?.target}
-          </span>
+            <span class="bg-white/20 h-4 w-px"></span>
+
+            <span
+              class="flex justify-center items-center text-nowrap tracking-wider text-white/40 text-sm"
+              >{check?.target}
+            </span>
+          </div>
         </div>
 
         {#if date}

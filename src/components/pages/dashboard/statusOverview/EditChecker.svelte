@@ -113,7 +113,7 @@
     </div>
     <div
       class="w-full flex flex-col sm:flex-row justify-start sm:justify-between items-start gap-6 z-11">
-      <div class="flex flex-col justify-start items-start gap-1.5 w-full">
+      <div class="flex flex-col justify-start items-start gap-1.5 w-full z-10">
         <span class="text-black dark:text-white text-sm">Type</span>
         <Select
           bind:value={form.type}
