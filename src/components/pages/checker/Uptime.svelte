@@ -6,7 +6,19 @@
   import { off, on, subscribe, unsubscribe } from '../../../services/ws.svelte';
   import formatNumber from '../../../utils/formatNumber';
 
-  const REQUIRED_HISTORY_COUNT = $state(innerWidth < 640 ? 31 : 96);
+  const REQUIRED_HISTORY_COUNT = $state(
+    innerWidth < 780
+      ? 31
+      : innerWidth < 1024
+        ? 50
+        : innerWidth < 1280
+          ? 55
+          : innerWidth < 1536
+            ? 70
+            : innerWidth < 1920
+              ? 75
+              : 96,
+  );
   let { checkId, date, summaryWithDate } = $props();
   let history = $state(null);
   let historyDetail = $state(null);
@@ -90,6 +102,7 @@
           {/if}
         </div>{/if}
     </div>
+
     {#if date}
       {#if summaryWithDate?.overall.uptime_percent}
         <span
@@ -140,28 +153,20 @@
           type="button"
           aria-label="detail of status"
           onmouseover={() => {
-            if (!date) {
-              http
-                .get(endpoints.checkHistoryDetail(checkId, detail[0]))
-                .then(res => (historyDetail = res.data?.data));
-            }
+            http
+              .get(endpoints.checkHistoryDetail(checkId, detail[0]))
+              .then(res => (historyDetail = res.data?.data));
           }}
           onmouseleave={() => {
-            if (!date) {
-              historyDetail = null;
-            }
+            historyDetail = null;
           }}
           onfocus={() => {
-            if (!date) {
-              http
-                .get(endpoints.checkHistoryDetail(checkId, detail[0]))
-                .then(res => (historyDetail = res.data?.data));
-            }
+            http
+              .get(endpoints.checkHistoryDetail(checkId, detail[0]))
+              .then(res => (historyDetail = res.data?.data));
           }}
           onblur={() => {
-            if (!date) {
-              historyDetailDetail = null;
-            }
+            historyDetailDetail = null;
           }}
           class="w-full h-4 rounded-[1px] hover:h-6 transition-all cursor-pointer relative group {status ===
             'error' || status === 'down'
@@ -251,7 +256,7 @@
                     : uptime >= 50
                       ? 'hover:bg-[#F97316]/70 bg-[#F97316]'
                       : 'hover:bg-[#EF4444]/70 bg-[#EF4444]'
-              : 'bg-white/5'}">
+              : 'bg-[#FFFFFF]/10'}">
             {#if uptime}
               <div
                 class="absolute top-1/2 start-1/2 -translate-1/2 text-xs text-white transition-all">

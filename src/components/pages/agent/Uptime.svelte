@@ -6,7 +6,19 @@
   import { off, on, subscribe, unsubscribe } from '../../../services/ws.svelte';
   import formatNumber from '../../../utils/formatNumber';
 
-  const REQUIRED_HISTORY_COUNT = $state(innerWidth < 640 ? 31 : 96);
+  const REQUIRED_HISTORY_COUNT = $state(
+    innerWidth < 780
+      ? 31
+      : innerWidth < 1024
+        ? 50
+        : innerWidth < 1280
+          ? 55
+          : innerWidth < 1536
+            ? 70
+            : innerWidth < 1920
+              ? 75
+              : 96,
+  );
   let { agentId, date, summaryWithDate } = $props();
   let history = $state(null);
   let historyDetail = $state(null);
@@ -62,9 +74,9 @@
 </script>
 
 <div
-  class="relative w-full flex flex-col p-6 gap-4 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5 {date
-    ? 'h-43'
-    : 'h-35'}">
+  class="w-full relative flex flex-col gap-4 border-[#0D0D0D]/5 dark:border-white/5 {date
+    ? 'sm:h-43 sm:rounded-[14px] sm:dark:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border sm:px-6 sm:py-6'
+    : 'h-29 sm:h-35 rounded-[14px] dark:bg-[#0D0D0D] bg-[#FFFFFF] border  px-4.25 py-4 sm:px-6 sm:py-6'}">
   <div class="w-full flex justify-between items-start">
     <div class="w-fit flex flex-col justify-start items-start">
       <span class="text-lg text-black dark:text-white">Uptime</span>
@@ -94,7 +106,7 @@
     {#if !date}
       {#if history?.uptime_percent}
         <span
-          class="text-2xl {history?.uptime_percent >= 90
+          class="text-lg sm:text-2xl {history?.uptime_percent >= 90
             ? 'text-[#008236]'
             : history?.uptime_percent >= 80
               ? 'text-[#00D492]'
@@ -108,7 +120,7 @@
       {/if}
     {:else if summaryWithDate?.overall?.uptime_percent}
       <span
-        class="text-2xl {summaryWithDate?.overall?.uptime_percent >= 90
+        class="text-lg sm:text-2xl {summaryWithDate?.overall?.uptime_percent >= 90
           ? 'text-[#008236]'
           : summaryWithDate?.overall?.uptime_percent >= 80
             ? 'text-[#00D492]'
@@ -123,9 +135,9 @@
   </div>
 
   <div
-    class=" w-full z-10 flex gap-0.5 justify-between items-end absolute start-1/2 -translate-x-1/2 px-6 {date
-      ? 'bottom-14'
-      : 'bottom-6'}">
+    class="w-full z-10 flex gap-0.5 justify-start items-end {date
+      ? 'overflow-x-auto overflow-y-hidden 3xl:overflow-x-visible 3xl:overflow-y-visible relative pb-10 3xl:pb-0'
+      : 'bottom-4 sm:bottom-6 absolute start-1/2 -translate-x-1/2 px-4.25 sm:px-6'}">
     {#if !date}
       {#each Array(Math.max(0, REQUIRED_HISTORY_COUNT - (history?.data?.length || 0)))}
         <div
@@ -171,7 +183,7 @@
               : 'bg-[#FFFFFF]/10'}">
           {#if historyDetail}
             <div
-              class="absolute w-fit group-hover:flex hidden bottom-10 start-1/2 -translate-x-1/2 rounded-xl text-white bg-white/40 dark:bg-black/80 backdrop-blur-md dark:backdrop-blur-3xl border-[#0D0D0D]/5 border dark:border-white/10 px-3 py-2 flex-col justify-start items-start {historyDetail.is_offline
+              class="absolute w-fit z-10 group-hover:flex hidden bottom-10 start-1/2 -translate-x-1/2 rounded-xl text-white bg-white/40 dark:bg-black/80 backdrop-blur-md dark:backdrop-blur-3xl border-[#0D0D0D]/5 border dark:border-white/10 px-3 py-2 flex-col justify-start items-start {historyDetail.is_offline
                 ? 'gap-1.5'
                 : 'gap-2.5'}">
               {#if historyDetail.collect_duration_ms}
@@ -343,8 +355,8 @@
           <button
             type="button"
             aria-label="detail of status"
-            class="w-full h-6 rounded-[1px] transition-all cursor-pointer relative group {uptime.collect_count
-              ? 'bg-green-700 hover:h-7'
+            class="min-w-[40.5px] sm:min-w-[60.5px] w-full h-6 transition-all cursor-pointer relative group {uptime.collect_count
+              ? 'bg-green-700 hover:h-6'
               : 'bg-[#FFFFFF]/10'}">
             {#if uptime.avg_collect_duration_ms}
               <div
@@ -508,9 +520,7 @@
         {/each}
       {:else}
         {#each Array(24) as _, i}
-          <div
-            aria-hidden="true"
-            class="w-full relative h-4 rounded-[1px] bg-black/20 dark:bg-[#FFFFFF]/10">
+          <div aria-hidden="true" class="w-full h-6 rounded-[1px] bg-white/5 relative">
             <div class="h-2 w-px bg-white/10 absolute -end-px -bottom-3"></div>
             <div class="h-2 w-px text-white/20 absolute end-3.25 text-xs -bottom-7">
               {(24 - i).toString().padStart(2, '0')}:00

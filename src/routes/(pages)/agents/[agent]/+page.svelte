@@ -109,9 +109,9 @@
   });
 </script>
 
-<section class="w-full m-auto h-auto flex flex-col col-span-10 gap-7.75 p-7.75 py-2">
+<section class="w-full m-auto h-auto flex flex-col col-span-10 gap-7.75 px-6 sm:p-7.75 sm:py-2">
   <div
-    class="w-full flex flex-col justify-start items-start gap-6 border border-[#0D0D0D]/5 dark:border-white/5 p-6 rounded-xl">
+    class="w-full flex flex-col justify-start items-start gap-6 lg:border border-[#0D0D0D]/5 dark:border-white/5 lg:px-6 pt-1 pb-6 lg:py-6 lg:rounded-xl">
     <div
       class="w-full flex flex-col gap-4 lg:gap-6 lg:flex-row justify-between items-center lg:items-start relative">
       <div class="w-full flex justify-between items-start">
