@@ -18,7 +18,8 @@
   import TimeRangeSelector from '../../../../components/common/TimeRangeSelector.svelte';
   import ApdexHistory from '../../../../components/pages/checker/ApdexHistory.svelte';
   import ApdexHistogram from '../../../../components/pages/checker/ApdexHistogram.svelte';
-  import { subscribe, unsubscribe } from '../../../../services/ws.svelte';
+  import { off, on, subscribe, unsubscribe } from '../../../../services/ws.svelte';
+  import DeleteAlert from '../../../../components/common/DeleteAlert.svelte';
 
   const id = $page.params.checker;
   let trigger = $state(0);
@@ -39,10 +40,23 @@
       summary = res.data?.data;
     });
 
-
-
-    
+    subscribe(`checks:${id}`);
+    on('check.deleted', handleDeleted);
   });
+
+  onDestroy(() => {
+    off('check.deleted', handleDeleted);
+    unsubscribe(`checks:${id}`);
+  });
+
+  function handleDeleted(data) {
+    opener({
+      id: 'delete-alert',
+      isOutClicker: false,
+      content: DeleteAlert,
+      props: { type: 'check' },
+    });
+  }
 
   $effect(() => {
     const update = trigger;
