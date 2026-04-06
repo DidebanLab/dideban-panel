@@ -30,6 +30,7 @@
   let toDay = $state(null);
   let summary = $state(null);
   let summaryWithDate = $state(null);
+  let isDeleted = $state(false);
 
   onMount(() => {
     http.get(endpoints.checkSummaryYearly(id)).then(res => {
@@ -52,6 +53,8 @@
   });
 
   function handleDeleted(data) {
+    if (isDeleted) return;
+
     opener({
       id: 'delete-alert',
       isOutClicker: false,
@@ -153,7 +156,7 @@
                   opener({
                     id: 'delete-checker',
                     content: DeleteChecker,
-                    props: { name: data?.name, id: data?.id },
+                    props: { name: check?.name, id: check?.id, onDelete: () => (isDeleted = true) },
                   });
                 }}>
                 <img

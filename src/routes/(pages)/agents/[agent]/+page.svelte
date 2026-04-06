@@ -23,11 +23,12 @@
   let trigger = $state(0);
   let hours = $state(24);
   let date = $state(null);
-  let data = $state(null);
+  let agent = $state(null);
   let enabled = $state(null);
   let summary = $state(null);
   let toDay = $state(null);
   let summaryWithDate = $state(null);
+  let isDeleted = $state(false);
 
   onMount(() => {
     http.get(endpoints.agentSummaryYearly(id)).then(res => {
@@ -39,15 +40,19 @@
     });
 
     subscribe(`agents:${id}`);
+    on('check.updated', handleUpdated);
     on('agent.deleted', handleDeleted);
   });
 
   onDestroy(() => {
+    off('check.updated', handleUpdated);
     off('agent.deleted', handleDeleted);
     unsubscribe(`agents:${id}`);
   });
 
   function handleDeleted(data) {
+    if (isDeleted) return;
+
     opener({
       id: 'delete-alert',
       isOutClicker: false,
@@ -56,10 +61,17 @@
     });
   }
 
+  function handleUpdated(data) {
+    http.get(endpoints.singleAgent(data?.id)).then(res => {
+      agent = res.data?.data;
+      enabled = res.data?.data.enabled;
+    });
+  }
+
   $effect(() => {
     const update = trigger;
     http.get(endpoints.singleAgent(id)).then(res => {
-      data = res.data?.data;
+      agent = res.data?.data;
       enabled = res.data?.data.enabled;
     });
   });
@@ -97,42 +109,13 @@
       class="w-full flex flex-col justify-start items-start gap-6 border border-[#0D0D0D]/5 dark:border-white/5 p-6 rounded-xl">
       <div class="w-full flex justify-between items-start relative">
         <div class="flex flex-col justify-center items-start">
-          {#if data?.name}
-            <span class="text-black dark:text-white text-xl capitalize">{data?.name}</span
-            >{:else}<div class="flex justify-center items-center gap-2">
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 20 20"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg">
-                <path
-                  d="M10.0003 18.3332C14.6027 18.3332 18.3337 14.6022 18.3337 9.99984C18.3337 5.39746 14.6027 1.6665 10.0003 1.6665C5.39795 1.6665 1.66699 5.39746 1.66699 9.99984C1.66699 14.6022 5.39795 18.3332 10.0003 18.3332Z"
-                  stroke="#B4242B"
-                  stroke-width="1.66667"
-                  stroke-linecap="round"
-                  stroke-linejoin="round" />
-                <path
-                  d="M10 6.6665V9.99984"
-                  stroke="#B4242B"
-                  stroke-width="1.66667"
-                  stroke-linecap="round"
-                  stroke-linejoin="round" />
-                <path
-                  d="M10 13.3335H10.0083"
-                  stroke="#B4242B"
-                  stroke-width="1.66667"
-                  stroke-linecap="round"
-                  stroke-linejoin="round" />
-              </svg>
-              <span class="text-xl text-red-500/70 mt-0.5">Agent with Id {id} Not Found</span>
-            </div>{/if}
+          <span class="text-black dark:text-white text-xl capitalize">{agent?.name}</span>
 
           <span
-            class="flex justify-center items-center text-nowrap tracking-wider text-sm {data?.status ===
+            class="flex justify-center items-center text-nowrap tracking-wider text-sm {agent?.status ===
             'online'
               ? 'text-green-700'
-              : 'text-[#F87171]'}">{data?.status}</span>
+              : 'text-[#F87171]'}">{agent?.status}</span>
         </div>
 
         {#if date ? date : toDay}
@@ -159,7 +142,7 @@
                 d="M15 19l-7-7 7-7" />
             </svg>
           </button>
-        {:else if data}
+        {:else if agent}
           <div class="flex justify-center items-center gap-3">
             <div class="flex justify-center items-center gap-1.75">
               <button
@@ -170,7 +153,7 @@
                   opener({
                     id: 'delete-agent',
                     content: DeleteAgent,
-                    props: { name: data?.name, id: data?.id },
+                    props: { name: agent?.name, id: agent?.id, onDelete: () => (isDeleted = true) },
                   });
                 }}>
                 <img src="/icons/trash.png" alt="trash" width="20" height="20" /></button>
@@ -183,10 +166,10 @@
                     id: 'edit-agent',
                     content: EditAgent,
                     props: {
-                      name: data?.name,
-                      interval_seconds: data?.interval_seconds,
-                      enabled: data?.enabled,
-                      id: data?.id,
+                      name: agent?.name,
+                      interval_seconds: agent?.interval_seconds,
+                      enabled: agent?.enabled,
+                      id: agent?.id,
                       onEdited: () => {
                         trigger += 1;
                       },
@@ -212,7 +195,7 @@
                         id: 'confirm-edit',
                         content: ConfirmEditAgent,
                         props: {
-                          name: data?.name,
+                          name: agent?.name,
                           onEdited: () => {
                             trigger += 1;
                           },
@@ -220,13 +203,13 @@
                       });
                     } else {
                       http
-                        .patch(endpoints.singleAgent(data?.id), {
+                        .patch(endpoints.singleAgent(agent?.id), {
                           enabled: true,
                         })
                         .then(res => {
                           trigger += 1;
                           alertStore.addAlert({
-                            message: `Agent ${data?.name} activation updated successfully.`,
+                            message: `Agent ${agent?.name} activation updated successfully.`,
                             type: 'successful',
                           });
                         });
@@ -252,7 +235,7 @@
       <Uptime agentId={+id} {date} {summaryWithDate} />
 
       {#if !date}
-        <TimeRangeSelector bind:value={hours} interval={data?.interval_seconds} />
+        <TimeRangeSelector bind:value={hours} interval={agent?.interval_seconds} />
       {/if}
 
       <CollectDuration {id} {date} {summaryWithDate} {hours} />

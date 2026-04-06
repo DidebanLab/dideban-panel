@@ -5,11 +5,12 @@
   import { alertStore } from '../../../stores/alert.svelte';
   import { closer } from '../../../stores/modal.svelte';
   import { goto } from '$app/navigation';
+  import { off, unsubscribe } from '../../../services/ws.svelte';
 
   let step = $state(1);
   let nameInput = $state('');
   let nameRef = $state();
-  let { name, id } = $props();
+  let { name, id, onDelete } = $props();
 
   $effect(() => {
     if (step === 2) {
@@ -73,21 +74,24 @@
 
     <button
       disabled={step === 2 && name.toLowerCase() !== nameInput.toLowerCase()}
-      onclick={() => {
+      onclick={async () => {
         if (step === 1) {
           step = 2;
         } else if (step === 2) {
+          onDelete?.();
+
           http.delete(endpoints.singleCheck(id)).then(res => {
             alertStore.addAlert({
               message: `Check with id ${id} deleted.`,
               type: 'successful',
             });
-          });
 
-          closer({
-            id: 'delete-checker',
+            goto('/');
+
+            closer({
+              id: 'delete-checker',
+            });
           });
-          goto('/');
         }
       }}
       aria-label="delete-confirm"

@@ -5,6 +5,7 @@
   import { goto } from '$app/navigation';
   import { onDestroy, onMount } from 'svelte';
   import { closer } from '../../stores/modal.svelte';
+  import { page } from '$app/stores';
 
   let { type } = $props();
 

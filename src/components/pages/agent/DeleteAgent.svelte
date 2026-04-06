@@ -9,7 +9,7 @@
   let step = $state(1);
   let nameInput = $state('');
   let nameRef = $state();
-  let { name, id } = $props();
+  let { name, id, onDelete } = $props();
 
   $effect(() => {
     if (step === 2) {
@@ -77,18 +77,19 @@
         if (step === 1) {
           step = 2;
         } else if (step === 2) {
+          onDelete?.();
           http.delete(endpoints.singleAgent(id)).then(res => {
             alertStore.addAlert({
               message: `Agent with id ${id} deleted.`,
               type: 'successful',
             });
-          });
 
-          closer({
-            id: 'delete-agent',
-          });
+            goto('/');
 
-          goto('/');
+            closer({
+              id: 'delete-agent',
+            });
+          });
         }
       }}
       aria-label="delete-confirm"

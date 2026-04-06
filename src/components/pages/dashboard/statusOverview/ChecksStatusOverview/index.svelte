@@ -84,7 +84,7 @@
 
   <div
     class="w-full grid grid-cols-1 xl:grid-cols-2 3xl:grid-cols-3 gap-4 custom-scroll p-6 pb-0 sm:pb-6">
-    {#each checks as item (item?.id)}
+    {#each checks as item, i}
       <History
         checkId={item?.id}
         status={item?.status}
