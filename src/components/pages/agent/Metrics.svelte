@@ -44,7 +44,7 @@
 
 <div class="flex flex-col-reverse xl:grid xl:grid-cols-12 gap-6 w-full">
   <div
-    class="w-full col-span-8 3xl:col-span-9 border flex flex-col sm:p-4 md:pb-0 sm:gap-4 md:pt-4 2xl:p-6 2xl:pb-1 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
+    class="w-full h-71.25 md:h-122.25 col-span-8 3xl:col-span-9 flex flex-col md:pb-0 sm:gap-4 md:pt-4 sm:p-6 sm:pb-1 sm:rounded-[14px] sm:dark:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
     <div class="w-full flex justify-between items-start">
       <div class="w-full flex flex-col justify-start items-start">
         <span class="text-lg md:text-xl text-black dark:text-white">Metrics</span>
@@ -52,7 +52,8 @@
         <div class="flex justify-end items-center gap-2 text-xs text-white/40">
           {#if date}
             {#if isMouseInside && summaryWithDate?.chart_series?.[pointIndexHoverd]?.collected_at}
-              <span class="flex justify-center items-center text-nowrap">Collect at :</span>
+              <span class="hidden sm:flex justify-center items-center text-nowrap"
+                >Collect at :</span>
 
               <span class="flex justify-center items-center text-nowrap tracking-wider">
                 {new Date(
@@ -69,7 +70,7 @@
               </span>
             {/if}
           {:else if isMouseInside ? metricPointDetail?.collected_at : chart?.last_history?.collected_at}
-            <span class="flex justify-center items-center text-nowrap">Collect at :</span>
+            <span class="hidden sm:flex justify-center items-center text-nowrap">Collect at :</span>
 
             <span class="flex justify-center items-center text-nowrap tracking-wider">
               {#if isMouseInside}
@@ -99,34 +100,39 @@
 
       {#if date}
         {#if isMouseInside && summaryWithDate?.chart_series?.[pointIndexHoverd]?.collect_duration_ms}
-          <div class="text-sm py-2 px-3 rounded-full border text-white border-white/5 text-nowrap">
+          <div
+            class="text-xs sm:text-sm py-2 sm:px-3 sm:rounded-full sm:border text-white border-white/5 text-nowrap">
             <span class="text-white/40 me-1">Collect Duration : </span>
             <span
-              class={responseTimeColor(
+              class="text-sm {responseTimeColor(
                 summaryWithDate?.chart_series?.[pointIndexHoverd]?.collect_duration_ms,
-              )}>
+              )}">
               {summaryWithDate?.chart_series?.[pointIndexHoverd]?.collect_duration_ms +
                 ' ms'}</span>
           </div>
         {:else if summaryWithDate?.overall?.avg_collect_duration_ms}
-          <div class="text-sm py-2 px-3 rounded-full border text-white border-white/5 text-nowrap">
+          <div
+            class="text-xs sm:text-sm py-2 sm:px-3 sm:rounded-full sm:border text-white border-white/5 text-nowrap">
             <span class="text-white/40 me-1">Collect Duration : </span>
 
-            <span class={responseTimeColor(summaryWithDate?.overall?.avg_collect_duration_ms)}
+            <span
+              class="text-sm {responseTimeColor(summaryWithDate?.overall?.avg_collect_duration_ms)}"
               >{summaryWithDate?.overall?.avg_collect_duration_ms + ' ms'}
             </span>
           </div>
         {/if}
       {:else if isMouseInside && metricPointDetail?.collect_duration_ms}
-        <div class="text-sm py-2 px-3 rounded-full border text-white border-white/5 text-nowrap">
+        <div
+          class="text-xs sm:text-sm py-2 sm:px-3 sm:rounded-full sm:border text-white border-white/5 text-nowrap">
           <span class="text-white/40 me-1">Collect Duration : </span>
-          <span class={responseTimeColor(metricPointDetail?.collect_duration_ms)}
+          <span class="text-sm {responseTimeColor(metricPointDetail?.collect_duration_ms)}"
             >{metricPointDetail?.collect_duration_ms + ' ms'}</span>
         </div>
       {:else if chart?.last_history?.collect_duration_ms}
-        <div class="text-sm py-2 px-3 rounded-full border text-white border-white/5 text-nowrap">
+        <div
+          class="text-xs sm:text-sm py-2 sm:px-3 sm:rounded-full sm:border text-white border-white/5 text-nowrap">
           <span class="text-white/40 me-1">Collect Duration : </span>
-          <span class={responseTimeColor(chart?.last_history?.collect_duration_ms)}
+          <span class="text-sm {responseTimeColor(chart?.last_history?.collect_duration_ms)}"
             >{chart?.last_history?.collect_duration_ms + ' ms'}</span>
         </div>
       {/if}
@@ -158,7 +164,7 @@
   </div>
 
   <div
-    class="col-span-4 3xl:col-span-3 sm:border border-[#0D0D0D]/5 dark:border-white/5 py-4 sm:py-6 sm:px-6 sm:rounded-xl grid grid-cols-1 gap-4 sm:dark:bg-[#0D0D0D] sm:bg-[#FFFFFF]">
+    class="col-span-4 3xl:col-span-3 justify-start items-start sm:border border-[#0D0D0D]/5 dark:border-white/5 py-4 sm:py-6 sm:px-6 sm:rounded-xl grid grid-cols-1 gap-4 sm:dark:bg-[#0D0D0D] sm:bg-[#FFFFFF]">
     {#if date}
       <div class="flex flex-col justify-start items-start gap-4">
         <div
@@ -1058,7 +1064,7 @@
 
         {#if isMouseInside}
           <div
-            class="w-full rounded-md relative h-5 flex justify-start items-center overflow-hidden bg-white/5">
+            class="w-full rounded-md relative h-6 flex justify-start items-center overflow-hidden bg-white/5">
             <div
               style="width:{summaryWithDate?.chart_series?.[pointIndexHoverd]
                 ?.disk_usage_percent}%;"
@@ -1219,7 +1225,7 @@
 
         {#if isMouseInside}
           <div
-            class="w-full rounded-md relative h-5 flex justify-start items-center overflow-hidden bg-white/5">
+            class="w-full rounded-md relative h-6 flex justify-start items-center overflow-hidden bg-white/5">
             <div
               style="width:{metricPointDetail?.disk_usage_percent}%;"
               class="h-full rounded-s-md transition-all {metricPointDetail?.disk_usage_percent ===

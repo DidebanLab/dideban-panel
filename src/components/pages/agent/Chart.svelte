@@ -7,6 +7,7 @@
 
   let chartEl;
   let chart;
+  const height = innerWidth < 780 ? 180 : 380;
 
   const hexToRgba = (hex, opacity) => {
     const r = parseInt(hex.slice(1, 3), 16);
@@ -17,7 +18,7 @@
 
   const options = {
     chart: {
-      height: 380,
+      height,
       type: 'area',
       zoom: { enabled: false },
       padding: { top: 0, right: 0, bottom: 0, left: 0 },
@@ -28,23 +29,22 @@
         tools: {
           download: false,
           selection: true,
-          zoom: true, // دکمه زوم
-          zoomin: true, // دکمه بزرگ‌نمایی
-          zoomout: true, // دکمه کوچک‌نمایی
-          pan: true, // دکمه جابه‌جایی چارت
-          reset: true, // دکمه بازگردانی به حالت اولیه
+          zoom: true,
+          zoomin: true,
+          zoomout: true,
+          pan: true,
+          reset: true,
         },
-        autoSelected: 'zoom', // حالت پیش‌فرض فعال روی زوم
+        autoSelected: 'zoom',
       },
       events: {
         mouseMove: (event, chartContext, config) => {
-          // ✅ اگر موس قبلاً وارد نشده بود، پیام را چاپ کن
           if (!isMouseInside) {
-            isMouseInside = true; // ✅ تغییر وضعیت به "داخل نمودار"
+            isMouseInside = true;
           }
         },
         mouseLeave: (event, chartContext, config) => {
-          isMouseInside = false; // ✅ بازنشانی وضعیت برای دفعه بعد
+          isMouseInside = false;
         },
       },
     },
@@ -109,36 +109,11 @@
     chart = new ApexCharts(chartEl, {
       ...options,
       series: data,
-      annotations: {
-        points: data.flatMap((series, seriesIndex) =>
-          series.data
-            .map((y, pointIndex) => {
-              if (y < 70) return null;
-
-              const baseColor = options.colors[seriesIndex];
-              const opacity = y >= 80 ? 1 : 0.5;
-
-              return {
-                x: pointIndex + 1,
-                y,
-                seriesIndex,
-                marker: {
-                  size: 3,
-                  fillColor: hexToRgba(baseColor, opacity),
-                  strokeWidth: 7,
-                  strokeColor: hexToRgba(baseColor, opacity * 0.5),
-                },
-              };
-            })
-            .filter(Boolean),
-        ),
-      },
     });
 
     chart.render();
   });
 
-  // ✅ این قسمت اضافه شد: وقتی data تغییر کنه، سری‌ها آپدیت بشه
   $effect(() => {
     if (chart && data) {
       chart.updateSeries(data, true);
