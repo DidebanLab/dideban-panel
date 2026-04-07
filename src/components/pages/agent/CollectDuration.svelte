@@ -14,8 +14,12 @@
   });
 </script>
 
+<!-- class="relative w-full flex flex-col sm:p-4 md:pt-4 2xl:p-6 pb-11 sm:pb-13 gap-8 hover:z-30 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5"> -->
+
 <div
-  class="relative w-full flex flex-col p-6 pb-13 gap-10 hover:z-30 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
+  class="gap-3 sm:gap-6 2xl:gap-8 hover:z-30 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5 relative w-full flex flex-col md:pt-4 sm:p-6 3xl:pb-13 {date
+    ? '3xl:gap-12'
+    : ''}">
   <div class="flex justify-between items-start">
     <div class="flex flex-col justify-start items-start w-full">
       <span class="text-lg text-black dark:text-white">Collect Duration</span>
@@ -28,7 +32,7 @@
     {#if date}
       {#if summaryWithDate?.overall?.avg_collect_duration_ms}
         <div
-          class="flex text-2xl justify-end gap-2 items-center {summaryWithDate?.overall?.rate?.toLowerCase() ===
+          class="flex text-lg sm:text-2xl justify-end gap-2 items-center {summaryWithDate?.overall?.rate?.toLowerCase() ===
           'excellent'
             ? 'text-green-500'
             : summaryWithDate?.overall?.rate?.toLowerCase() === 'good'
@@ -47,7 +51,7 @@
       {/if}
     {:else if collectDuration?.avg_ms}
       <div
-        class="flex text-2xl justify-end gap-2 items-center {collectDuration?.rate?.toLowerCase() ===
+        class="flex text-lg sm:text-2xl justify-end gap-2 items-center {collectDuration?.rate?.toLowerCase() ===
         'excellent'
           ? 'text-green-500'
           : collectDuration?.rate?.toLowerCase() === 'good'
@@ -66,13 +70,14 @@
     {/if}
   </div>
 
-  <div class="relative w-full z-10 flex gap-0.5 justify-start items-end">
+  <div
+    class="relative w-full z-10 flex gap-0.5 justify-start items-end overflow-x-auto overflow-y-hidden pb-8 pt-7 3xl:overflow-x-visible 3xl:overflow-y-visible 3xl:py-0">
     <div class="w-full absolute -bottom-1 h-px bg-white/10"></div>
     {#if date}
       {#if summaryWithDate?.collect_duration_series}{:else}
         {#each Array(24) as _, i}
           <div
-            class="h-1 w-full rounded-[1px] cursor-pointer relative group border-t-4 transition-all bg-[#F87171] border-t-[#ba4646] hover:bg-[#ff5757]">
+            class="h-1 w-full min-w-[50.5px] sm:min-w-[60.5px] rounded-[1px] cursor-pointer relative group border-t-4 transition-all bg-[#F87171] border-t-[#ba4646] hover:bg-[#ff5757]">
             <div class="h-2 w-px bg-white/10 absolute -end-px -bottom-3"></div>
             <div class="h-2 w-px text-white/20 absolute end-3.25 text-xs -bottom-7">
               {String(i + 1)
@@ -87,7 +92,7 @@
           style="height: {(detail?.avg_collect_duration_ms * 100) /
             summaryWithDate?.overall?.max_collect_duration_ms /
             1.5}px;"
-          class="w-full rounded-[1px] cursor-pointer relative group border-t-4 transition-all {detail?.avg_collect_duration_ms >=
+          class="w-full min-w-[40.5px] sm:min-w-[60.5px] rounded-[1px] cursor-pointer relative group border-t-4 transition-all {detail?.avg_collect_duration_ms >=
           90
             ? 'bg-green-500 border-t-green-700 hover:bg-green-700'
             : detail?.avg_collect_duration_ms >= 80
@@ -199,7 +204,7 @@
       {#each collectDuration?.series as detail, i}
         <div
           style="height: {(detail?.avg_ms * 100) / collectDuration.max_ms / 1.5}px;"
-          class="w-full rounded-[1px] cursor-pointer relative group border-t-4 transition-all {detail?.rate?.toLowerCase() ===
+          class="w-full min-w-[14.3px] rounded-[1px] cursor-pointer relative group border-t-4 transition-all {detail?.rate?.toLowerCase() ===
           'excellent'
             ? 'bg-green-500 border-t-green-700 hover:bg-green-700'
             : detail?.rate?.toLowerCase() === 'good'
@@ -307,7 +312,9 @@
     {:else}
       {#each Array(24) as _, i}
         <div
-          class="h-1 w-full rounded-[1px] cursor-pointer relative group border-t-4 transition-all bg-[#F87171] border-t-[#ba4646] hover:bg-[#ff5757]">
+          class="h-1 w-full rounded-[1px] cursor-pointer relative group border-t-4 transition-all bg-[#F87171] border-t-[#ba4646] hover:bg-[#ff5757] {date
+            ? 'min-w-[40.5px] sm:min-w-[60.5px]'
+            : 'min-w-[14.3px]'}">
           <div class="h-2 w-px bg-white/10 absolute -end-px -bottom-3"></div>
           <div class="h-2 w-px text-white/20 absolute end-3.25 text-xs -bottom-7">
             {String(i + 1)

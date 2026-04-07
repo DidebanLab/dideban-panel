@@ -74,7 +74,7 @@
 </script>
 
 <div
-  class="w-full relative flex flex-col gap-4 border-[#0D0D0D]/5 dark:border-white/5 {date
+  class="w-full relative flex flex-col gap-4 sm:gap-6 border-[#0D0D0D]/5 dark:border-white/5 {date
     ? 'sm:h-43 sm:rounded-[14px] sm:dark:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border sm:px-6 sm:py-6'
     : 'h-29 sm:h-35 rounded-[14px] dark:bg-[#0D0D0D] bg-[#FFFFFF] border  px-4.25 py-4 sm:px-6 sm:py-6'}">
   <div class="w-full flex justify-between items-start">
@@ -520,7 +520,7 @@
         {/each}
       {:else}
         {#each Array(24) as _, i}
-          <div aria-hidden="true" class="w-full h-6 rounded-[1px] bg-white/5 relative">
+          <div aria-hidden="true" class="min-w-[40.5px] sm:min-w-[60.5px] w-full h-6 rounded-[1px] bg-white/5 relative">
             <div class="h-2 w-px bg-white/10 absolute -end-px -bottom-3"></div>
             <div class="h-2 w-px text-white/20 absolute end-3.25 text-xs -bottom-7">
               {(24 - i).toString().padStart(2, '0')}:00
@@ -529,7 +529,7 @@
         {/each}
       {/if}
 
-      <div class="absolute -bottom-1 start-1/2 -translate-x-1/2 w-full px-6">
+      <div class="absolute -bottom-1 start-1/2 -translate-x-1/2 w-full">
         <div class="h-px w-full bg-white/10"></div>
       </div>
     {/if}
