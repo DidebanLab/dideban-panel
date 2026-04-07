@@ -1,23 +1,39 @@
 <script>
+  import { onDestroy } from 'svelte';
   import { endpoints } from '../../../endpoints.svelte';
   import { http } from '../../../services/http.svelte';
+  import longPolling from '../../../services/longPolling';
   let { id, hours, summaryWithDate, date } = $props();
   let histogram = $state();
+  let currentPoller = $state(null);
 
   $effect(() => {
     if (!date) {
-      http.get(endpoints.checkHistogram(id), { params: { hours } }).then(
-        res =>
-          (histogram = {
-            ...res.data?.data,
-            max_count: Math.max(
-              res.data?.data?.error_count,
-              ...res.data?.data?.histogram.map(i => i.count),
-              0,
-            ),
-          }),
-      );
+      currentPoller = longPolling(endpoints.checkHistogram(id), {
+        params: { hours },
+        interval: 54000000, //15min,
+        onSuccess: d => {
+          histogram = {
+            ...d,
+            max_count: Math.max(d.error_count, ...d.histogram.map(i => i.count), 0),
+          };
+        },
+      });
+
+      return () => {
+        if (currentPoller) {
+          currentPoller.stop();
+        }
+      };
     }
+  });
+
+  onDestroy(() => {
+    return () => {
+      if (currentPoller) {
+        currentPoller.stop();
+      }
+    };
   });
 </script>
 

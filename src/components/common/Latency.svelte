@@ -1,25 +1,42 @@
 <script>
   import { page } from '$app/stores';
-  import { onMount } from 'svelte';
+  import { onDestroy, onMount } from 'svelte';
   import { endpoints } from '../../endpoints.svelte';
   import { http } from '../../services/http.svelte';
   import LatencyChart from './LatencyChart.svelte';
+  import longPolling from '../../services/longPolling';
 
   const isMobile = $state(innerWidth < 645);
+  let currentPoller = $state(null);
 
   const { name, id, hours } = $props();
 
   let data = $state();
 
   $effect(() => {
-    http
-      .get(endpoints.checkLatency(id), {
-        params: {
-          hours,
-          max_points:60
-        },
-      })
-      .then(res => (data = res.data?.data));
+    currentPoller = longPolling(endpoints.checkLatency(id), {
+      params: {
+        hours,
+        max_points: 60,
+      },
+      onSuccess: d => {
+        data = d;
+      },
+    });
+
+    return () => {
+      if (currentPoller) {
+        currentPoller.stop();
+      }
+    };
+  });
+
+  onDestroy(() => {
+    return () => {
+      if (currentPoller) {
+        currentPoller.stop();
+      }
+    };
   });
 </script>
 
@@ -33,21 +50,20 @@
       <span class="text-lg md:text-xl text-black dark:text-white"> Latency</span>
       <div class="text-xs text-white/70 flex gap-1.5">
         <span class="text-white/40 text-nowrap">Total Checks :</span>
-        {data?.total_checks || "-"}
+        {data?.total_checks || '-'}
       </div>
     </div>
     {#if data?.avg_response_time}
-      <div class="text-xs sm:text-sm py-1.5 sm:py-2 px-2 sm:px-3 rounded-full border text-white border-white/5 text-nowrap">
+      <div
+        class="text-xs sm:text-sm py-1.5 sm:py-2 px-2 sm:px-3 rounded-full border text-white border-white/5 text-nowrap">
         <span class="text-white/40 text-nowrap me-1"> Avg Response Time: </span>
         {data?.avg_response_time} ms
       </div>
-
     {/if}
   </div>
-  {#if data?.latency_series?.length > 0}
+  {#if data?.latency_series?.length > 1}
     <LatencyChart name="Latency" height={250} data={data?.latency_series} unit="ms" />
-    {:else}
-
+  {:else}
     <div class="w-full bg-blue-500/50 h-px my-auto"></div>
   {/if}
 </div>

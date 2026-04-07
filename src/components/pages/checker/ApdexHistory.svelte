@@ -1,20 +1,41 @@
 <script>
+  import { onDestroy } from 'svelte';
   import { endpoints } from '../../../endpoints.svelte';
   import { http } from '../../../services/http.svelte';
+  import longPolling from '../../../services/longPolling';
   let { id, hours, summaryWithDate, date } = $props();
   let apdex = $state();
+  let currentPoller = $state(null);
 
   $effect(() => {
     if (!date) {
-      http
-        .get(endpoints.checkApdexHistory(id), { params: { hours } })
-        .then(res => (apdex = res.data?.data));
+      currentPoller = longPolling(endpoints.checkApdexHistory(id), {
+        params: { hours },
+        interval: 54000000, //15min
+        onSuccess: d => {
+          apdex = d;
+        },
+      });
+
+      return () => {
+        if (currentPoller) {
+          currentPoller.stop();
+        }
+      };
     }
+  });
+
+  onDestroy(() => {
+    return () => {
+      if (currentPoller) {
+        currentPoller.stop();
+      }
+    };
   });
 </script>
 
 <div
-  class="relative w-full flex flex-col hover:z-30 sm:p-6 xl:pb-13 gap-4 sm:gap-8 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
+  class="relative w-full flex flex-col hover:z-30 sm:p-6 3xl:pb-13 gap-4 sm:gap-8 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
   <div class="flex justify-between items-start">
     <div class="w-fit flex flex-col justify-start items-start">
       <span class="text-lg text-black dark:text-white"> Apdex history</span>
