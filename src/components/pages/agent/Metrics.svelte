@@ -1,6 +1,7 @@
 <script>
   import { endpoints } from '../../../endpoints.svelte';
   import { http } from '../../../services/http.svelte';
+  import longPolling from '../../../services/longPolling';
   import formatNumber from '../../../utils/formatNumber';
   import responseTimeColor from '../../../utils/responseTimeColor';
   import { LIMITATIONS } from '../../config.svelte';
@@ -12,19 +13,27 @@
   let metricPointDetail = $state(null);
   let isMouseInside = $state(false);
   let chart = $state(null);
+  let currentPoller = $state(null);
 
   $effect(() => {
     if (!date) {
-      http
-        .get(endpoints.agentChart(id), {
-          params: {
-            hours,
-            max_points: 60,
-          },
-        })
-        .then(res => {
-          chart = res.data?.data;
-        });
+      currentPoller = longPolling(endpoints.agentChart(id), {
+        params: {
+          hours,
+          max_points: 60,
+        },
+        interval: 18000, //5min,
+        onSuccess: d => {
+          console.log(d);
+          chart = d;
+        },
+      });
+
+      return () => {
+        if (currentPoller) {
+          currentPoller.stop();
+        }
+      };
     }
   });
 
