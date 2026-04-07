@@ -6,6 +6,8 @@
   import TopRight from '../components/pages/dashboard/TopRight.svelte';
   import { subscribe, unsubscribe } from '../services/ws.svelte';
 
+  let isAgentExist = true;
+
   onMount(() => {
     subscribe('checks');
     subscribe('agents');
@@ -20,12 +22,10 @@
 <section class="w-full m-auto h-auto flex flex-col">
   <!-- Content of dashboard page -->
   <div class="w-full flex flex-col gap-7.75 sm:p-7.75 sm:pt-2.5">
-    <div class="w-full flex flex-col-reverse 3xl:flex-row gap-8 xl:gap-4">
-      <div class="w-full 3xl:w-[65%]">
-        <PerformanceOverview />
-      </div>
+    <div class="w-full flex flex-col-reverse gap-8 xl:gap-4 {isAgentExist ? '3xl:flex-row' : ''}">
+      <PerformanceOverview bind:value={isAgentExist} />
 
-      <TopRight />
+      <TopRight {isAgentExist} />
     </div>
     <ChecksStatusOverview />
 

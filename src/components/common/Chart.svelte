@@ -101,30 +101,6 @@
     chart = new ApexCharts(chartEl, {
       ...options,
       series: data,
-      annotations: {
-        points: data.flatMap((series, seriesIndex) =>
-          series.data
-            .map((y, pointIndex) => {
-              if (y < 70) return null;
-
-              const baseColor = options.colors[seriesIndex];
-              const opacity = y >= 80 ? 1 : 0.5;
-
-              return {
-                x: pointIndex + 1,
-                y,
-                seriesIndex,
-                marker: {
-                  size: 3,
-                  fillColor: hexToRgba(baseColor, opacity),
-                  strokeWidth: 7,
-                  strokeColor: hexToRgba(baseColor, opacity * 0.5),
-                },
-              };
-            })
-            .filter(Boolean),
-        ),
-      },
     });
 
     chart.render();
