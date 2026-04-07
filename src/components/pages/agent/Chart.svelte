@@ -3,7 +3,7 @@
   import ApexCharts from 'apexcharts';
   import { theme } from '../../../stores/theme.svelte';
   import { endpoints } from '../../../endpoints.svelte';
-  let { data, pointIndexHoverd = $bindable(), points, isMouseInside = $bindable() } = $props();
+  let { data, pointIndexHoverd = $bindable(), isMouseInside = $bindable() } = $props();
 
   let chartEl;
   let chart;
@@ -64,7 +64,7 @@
         type: 'vertical',
         shadeIntensity: 0.5,
         gradientToColors: ['#a855f7', '#3b82f6', '#10b981'],
-        opacityFrom: 0.5,
+        opacityFrom: 0.4,
         opacityTo: 0.0,
         stops: [0, 90, 100],
       },

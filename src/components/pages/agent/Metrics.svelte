@@ -1,4 +1,5 @@
 <script>
+  import { derived } from 'svelte/store';
   import { endpoints } from '../../../endpoints.svelte';
   import { http } from '../../../services/http.svelte';
   import longPolling from '../../../services/longPolling';
@@ -14,6 +15,7 @@
   let isMouseInside = $state(false);
   let chart = $state(null);
   let currentPoller = $state(null);
+  let pollingInterval = $derived(5000);
 
   $effect(() => {
     if (!date) {
@@ -22,9 +24,10 @@
           hours,
           max_points: 60,
         },
-        interval: 18000, //5min,
+        interval: pollingInterval,
         onSuccess: d => {
           console.log(d);
+
           chart = d;
         },
       });
