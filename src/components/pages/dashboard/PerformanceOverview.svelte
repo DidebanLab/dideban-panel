@@ -3,7 +3,8 @@
   import { http } from '../../../services/http.svelte';
   import { endpoints } from '../../../endpoints.svelte';
   import { theme } from '../../../stores/theme.svelte';
-  import { onMount } from 'svelte';
+  import { onDestroy, onMount } from 'svelte';
+  import longPolling from '../../../services/longPolling';
 
   const isMobile = $state(innerWidth < 645);
   let { value: isAgentExist = $bindable() } = $props();
@@ -11,6 +12,7 @@
   let activeIndex = $state(0);
   let isActive = $derived(agents[activeIndex]);
   let agentMetric = $state();
+  let currentPoller = $state(null);
 
   const next = () => {
     if (activeIndex < agents.length - 1) {
@@ -54,15 +56,28 @@
     const id = agents[activeIndex]?.id;
     if (!id) return;
 
-    http
-      .get(endpoints.agentMetric(id), {
-        params: {
-          max_points: 60,
-        },
-      })
-      .then(res => {
-        agentMetric = res.data.data;
-      });
+    currentPoller = longPolling(endpoints.agentMetric(id), {
+      params: {
+        max_points: 60,
+      },
+      onSuccess: d => {
+        agentMetric = d;
+      },
+    });
+
+    return () => {
+      if (currentPoller) {
+        currentPoller.stop();
+      }
+    };
+  });
+
+  onDestroy(() => {
+    return () => {
+      if (currentPoller) {
+        currentPoller.stop();
+      }
+    };
   });
 </script>
 

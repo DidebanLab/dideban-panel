@@ -6,7 +6,7 @@ export default function longPolling(url, options = {}) {
     params: options.params || {},
     timeout: options.timeout || 10000,
     retryDelay: options.retryDelay || 3000,
-    interval: options.interval || 10000, // ⭐ تأخیر بین درخواست‌ها
+    interval: options.interval || 18000000, // ⭐ تأخیر بین درخواست‌ها
     maxRetries: options.maxRetries || Infinity,
     onSuccess: options.onSuccess || (() => {}),
     onError: options.onError || (() => {}),

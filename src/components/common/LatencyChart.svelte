@@ -28,7 +28,7 @@
         },
         dynamicAnimation: {
           enabled: true,
-          speed: 12000,
+          speed: 500,
         },
       },
       zoom: {

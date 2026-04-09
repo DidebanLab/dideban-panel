@@ -15,7 +15,6 @@
   let isMouseInside = $state(false);
   let chart = $state(null);
   let currentPoller = $state(null);
-  let pollingInterval = $derived(5000);
 
   $effect(() => {
     if (!date) {
@@ -24,10 +23,7 @@
           hours,
           max_points: 60,
         },
-        interval: pollingInterval,
         onSuccess: d => {
-          console.log(d);
-
           chart = d;
         },
       });
