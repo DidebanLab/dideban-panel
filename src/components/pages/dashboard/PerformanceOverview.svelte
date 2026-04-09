@@ -93,10 +93,10 @@
 
 <div
   class="w-full flex relative flex-col gap-4 items-start justify-between 3xl:w-[65%] h-auto px-6 sm:pt-6 sm:pb-1.5 rounded-[14px] sm:dark:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
-  {#if !loading.agents || loading.metrics}
+  {#if loading.agents || loading.metrics}
     <div class="w-full flex flex-col justify-start items-start gap-1">
       <span class="text-lg sm:text-xl dark:text-white capitalize flex gap-2">
-        <span class="bg-white/5 h-6 w-20 rounded-md"></span> Performance Overview</span>
+        <span class="bg-white/5 h-6 w-20 rounded-md animate-pulse"></span> Performance Overview</span>
       <span class="text-sm text-[#99a1af]">System resource latest utilization trends</span>
     </div>
 

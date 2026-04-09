@@ -35,7 +35,7 @@
   });
 </script>
 
-{#if !loading}
+{#if loading}
   <div
     class="flex flex-col lg:flex-row gap-6 sm:gap-4 w-full ms-auto 3xl:w-[35%] 3xl:flex-col 3xl:justify-between">
     <div
