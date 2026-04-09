@@ -91,9 +91,9 @@
   });
 </script>
 
-{#if loading.agents || loading.metrics}
-  <div
-    class="w-full flex relative flex-col gap-4 items-start justify-between 3xl:w-[65%] h-auto px-6 sm:pt-6 sm:pb-1.5 rounded-[14px] sm:dark:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
+<div
+  class="w-full flex relative flex-col gap-4 items-start justify-between 3xl:w-[65%] h-auto px-6 sm:pt-6 sm:pb-1.5 rounded-[14px] sm:dark:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
+  {#if loading.agents || loading.metrics}
     <div class="w-full flex flex-col justify-start items-start">
       <span class="bg-white/5 h-6 mb-1 w-66.25 rounded-lg animate-pulse"></span>
       <span class="bg-white/5 h-4 mt-1 w-63.25 rounded-md animate-pulse"></span>
@@ -108,10 +108,7 @@
     <div
       class="h-32.5 w-full border-t-2 border-t-white/5 mt-auto bg-linear-to-b from-white/5 animate-pulse">
     </div>
-  </div>
-{:else if agents?.length}
-  <div
-    class="w-full flex relative flex-col gap-4 items-start justify-between 3xl:w-[65%] h-auto px-6 sm:pt-6 sm:pb-1.5 rounded-[14px] sm:dark:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
+  {:else if agents?.length}
     {#each agents as agent (agent?.id)}
       {#if isActive?.id === agent?.id}
         <div
@@ -266,5 +263,5 @@
         {/if}
       {/if}
     {/each}
-  </div>
-{/if}
+  {/if}
+</div>
