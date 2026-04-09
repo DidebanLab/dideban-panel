@@ -93,10 +93,11 @@
 
 <div
   class="w-full flex relative flex-col gap-4 items-start justify-between 3xl:w-[65%] h-auto px-6 sm:pt-6 sm:pb-1.5 rounded-[14px] sm:dark:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
-  {#if loading.agents || loading.metrics}
-    <div class="w-full flex flex-col justify-start items-start">
-      <span class="bg-white/5 h-6 mb-1 w-66.25 rounded-lg animate-pulse"></span>
-      <span class="bg-white/5 h-4 mt-1 w-63.25 rounded-md animate-pulse"></span>
+  {#if !loading.agents || loading.metrics}
+    <div class="w-full flex flex-col justify-start items-start gap-1">
+      <span class="text-lg sm:text-xl dark:text-white capitalize flex gap-2">
+        <span class="bg-white/5 h-6 w-20 rounded-md"></span> Performance Overview</span>
+      <span class="text-sm text-[#99a1af]">System resource latest utilization trends</span>
     </div>
 
     <div
@@ -113,7 +114,7 @@
       {#if isActive?.id === agent?.id}
         <div
           class="w-full flex flex-col sm:flex-row justify-center items-start sm:justify-between sm:items-baseline">
-          <div class="w-full flex flex-col justify-start items-start">
+          <div class="w-full flex flex-col justify-start items-start gap-1">
             <span class="text-lg sm:text-xl dark:text-white capitalize"
               >{agent.name} Performance Overview</span>
             <span class="text-sm text-[#99a1af]">System resource latest utilization trends</span>

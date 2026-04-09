@@ -35,13 +35,13 @@
   });
 </script>
 
-{#if loading}
+{#if !loading}
   <div
     class="flex flex-col lg:flex-row gap-6 sm:gap-4 w-full ms-auto 3xl:w-[35%] 3xl:flex-col 3xl:justify-between">
     <div
       class="px-6 sm:pb-6 pt-1 sm:pt-5 w-full flex flex-col gap-4 sm:dark:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5 rounded-[14px] relative overflow-hidden h-full">
-      <div class="flex justify-between items-center gap-3 w-full">
-        <span class="bg-white/5 h-6 mb-1 w-16.25 rounded-lg animate-pulse"></span>
+      <div class="flex justify-between items-start gap-3 w-full">
+        <span class="text-lg sm:text-xl dark:text-white">Agents</span>
 
         <div class="flex flex-col justify-center items-end gap-2">
           <div class="bg-white/5 h-4 w-20.75 rounded-md animate-pulse"></div>
@@ -58,8 +58,8 @@
     </div>
     <div
       class="px-6 sm:pb-6 pt-1 sm:pt-5 w-full flex flex-col gap-4 sm:dark:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5 rounded-[14px] relative overflow-hidden h-full">
-      <div class="flex justify-between items-center gap-3 w-full">
-        <span class="bg-white/5 h-6 mb-1 w-21 rounded-lg animate-pulse"></span>
+      <div class="flex justify-between items-start gap-3 w-full">
+        <span class="text-lg sm:text-xl dark:text-white">Checkers</span>
 
         <div class="flex flex-col justify-center items-end gap-2">
           <div class="bg-white/5 h-4 w-20.75 rounded-md animate-pulse"></div>
@@ -83,7 +83,7 @@
       : '3xl:h-55'}">
     <div
       class="px-6 sm:pb-6 pt-1 sm:pt-5 w-full flex flex-col gap-4 sm:dark:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5 rounded-[14px] relative overflow-hidden h-full">
-      <div class="flex justify-between items-center gap-3 w-full">
+      <div class="flex justify-between items-start gap-3 w-full">
         <span class="text-lg sm:text-xl dark:text-white">Agents</span>
 
         <div class="flex flex-col justify-center items-end gap-1">
@@ -197,7 +197,7 @@
     </div>
     <div
       class="px-6 sm:pb-6 pt-1 sm:pt-5 w-full flex flex-col gap-4 sm:dark:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5 rounded-[14px] relative overflow-hidden h-full">
-      <div class="flex justify-between items-center gap-3 w-full">
+      <div class="flex justify-between items-start gap-3 w-full">
         <span class="text-lg sm:text-xl dark:text-white">Checkers</span>
 
         <div class="flex flex-col justify-center items-end gap-1">
