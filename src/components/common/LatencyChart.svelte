@@ -20,17 +20,6 @@
     chart: {
       type: 'area',
       height,
-      animations: {
-        enabled: true,
-        easing: 'linear', // ⭐ خطی
-        animateGradually: {
-          enabled: false,
-        },
-        dynamicAnimation: {
-          enabled: true,
-          speed: 500,
-        },
-      },
       zoom: {
         enabled: false,
       },
@@ -54,9 +43,9 @@
     fill: {
       type: 'gradient',
       gradient: {
-        shadeIntensity: 0.0,
-        opacityFrom: 0.0,
-        opacityTo: 0.0,
+        shadeIntensity: 0.1,
+        opacityFrom: 0.5,
+        opacityTo: 0.01,
       },
     },
     colors: ['#3b82f6'],
