@@ -31,6 +31,7 @@
   let summary = $state(null);
   let summaryWithDate = $state(null);
   let isDeleted = $state(false);
+  let loading = $state({ summaryWithDate: false });
 
   onMount(() => {
     http.get(endpoints.checkSummaryYearly(id)).then(res => {
@@ -99,16 +100,21 @@
         goto(`/checkers/${id}`);
         return;
       }
-
-      http.get(endpoints.checksSummaryDate(id, date)).then(res => {
-        summaryWithDate = {
-          ...res.data?.data,
-          histogram: {
-            ...res.data?.data?.histogram,
-            max_count: Math.max(...res.data?.data?.histogram.buckets.map(i => i.count), 1),
-          },
-        };
-      });
+      loading.summaryWithDate = true;
+      http
+        .get(endpoints.checksSummaryDate(id, date))
+        .then(res => {
+          summaryWithDate = {
+            ...res.data?.data,
+            histogram: {
+              ...res.data?.data?.histogram,
+              max_count: Math.max(...res.data?.data?.histogram.buckets.map(i => i.count), 1),
+            },
+          };
+        })
+        .finally(() => {
+          loading.summaryWithDate = false;
+        });
     }
   });
 </script>
@@ -265,7 +271,11 @@
       {/if}
     </div>
 
-    <Uptime checkId={id} {date} {summaryWithDate} />
+    <Uptime
+      checkId={id}
+      {date}
+      {summaryWithDate}
+      summaryWithDateLoading={loading.summaryWithDate} />
 
     {#if !date}
       <TimeRangeSelector bind:value={hours} interval={check?.interval_seconds} />
