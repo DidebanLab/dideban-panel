@@ -306,16 +306,14 @@
           {/if}
         </div>
 
-        {#if date ? date : toDay}
-          <DateChanger
-            type="check"
-            bind:value={summaryWithDate}
-            {summary}
-            {id}
-            {toDay}
-            {date}
-            loading={loading.summaryYearly} />
-        {/if}
+        <DateChanger
+          type="check"
+          bind:value={summaryWithDate}
+          {summary}
+          {id}
+          {toDay}
+          {date}
+          loading={loading.summaryYearly} />
       {/if}
     </div>
 
@@ -325,13 +323,12 @@
       {summaryWithDate}
       summaryWithDateLoading={loading.summaryWithDate} />
 
-    {#if !date}
-      <TimeRangeSelector
-        bind:value={hours}
-        interval={check?.interval_seconds}
-        loading={loading.check} />
-      <Latency {hours} {id} name={check?.name} />
-    {/if}
+    <TimeRangeSelector
+      {date}
+      bind:value={hours}
+      interval={check?.interval_seconds}
+      loading={loading.check} />
+    <Latency {hours} {id} name={check?.name} />
 
     <ApdexHistory
       {id}

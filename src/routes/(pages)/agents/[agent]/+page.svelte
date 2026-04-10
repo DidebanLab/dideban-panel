@@ -29,15 +29,22 @@
   let toDay = $state(null);
   let summaryWithDate = $state(null);
   let isDeleted = $state(false);
+  let loading = $state({ summaryWithDate: false, agent: true, summaryYearly: true });
 
   onMount(() => {
-    http.get(endpoints.agentSummaryYearly(id)).then(res => {
-      const current = res.data.data.find(i => Object.values(i.history).includes(-1));
-      const day = Object.keys(current.history).find(key => current.history[key] === -1);
-      toDay = `${current.year}-${current.month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+    loading.summaryYearly = true;
+    http
+      .get(endpoints.agentSummaryYearly(id))
+      .then(res => {
+        const current = res.data.data.find(i => Object.values(i.history).includes(-1));
+        const day = Object.keys(current.history).find(key => current.history[key] === -1);
+        toDay = `${current.year}-${current.month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
 
-      summary = res.data?.data;
-    });
+        summary = res.data?.data;
+      })
+      .finally(() => {
+        loading.summaryYearly = false;
+      });
 
     subscribe(`agents:${id}`);
     on('agent.status.changed', handleStatus);
@@ -76,11 +83,17 @@
   }
 
   $effect(() => {
+    loading.agent = true;
     const update = trigger;
-    http.get(endpoints.singleAgent(id)).then(res => {
-      agent = res.data?.data;
-      enabled = res.data?.data.enabled;
-    });
+    http
+      .get(endpoints.singleAgent(id))
+      .then(res => {
+        agent = res.data?.data;
+        enabled = res.data?.data.enabled;
+      })
+      .finally(() => {
+        loading.agent = false;
+      });
   });
 
   $effect(() => {
@@ -98,13 +111,18 @@
         goto(`/agents/${id}`);
         return;
       }
-
-      http.get(endpoints.agentSummaryDate(id, date)).then(res => {
-        summaryWithDate = {
-          ...res.data.data,
-          uptime_series: res.data?.data?.uptime_series?.reverse(),
-        };
-      });
+      loading.summaryWithDate = true;
+      http
+        .get(endpoints.agentSummaryDate(id, date))
+        .then(res => {
+          summaryWithDate = {
+            ...res.data.data,
+            uptime_series: res.data?.data?.uptime_series?.reverse(),
+          };
+        })
+        .finally(() => {
+          loading.summaryWithDate = false;
+        });
     }
   });
 </script>
@@ -114,155 +132,199 @@
     class="w-full flex flex-col justify-start items-start gap-6 lg:border border-[#0D0D0D]/5 dark:border-white/5 lg:px-6 pt-1 pb-6 lg:py-6 lg:rounded-xl">
     <div
       class="w-full flex flex-col gap-4 lg:gap-6 lg:flex-row justify-between items-center lg:items-start relative">
-      <div class="w-full flex justify-between items-start">
-        <div class="flex flex-col justify-center items-start">
-          <span class="text-black dark:text-white text-xl capitalize">{agent?.name}</span>
+      {#if !loading.agent}
+        <div class="w-full flex justify-between items-start">
+          <div class="flex flex-col justify-center items-start gap-2">
+            <span class="bg-white/5 h-6 w-30 rounded-md animate-pulse"></span>
+            <span class="bg-white/5 h-5 w-16 rounded-md animate-pulse"></span>
+          </div>
 
-          <span
-            class="flex justify-center items-center text-nowrap tracking-wider text-sm {agent?.status ===
-            'online'
-              ? 'text-green-700'
-              : 'text-[#F87171]'}">{agent?.status}</span>
-        </div>
-
-        {#if date}
-          <button
-            onclick={() => {
-              goto(`/agents/${id}`);
-            }}
-            class="text-nowrap flex items-center gap-1 sm:gap-2 ps-4 bg-emerald-500/10 animate-pulse hover:animate-none mt-1.25 sm:mt-0 pe-2.5 h-6 sm:h-8 text-xs rounded-full outline outline-offset-1 outline-emerald-500/60 text-emerald-400 cursor-pointer">
-            <span class="hidden sm:inline">Back to </span>Today
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="w-3.25 h-3.25 rotate-180"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
-        {:else if agent}
           <div
             class="flex flex-col-reverse sm:flex-row justify-start items-end sm:justify-center sm:items-center gap-1.5 sm:gap-3">
             <div class="flex justify-center items-center gap-1.75">
-              <button
-                class="cursor-pointer"
-                aria-label="delete agent"
-                type="button"
-                onclick={() => {
-                  opener({
-                    id: 'delete-agent',
-                    content: DeleteAgent,
-                    props: { name: agent?.name, id: agent?.id, onDelete: () => (isDeleted = true) },
-                  });
-                }}>
-                <img
-                  class="size-4 sm:size-5"
-                  src="/icons/trash.png"
-                  alt="trash"
-                  width="20"
-                  height="20" /></button>
-              <button
-                class="cursor-pointer"
-                aria-label="edit config"
-                type="button"
-                onclick={() => {
-                  opener({
-                    id: 'edit-agent',
-                    content: EditAgent,
-                    props: {
-                      name: agent?.name,
-                      interval_seconds: agent?.interval_seconds,
-                      enabled: agent?.enabled,
-                      id: agent?.id,
-                      onEdited: () => {
-                        trigger += 1;
-                      },
-                    },
-                  });
-                }}>
-                <img
-                  class="size-5 sm:size-6"
-                  src="/icons/edit.png"
-                  alt="edit"
-                  width="24"
-                  height="24" />
-              </button>
+              <span class="size-6 rounded-md bg-white/5 animate-pulse"></span>
+              <span class="size-6 rounded-md bg-white/5 animate-pulse"></span>
             </div>
 
-            <div class="h-9 w-px bg-white/ hidden sm:block"></div>
-            {#key enabled}
-              <div
-                class="sm:py-2 w-fit sm:w-30 flex justify-center items-center gap-2 sm:bg-[#0D0D0D]/5 sm:dark:bg-white/5 sm:border border-[#e5e7eb] dark:border-white/5 sm:rounded-[14px] mt-1 sm:mt-0">
-                <span class=" text-[11px] sm:text-xs text-[#99a1af]">
-                  {enabled ? 'Enabled' : 'Disabled'}
-                </span>
+            <div class="h-9 w-px bg-white/10 hidden sm:block animate-pulse"></div>
 
+            <div class="w-30 rounded-xl bg-white/5 h-10.5 animate-pulse"></div>
+          </div>
+        </div>
+
+        <div
+          class="bg-white/5 lg:absolute lg:top-0 rounded-md lg:start-1/2 lg:-translate-x-1/2 w-full lg:w-[194.5px] h-9.5 animate-pulse">
+        </div>
+      {:else}
+        <div class="w-full flex justify-between items-start">
+          <div class="flex flex-col justify-center items-start">
+            <span class="text-black dark:text-white text-xl capitalize">{agent?.name}</span>
+
+            <span
+              class="flex justify-center items-center text-nowrap tracking-wider text-sm {agent?.status ===
+              'online'
+                ? 'text-green-700'
+                : 'text-[#F87171]'}">{agent?.status}</span>
+          </div>
+
+          {#if date}
+            <button
+              onclick={() => {
+                goto(`/agents/${id}`);
+              }}
+              class="text-nowrap flex items-center gap-1 sm:gap-2 ps-4 bg-emerald-500/10 animate-pulse hover:animate-none mt-1.25 sm:mt-0 pe-2.5 h-6 sm:h-8 text-xs rounded-full outline outline-offset-1 outline-emerald-500/60 text-emerald-400 cursor-pointer">
+              <span class="hidden sm:inline">Back to </span>Today
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-3.25 h-3.25 rotate-180"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+          {:else if agent}
+            <div
+              class="flex flex-col-reverse sm:flex-row justify-start items-end sm:justify-center sm:items-center gap-1.5 sm:gap-3">
+              <div class="flex justify-center items-center gap-1.75">
                 <button
+                  class="cursor-pointer"
+                  aria-label="delete agent"
+                  type="button"
                   onclick={() => {
-                    if (enabled) {
-                      opener({
-                        id: 'confirm-edit',
-                        content: ConfirmEditAgent,
-                        props: {
-                          name: agent?.name,
-                          onEdited: () => {
-                            trigger += 1;
-                          },
-                        },
-                      });
-                    } else {
-                      http
-                        .patch(endpoints.singleAgent(agent?.id), {
-                          enabled: true,
-                        })
-                        .then(res => {
+                    opener({
+                      id: 'delete-agent',
+                      content: DeleteAgent,
+                      props: {
+                        name: agent?.name,
+                        id: agent?.id,
+                        onDelete: () => (isDeleted = true),
+                      },
+                    });
+                  }}>
+                  <img
+                    class="size-4 sm:size-5"
+                    src="/icons/trash.png"
+                    alt="trash"
+                    width="20"
+                    height="20" /></button>
+                <button
+                  class="cursor-pointer"
+                  aria-label="edit config"
+                  type="button"
+                  onclick={() => {
+                    opener({
+                      id: 'edit-agent',
+                      content: EditAgent,
+                      props: {
+                        name: agent?.name,
+                        interval_seconds: agent?.interval_seconds,
+                        enabled: agent?.enabled,
+                        id: agent?.id,
+                        onEdited: () => {
                           trigger += 1;
-                          alertStore.addAlert({
-                            message: `Agent ${agent?.name} activation updated successfully.`,
-                            type: 'successful',
-                          });
-                        });
-                    }
-                  }}
-                  aria-label="activation toggle"
-                  class="w-7.5 h-4 sm:w-11 sm:h-6 rounded-full relative cursor-pointer {enabled
-                    ? 'bg-[#00bc7d]/20 border border-[#00bc7d]/30'
-                    : 'bg-[#6a7282]/10 border border-[#6a7282]/20 '}">
-                  <div
-                    style={enabled ? 'box-shadow: 0 0 5px 0.5px #00bc7d' : ''}
-                    class="absolute top-1/2 -translate-y-1/2 left-px size-3 sm:size-5 rounded-full transition-transform duration-300 ease-in-out {enabled
-                      ? 'translate-x-3.25 sm:translate-x-5 bg-[#00bc7d]'
-                      : 'translate-x-0 bg-[#4d4d4d]'}">
-                  </div>
+                        },
+                      },
+                    });
+                  }}>
+                  <img
+                    class="size-5 sm:size-6"
+                    src="/icons/edit.png"
+                    alt="edit"
+                    width="24"
+                    height="24" />
                 </button>
               </div>
-            {/key}
-          </div>
-        {/if}
-      </div>
 
-      {#if date ? date : toDay}
-        <DateChanger type="agent" bind:value={summaryWithDate} {summary} {id} {toDay} {date} />
+              <div class="h-9 w-px bg-white/ hidden sm:block"></div>
+              {#key enabled}
+                <div
+                  class="sm:py-2 w-fit sm:w-30 flex justify-center items-center gap-2 sm:bg-[#0D0D0D]/5 sm:dark:bg-white/5 sm:border border-[#e5e7eb] dark:border-white/5 sm:rounded-[14px] mt-1 sm:mt-0">
+                  <span class=" text-[11px] sm:text-xs text-[#99a1af]">
+                    {enabled ? 'Enabled' : 'Disabled'}
+                  </span>
+
+                  <button
+                    onclick={() => {
+                      if (enabled) {
+                        opener({
+                          id: 'confirm-edit',
+                          content: ConfirmEditAgent,
+                          props: {
+                            name: agent?.name,
+                            onEdited: () => {
+                              trigger += 1;
+                            },
+                          },
+                        });
+                      } else {
+                        http
+                          .patch(endpoints.singleAgent(agent?.id), {
+                            enabled: true,
+                          })
+                          .then(res => {
+                            trigger += 1;
+                            alertStore.addAlert({
+                              message: `Agent ${agent?.name} activation updated successfully.`,
+                              type: 'successful',
+                            });
+                          });
+                      }
+                    }}
+                    aria-label="activation toggle"
+                    class="w-7.5 h-4 sm:w-11 sm:h-6 rounded-full relative cursor-pointer {enabled
+                      ? 'bg-[#00bc7d]/20 border border-[#00bc7d]/30'
+                      : 'bg-[#6a7282]/10 border border-[#6a7282]/20 '}">
+                    <div
+                      style={enabled ? 'box-shadow: 0 0 5px 0.5px #00bc7d' : ''}
+                      class="absolute top-1/2 -translate-y-1/2 left-px size-3 sm:size-5 rounded-full transition-transform duration-300 ease-in-out {enabled
+                        ? 'translate-x-3.25 sm:translate-x-5 bg-[#00bc7d]'
+                        : 'translate-x-0 bg-[#4d4d4d]'}">
+                    </div>
+                  </button>
+                </div>
+              {/key}
+            </div>
+          {/if}
+        </div>
+
+        <DateChanger
+          type="agent"
+          bind:value={summaryWithDate}
+          {summary}
+          {id}
+          {toDay}
+          {date}
+          loading={loading.summaryYearly} />
       {/if}
     </div>
 
-    <Uptime agentId={+id} {date} {summaryWithDate} />
+    <Uptime
+      agentId={+id}
+      {date}
+      {summaryWithDate}
+      summaryWithDateLoading={loading.summaryWithDate} />
 
-    {#if !date}
-      <TimeRangeSelector bind:value={hours} interval={agent?.interval_seconds} />
-    {/if}
+    <TimeRangeSelector
+      {date}
+      bind:value={hours}
+      interval={agent?.interval_seconds}
+      loading={loading.check} />
 
     <CollectDuration {id} {date} {summaryWithDate} {hours} />
 
     <Metrics {id} {date} {summaryWithDate} {hours} />
 
-    {#if summary}
-      <SummaryCalender bind:value={toDay} type="agent" {summary} {id} {date} />
-    {/if}
+    <SummaryCalender
+      bind:value={toDay}
+      type="agent"
+      {summary}
+      {id}
+      {date}
+      loading={loading.summaryYearly} />
   </div>
 </section>
