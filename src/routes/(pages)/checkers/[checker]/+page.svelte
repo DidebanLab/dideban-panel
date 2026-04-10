@@ -31,16 +31,22 @@
   let summary = $state(null);
   let summaryWithDate = $state(null);
   let isDeleted = $state(false);
-  let loading = $state({ summaryWithDate: false, check: true });
+  let loading = $state({ summaryWithDate: false, check: true, summaryYearly: true });
 
   onMount(() => {
-    http.get(endpoints.checkSummaryYearly(id)).then(res => {
-      const current = res.data.data.find(i => Object.values(i.history).includes(-1));
-      const day = Object.keys(current.history).find(key => current.history[key] === -1);
-      toDay = `${current.year}-${current.month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+    loading.summaryYearly = true;
+    http
+      .get(endpoints.checkSummaryYearly(id))
+      .then(res => {
+        const current = res.data.data.find(i => Object.values(i.history).includes(-1));
+        const day = Object.keys(current.history).find(key => current.history[key] === -1);
+        toDay = `${current.year}-${current.month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
 
-      summary = res.data?.data;
-    });
+        summary = res.data?.data;
+      })
+      .finally(() => {
+        loading.summaryYearly = false;
+      });
 
     subscribe(`checks:${id}`);
     on('check.status.changed', handleStatus);
@@ -301,7 +307,14 @@
         </div>
 
         {#if date ? date : toDay}
-          <DateChanger type="check" bind:value={summaryWithDate} {summary} {id} {toDay} {date} />
+          <DateChanger
+            type="check"
+            bind:value={summaryWithDate}
+            {summary}
+            {id}
+            {toDay}
+            {date}
+            loading={loading.summaryYearly} />
         {/if}
       {/if}
     </div>
