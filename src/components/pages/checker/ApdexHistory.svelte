@@ -43,7 +43,7 @@
 
 {#if loading}
   <div
-    class="relative w-full h-52 flex flex-col hover:z-30 sm:p-6 3xl:pb-13 gap-4 sm:gap-8 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
+    class="relative w-full h-40.5 sm:h-57 3xl:h-52 flex flex-col hover:z-30 pb-8 sm:p-6 sm:pb-14 3xl:pb-13 gap-4 sm:gap-8 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
     <div class="flex justify-between items-start">
       <div class="w-fit flex flex-col justify-start items-start">
         <span class="text-lg text-black dark:text-white"> Apdex history</span>
@@ -82,12 +82,12 @@
       <div class="bg-white/5 w-[163.5px] h-8 animate-pulse rounded-full"></div>
     </div>
 
-    <div class="relative w-full z-10 flex gap-0.5 justify-start items-end mt-auto animate-pulse">
+    <div class="relative w-full z-10 flex gap-0.5 justify-start items-end mt-auto animate-pulse overflow-x-clip 3xl:overflow-x-visible">
       <div class="w-full absolute -bottom-1 h-px bg-white/10"></div>
       {#each Array(24) as _, i}
         <div
           aria-hidden="true"
-          class="w-full rounded-[1px] relative bg-white/5 {i % 2
+          class="w-full min-w-[44.5px] rounded-[1px] relative bg-white/5 {i % 2
             ? 'h-10'
             : i % 3
               ? 'h-7'
@@ -195,7 +195,7 @@
 
     <div
       class="relative w-full z-10 flex gap-0.5 justify-start items-end overflow-x-auto overflow-y-hidden pb-8 pt-4 3xl:overflow-x-visible 3xl:overflow-y-visible 3xl:py-0">
-      <div class="w-full absolute -bottom-1 h-px bg-white/10"></div>
+      <div class="w-full absolute bottom-7 3xl:-bottom-1 h-px bg-white/10"></div>
 
       {#each date ? summaryWithDate?.apdex_series : apdex?.apdex_series as detail, i}
         {@const length = date ? summaryWithDate?.apdex_series.length : apdex?.apdex_series.length}
