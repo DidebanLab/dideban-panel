@@ -44,11 +44,11 @@
   });
 </script>
 
-{#if !loading}
+{#if loading}
   <div
-    class="w-full h-89.75 flex flex-col sm:p-4 sm:gap-4 md:pt-4 2xl:p-6 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
+    class="w-full h-77.25 sm:h-87.75 2xl:h-88.75 flex flex-col sm:p-6 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
     <div class="w-full flex justify-between items-start">
-      <div class="w-full flex flex-col justify-start items-start">
+      <div class="w-fit flex flex-col justify-start items-start">
         <span class="text-lg md:text-xl text-black dark:text-white"> Latency</span>
         <div class="text-xs text-white/70 flex gap-1.5">
           <span class="text-white/40 text-nowrap">Total Checks :</span>
@@ -56,7 +56,7 @@
         </div>
       </div>
 
-      <div class="rounded-full bg-white/5 w-[238.5px] h-9 animate-pulse"></div>
+      <div class="rounded-full bg-white/5 w-43.75 h-7.5 sm:w-[208.5px] sm:h-9.5 animate-pulse"></div>
     </div>
     <div
       class="h-20 w-full border-t-2 border-t-white/5 mt-auto bg-linear-to-b from-white/5 animate-pulse">
@@ -64,10 +64,7 @@
   </div>
 {:else}
   <div
-    class="w-full flex flex-col sm:p-4 sm:gap-4 md:pt-4 2xl:p-6 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5 {data
-      ?.latency_series?.length > 0
-      ? 'md:pb-0 2xl:pb-1'
-      : 'h-35'}">
+    class="w-full flex flex-col sm:gap-4 sm:pb-0 lg:pb-0 sm:pt-6 sm:px-6 3xl:p-6 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5 2xl:h-88.75">
     <div class="w-full flex justify-between items-start">
       <div class="w-full flex flex-col justify-start items-start">
         <span class="text-lg md:text-xl text-black dark:text-white"> Latency</span>

@@ -132,7 +132,7 @@
     class="w-full flex flex-col justify-start items-start gap-6 lg:border border-[#0D0D0D]/5 dark:border-white/5 lg:px-6 pt-1 pb-6 lg:py-6 lg:rounded-xl">
     <div
       class="w-full flex flex-col gap-4 lg:gap-6 lg:flex-row justify-between items-center lg:items-start relative">
-      {#if !loading.agent}
+      {#if loading.agent}
         <div class="w-full flex justify-between items-start">
           <div class="flex flex-col justify-center items-start gap-2">
             <span class="bg-white/5 h-6 w-30 rounded-md animate-pulse"></span>

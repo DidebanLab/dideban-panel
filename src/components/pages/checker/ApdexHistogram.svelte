@@ -56,7 +56,7 @@
   <div class="relative w-full z-10 flex gap-0.5 justify-start items-end mt-4 3xl:mt-auto">
     <div class="absolute -bottom-1 w-full h-px bg-white/15"></div>
 
-    {#if !loading}
+    {#if loading}
       {#each [{ range_start: 0, range_end: 400, count: 30 }, { range_start: 400, range_end: 1600, count: 50 }, { range_start: 1600, range_end: 4800, count: 40 }, { range_start: 4800, range_end: 8000, count: 20 }, { range_start: 8000, range_end: -1, count: 20 }] as detail, i}
         <div
           style="height: {detail?.count}px;"

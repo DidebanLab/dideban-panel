@@ -3,7 +3,7 @@
 </script>
 
 {#if !date}
-  {#if !loading}
+  {#if loading}
     <div
       class="mx-auto sticky top-6 z-2 w-full sm:w-[339.5px] h-9.5 rounded-lg bg-white/5 animate-pulse">
     </div>

@@ -10,7 +10,7 @@
   let { summary, date, id, value: toDay = $bindable(), type, loading } = $props();
 </script>
 
-{#if !loading}
+{#if loading}
   <div
     class="w-full grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6 gap-6 md:gap-8 sm:border border-[#0D0D0D]/5 dark:border-white/5 sm:p-6 rounded-xl mt-9 sm:mt-0">
     {#each Array(12) as _, i}

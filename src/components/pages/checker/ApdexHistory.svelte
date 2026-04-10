@@ -41,7 +41,7 @@
   });
 </script>
 
-{#if !loading}
+{#if loading}
   <div
     class="relative w-full h-52 flex flex-col hover:z-30 sm:p-6 3xl:pb-13 gap-4 sm:gap-8 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
     <div class="flex justify-between items-start">

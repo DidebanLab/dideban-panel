@@ -24,7 +24,7 @@
   class="gap-3 3xl:h-48.5 sm:gap-6 2xl:gap-8 hover:z-30 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5 relative w-full flex flex-col md:pt-4 sm:p-6 3xl:pb-13 {date
     ? '3xl:gap-12'
     : ''}">
-  {#if !loading}
+  {#if loading}
     <div class="flex justify-between items-start">
       <div class="flex flex-col justify-start items-start w-full">
         <span class="text-lg text-black dark:text-white">Collect Duration</span>

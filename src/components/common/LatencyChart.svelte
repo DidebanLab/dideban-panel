@@ -127,7 +127,7 @@
 
 <div
   bind:this={chartEl}
-  class="w-full scale-[106.5%] scale-y-128 sm:scale-y-128 md:scale-y-110 sm:scale-x-105 md:scale-x-103 lg:scale-x-102 3xl:scale-101 {$theme ===
+  class="w-full mt-auto scale-[106.5%] scale-y-128 sm:scale-y-100 sm:scale-x-105 md:scale-x-103 lg:scale-x-102 3xl:scale-101 {$theme ===
   'dark'
     ? 'theme-dark'
     : 'theme-light'}">
