@@ -61,7 +61,7 @@
 </script>
 
 <div class="flex flex-col-reverse xl:grid xl:grid-cols-12 gap-6 w-full">
-  {#if !(date ? summaryWithDateLoading : loading.chart)}
+  {#if (date ? summaryWithDateLoading : loading.chart)}
     <div
       class="w-full h-71.25 md:h-122.25 col-span-8 3xl:col-span-9 flex flex-col md:pb-0 sm:gap-4 md:pt-4 sm:p-6 sm:pb-1 sm:rounded-[14px] sm:dark:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
       <div class="w-full flex justify-between items-start">
