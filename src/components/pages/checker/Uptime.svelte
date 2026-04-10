@@ -34,8 +34,8 @@
           params: { short: true, detail: true, page_size: REQUIRED_HISTORY_COUNT },
         })
         .then(res => {
-          // lastChecked = res.data?.last_checked;
-          // history = { ...res.data, data: res.data?.data?.reverse() };
+          lastChecked = res.data?.last_checked;
+          history = { ...res.data, data: res.data?.data?.reverse() };
         })
         .finally(() => {
           historyLoading = false;

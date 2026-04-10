@@ -17,7 +17,7 @@
         onSuccess: d => {
           loading = false;
 
-          // apdex = d;
+          apdex = d;
         },
         onError: () => {
           loading = false;

@@ -17,10 +17,10 @@
         onSuccess: d => {
           loading = false;
 
-          // histogram = {
-          //   ...d,
-          //   max_count: Math.max(d.error_count, ...d.histogram.map(i => i.count), 0),
-          // };
+          histogram = {
+            ...d,
+            max_count: Math.max(d.error_count, ...d.histogram.map(i => i.count), 0),
+          };
         },
         onError: () => {
           loading = false;

@@ -38,10 +38,10 @@
     http
       .get(endpoints.checkSummaryYearly(id))
       .then(res => {
-        // const current = res.data.data.find(i => Object.values(i.history).includes(-1));
-        // const day = Object.keys(current.history).find(key => current.history[key] === -1);
-        // toDay = `${current.year}-${current.month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
-        // summary = res.data?.data;
+        const current = res.data.data.find(i => Object.values(i.history).includes(-1));
+        const day = Object.keys(current.history).find(key => current.history[key] === -1);
+        toDay = `${current.year}-${current.month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+        summary = res.data?.data;
       })
       .finally(() => {
         loading.summaryYearly = false;
@@ -88,8 +88,8 @@
     http
       .get(endpoints.singleCheck(id))
       .then(res => {
-        // check = res.data?.data;
-        // enabled = res.data?.data.enabled;
+        check = res.data?.data;
+        enabled = res.data?.data.enabled;
       })
       .finally(() => {
         loading.check = false;
@@ -134,7 +134,7 @@
   <div
     class="w-full flex flex-col justify-start items-start gap-6 lg:border border-[#0D0D0D]/5 dark:border-white/5 lg:px-6 pt-1 pb-6 lg:py-6 lg:rounded-xl">
     <div
-      class="w-full h-13 flex flex-col gap-4 lg:gap-6 lg:flex-row justify-between items-center lg:items-start">
+      class="w-full  relative flex flex-col gap-4 lg:gap-6 lg:flex-row justify-between items-center lg:items-start">
       {#if loading.check}
         <div class="w-full flex justify-between items-start">
           <div class="flex flex-col justify-center items-start gap-2">
@@ -317,7 +317,7 @@
           loading={loading.summaryYearly} />
       {:else}
         <span
-          class="w-full relative overflow-hidden rounded-[14px] text-red-500/50 animate-pulse border border-[#F87171]/15 h-13 roud flex justify-center items-center text-xl">
+          class="w-full relative overflow-hidden rounded-[14px] text-red-500/50 animate-pulse border border-[#F87171]/15 h-26.5 lg:h-13 roud flex justify-center items-center text-xl">
           <div
             class="absolute top-1/2 start-1/2 -translate-1/2 h-0 rounded-full w-1/2"
             style="box-shadow: 0 0 500px 100px rgb(255,100,103,0.1)">

@@ -21,7 +21,7 @@
       },
       onSuccess: d => {
         loading = false;
-        // data = d;
+        data = d;
       },
       onError: () => {
         loading = false;
