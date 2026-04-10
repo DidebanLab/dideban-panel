@@ -46,14 +46,14 @@
 </script>
 
 <div
-  class="relative 3xl:h-64.5 w-full flex flex-col pt-8 sm:p-6 sm:pt-6 sm:pb-13 gap-4 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
+  class="relative h-58 sm:h-64.5 w-full flex flex-col pt-8 sm:p-6 sm:pt-6 sm:pb-13 gap-4 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
   <div class="flex justify-between w-full items-start">
     <div class="flex flex-col">
       <span class="text-black dark:text-white text-lg sm:text-xl">Apdex Histogram</span><span
         class="text-sm text-[#99a1af]">Application health reflected in Apdex levels</span>
     </div>
   </div>
-  <div class="relative w-full z-10 flex gap-0.5 justify-start items-end mt-4 3xl:mt-auto">
+  <div class="relative w-full mt-auto z-10 flex gap-0.5 justify-start items-end">
     <div class="absolute -bottom-1 w-full h-px bg-white/15"></div>
 
     {#if loading}
