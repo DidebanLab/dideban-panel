@@ -326,7 +326,10 @@
       summaryWithDateLoading={loading.summaryWithDate} />
 
     {#if !date}
-      <TimeRangeSelector bind:value={hours} interval={check?.interval_seconds} />
+      <TimeRangeSelector
+        bind:value={hours}
+        interval={check?.interval_seconds}
+        loading={loading.check} />
       <Latency {hours} {id} name={check?.name} />
     {/if}
 
