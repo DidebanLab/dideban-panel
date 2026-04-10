@@ -51,9 +51,15 @@
 
       <div
         class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 lg:grid-rows-2 xl:grid-cols-4 xl:grid-rows-1 h-auto gap-3 w-full flex-1">
-        <div class="bg-white/5 h-23.5 w-[113.5px] rounded-lg animate-pulse"></div>
-        <div class="bg-white/5 h-23.5 w-[113.5px] rounded-lg animate-pulse"></div>
-        <div class="bg-white/5 h-23.5 w-[113.5px] rounded-lg animate-pulse"></div>
+        <div
+          class="bg-white/5 3xl:h-23.5 h-27 sm:h-26.5 lg:h-27 xl:h-23.5 xl:w-[128.25px] 3xl:w-[113.5px] rounded-lg animate-pulse">
+        </div>
+        <div
+          class="bg-white/5 3xl:h-23.5 h-27 sm:h-26.5 lg:h-27 xl:h-23.5 xl:w-[128.25px] 3xl:w-[113.5px] rounded-lg animate-pulse">
+        </div>
+        <div
+          class="bg-white/5 3xl:h-23.5 h-27 sm:h-26.5 lg:h-27 xl:h-23.5 xl:w-[128.25px] 3xl:w-[113.5px] rounded-lg animate-pulse">
+        </div>
       </div>
     </div>
     <div
@@ -69,10 +75,18 @@
 
       <div
         class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 lg:grid-rows-2 xl:grid-cols-4 xl:grid-rows-1 h-auto gap-3 w-full flex-1">
-        <div class="bg-white/5 h-23.5 w-29.25 rounded-lg animate-pulse"></div>
-        <div class="bg-white/5 h-23.5 w-29.25 rounded-lg animate-pulse"></div>
-        <div class="bg-white/5 h-23.5 w-29.25 rounded-lg animate-pulse"></div>
-        <div class="bg-white/5 h-23.5 w-29.25 rounded-lg animate-pulse"></div>
+        <div
+          class="bg-white/5 3xl:h-23.5 h-27 sm:h-26.5 lg:h-27 xl:h-23.5 xl:w-[128.25px] 3xl:w-[113.5px] rounded-lg animate-pulse">
+        </div>
+        <div
+          class="bg-white/5 3xl:h-23.5 h-27 sm:h-26.5 lg:h-27 xl:h-23.5 xl:w-[128.25px] 3xl:w-[113.5px] rounded-lg animate-pulse">
+        </div>
+        <div
+          class="bg-white/5 3xl:h-23.5 h-27 sm:h-26.5 lg:h-27 xl:h-23.5 xl:w-[128.25px] 3xl:w-[113.5px] rounded-lg animate-pulse">
+        </div>
+        <div
+          class="bg-white/5 3xl:h-23.5 lg:h-[106px] xl:h-23.5 xl:w-[128.25px] 3xl:w-[113.5px] rounded-lg animate-pulse">
+        </div>
       </div>
     </div>
   </div>

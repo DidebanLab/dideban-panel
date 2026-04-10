@@ -46,7 +46,7 @@
 </script>
 
 <div
-  class="relative 3xl:h-[258px] w-full flex flex-col pt-8 sm:p-6 sm:pt-6 sm:pb-13 gap-4 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
+  class="relative 3xl:h-64.5 w-full flex flex-col pt-8 sm:p-6 sm:pt-6 sm:pb-13 gap-4 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
   <div class="flex justify-between w-full items-start">
     <div class="flex flex-col">
       <span class="text-black dark:text-white text-lg sm:text-xl">Apdex Histogram</span><span
@@ -82,7 +82,8 @@
         </div>
       {/each}
 
-      <div class="w-[12%] h-4 lg:w-[10%] xl:w-[5%] rounded-t-xs cursor-pointer relative bg-white/5 animate-pulse">
+      <div
+        class="w-[12%] h-4 lg:w-[10%] xl:w-[5%] rounded-t-xs cursor-pointer relative bg-white/5 animate-pulse">
         <div class="absolute start-1/2 -translate-x-1/2 -top-6 text-xs md:text-sm text-white"></div>
         <div class="absolute -bottom-3 text-xs -start-px bg-white/15 h-2 w-px"></div>
         <div class="absolute -bottom-3 text-xs end-0 bg-white/15 h-2 w-px"></div>
