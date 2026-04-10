@@ -133,22 +133,24 @@
     <div
       class="w-full flex flex-col gap-4 lg:gap-6 lg:flex-row justify-between items-center lg:items-start relative">
       {#if loading.agent}
-        <div class="w-full flex justify-between items-start">
+          <div class="w-full flex justify-between items-start">
           <div class="flex flex-col justify-center items-start gap-2">
             <span class="bg-white/5 h-6 w-30 rounded-md animate-pulse"></span>
-            <span class="bg-white/5 h-5 w-16 rounded-md animate-pulse"></span>
+            <span class="bg-white/5 h-5 w-20 rounded-md animate-pulse"></span>
           </div>
 
           <div
             class="flex flex-col-reverse sm:flex-row justify-start items-end sm:justify-center sm:items-center gap-1.5 sm:gap-3">
             <div class="flex justify-center items-center gap-1.75">
-              <span class="size-6 rounded-md bg-white/5 animate-pulse"></span>
-              <span class="size-6 rounded-md bg-white/5 animate-pulse"></span>
+              <span class="size-4.5 sm:size-6 rounded-md bg-white/5 animate-pulse"></span>
+              <span class="size-4.5 sm:size-6 rounded-md bg-white/5 animate-pulse"></span>
             </div>
 
             <div class="h-9 w-px bg-white/10 hidden sm:block animate-pulse"></div>
 
-            <div class="w-30 rounded-xl bg-white/5 h-10.5 animate-pulse"></div>
+            <div
+              class="w-19.75 sm:w-30 rounded-xl bg-white/5 mt-1 h-[16.5px] sm:h-10.5 animate-pulse">
+            </div>
           </div>
         </div>
 
