@@ -15,7 +15,7 @@
     class="w-full grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6 gap-6 md:gap-8 sm:border border-[#0D0D0D]/5 dark:border-white/5 sm:p-6 rounded-xl mt-9 sm:mt-0">
     {#each Array(12) as _, i}
       <div class="flex flex-col gap-4">
-        <div class="flex justify-between items-center w-full border-b border-b-white/15 pb-1">
+        <div class="flex justify-between items-center w-full border-b border-b-white/10 pb-1">
           <span class="bg-white/5 w-10 h-4 animate-pulse rounded-md"></span>
           <span class="bg-white/5 w-12 h-4 animate-pulse rounded-md"></span>
         </div>
