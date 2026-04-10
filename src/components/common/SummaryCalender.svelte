@@ -7,10 +7,30 @@
   import { endpoints } from '../../endpoints.svelte';
   import getDate from '../../utils/getDate';
 
-  let { summary, date, id, value: toDay = $bindable(), type } = $props();
+  let { summary, date, id, value: toDay = $bindable(), type, loading } = $props();
 </script>
 
-{#if summary}
+{#if !loading}
+  <div
+    class="w-full grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6 gap-6 md:gap-8 sm:border border-[#0D0D0D]/5 dark:border-white/5 sm:p-6 rounded-xl mt-9 sm:mt-0">
+    {#each Array(12) as _, i}
+      <div class="flex flex-col gap-4">
+        <div class="flex justify-between items-center w-full border-b border-b-white/15 pb-1">
+          <span class="bg-white/5 w-10 h-4 animate-pulse rounded-md"></span>
+          <span class="bg-white/5 w-12 h-4 animate-pulse rounded-md"></span>
+        </div>
+
+        <div
+          class="grid grid-cols-7 grid-rows-5 gap-1.75 lg:gap-3 xl:gap-2.25 2xl:gap-2 3xl:gap-4 w-full">
+          <div style="grid-column: span {i % 2 === 0 ? 2 : 4};"></div>
+          {#each Array(i % 2 === 0 ? 30 : 29), i}
+            <div class="aspect-square w-full bg-white/5 animate-pulse"></div>
+          {/each}
+        </div>
+      </div>
+    {/each}
+  </div>
+{:else if summary}
   <div
     class="w-full grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6 gap-6 md:gap-8 sm:border border-[#0D0D0D]/5 dark:border-white/5 sm:p-6 rounded-xl mt-9 sm:mt-0">
     {#each summary as item, i}

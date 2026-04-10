@@ -347,8 +347,12 @@
       {date}
       summaryWithDateLoading={loading.summaryWithDate} />
 
-    {#if summary}
-      <SummaryCalender bind:value={toDay} type="check" {summary} {id} {date} />
-    {/if}
+    <SummaryCalender
+      bind:value={toDay}
+      type="check"
+      {summary}
+      {id}
+      {date}
+      loading={loading.summaryYearly} />
   </div>
 </section>
