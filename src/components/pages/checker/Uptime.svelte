@@ -126,7 +126,7 @@
       {/if}
     </div>
   </div>
-{:else if history}
+{:else if date ? summaryWithDate : history}
   <div
     class="w-full relative flex flex-col gap-4 border-[#0D0D0D]/5 dark:border-white/5 {date
       ? 'sm:h-43 sm:rounded-[14px] sm:dark:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border sm:px-6 sm:py-6'

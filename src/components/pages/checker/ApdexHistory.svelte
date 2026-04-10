@@ -17,7 +17,7 @@
         onSuccess: d => {
           loading = false;
 
-          apdex = d;
+          // apdex = d;
         },
         onError: () => {
           loading = false;
@@ -82,7 +82,8 @@
       <div class="bg-white/5 w-[163.5px] h-8 animate-pulse rounded-full"></div>
     </div>
 
-    <div class="relative w-full z-10 flex gap-0.5 justify-start items-end mt-auto animate-pulse overflow-x-clip 3xl:overflow-x-visible">
+    <div
+      class="relative w-full z-10 flex gap-0.5 justify-start items-end mt-auto animate-pulse overflow-x-clip 3xl:overflow-x-visible">
       <div class="w-full absolute -bottom-1 h-px bg-white/10"></div>
       {#each Array(24) as _, i}
         <div
@@ -100,7 +101,7 @@
       {/each}
     </div>
   </div>
-{:else}
+{:else if date ? summaryWithDate : apdex}
   <div
     class="relative w-full flex flex-col hover:z-30 sm:p-6 3xl:pb-13 gap-4 sm:gap-8 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
     <div class="flex justify-between items-start">
@@ -330,6 +331,44 @@
           </div>
         {/each}
       {/if}
+    </div>
+  </div>
+{:else}
+  <div
+    class="relative animate-pulse w-full h-40.5 sm:h-57 3xl:h-52 flex justify-center items-center rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] border border-[#F87171]/15 overflow-hidden">
+    <div
+      class="absolute top-1/2 start-1/2 -translate-1/2 h-0 rounded-full w-1/2"
+      style="box-shadow: 0 0 500px 100px rgb(255,100,103,0.1)">
+      <div class="w-full h-full bg-white/5"></div>
+    </div>
+
+    <div class="flex justify-center items-center gap-1">
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 20 20"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M10.0003 18.3332C14.6027 18.3332 18.3337 14.6022 18.3337 9.99984C18.3337 5.39746 14.6027 1.6665 10.0003 1.6665C5.39795 1.6665 1.66699 5.39746 1.66699 9.99984C1.66699 14.6022 5.39795 18.3332 10.0003 18.3332Z"
+          stroke="#B4242B"
+          stroke-width="1.66667"
+          stroke-linecap="round"
+          stroke-linejoin="round" />
+        <path
+          d="M10 6.6665V9.99984"
+          stroke="#B4242B"
+          stroke-width="1.66667"
+          stroke-linecap="round"
+          stroke-linejoin="round" />
+        <path
+          d="M10 13.3335H10.0083"
+          stroke="#B4242B"
+          stroke-width="1.66667"
+          stroke-linecap="round"
+          stroke-linejoin="round" />
+      </svg>
+      <span class="text-xl text-red-500/70 mt-0.5">Something Is Wrong</span>
     </div>
   </div>
 {/if}
