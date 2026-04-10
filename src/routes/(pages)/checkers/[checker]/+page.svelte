@@ -32,7 +32,6 @@
   let summaryWithDate = $state(null);
   let isDeleted = $state(false);
   let loading = $state({ summaryWithDate: false, check: true, summaryYearly: true });
-  let errorMessage = $state(null);
 
   onMount(() => {
     loading.summaryYearly = true;
@@ -92,13 +91,6 @@
       .then(res => {
         check = res.data?.data;
         enabled = res.data?.data.enabled;
-      })
-      .catch(error => {
-        if (error.status === 404) {
-          errorMessage = `Check With Id ${id} Not Found.`;
-        } else {
-          errorMessage = `SomeThing Is Wrong`;
-        }
       })
       .finally(() => {
         loading.check = false;
@@ -325,8 +317,42 @@
                 {date}
                 loading={loading.summaryYearly} />
             {:else}
-              <span class="text-red-500/70 text-lg sm:text-xl capitalize text-nowrap animate-pulse">
-                {errorMessage}
+              <span
+                class="w-full relative overflow-hidden rounded-[14px] text-red-500/50 animate-pulse border border-[#F87171]/15 3xl:h-13 roud flex justify-center items-center text-xl">
+                <div
+                  class="absolute top-1/2 start-1/2 -translate-1/2 h-0 rounded-full w-1/2"
+                  style="box-shadow: 0 0 500px 100px rgb(255,100,103,0.1)">
+                  <div class="w-full h-full bg-white/5"></div>
+                </div>
+
+                <div class="flex justify-center items-center gap-1">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path
+                      d="M10.0003 18.3332C14.6027 18.3332 18.3337 14.6022 18.3337 9.99984C18.3337 5.39746 14.6027 1.6665 10.0003 1.6665C5.39795 1.6665 1.66699 5.39746 1.66699 9.99984C1.66699 14.6022 5.39795 18.3332 10.0003 18.3332Z"
+                      stroke="#B4242B"
+                      stroke-width="1.66667"
+                      stroke-linecap="round"
+                      stroke-linejoin="round" />
+                    <path
+                      d="M10 6.6665V9.99984"
+                      stroke="#B4242B"
+                      stroke-width="1.66667"
+                      stroke-linecap="round"
+                      stroke-linejoin="round" />
+                    <path
+                      d="M10 13.3335H10.0083"
+                      stroke="#B4242B"
+                      stroke-width="1.66667"
+                      stroke-linecap="round"
+                      stroke-linejoin="round" />
+                  </svg>
+                  <span class="text-xl text-red-500/70 mt-0.5">Something Is Wrong</span>
+                </div>
               </span>
             {/if}
           </div>
