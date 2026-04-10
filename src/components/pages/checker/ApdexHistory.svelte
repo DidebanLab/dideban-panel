@@ -3,7 +3,7 @@
   import { endpoints } from '../../../endpoints.svelte';
   import { http } from '../../../services/http.svelte';
   import longPolling from '../../../services/longPolling';
-  let { id, hours, summaryWithDate, date } = $props();
+  let { id, hours, summaryWithDate, date, summaryWithDateLoading } = $props();
   let apdex = $state(null);
   let currentPoller = $state(null);
   let loading = $derived(date ? summaryWithDateLoading : true);
@@ -15,9 +15,8 @@
         params: { hours },
         interval: 54000000, //15min
         onSuccess: d => {
-          setTimeout(() => {
-            loading = false;
-          }, 2000);
+          loading = false;
+
           apdex = d;
         },
         onError: () => {
