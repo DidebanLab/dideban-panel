@@ -86,7 +86,7 @@
       class="col-span-4 3xl:col-span-3 justify-start items-start sm:border border-[#0D0D0D]/5 dark:border-white/5 py-4 sm:py-6 sm:px-6 sm:rounded-xl grid grid-cols-1 gap-4 sm:dark:bg-[#0D0D0D] sm:bg-[#FFFFFF]">
       <div class="flex flex-col justify-start items-start gap-4">
         <div
-          class="flex flex-col md:flex-row xl:flex-col justify-start items-start gap-4 md:gap-20 xl:gap-4 w-full">
+          class="flex flex-col md:flex-row xl:flex-col justify-center items-center gap-4 md:gap-20 xl:gap-4 w-full">
           <div class="h-full w-30 lg:w-41 xl:w-fit flex justify-start items-start gap-2">
             <span class="h-full w-0.5 bg-[#a855f7] rounded-full"></span>
             <span class="text-lg text-black dark:text-white">CPU</span>
@@ -95,26 +95,26 @@
           <div
             class="h-full w-full grid grid-cols-2 grid-rows-2 gap-y-2 gap-x-4 md:gap-y-0 md:gap-x-0 md:flex justify-between items-center xl:grid xl:grid-cols-2 xl:grid-rows-2 xl:gap-y-2 xl:gap-x-4">
             <div
-              class="w-full justify-between md:w-16.25 xl:w-full flex xl:justify-between items-start gap-1">
-              <span class="text-white/40 text-xs">Usage: </span>
+              class="w-full justify-between md:w-16.25 xl:w-full flex xl:justify-between items-start gap-1 text-nowrap">
+              <span class="text-white/40 text-xs text-nowrap">Usage: </span>
 
               <span class="bg-white/5 w-14 rounded-md h-4 animate-pulse"></span>
             </div>
             <div
-              class="w-full justify-between md:w-[99.5px] xl:w-full flex xl:justify-between items-start gap-1">
-              <span class="text-white/40 text-xs">Avg (1m): </span>
+              class="w-full justify-between md:w-[99.5px] xl:w-full flex xl:justify-between items-start gap-1 text-nowrap">
+              <span class="text-white/40 text-xs text-nowrap">Avg (1m): </span>
 
               <span class="bg-white/5 w-14 rounded-md h-4 animate-pulse"></span>
             </div>
             <div
-              class="w-full justify-between md:w-[99.5px] xl:w-full flex xl:justify-between items-start gap-1">
-              <span class="text-white/40 text-xs">Avg (5m): </span>
+              class="w-full justify-between md:w-[99.5px] xl:w-full flex xl:justify-between items-start gap-1 text-nowrap">
+              <span class="text-white/40 text-xs text-nowrap">Avg (5m): </span>
 
               <span class="bg-white/5 w-14 rounded-md h-4 animate-pulse"></span>
             </div>
             <div
-              class="w-full justify-between md:w-[99.5px] xl:w-full flex xl:justify-between items-start gap-1">
-              <span class="text-white/40 text-xs">Avg (15m) : </span>
+              class="w-full justify-between md:w-[99.5px] xl:w-full flex xl:justify-between items-start gap-1 text-nowrap">
+              <span class="text-white/40 text-xs text-nowrap">Avg (15m) : </span>
 
               <span class="bg-white/5 w-14 rounded-md h-4 animate-pulse"></span>
             </div>
@@ -131,7 +131,7 @@
 
       <div class="flex flex-col justify-start items-start gap-4">
         <div
-          class="flex flex-col md:flex-row xl:flex-col justify-start items-start gap-4 md:gap-20 xl:gap-4 w-full">
+          class="flex flex-col md:flex-row xl:flex-col justify-center items-center gap-4 md:gap-20 xl:gap-4 w-full">
           <div class="h-full w-30 lg:w-41 xl:w-fit flex justify-start items-start gap-2">
             <span class="h-full w-0.5 bg-[#3b82f6] rounded-full"></span>
             <span class="text-lg text-black dark:text-white">Memory</span>
@@ -140,26 +140,26 @@
           <div
             class="h-full w-full grid grid-cols-2 grid-rows-2 gap-y-2 gap-x-4 md:gap-y-0 md:gap-x-0 md:flex justify-between items-center xl:grid xl:grid-cols-2 xl:grid-rows-2 xl:gap-y-2 xl:gap-x-4">
             <div
-              class="w-full justify-between md:w-16.25 xl:w-full flex xl:justify-between items-start gap-1">
-              <span class="text-white/40 text-xs">Usage: </span>
+              class="w-full justify-between md:w-16.25 xl:w-full flex xl:justify-between items-start gap-1 text-nowrap">
+              <span class="text-white/40 text-xs text-nowrap">Usage: </span>
 
               <span class="bg-white/5 w-14 rounded-md h-4 animate-pulse"></span>
             </div>
             <div
-              class="w-full justify-between md:w-[99.5px] xl:w-full flex xl:justify-between items-start gap-1">
-              <span class="text-white/40 text-xs">Total: </span>
+              class="w-full justify-between md:w-[99.5px] xl:w-full flex xl:justify-between items-start gap-1 text-nowrap">
+              <span class="text-white/40 text-xs text-nowrap">Total: </span>
 
               <span class="bg-white/5 w-14 rounded-md h-4 animate-pulse"></span>
             </div>
             <div
-              class="w-full justify-between md:w-[99.5px] xl:w-full flex xl:justify-between items-start gap-1">
-              <span class="text-white/40 text-xs">Used: </span>
+              class="w-full justify-between md:w-[99.5px] xl:w-full flex xl:justify-between items-start gap-1 text-nowrap">
+              <span class="text-white/40 text-xs text-nowrap">Used: </span>
 
               <span class="bg-white/5 w-14 rounded-md h-4 animate-pulse"></span>
             </div>
             <div
-              class="w-full justify-between md:w-[99.5px] xl:w-full flex xl:justify-between items-start gap-1">
-              <span class="text-white/40 text-xs">Available: </span>
+              class="w-full justify-between md:w-[99.5px] xl:w-full flex xl:justify-between items-start gap-1 text-nowrap">
+              <span class="text-white/40 text-xs text-nowrap">Available: </span>
 
               <span class="bg-white/5 w-14 rounded-md h-4 animate-pulse"></span>
             </div>
@@ -176,7 +176,7 @@
 
       <div class="flex flex-col justify-start items-start gap-4">
         <div
-          class="flex flex-col md:flex-row xl:flex-col justify-start items-start gap-4 md:gap-20 xl:gap-4 w-full">
+          class="flex flex-col md:flex-row xl:flex-col justify-center items-center gap-4 md:gap-20 xl:gap-4 w-full">
           <div class="h-full w-30 lg:w-41 xl:w-fit flex justify-start items-start gap-2">
             <span class="h-full w-0.5 bg-[#10b981] rounded-full"></span>
             <span class="text-lg text-black dark:text-white">Disk</span>
@@ -185,26 +185,26 @@
           <div
             class="h-full w-full grid grid-cols-2 grid-rows-2 gap-y-2 gap-x-4 md:gap-y-0 md:gap-x-0 md:flex justify-between items-center xl:grid xl:grid-cols-2 xl:grid-rows-2 xl:gap-y-2 xl:gap-x-4">
             <div
-              class="w-full justify-between md:w-16.25 xl:w-full flex xl:justify-between items-start gap-1">
-              <span class="text-white/40 text-xs">Usage: </span>
+              class="w-full justify-between md:w-16.25 xl:w-full flex xl:justify-between items-start gap-1 text-nowrap">
+              <span class="text-white/40 text-xs text-nowrap">Usage: </span>
 
               <span class="bg-white/5 w-14 rounded-md h-4 animate-pulse"></span>
             </div>
             <div
-              class="w-full justify-between md:w-[99.5px] xl:w-full flex xl:justify-between items-start gap-1">
-              <span class="text-white/40 text-xs">Total: </span>
+              class="w-full justify-between md:w-[99.5px] xl:w-full flex xl:justify-between items-start gap-1 text-nowrap">
+              <span class="text-white/40 text-xs text-nowrap">Total: </span>
 
               <span class="bg-white/5 w-14 rounded-md h-4 animate-pulse"></span>
             </div>
             <div
-              class="w-full justify-between md:w-[99.5px] xl:w-full flex xl:justify-between items-start gap-1">
-              <span class="text-white/40 text-xs">Used: </span>
+              class="w-full justify-between md:w-[99.5px] xl:w-full flex xl:justify-between items-start gap-1 text-nowrap">
+              <span class="text-white/40 text-xs text-nowrap">Used: </span>
 
               <span class="bg-white/5 w-14 rounded-md h-4 animate-pulse"></span>
             </div>
             <div
-              class="w-full justify-between md:w-[99.5px] xl:w-full flex xl:justify-between items-start gap-1">
-              <span class="text-white/40 text-xs">Available: </span>
+              class="w-full justify-between md:w-[99.5px] xl:w-full flex xl:justify-between items-start gap-1 text-nowrap">
+              <span class="text-white/40 text-xs text-nowrap">Available: </span>
               <span class="bg-white/5 w-14 rounded-md h-4 animate-pulse"></span>
             </div>
           </div>
@@ -345,7 +345,7 @@
       {#if date}
         <div class="flex flex-col justify-start items-start gap-4">
           <div
-            class="flex flex-col md:flex-row xl:flex-col justify-start items-start gap-4 md:gap-20 xl:gap-4 w-full">
+            class="flex flex-col md:flex-row xl:flex-col justify-center items-center gap-4 md:gap-20 xl:gap-4 w-full">
             <div class="h-full w-30 lg:w-41 xl:w-fit flex justify-start items-start gap-2">
               <span class="h-full w-0.5 bg-[#a855f7] rounded-full"></span>
               <span class="text-lg text-black dark:text-white">CPU</span>
@@ -590,7 +590,7 @@
       {:else}
         <div class="flex flex-col justify-start items-start gap-4">
           <div
-            class="flex flex-col md:flex-row xl:flex-col justify-start items-start gap-4 md:gap-20 xl:gap-4 w-full">
+            class="flex flex-col md:flex-row xl:flex-col justify-center items-center gap-4 md:gap-20 xl:gap-4 w-full">
             <div class="h-full w-30 lg:w-41 xl:w-fit flex justify-start items-start gap-2">
               <span class="h-full w-0.5 bg-[#a855f7] rounded-full"></span>
               <span class="text-lg text-black dark:text-white">CPU</span>
@@ -776,7 +776,7 @@
       {#if date}
         <div class="flex flex-col justify-start items-start gap-4">
           <div
-            class="flex flex-col md:flex-row xl:flex-col justify-start items-start gap-4 md:gap-20 xl:gap-4 w-full">
+            class="flex flex-col md:flex-row xl:flex-col justify-center items-center gap-4 md:gap-20 xl:gap-4 w-full">
             <div class="h-full w-30 lg:w-41 xl:w-fit flex justify-start items-start gap-2">
               <span class="h-full w-0.5 bg-[#3b82f6] rounded-full"></span>
               <span class="text-lg text-black dark:text-white">Memory</span>
@@ -974,7 +974,7 @@
       {:else}
         <div class="flex flex-col justify-start items-start gap-4">
           <div
-            class="flex flex-col md:flex-row xl:flex-col justify-start items-start gap-4 md:gap-20 xl:gap-4 w-full">
+            class="flex flex-col md:flex-row xl:flex-col justify-center items-center gap-4 md:gap-20 xl:gap-4 w-full">
             <div class="h-full w-30 lg:w-41 xl:w-fit flex justify-start items-start gap-2">
               <span class="h-full w-0.5 bg-[#3b82f6] rounded-full"></span>
               <span class="text-lg text-black dark:text-white">Memory</span>
@@ -1126,7 +1126,7 @@
       {#if date}
         <div class="flex flex-col justify-start items-start gap-4">
           <div
-            class="flex flex-col md:flex-row xl:flex-col justify-start items-start gap-4 md:gap-20 xl:gap-4 w-full">
+            class="flex flex-col md:flex-row xl:flex-col justify-center items-center gap-4 md:gap-20 xl:gap-4 w-full">
             <div class="h-full w-30 lg:w-41 xl:w-fit flex justify-start items-start gap-2">
               <span class="h-full w-0.5 bg-[#10b981] rounded-full"></span>
               <span class="text-lg text-black dark:text-white">Disk</span>
@@ -1314,7 +1314,7 @@
       {:else}
         <div class="flex flex-col justify-start items-start gap-4">
           <div
-            class="flex flex-col md:flex-row xl:flex-col justify-start items-start gap-4 md:gap-20 xl:gap-4 w-full">
+            class="flex flex-col md:flex-row xl:flex-col justify-center items-center gap-4 md:gap-20 xl:gap-4 w-full">
             <div class="h-full w-30 lg:w-41 xl:w-fit flex justify-start items-start gap-2">
               <span class="h-full w-0.5 bg-[#10b981] rounded-full"></span>
               <span class="text-lg text-black dark:text-white">Disk</span>
