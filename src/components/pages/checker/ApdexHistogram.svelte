@@ -4,7 +4,7 @@
   import { http } from '../../../services/http.svelte';
   import longPolling from '../../../services/longPolling';
   let { id, hours, summaryWithDate, date, summaryWithDateLoading } = $props();
-  let histogram = $state();
+  let histogram = $state(null);
   let currentPoller = $state(null);
   let loading = $derived(date ? summaryWithDateLoading : true);
 
@@ -15,13 +15,12 @@
         params: { hours },
         interval: 54000000, //15min,
         onSuccess: d => {
-          setTimeout(() => {
-            loading = false;
-          }, 3000);
-          histogram = {
-            ...d,
-            max_count: Math.max(d.error_count, ...d.histogram.map(i => i.count), 0),
-          };
+          loading = false;
+
+          // histogram = {
+          //   ...d,
+          //   max_count: Math.max(d.error_count, ...d.histogram.map(i => i.count), 0),
+          // };
         },
         onError: () => {
           loading = false;
@@ -45,18 +44,17 @@
   });
 </script>
 
-<div
-  class="relative h-58 sm:h-64.5 w-full flex flex-col pt-8 sm:p-6 sm:pt-6 sm:pb-13 gap-4 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
-  <div class="flex justify-between w-full items-start">
-    <div class="flex flex-col">
-      <span class="text-black dark:text-white text-lg sm:text-xl">Apdex Histogram</span><span
-        class="text-sm text-[#99a1af]">Application health reflected in Apdex levels</span>
+{#if loading}
+  <div
+    class="relative h-58 sm:h-64.5 w-full flex flex-col pt-8 sm:p-6 sm:pt-6 sm:pb-13 gap-4 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
+    <div class="flex justify-between w-full items-start">
+      <div class="flex flex-col">
+        <span class="text-black dark:text-white text-lg sm:text-xl">Apdex Histogram</span><span
+          class="text-sm text-[#99a1af]">Application health reflected in Apdex levels</span>
+      </div>
     </div>
-  </div>
-  <div class="relative w-full mt-auto z-10 flex gap-0.5 justify-start items-end">
-    <div class="absolute -bottom-1 w-full h-px bg-white/15"></div>
-
-    {#if loading}
+    <div class="relative w-full mt-auto z-10 flex gap-0.5 justify-start items-end">
+      <div class="absolute -bottom-1 w-full h-px bg-white/15"></div>
       {#each [{ range_start: 0, range_end: 400, count: 30 }, { range_start: 400, range_end: 1600, count: 50 }, { range_start: 1600, range_end: 4800, count: 40 }, { range_start: 4800, range_end: 8000, count: 20 }, { range_start: 8000, range_end: -1, count: 20 }] as detail, i}
         <div
           style="height: {detail?.count}px;"
@@ -94,7 +92,19 @@
           Errors
         </div>
       </div>
-    {:else}
+    </div>
+  </div>
+{:else if date ? summaryWithDate : histogram}
+  <div
+    class="relative h-58 sm:h-64.5 w-full flex flex-col pt-8 sm:p-6 sm:pt-6 sm:pb-13 gap-4 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
+    <div class="flex justify-between w-full items-start">
+      <div class="flex flex-col">
+        <span class="text-black dark:text-white text-lg sm:text-xl">Apdex Histogram</span><span
+          class="text-sm text-[#99a1af]">Application health reflected in Apdex levels</span>
+      </div>
+    </div>
+    <div class="relative w-full mt-auto z-10 flex gap-0.5 justify-start items-end">
+      <div class="absolute -bottom-1 w-full h-px bg-white/15"></div>
       {#each (date ? summaryWithDate?.histogram?.buckets : histogram?.histogram) || [{ range_start: 0, range_end: 400, count: 0 }, { range_start: 400, range_end: 1600, count: 0 }, { range_start: 1600, range_end: 4800, count: 0 }, { range_start: 4800, range_end: 8000, count: 0 }, { range_start: 8000, range_end: -1, count: 0 }] as detail, i}
         <div
           style="height: {(detail?.count /
@@ -148,6 +158,44 @@
           Errors
         </div>
       </div>
-    {/if}
+    </div>
   </div>
-</div>
+{:else}
+  <div
+    class="relative h-58 animate-pulse border-[#F87171]/15 sm:h-64.5 w-full flex justify-center items-center overflow-hidden rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] border">
+    <div
+      class="absolute top-1/2 start-1/2 -translate-1/2 h-0 rounded-full w-1/2"
+      style="box-shadow: 0 0 500px 100px rgb(255,100,103,0.1)">
+      <div class="w-full h-full bg-white/5"></div>
+    </div>
+
+    <div class="flex justify-center items-center gap-1">
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 20 20"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M10.0003 18.3332C14.6027 18.3332 18.3337 14.6022 18.3337 9.99984C18.3337 5.39746 14.6027 1.6665 10.0003 1.6665C5.39795 1.6665 1.66699 5.39746 1.66699 9.99984C1.66699 14.6022 5.39795 18.3332 10.0003 18.3332Z"
+          stroke="#B4242B"
+          stroke-width="1.66667"
+          stroke-linecap="round"
+          stroke-linejoin="round" />
+        <path
+          d="M10 6.6665V9.99984"
+          stroke="#B4242B"
+          stroke-width="1.66667"
+          stroke-linecap="round"
+          stroke-linejoin="round" />
+        <path
+          d="M10 13.3335H10.0083"
+          stroke="#B4242B"
+          stroke-width="1.66667"
+          stroke-linecap="round"
+          stroke-linejoin="round" />
+      </svg>
+      <span class="text-xl text-red-500/70 mt-0.5">Something Is Wrong</span>
+    </div>
+  </div>
+{/if}
