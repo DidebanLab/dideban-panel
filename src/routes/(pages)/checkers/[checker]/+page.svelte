@@ -333,9 +333,19 @@
       <Latency {hours} {id} name={check?.name} />
     {/if}
 
-    <ApdexHistory {id} {hours} {summaryWithDate} {date} />
+    <ApdexHistory
+      {id}
+      {hours}
+      {summaryWithDate}
+      {date}
+      summaryWithDateLoading={loading.summaryWithDate} />
 
-    <ApdexHistogram {id} {hours} {summaryWithDate} {date} />
+    <ApdexHistogram
+      {id}
+      {hours}
+      {summaryWithDate}
+      {date}
+      summaryWithDateLoading={loading.summaryWithDate} />
 
     {#if summary}
       <SummaryCalender bind:value={toDay} type="check" {summary} {id} {date} />
