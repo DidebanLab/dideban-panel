@@ -15,7 +15,7 @@
   let isMouseInside = $state(false);
   let chart = $state(null);
   let currentPoller = $state(null);
-  let loading = $state({ chart: true, metrics: true });
+  let loading = $state({ chart: true, metrics: false });
 
   $effect(() => {
     if (!date) {
@@ -44,7 +44,7 @@
 
   $effect(() => {
     if (!date && pointIndexHoverd) {
-      loading.metrics;
+      loading.metrics = true;
       http
         .get(
           endpoints.agentHistoryDetail(
@@ -61,7 +61,7 @@
 </script>
 
 <div class="flex flex-col-reverse xl:grid xl:grid-cols-12 gap-6 w-full">
-  {#if (date ? summaryWithDateLoading : loading.chart)}
+  {#if date ? summaryWithDateLoading : loading.chart}
     <div
       class="w-full h-71.25 md:h-122.25 col-span-8 3xl:col-span-9 flex flex-col md:pb-0 sm:gap-4 md:pt-4 sm:p-6 sm:pb-1 sm:rounded-[14px] sm:dark:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
       <div class="w-full flex justify-between items-start">
@@ -587,6 +587,49 @@
             {/if}
           </div>
         </div>
+      {:else if loading.metrics}
+        <div class="flex flex-col justify-start items-start gap-4">
+          <div
+            class="flex flex-col md:flex-row xl:flex-col justify-center items-center gap-4 md:gap-20 xl:gap-4 w-full">
+            <div class="h-full w-30 lg:w-41 xl:w-fit flex justify-start items-start gap-2">
+              <span class="h-full w-0.5 bg-[#a855f7] rounded-full"></span>
+              <span class="text-lg text-black dark:text-white">CPU</span>
+            </div>
+
+            <div
+              class="h-full w-full grid grid-cols-2 grid-rows-2 gap-y-2 gap-x-4 md:gap-y-0 md:gap-x-0 md:flex justify-between items-center xl:grid xl:grid-cols-2 xl:grid-rows-2 xl:gap-y-2 xl:gap-x-4">
+              <div
+                class="w-full justify-between md:w-16.25 xl:w-full flex xl:justify-between items-start gap-1 text-nowrap">
+                <span class="text-white/40 text-xs text-nowrap">Usage: </span>
+
+                <span class="bg-white/5 w-14 rounded-md h-4 animate-pulse"></span>
+              </div>
+              <div
+                class="w-full justify-between md:w-[99.5px] xl:w-full flex xl:justify-between items-start gap-1 text-nowrap">
+                <span class="text-white/40 text-xs text-nowrap">Avg (1m): </span>
+
+                <span class="bg-white/5 w-14 rounded-md h-4 animate-pulse"></span>
+              </div>
+              <div
+                class="w-full justify-between md:w-[99.5px] xl:w-full flex xl:justify-between items-start gap-1 text-nowrap">
+                <span class="text-white/40 text-xs text-nowrap">Avg (5m): </span>
+
+                <span class="bg-white/5 w-14 rounded-md h-4 animate-pulse"></span>
+              </div>
+              <div
+                class="w-full justify-between md:w-[99.5px] xl:w-full flex xl:justify-between items-start gap-1 text-nowrap">
+                <span class="text-white/40 text-xs text-nowrap">Avg (15m) : </span>
+
+                <span class="bg-white/5 w-14 rounded-md h-4 animate-pulse"></span>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="w-full rounded-md relative h-6 flex justify-start items-center overflow-hidden bg-white/5 animate-pulse">
+            <div class="h-full w-2/4 rounded-s-md transition-all bg-white/5"></div>
+          </div>
+        </div>
       {:else}
         <div class="flex flex-col justify-start items-start gap-4">
           <div
@@ -971,6 +1014,49 @@
             {/if}
           </div>
         </div>
+      {:else if loading.metrics}
+        <div class="flex flex-col justify-start items-start gap-4">
+          <div
+            class="flex flex-col md:flex-row xl:flex-col justify-center items-center gap-4 md:gap-20 xl:gap-4 w-full">
+            <div class="h-full w-30 lg:w-41 xl:w-fit flex justify-start items-start gap-2">
+              <span class="h-full w-0.5 bg-[#3b82f6] rounded-full"></span>
+              <span class="text-lg text-black dark:text-white">Memory</span>
+            </div>
+
+            <div
+              class="h-full w-full grid grid-cols-2 grid-rows-2 gap-y-2 gap-x-4 md:gap-y-0 md:gap-x-0 md:flex justify-between items-center xl:grid xl:grid-cols-2 xl:grid-rows-2 xl:gap-y-2 xl:gap-x-4">
+              <div
+                class="w-full justify-between md:w-16.25 xl:w-full flex xl:justify-between items-start gap-1 text-nowrap">
+                <span class="text-white/40 text-xs text-nowrap">Usage: </span>
+
+                <span class="bg-white/5 w-14 rounded-md h-4 animate-pulse"></span>
+              </div>
+              <div
+                class="w-full justify-between md:w-[99.5px] xl:w-full flex xl:justify-between items-start gap-1 text-nowrap">
+                <span class="text-white/40 text-xs text-nowrap">Total: </span>
+
+                <span class="bg-white/5 w-14 rounded-md h-4 animate-pulse"></span>
+              </div>
+              <div
+                class="w-full justify-between md:w-[99.5px] xl:w-full flex xl:justify-between items-start gap-1 text-nowrap">
+                <span class="text-white/40 text-xs text-nowrap">Used: </span>
+
+                <span class="bg-white/5 w-14 rounded-md h-4 animate-pulse"></span>
+              </div>
+              <div
+                class="w-full justify-between md:w-[99.5px] xl:w-full flex xl:justify-between items-start gap-1 text-nowrap">
+                <span class="text-white/40 text-xs text-nowrap">Available: </span>
+
+                <span class="bg-white/5 w-14 rounded-md h-4 animate-pulse"></span>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="w-full rounded-md relative h-6 flex justify-start items-center overflow-hidden bg-white/5 animate-pulse">
+            <div class="h-full w-4/5 rounded-s-md transition-all bg-white/5"></div>
+          </div>
+        </div>
       {:else}
         <div class="flex flex-col justify-start items-start gap-4">
           <div
@@ -1119,7 +1205,8 @@
               </div>
             {/if}
           </div>
-        </div>{/if}
+        </div>
+      {/if}
 
       <div class="h-px w-full bg-white/10"></div>
 
@@ -1311,7 +1398,47 @@
               </div>
             </div>{/if}
         </div>
-      {:else}
+      {:else if loading.metrics}<div class="flex flex-col justify-start items-start gap-4">
+          <div
+            class="flex flex-col md:flex-row xl:flex-col justify-center items-center gap-4 md:gap-20 xl:gap-4 w-full">
+            <div class="h-full w-30 lg:w-41 xl:w-fit flex justify-start items-start gap-2">
+              <span class="h-full w-0.5 bg-[#10b981] rounded-full"></span>
+              <span class="text-lg text-black dark:text-white">Disk</span>
+            </div>
+
+            <div
+              class="h-full w-full grid grid-cols-2 grid-rows-2 gap-y-2 gap-x-4 md:gap-y-0 md:gap-x-0 md:flex justify-between items-center xl:grid xl:grid-cols-2 xl:grid-rows-2 xl:gap-y-2 xl:gap-x-4">
+              <div
+                class="w-full justify-between md:w-16.25 xl:w-full flex xl:justify-between items-start gap-1 text-nowrap">
+                <span class="text-white/40 text-xs text-nowrap">Usage: </span>
+
+                <span class="bg-white/5 w-14 rounded-md h-4 animate-pulse"></span>
+              </div>
+              <div
+                class="w-full justify-between md:w-[99.5px] xl:w-full flex xl:justify-between items-start gap-1 text-nowrap">
+                <span class="text-white/40 text-xs text-nowrap">Total: </span>
+
+                <span class="bg-white/5 w-14 rounded-md h-4 animate-pulse"></span>
+              </div>
+              <div
+                class="w-full justify-between md:w-[99.5px] xl:w-full flex xl:justify-between items-start gap-1 text-nowrap">
+                <span class="text-white/40 text-xs text-nowrap">Used: </span>
+
+                <span class="bg-white/5 w-14 rounded-md h-4 animate-pulse"></span>
+              </div>
+              <div
+                class="w-full justify-between md:w-[99.5px] xl:w-full flex xl:justify-between items-start gap-1 text-nowrap">
+                <span class="text-white/40 text-xs text-nowrap">Available: </span>
+                <span class="bg-white/5 w-14 rounded-md h-4 animate-pulse"></span>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="w-full rounded-md relative h-6 flex justify-start items-center overflow-hidden bg-white/5 animate-pulse">
+            <div class="h-full w-1/4 rounded-s-md transition-all bg-white/5"></div>
+          </div>
+        </div>{:else}
         <div class="flex flex-col justify-start items-start gap-4">
           <div
             class="flex flex-col md:flex-row xl:flex-col justify-center items-center gap-4 md:gap-20 xl:gap-4 w-full">
