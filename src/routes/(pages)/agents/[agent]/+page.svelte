@@ -315,9 +315,19 @@
       interval={agent?.interval_seconds}
       loading={loading.check} />
 
-    <CollectDuration {id} {date} {summaryWithDate} {hours} />
+    <CollectDuration
+      {id}
+      {date}
+      {summaryWithDate}
+      {hours}
+      summaryWithDateLoading={loading.summaryWithDate} />
 
-    <Metrics {id} {date} {summaryWithDate} {hours} />
+    <Metrics
+      {id}
+      {date}
+      {summaryWithDate}
+      {hours}
+      summaryWithDateLoading={loading.summaryWithDate} />
 
     <SummaryCalender
       bind:value={toDay}
