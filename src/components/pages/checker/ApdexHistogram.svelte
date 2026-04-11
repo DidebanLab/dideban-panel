@@ -46,7 +46,7 @@
 
 {#if loading}
   <div
-    class="relative h-58 sm:h-64.5 w-full flex flex-col pt-8 sm:p-6 sm:pt-6 sm:pb-13 gap-4 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
+    class="relative h-58 sm:h-64.5 w-full flex flex-col pb-6 sm:p-6 sm:pt-6 sm:pb-13 gap-4 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
     <div class="flex justify-between w-full items-start">
       <div class="flex flex-col">
         <span class="text-black dark:text-white text-lg sm:text-xl">Apdex Histogram</span><span
@@ -96,7 +96,7 @@
   </div>
 {:else if date ? summaryWithDate : histogram}
   <div
-    class="relative h-58 sm:h-64.5 w-full flex flex-col pt-8 sm:p-6 sm:pt-6 sm:pb-13 gap-4 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
+    class="relative h-58 sm:h-64.5 w-full flex flex-col sm:p-6 sm:pt-6 pb-6 sm:pb-13 gap-4 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
     <div class="flex justify-between w-full items-start">
       <div class="flex flex-col">
         <span class="text-black dark:text-white text-lg sm:text-xl">Apdex Histogram</span><span
@@ -162,7 +162,7 @@
   </div>
 {:else}
   <div
-    class="relative h-58 animate-pulse border-[#F87171]/15 sm:h-64.5 w-full flex justify-center items-center overflow-hidden rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] border">
+    class="relative h-58 sm:h-64.5 animate-pulse border-[#F87171]/15 w-full flex justify-center items-center overflow-hidden rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] border">
     <div
       class="absolute top-1/2 start-1/2 -translate-1/2 h-0 rounded-full w-1/2"
       style="box-shadow: 0 0 500px 100px rgb(255,100,103,0.1)">

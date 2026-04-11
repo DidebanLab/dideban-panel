@@ -66,7 +66,10 @@
     </div>
   {:else if id && data}
     <div
-      class="w-full flex flex-col sm:gap-4 sm:pb-0 lg:pb-0 sm:pt-6 sm:px-6 3xl:p-6 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5 2xl:h-88.75">
+      class="w-full sm:h-87.75 2xl:h-88.75 flex flex-col sm:gap-4 sm:pb-0 lg:pb-0 sm:pt-6 sm:px-6 3xl:p-6 rounded-[14px] dark:sm:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5 {data
+        ?.latency_series?.length > 1
+        ? 'h-77.25'
+        : 'h-50'}">
       <div class="w-full flex justify-between items-start">
         <div class="w-full flex flex-col justify-start items-start">
           <span class="text-lg md:text-xl text-black dark:text-white"> Latency</span>
@@ -86,7 +89,7 @@
       {#if data?.latency_series?.length > 1}
         <LatencyChart name="Latency" height={250} data={data?.latency_series} unit="ms" />
       {:else}
-        <div class="w-full bg-blue-500/50 h-px my-auto"></div>
+        <div class="w-full bg-blue-500/50 h-px mb-6 mt-auto"></div>
       {/if}
     </div>
   {:else}
