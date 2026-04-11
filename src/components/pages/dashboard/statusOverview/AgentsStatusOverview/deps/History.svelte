@@ -221,7 +221,7 @@
               : 'bg-[#FFFFFF]/5'}">
           {#if historyDetailLoading}
             <div
-              class="absolute w-fit group-hover:flex hidden bottom-10 start-1/2 -translate-x-1/2 rounded-xl text-white bg-white/40 dark:bg-black/80 backdrop-blur-md dark:backdrop-blur-3xl border-[#0D0D0D]/5 border dark:border-white/10 px-3 py-2 flex-col justify-start items-start">
+              class="absolute w-fit group-hover:flex hidden bottom-10 start-1/2 -translate-x-1/2 rounded-xl text-white bg-white/40 dark:bg-black/80 backdrop-blur-md dark:backdrop-blur-3xl border-[#0D0D0D]/5 border dark:border-white/10 px-3 py-2 flex-col justify-start items-start gap-2.5">
               <div
                 class="w-full flex justify-between items-center gap-6 border-b border-b-[#0D0D0D]/10 dark:border-b-white/15 pb-1.5">
                 <span class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
