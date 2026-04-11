@@ -8,10 +8,10 @@
 
   const isMobile = $state(innerWidth < 645);
   let { value: isAgentExist = $bindable() } = $props();
-  let agents = $state();
+  let agents = $state(null);
   let activeIndex = $state(0);
   let isActive = $derived(agents[activeIndex]);
-  let agentMetric = $state();
+  let agentMetric = $state(null);
   let currentPoller = $state(null);
   let loading = $state({ agents: true, metrics: false });
 
@@ -64,10 +64,12 @@
         max_points: 60,
       },
       onSuccess: d => {
+        agentMetric = null;
         loading.metrics = false;
         agentMetric = d;
       },
       onError: () => {
+        agentMetric = null;
         loading.metrics.false;
       },
     });
@@ -107,7 +109,7 @@
       class="h-32.5 w-full border-t-2 border-t-white/5 mt-auto bg-linear-to-b from-white/5 animate-pulse">
     </div>
   </div>
-{:else if agents}
+{:else if agents && agentMetric}
   {#if agents?.length}
     <div
       class="w-full h-91.25 sm:h-99.25 md:h-90.25 xl:h-98.75 flex relative flex-col gap-4 items-start justify-between 3xl:w-[65%] 3xl:h-auto px-6 sm:pt-6 sm:pb-1.5 rounded-[14px] sm:dark:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5">
