@@ -599,7 +599,7 @@
 {:else}
   <div
     class="w-full relative flex justify-center items-center overflow-hidden rounded-[14px] text-red-500/50 animate-pulse border border-[#F87171]/15 text-xl {date
-      ? 'sm:h-43 sm:rounded-[14px] sm:dark:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border'
+      ? 'sm:h-43 rounded-[14px] dark:bg-[#0D0D0D] bg-[#FFFFFF] border'
       : 'h-29 sm:h-35 rounded-[14px] dark:bg-[#0D0D0D] bg-[#FFFFFF] border'}">
     <div
       class="absolute top-1/2 start-1/2 -translate-1/2 h-0 rounded-full w-1/2"
