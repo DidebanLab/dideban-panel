@@ -37,7 +37,9 @@
 
 {#if loading}
   <div
-    class="flex flex-col lg:flex-row gap-6 sm:gap-4 w-full ms-auto 3xl:w-[35%] 3xl:flex-col 3xl:justify-between">
+    class="flex flex-col lg:flex-row gap-6 sm:gap-4 w-full ms-auto h-150 sm:h-108 lg:h-82.5 xl:h-49 {isAgentExist
+      ? '3xl:w-[35%] 3xl:h-102 3xl:flex-col 3xl:justify-between'
+      : '3xl:h-55'}">
     <div
       class="px-6 sm:pb-6 pt-1 sm:pt-5 w-full flex flex-col gap-4 sm:dark:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5 rounded-[14px] relative overflow-hidden h-full">
       <div class="flex justify-between items-start gap-3 w-full">
@@ -50,15 +52,23 @@
       </div>
 
       <div
-        class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 lg:grid-rows-2 xl:grid-cols-4 xl:grid-rows-1 h-auto gap-3 w-full flex-1">
+        class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 lg:grid-rows-2 xl:grid-cols-4 xl:grid-rows-1 h-auto gap-3 w-full flex-1 {isAgentExist
+          ? ''
+          : '3xl:gap-4'}">
         <div
-          class="bg-white/5 3xl:h-23.5 h-27 sm:h-26.5 lg:h-27 xl:h-23.5 xl:w-[128.25px] 3xl:w-[113.5px] rounded-lg animate-pulse">
+          class="bg-white/5 3xl:h-23.5 h-27 sm:h-26.5 lg:h-27 xl:h-23.5 xl:w-[128.25px] 3xl:w-[113.5px] rounded-lg animate-pulse {isAgentExist
+            ? '3xl:h-23'
+            : '3xl:h-[118px] 3xl:w-[173.75px]'}">
         </div>
         <div
-          class="bg-white/5 3xl:h-23.5 h-27 sm:h-26.5 lg:h-27 xl:h-23.5 xl:w-[128.25px] 3xl:w-[113.5px] rounded-lg animate-pulse">
+          class="bg-white/5 3xl:h-23.5 h-27 sm:h-26.5 lg:h-27 xl:h-23.5 xl:w-[128.25px] 3xl:w-[113.5px] rounded-lg animate-pulse {isAgentExist
+            ? '3xl:h-23'
+            : '3xl:h-[118px] 3xl:w-[173.75px]'}">
         </div>
         <div
-          class="bg-white/5 3xl:h-23.5 h-27 sm:h-26.5 lg:h-27 xl:h-23.5 xl:w-[128.25px] 3xl:w-[113.5px] rounded-lg animate-pulse">
+          class="bg-white/5 3xl:h-23.5 h-27 sm:h-26.5 lg:h-27 xl:h-23.5 xl:w-[128.25px] 3xl:w-[113.5px] rounded-lg animate-pulse {isAgentExist
+            ? '3xl:h-23'
+            : '3xl:h-[118px] 3xl:w-[173.75px]'}">
         </div>
       </div>
     </div>
@@ -74,26 +84,34 @@
       </div>
 
       <div
-        class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 lg:grid-rows-2 xl:grid-cols-4 xl:grid-rows-1 h-auto gap-3 w-full flex-1">
+        class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 lg:grid-rows-2 xl:grid-cols-4 xl:grid-rows-1 h-auto gap-3 w-full flex-1 {isAgentExist
+          ? ''
+          : '3xl:gap-4'}">
         <div
-          class="bg-white/5 3xl:h-23.5 h-27 sm:h-26.5 lg:h-27 xl:h-23.5 xl:w-[128.25px] 3xl:w-[113.5px] rounded-lg animate-pulse">
+          class="bg-white/5 3xl:h-23.5 h-27 sm:h-26.5 lg:h-27 xl:h-23.5 xl:w-[128.25px] 3xl:w-[113.5px] rounded-lg animate-pulse {isAgentExist
+            ? '3xl:h-23'
+            : '3xl:h-[118px] 3xl:w-[173.75px]'}">
         </div>
         <div
-          class="bg-white/5 3xl:h-23.5 h-27 sm:h-26.5 lg:h-27 xl:h-23.5 xl:w-[128.25px] 3xl:w-[113.5px] rounded-lg animate-pulse">
+          class="bg-white/5 3xl:h-23.5 h-27 sm:h-26.5 lg:h-27 xl:h-23.5 xl:w-[128.25px] 3xl:w-[113.5px] rounded-lg animate-pulse {isAgentExist
+            ? '3xl:h-23'
+            : '3xl:h-[118px] 3xl:w-[173.75px]'}">
         </div>
         <div
-          class="bg-white/5 3xl:h-23.5 h-27 sm:h-26.5 lg:h-27 xl:h-23.5 xl:w-[128.25px] 3xl:w-[113.5px] rounded-lg animate-pulse">
+          class="bg-white/5 3xl:h-23.5 h-27 sm:h-26.5 lg:h-27 xl:h-23.5 xl:w-[128.25px] 3xl:w-[113.5px] rounded-lg animate-pulse {isAgentExist
+            ? '3xl:h-23'
+            : '3xl:h-[118px] 3xl:w-[173.75px]'}">
         </div>
         <div
-          class="bg-white/5 3xl:h-23.5 lg:h-[106px] xl:h-23.5 xl:w-[128.25px] 3xl:w-[113.5px] rounded-lg animate-pulse">
+          class="bg-white/5 3xl:h-23.5 lg:h-26.5 xl:h-23.5 xl:w-[128.25px] 3xl:w-[113.5px] rounded-lg animate-pulse">
         </div>
       </div>
     </div>
   </div>
-{:else}
+{:else if agentsStats && checksStats}
   <div
-    class="flex flex-col lg:flex-row gap-6 sm:gap-4 w-full ms-auto {isAgentExist
-      ? '3xl:w-[35%] 3xl:flex-col 3xl:justify-between'
+    class="flex flex-col lg:flex-row gap-6 sm:gap-4 w-full ms-auto h-150 sm:h-108 lg:h-82.5 xl:h-49 {isAgentExist
+      ? '3xl:w-[35%] 3xl:h-102 3xl:flex-col 3xl:justify-between'
       : '3xl:h-55'}">
     <div
       class="px-6 sm:pb-6 pt-1 sm:pt-5 w-full flex flex-col gap-4 sm:dark:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5 rounded-[14px] relative overflow-hidden h-full">
@@ -350,6 +368,86 @@
             src="/icons/warning.svg"
             alt="timeout" />
         </div>
+      </div>
+    </div>
+  </div>
+{:else}
+  <div
+    class="flex flex-col lg:flex-row gap-6 sm:gap-4 w-full ms-auto h-150 sm:h-108 lg:h-82.5 xl:h-49 {isAgentExist
+      ? '3xl:w-[35%] 3xl:h-102 3xl:flex-col 3xl:justify-between'
+      : '3xl:h-55'}">
+    <div
+      class="w-full flex dark:bg-[#0D0D0D] bg-[#FFFFFF] relative h-full justify-center items-center overflow-hidden rounded-[14px] text-red-500/50 animate-pulse border border-[#F87171]/15 text-xl">
+      <div
+        class="absolute top-1/2 start-1/2 -translate-1/2 h-0 rounded-full w-1/2"
+        style="box-shadow: 0 0 500px 100px rgb(255,100,103,0.1)">
+        <div class="w-full h-full bg-white/5"></div>
+      </div>
+
+      <div class="flex justify-center items-center gap-1">
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 20 20"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M10.0003 18.3332C14.6027 18.3332 18.3337 14.6022 18.3337 9.99984C18.3337 5.39746 14.6027 1.6665 10.0003 1.6665C5.39795 1.6665 1.66699 5.39746 1.66699 9.99984C1.66699 14.6022 5.39795 18.3332 10.0003 18.3332Z"
+            stroke="#B4242B"
+            stroke-width="1.66667"
+            stroke-linecap="round"
+            stroke-linejoin="round" />
+          <path
+            d="M10 6.6665V9.99984"
+            stroke="#B4242B"
+            stroke-width="1.66667"
+            stroke-linecap="round"
+            stroke-linejoin="round" />
+          <path
+            d="M10 13.3335H10.0083"
+            stroke="#B4242B"
+            stroke-width="1.66667"
+            stroke-linecap="round"
+            stroke-linejoin="round" />
+        </svg>
+        <span class="text-xl text-red-500/70 mt-0.5">Something Is Wrong</span>
+      </div>
+    </div>
+    <div
+      class="w-full flex dark:bg-[#0D0D0D] bg-[#FFFFFF] relative h-full justify-center items-center overflow-hidden rounded-[14px] text-red-500/50 animate-pulse border border-[#F87171]/15 text-xl">
+      <div
+        class="absolute top-1/2 start-1/2 -translate-1/2 h-0 rounded-full w-1/2"
+        style="box-shadow: 0 0 500px 100px rgb(255,100,103,0.1)">
+        <div class="w-full h-full bg-white/5"></div>
+      </div>
+
+      <div class="flex justify-center items-center gap-1">
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 20 20"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M10.0003 18.3332C14.6027 18.3332 18.3337 14.6022 18.3337 9.99984C18.3337 5.39746 14.6027 1.6665 10.0003 1.6665C5.39795 1.6665 1.66699 5.39746 1.66699 9.99984C1.66699 14.6022 5.39795 18.3332 10.0003 18.3332Z"
+            stroke="#B4242B"
+            stroke-width="1.66667"
+            stroke-linecap="round"
+            stroke-linejoin="round" />
+          <path
+            d="M10 6.6665V9.99984"
+            stroke="#B4242B"
+            stroke-width="1.66667"
+            stroke-linecap="round"
+            stroke-linejoin="round" />
+          <path
+            d="M10 13.3335H10.0083"
+            stroke="#B4242B"
+            stroke-width="1.66667"
+            stroke-linecap="round"
+            stroke-linejoin="round" />
+        </svg>
+        <span class="text-xl text-red-500/70 mt-0.5">Something Is Wrong</span>
       </div>
     </div>
   </div>
