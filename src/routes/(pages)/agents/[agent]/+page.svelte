@@ -133,7 +133,7 @@
     <div
       class="w-full flex flex-col gap-4 lg:gap-6 lg:flex-row justify-between items-center lg:items-start relative">
       {#if loading.agent}
-          <div class="w-full flex justify-between items-start">
+        <div class="w-full flex justify-between items-start">
           <div class="flex flex-col justify-center items-start gap-2">
             <span class="bg-white/5 h-6 w-30 rounded-md animate-pulse"></span>
             <span class="bg-white/5 h-5 w-20 rounded-md animate-pulse"></span>
@@ -157,7 +157,7 @@
         <div
           class="bg-white/5 lg:absolute lg:top-0 rounded-md lg:start-1/2 lg:-translate-x-1/2 w-full lg:w-[194.5px] h-9.5 animate-pulse">
         </div>
-      {:else}
+      {:else if agent}
         <div class="w-full flex justify-between items-start">
           <div class="flex flex-col justify-center items-start">
             <span class="text-black dark:text-white text-xl capitalize">{agent?.name}</span>
@@ -302,6 +302,44 @@
           {toDay}
           {date}
           loading={loading.summaryYearly} />
+      {:else}
+        <div
+          class="w-full relative overflow-hidden rounded-[14px] text-red-500/50 animate-pulse border border-[#F87171]/15 h-26.5 lg:h-13 roud flex justify-center items-center text-xl">
+          <div
+            class="absolute top-1/2 start-1/2 -translate-1/2 h-0 rounded-full w-1/2"
+            style="box-shadow: 0 0 500px 100px rgb(255,100,103,0.1)">
+            <div class="w-full h-full bg-white/5"></div>
+          </div>
+
+          <div class="flex justify-center items-center gap-1">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 20 20"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M10.0003 18.3332C14.6027 18.3332 18.3337 14.6022 18.3337 9.99984C18.3337 5.39746 14.6027 1.6665 10.0003 1.6665C5.39795 1.6665 1.66699 5.39746 1.66699 9.99984C1.66699 14.6022 5.39795 18.3332 10.0003 18.3332Z"
+                stroke="#B4242B"
+                stroke-width="1.66667"
+                stroke-linecap="round"
+                stroke-linejoin="round" />
+              <path
+                d="M10 6.6665V9.99984"
+                stroke="#B4242B"
+                stroke-width="1.66667"
+                stroke-linecap="round"
+                stroke-linejoin="round" />
+              <path
+                d="M10 13.3335H10.0083"
+                stroke="#B4242B"
+                stroke-width="1.66667"
+                stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+            <span class="text-xl text-red-500/70 mt-0.5">Something Is Wrong</span>
+          </div>
+        </div>
       {/if}
     </div>
 

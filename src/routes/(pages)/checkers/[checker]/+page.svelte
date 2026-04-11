@@ -134,7 +134,7 @@
   <div
     class="w-full flex flex-col justify-start items-start gap-6 lg:border border-[#0D0D0D]/5 dark:border-white/5 lg:px-6 pt-1 pb-6 lg:py-6 lg:rounded-xl">
     <div
-      class="w-full  relative flex flex-col gap-4 lg:gap-6 lg:flex-row justify-between items-center lg:items-start">
+      class="w-full relative flex flex-col gap-4 lg:gap-6 lg:flex-row justify-between items-center lg:items-start">
       {#if loading.check}
         <div class="w-full flex justify-between items-start">
           <div class="flex flex-col justify-center items-start gap-2">
@@ -316,7 +316,7 @@
           {date}
           loading={loading.summaryYearly} />
       {:else}
-        <span
+        <div
           class="w-full relative overflow-hidden rounded-[14px] text-red-500/50 animate-pulse border border-[#F87171]/15 h-26.5 lg:h-13 roud flex justify-center items-center text-xl">
           <div
             class="absolute top-1/2 start-1/2 -translate-1/2 h-0 rounded-full w-1/2"
@@ -352,7 +352,7 @@
             </svg>
             <span class="text-xl text-red-500/70 mt-0.5">Something Is Wrong</span>
           </div>
-        </span>
+        </div>
       {/if}
     </div>
 
@@ -368,7 +368,7 @@
       interval={check?.interval_seconds}
       loading={loading.check} />
 
-    <Latency {hours} {id} />
+    <Latency {date} {hours} {id} />
 
     <ApdexHistory
       {id}

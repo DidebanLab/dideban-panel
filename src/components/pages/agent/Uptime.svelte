@@ -79,11 +79,11 @@
   }
 </script>
 
-<div
-  class="w-full relative flex flex-col gap-4 sm:gap-6 border-[#0D0D0D]/5 dark:border-white/5 {date
-    ? 'sm:h-43 sm:rounded-[14px] sm:dark:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border sm:px-6 sm:py-6'
-    : 'h-29 sm:h-35 rounded-[14px] dark:bg-[#0D0D0D] bg-[#FFFFFF] border  px-4.25 py-4 sm:px-6 sm:py-6'}">
-  {#if historyLoading}
+{#if historyLoading}
+  <div
+    class="w-full relative flex flex-col gap-4 sm:gap-6 border-[#0D0D0D]/5 dark:border-white/5 {date
+      ? 'sm:h-43 sm:rounded-[14px] sm:dark:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border sm:px-6 sm:py-6'
+      : 'h-29 sm:h-35 rounded-[14px] dark:bg-[#0D0D0D] bg-[#FFFFFF] border  px-4.25 py-4 sm:px-6 sm:py-6'}">
     <div class="w-full flex justify-between items-start">
       <div class="w-fit flex flex-col justify-start items-start">
         <span class="text-lg text-black dark:text-white">Uptime</span>
@@ -124,7 +124,12 @@
         </div>
       {/if}
     </div>
-  {:else}
+  </div>
+{:else if date ? summaryWithDate : history}
+  <div
+    class="w-full relative flex flex-col gap-4 sm:gap-6 border-[#0D0D0D]/5 dark:border-white/5 {date
+      ? 'sm:h-43 sm:rounded-[14px] sm:dark:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border sm:px-6 sm:py-6'
+      : 'h-29 sm:h-35 rounded-[14px] dark:bg-[#0D0D0D] bg-[#FFFFFF] border  px-4.25 py-4 sm:px-6 sm:py-6'}">
     <div class="w-full flex justify-between items-start">
       <div class="w-fit flex flex-col justify-start items-start">
         <span class="text-lg text-black dark:text-white">Uptime</span>
@@ -590,5 +595,45 @@
         </div>
       {/if}
     </div>
-  {/if}
-</div>
+  </div>
+{:else}
+  <div
+    class="w-full relative flex justify-center items-center overflow-hidden rounded-[14px] text-red-500/50 animate-pulse border border-[#F87171]/15 text-xl {date
+      ? 'sm:h-43 sm:rounded-[14px] sm:dark:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border'
+      : 'h-29 sm:h-35 rounded-[14px] dark:bg-[#0D0D0D] bg-[#FFFFFF] border'}">
+    <div
+      class="absolute top-1/2 start-1/2 -translate-1/2 h-0 rounded-full w-1/2"
+      style="box-shadow: 0 0 500px 100px rgb(255,100,103,0.1)">
+      <div class="w-full h-full bg-white/5"></div>
+    </div>
+
+    <div class="flex justify-center items-center gap-1">
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 20 20"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M10.0003 18.3332C14.6027 18.3332 18.3337 14.6022 18.3337 9.99984C18.3337 5.39746 14.6027 1.6665 10.0003 1.6665C5.39795 1.6665 1.66699 5.39746 1.66699 9.99984C1.66699 14.6022 5.39795 18.3332 10.0003 18.3332Z"
+          stroke="#B4242B"
+          stroke-width="1.66667"
+          stroke-linecap="round"
+          stroke-linejoin="round" />
+        <path
+          d="M10 6.6665V9.99984"
+          stroke="#B4242B"
+          stroke-width="1.66667"
+          stroke-linecap="round"
+          stroke-linejoin="round" />
+        <path
+          d="M10 13.3335H10.0083"
+          stroke="#B4242B"
+          stroke-width="1.66667"
+          stroke-linecap="round"
+          stroke-linejoin="round" />
+      </svg>
+      <span class="text-xl text-red-500/70 mt-0.5">Something Is Wrong</span>
+    </div>
+  </div>
+{/if}
