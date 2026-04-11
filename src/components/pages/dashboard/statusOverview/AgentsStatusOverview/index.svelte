@@ -90,12 +90,15 @@
     </button>
   </div>
 
-  <div class="w-full grid grid-cols-1 xl:grid-cols-2 3xl:grid-cols-3 gap-4 custom-scroll p-6">
+  <div
+    class="w-full grid gap-4 custom-scroll p-6 min-h-41 sm:min-h-44.75 {!loading && !agents
+      ? 'grid-cols-1'
+      : ' grid-cols-1 xl:grid-cols-2 3xl:grid-cols-3'}">
     {#if loading}
       {#each Array(3) as _, i}
         <HistoryLoading requiredHistoryCount={REQUIRED_HISTORY_COUNT} />
       {/each}
-    {:else}
+    {:else if agents}
       {#each agents as item (item.id)}
         <History
           agentId={item?.id}
@@ -103,6 +106,44 @@
           name={item?.name}
           checked_at={item?.last_seen} />
       {/each}
+    {:else}
+      <div
+        class="w-full h-full relative flex justify-center items-center overflow-hidden dark:bg-[#0D0D0D] bg-[#FFFFFF] border rounded-[14px] text-red-500/50 animate-pulse border-[#F87171]/15 text-xl">
+        <div
+          class="absolute top-1/2 start-1/2 -translate-1/2 h-0 rounded-full w-1/2"
+          style="box-shadow: 0 0 500px 100px rgb(255,100,103,0.1)">
+          <div class="w-full h-full bg-white/5"></div>
+        </div>
+
+        <div class="flex justify-center items-center gap-1">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 20 20"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M10.0003 18.3332C14.6027 18.3332 18.3337 14.6022 18.3337 9.99984C18.3337 5.39746 14.6027 1.6665 10.0003 1.6665C5.39795 1.6665 1.66699 5.39746 1.66699 9.99984C1.66699 14.6022 5.39795 18.3332 10.0003 18.3332Z"
+              stroke="#B4242B"
+              stroke-width="1.66667"
+              stroke-linecap="round"
+              stroke-linejoin="round" />
+            <path
+              d="M10 6.6665V9.99984"
+              stroke="#B4242B"
+              stroke-width="1.66667"
+              stroke-linecap="round"
+              stroke-linejoin="round" />
+            <path
+              d="M10 13.3335H10.0083"
+              stroke="#B4242B"
+              stroke-width="1.66667"
+              stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
+          <span class="text-xl text-red-500/70 mt-0.5">Something Is Wrong</span>
+        </div>
+      </div>
     {/if}
   </div>
 </div>

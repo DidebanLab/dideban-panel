@@ -4,7 +4,6 @@
   import { http } from '../../../../../../services/http.svelte';
   import responseTimeColor from '../../../../../../utils/responseTimeColor';
   import { off, on, subscribe, unsubscribe } from '../../../../../../services/ws.svelte';
-  import HistoryLoading from '../../HistoryLoading.svelte';
 
   const REQUIRED_HISTORY_COUNT = $state(innerWidth < 640 ? 31 : 40);
   const { checkId, status, name, checked_at } = $props();
@@ -48,8 +47,31 @@
 </script>
 
 {#if historyLoading}
-  <HistoryLoading requiredHistoryCount={REQUIRED_HISTORY_COUNT} />
-{:else}
+  <div
+    class="relative h-29 sm:h-32.75 border border-[#0D0D0D]/5 dark:border-gray-400/5 rounded-[14px] flex flex-col py-4 xl:py-6 gap-7">
+    <div class="flex justify-start items-center px-4.25 gap-4">
+      <div class="size-12 rounded-2xl hidden sm:block bg-white/5 animate-pulse"></div>
+
+      <div class="flex flex-col justify-center items-start gap-1">
+        <span class="w-20 h-5 bg-white/5 rounded-md animate-pulse"></span>
+
+        <div class="w-40 h-4 bg-white/5 mt-1 rounded-md animate-pulse"></div>
+      </div>
+      <div class="flex justify-center items-center gap-2 ms-auto mb-auto">
+        <span class="w-10 h-4 bg-white/5 animate-pulse rounded-md"> </span>
+
+        <div class="size-3 rounded-full bg-white/5 animate-pulse"></div>
+      </div>
+    </div>
+
+    <div
+      class="absolute z-10 bottom-4 xl:bottom-6 w-full flex gap-0.5 justify-between items-end px-4.25 animate-pulse">
+      {#each Array(REQUIRED_HISTORY_COUNT) as _, i}
+        <div class="w-full h-4 rounded-[1px] bg-white/5"></div>
+      {/each}
+    </div>
+  </div>
+{:else if history}
   <div
     class="relative h-29 sm:h-32.75 border rounded-[14px] flex flex-col py-4 xl:py-6 gap-7 {error
       ? 'bg-[#EF4444]/5 border-[#EF4444]/15'
@@ -290,6 +312,44 @@
           {/if}
         </button>
       {/each}
+    </div>
+  </div>
+{:else}
+  <div
+    class="relative h-29 sm:h-32.75 flex justify-center items-center overflow-hidden dark:bg-[#0D0D0D] bg-[#FFFFFF] border rounded-[14px] text-red-500/50 animate-pulse border-[#F87171]/15 text-xl">
+    <div
+      class="absolute top-1/2 start-1/2 -translate-1/2 h-0 rounded-full w-1/2"
+      style="box-shadow: 0 0 500px 100px rgb(255,100,103,0.1)">
+      <div class="w-full h-full bg-white/5"></div>
+    </div>
+
+    <div class="flex justify-center items-center gap-1">
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 20 20"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M10.0003 18.3332C14.6027 18.3332 18.3337 14.6022 18.3337 9.99984C18.3337 5.39746 14.6027 1.6665 10.0003 1.6665C5.39795 1.6665 1.66699 5.39746 1.66699 9.99984C1.66699 14.6022 5.39795 18.3332 10.0003 18.3332Z"
+          stroke="#B4242B"
+          stroke-width="1.66667"
+          stroke-linecap="round"
+          stroke-linejoin="round" />
+        <path
+          d="M10 6.6665V9.99984"
+          stroke="#B4242B"
+          stroke-width="1.66667"
+          stroke-linecap="round"
+          stroke-linejoin="round" />
+        <path
+          d="M10 13.3335H10.0083"
+          stroke="#B4242B"
+          stroke-width="1.66667"
+          stroke-linecap="round"
+          stroke-linejoin="round" />
+      </svg>
+      <span class="text-xl text-red-500/70 mt-0.5">Something Is Wrong</span>
     </div>
   </div>
 {/if}

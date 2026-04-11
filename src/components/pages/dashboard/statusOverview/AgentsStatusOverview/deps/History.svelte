@@ -4,7 +4,6 @@
   import { http } from '../../../../../../services/http.svelte';
   import { off, on, subscribe, unsubscribe } from '../../../../../../services/ws.svelte';
   import { LIMITATIONS } from '../../../../../config.svelte';
-  import HistoryLoading from '../../HistoryLoading.svelte';
 
   const REQUIRED_HISTORY_COUNT = $state(innerWidth < 640 ? 31 : 40);
   let { agentId, name, last_status, checked_at } = $props();
@@ -49,8 +48,31 @@
 </script>
 
 {#if historyLoading}
-  <HistoryLoading requiredHistoryCount={REQUIRED_HISTORY_COUNT} />
-{:else}
+  <div
+    class="relative h-29 sm:h-32.75 border border-[#0D0D0D]/5 dark:border-gray-400/5 rounded-[14px] flex flex-col py-4 xl:py-6 gap-7">
+    <div class="flex justify-start items-center px-4.25 gap-4">
+      <div class="size-12 rounded-2xl hidden sm:block bg-white/5 animate-pulse"></div>
+
+      <div class="flex flex-col justify-center items-start gap-1">
+        <span class="w-20 h-5 bg-white/5 rounded-md animate-pulse"></span>
+
+        <div class="w-40 h-4 bg-white/5 mt-1 rounded-md animate-pulse"></div>
+      </div>
+      <div class="flex justify-center items-center gap-2 ms-auto mb-auto">
+        <span class="w-10 h-4 bg-white/5 animate-pulse rounded-md"> </span>
+
+        <div class="size-3 rounded-full bg-white/5 animate-pulse"></div>
+      </div>
+    </div>
+
+    <div
+      class="absolute z-10 bottom-4 xl:bottom-6 w-full flex gap-0.5 justify-between items-end px-4.25 animate-pulse">
+      {#each Array(REQUIRED_HISTORY_COUNT) as _, i}
+        <div class="w-full h-4 rounded-[1px] bg-white/5"></div>
+      {/each}
+    </div>
+  </div>
+{:else if history}
   <div
     class="relative h-29 sm:h-32.75 border rounded-[14px] flex flex-col py-4 xl:py-6 gap-7 {isOffline
       ? 'bg-[#EF4444]/5 border-[#EF4444]/15'
@@ -167,6 +189,7 @@
           type="button"
           aria-label="detail of status"
           onmouseover={() => {
+            historyDetail = null;
             historyDetailLoading = true;
             http
               .get(endpoints.agentHistoryDetail(agentId, id))
@@ -179,6 +202,7 @@
             historyDetail = null;
           }}
           onfocus={() => {
+            historyDetail = null;
             historyDetailLoading = true;
             http
               .get(endpoints.agentHistoryDetail(agentId, id))
@@ -195,18 +219,100 @@
             : ok
               ? 'bg-green-700'
               : 'bg-[#FFFFFF]/5'}">
-          {#if historyDetail}
+          {#if historyDetailLoading}
+            <div
+              class="absolute w-fit group-hover:flex hidden bottom-10 start-1/2 -translate-x-1/2 rounded-xl text-white bg-white/40 dark:bg-black/80 backdrop-blur-md dark:backdrop-blur-3xl border-[#0D0D0D]/5 border dark:border-white/10 px-3 py-2 flex-col justify-start items-start">
+              <div
+                class="w-full flex justify-between items-center gap-6 border-b border-b-[#0D0D0D]/10 dark:border-b-white/15 pb-1.5">
+                <span class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
+                  >Latency :</span>
+                <span class="bg-white/5 w-13 rounded-md h-3.5 animate-pulse"></span>
+              </div>
+              <div class="flex flex-col items-center w-full gap-1">
+                <div class="w-full flex justify-start items-center gap-2.5">
+                  <span
+                    style="box-shadow: 0 0 10px 1px #ad46ff;"
+                    class="size-1.5 rounded-full bg-[#ad46ff]"></span>
+                  <div class="flex-1 flex justify-between items-center gap-2.5">
+                    <span
+                      class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
+                      >Cpu :</span>
+                    <span class="bg-white/5 w-10 rounded-md h-3.5 animate-pulse"></span>
+                  </div>
+                </div>
+                <div class="w-full h-0.5 rounded-full bg-black/10 dark:bg-white/10 animate-pulse">
+                  <div
+                    class="h-full rounded-full bg-white/5"
+                    style="width:50%;box-shadow: 0 0 1px 1px rgba(250,250,250,0.1);">
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex flex-col items-center w-full gap-1">
+                <div class="w-full flex justify-start items-center gap-2.5">
+                  <span
+                    style="box-shadow: 0 0 10px 1px #2b7fff;"
+                    class="size-1.5 rounded-full bg-[#2b7fff]"></span>
+                  <div class="flex-1 flex justify-between items-center gap-2.5">
+                    <span
+                      class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
+                      >Memory :</span>
+                    <span class="bg-white/5 w-10 rounded-md h-3.5 animate-pulse"></span>
+                  </div>
+                </div>
+                <div class="w-full h-0.5 rounded-full bg-black/10 dark:bg-white/10 animate-pulse">
+                  <div
+                    class="h-full1 rounded-full bg-white/5"
+                    style="width:30%;box-shadow: 0 0 1px 1px rgba(250,250,250,0.1);">
+                  </div>
+                </div>
+              </div>
+              <div class="flex flex-col items-center w-full gap-1">
+                <div class="w-full flex justify-start items-center gap-2.5">
+                  <span
+                    style="box-shadow: 0 0 10px 1px #00bc7d;"
+                    class="size-1.5 rounded-full bg-[#00bc7d]"></span>
+                  <div class="flex-1 flex justify-between items-center gap-2.5">
+                    <span
+                      class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
+                      >Disk :</span>
+                    <span class="bg-white/5 w-10 rounded-md h-3.5 animate-pulse"></span>
+                  </div>
+                </div>
+                <div class="w-full h-0.5 rounded-full bg-black/10 dark:bg-white/10 animate-pulse">
+                  <div
+                    class="h-full rounded-full bg-white/5"
+                    style="width:70%;box-shadow: 0 0 1px 1px rgba(250,250,250,0.1);">
+                  </div>
+                </div>
+              </div>
+
+              <div
+                class="w-full flex justify-start items-center text-sm pt-2.5 text-[#6a7282] text-center text-nowrap border-t border-t-[#0D0D0D]/10 dark:border-t-white/15">
+                <span class="bg-white/5 w-full rounded-md h-4 animate-pulse"></span>
+              </div>
+            </div>
+          {:else if historyDetail}
             <div
               class="absolute w-fit group-hover:flex hidden bottom-10 start-1/2 -translate-x-1/2 rounded-xl text-white bg-white/40 dark:bg-black/80 backdrop-blur-md dark:backdrop-blur-3xl border-[#0D0D0D]/5 border dark:border-white/10 px-3 py-2 flex-col justify-start items-start {historyDetail?.is_offline
                 ? 'gap-1.5'
                 : 'gap-2.5'}">
-              {#if historyDetailLoading}
+              {#if historyDetail?.collect_duration_ms}
                 <div
-                  class="w-full flex justify-between items-center gap-6 border-b border-b-[#0D0D0D]/10 dark:border-b-white/15 pb-1.5">
+                  class="w-full flex justify-between items-center gap-2.5 border-b border-b-[#0D0D0D]/10 dark:border-b-white/15 pb-1.5">
                   <span class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
                     >Latency :</span>
-                  <span class="bg-white/5 w-13 rounded-md h-3.5 animate-pulse"></span>
+                  <span
+                    class="flex justify-center items-center text-sm text-nowrap {historyDetail?.collect_duration_ms >
+                    LIMITATIONS.collect_duration_ms.error
+                      ? 'text-[#F87171]'
+                      : historyDetail?.collect_duration_ms > LIMITATIONS.collect_duration_ms.warn
+                        ? 'text-[#F97316]'
+                        : 'text-green-700'}">{historyDetail?.collect_duration_ms} ms</span>
                 </div>
+              {/if}
+
+              {#if historyDetail?.cpu_usage_percent}
                 <div class="flex flex-col items-center w-full gap-1">
                   <div class="w-full flex justify-start items-center gap-2.5">
                     <span
@@ -216,17 +322,38 @@
                       <span
                         class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
                         >Cpu :</span>
-                      <span class="bg-white/5 w-10 rounded-md h-3.5 animate-pulse"></span>
+                      <span
+                        class="flex justify-center items-center text-sm text-nowrap {historyDetail?.cpu_usage_percent >
+                        LIMITATIONS.cpu.error
+                          ? 'text-[#F87171]'
+                          : historyDetail?.cpu_usage_percent > LIMITATIONS.cpu.warn
+                            ? 'text-[#F97316]'
+                            : 'text-green-700'}">{historyDetail?.cpu_usage_percent}%</span>
                     </div>
                   </div>
-                  <div class="w-full h-0.5 rounded-full bg-black/10 dark:bg-white/10 animate-pulse">
+                  <div class="w-full h-0.5 rounded-full bg-black/10 dark:bg-white/10">
                     <div
-                      class="h-full rounded-full bg-white/5"
-                      style="width:50%;box-shadow: 0 0 1px 1px rgba(250,250,250,0.1);">
+                      class="h-full rounded-full {historyDetail?.cpu_usage_percent >
+                      LIMITATIONS.cpu.error
+                        ? 'bg-[#F87171]'
+                        : historyDetail?.cpu_usage_percent > LIMITATIONS.cpu.warn
+                          ? 'bg-[#F97316]'
+                          : 'bg-green-700'}"
+                      style="width: {Math.min(
+                        historyDetail?.cpu_usage_percent,
+                        100,
+                      )}%;box-shadow: 0 0 10px 1px {historyDetail?.cpu_usage_percent >
+                      LIMITATIONS.cpu.error
+                        ? '#F87171'
+                        : historyDetail?.cpu_usage_percent > LIMITATIONS.cpu.warn
+                          ? '#F97316'
+                          : '#008236'};">
                     </div>
                   </div>
                 </div>
+              {/if}
 
+              {#if historyDetail?.memory_usage_percent}
                 <div class="flex flex-col items-center w-full gap-1">
                   <div class="w-full flex justify-start items-center gap-2.5">
                     <span
@@ -236,207 +363,182 @@
                       <span
                         class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
                         >Memory :</span>
-                      <span class="bg-white/5 w-10 rounded-md h-3.5 animate-pulse"></span>
+                      <span
+                        class="flex justify-center items-center text-sm text-nowrap {historyDetail?.memory_usage_percent >
+                        LIMITATIONS.memory.error
+                          ? 'text-[#F87171]'
+                          : historyDetail?.memory_usage_percent > LIMITATIONS.memory.warn
+                            ? 'text-[#F97316]'
+                            : 'text-green-700'}">{historyDetail?.memory_usage_percent}%</span>
                     </div>
                   </div>
-                  <div class="w-full h-0.5 rounded-full bg-black/10 dark:bg-white/10 animate-pulse">
+                  <div class="w-full h-0.5 rounded-full bg-black/10 dark:bg-white/10">
                     <div
-                      class="h-full1 rounded-full bg-white/5"
-                      style="width:30%;box-shadow: 0 0 1px 1px rgba(250,250,250,0.1);">
+                      class="h-full rounded-full {historyDetail?.memory_usage_percent >
+                      LIMITATIONS.memory.error
+                        ? 'bg-[#F87171]'
+                        : historyDetail?.memory_usage_percent > LIMITATIONS.memory.warn
+                          ? 'bg-[#F97316]'
+                          : 'bg-green-700'}"
+                      style="width: {Math.min(
+                        historyDetail?.memory_usage_percent,
+                        100,
+                      )}%;box-shadow: 0 0 10px 1px {historyDetail?.memory_usage_percent >
+                      LIMITATIONS.memory.error
+                        ? '#F87171'
+                        : historyDetail?.memory_usage_percent > LIMITATIONS.memory.warn
+                          ? '#F97316'
+                          : '#008236'};">
                     </div>
                   </div>
                 </div>
+              {/if}
+
+              {#if historyDetail?.disk_usage_percent}
                 <div class="flex flex-col items-center w-full gap-1">
                   <div class="w-full flex justify-start items-center gap-2.5">
                     <span
-                      style="box-shadow: 0 0 10px 1px #00bc7d;"
+                      style="box-shadow: 0 0 10px 1px #22c55e;"
                       class="size-1.5 rounded-full bg-[#00bc7d]"></span>
                     <div class="flex-1 flex justify-between items-center gap-2.5">
                       <span
                         class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
                         >Disk :</span>
-                      <span class="bg-white/5 w-10 rounded-md h-3.5 animate-pulse"></span>
+                      <span
+                        class="flex justify-center items-center text-sm text-nowrap {historyDetail?.disk_usage_percent >
+                        LIMITATIONS.disk.error
+                          ? 'text-[#F87171]'
+                          : historyDetail?.disk_usage_percent > LIMITATIONS.disk.warn
+                            ? 'text-[#F97316]'
+                            : 'text-green-700'}">{historyDetail?.disk_usage_percent}%</span>
                     </div>
                   </div>
-                  <div class="w-full h-0.5 rounded-full bg-black/10 dark:bg-white/10 animate-pulse">
+                  <div class="w-full h-0.5 rounded-full bg-black/10 dark:bg-white/10">
                     <div
-                      class="h-full rounded-full bg-white/5"
-                      style="width:70%;box-shadow: 0 0 1px 1px rgba(250,250,250,0.1);">
+                      class="h-full rounded-full {historyDetail?.disk_usage_percent >
+                      LIMITATIONS.disk.error
+                        ? 'bg-[#F87171]'
+                        : historyDetail?.disk_usage_percent > LIMITATIONS.disk.warn
+                          ? 'bg-[#F97316]'
+                          : 'bg-green-700'}"
+                      style="width: {Math.min(
+                        historyDetail?.disk_usage_percent,
+                        100,
+                      )}%;box-shadow: 0 0 10px 1px {historyDetail?.disk_usage_percent >
+                      LIMITATIONS.disk.error
+                        ? '#F87171'
+                        : historyDetail?.disk_usage_percent > LIMITATIONS.disk.warn
+                          ? '#F97316'
+                          : '#008236'};">
                     </div>
                   </div>
-                </div>
-
-                <div
-                  class="w-full flex justify-start items-center text-sm pt-2.5 text-[#6a7282] text-center text-nowrap border-t border-t-[#0D0D0D]/10 dark:border-t-white/15">
-                  <span class="bg-white/5 w-full rounded-md h-4 animate-pulse"></span>
-                </div>
-              {:else}
-                {#if historyDetail?.collect_duration_ms}
-                  <div
-                    class="w-full flex justify-between items-center gap-2.5 border-b border-b-[#0D0D0D]/10 dark:border-b-white/15 pb-1.5">
-                    <span
-                      class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
-                      >Latency :</span>
-                    <span
-                      class="flex justify-center items-center text-sm text-nowrap {historyDetail?.collect_duration_ms >
-                      LIMITATIONS.collect_duration_ms.error
-                        ? 'text-[#F87171]'
-                        : historyDetail?.collect_duration_ms > LIMITATIONS.collect_duration_ms.warn
-                          ? 'text-[#F97316]'
-                          : 'text-green-700'}">{historyDetail?.collect_duration_ms} ms</span>
-                  </div>
-                {/if}
-
-                {#if historyDetail?.cpu_usage_percent}
-                  <div class="flex flex-col items-center w-full gap-1">
-                    <div class="w-full flex justify-start items-center gap-2.5">
-                      <span
-                        style="box-shadow: 0 0 10px 1px #ad46ff;"
-                        class="size-1.5 rounded-full bg-[#ad46ff]"></span>
-                      <div class="flex-1 flex justify-between items-center gap-2.5">
-                        <span
-                          class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
-                          >Cpu :</span>
-                        <span
-                          class="flex justify-center items-center text-sm text-nowrap {historyDetail?.cpu_usage_percent >
-                          LIMITATIONS.cpu.error
-                            ? 'text-[#F87171]'
-                            : historyDetail?.cpu_usage_percent > LIMITATIONS.cpu.warn
-                              ? 'text-[#F97316]'
-                              : 'text-green-700'}">{historyDetail?.cpu_usage_percent}%</span>
-                      </div>
-                    </div>
-                    <div class="w-full h-0.5 rounded-full bg-black/10 dark:bg-white/10">
-                      <div
-                        class="h-full rounded-full {historyDetail?.cpu_usage_percent >
-                        LIMITATIONS.cpu.error
-                          ? 'bg-[#F87171]'
-                          : historyDetail?.cpu_usage_percent > LIMITATIONS.cpu.warn
-                            ? 'bg-[#F97316]'
-                            : 'bg-green-700'}"
-                        style="width: {Math.min(
-                          historyDetail?.cpu_usage_percent,
-                          100,
-                        )}%;box-shadow: 0 0 10px 1px {historyDetail?.cpu_usage_percent >
-                        LIMITATIONS.cpu.error
-                          ? '#F87171'
-                          : historyDetail?.cpu_usage_percent > LIMITATIONS.cpu.warn
-                            ? '#F97316'
-                            : '#008236'};">
-                      </div>
-                    </div>
-                  </div>
-                {/if}
-
-                {#if historyDetail?.memory_usage_percent}
-                  <div class="flex flex-col items-center w-full gap-1">
-                    <div class="w-full flex justify-start items-center gap-2.5">
-                      <span
-                        style="box-shadow: 0 0 10px 1px #2b7fff;"
-                        class="size-1.5 rounded-full bg-[#2b7fff]"></span>
-                      <div class="flex-1 flex justify-between items-center gap-2.5">
-                        <span
-                          class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
-                          >Memory :</span>
-                        <span
-                          class="flex justify-center items-center text-sm text-nowrap {historyDetail?.memory_usage_percent >
-                          LIMITATIONS.memory.error
-                            ? 'text-[#F87171]'
-                            : historyDetail?.memory_usage_percent > LIMITATIONS.memory.warn
-                              ? 'text-[#F97316]'
-                              : 'text-green-700'}">{historyDetail?.memory_usage_percent}%</span>
-                      </div>
-                    </div>
-                    <div class="w-full h-0.5 rounded-full bg-black/10 dark:bg-white/10">
-                      <div
-                        class="h-full rounded-full {historyDetail?.memory_usage_percent >
-                        LIMITATIONS.memory.error
-                          ? 'bg-[#F87171]'
-                          : historyDetail?.memory_usage_percent > LIMITATIONS.memory.warn
-                            ? 'bg-[#F97316]'
-                            : 'bg-green-700'}"
-                        style="width: {Math.min(
-                          historyDetail?.memory_usage_percent,
-                          100,
-                        )}%;box-shadow: 0 0 10px 1px {historyDetail?.memory_usage_percent >
-                        LIMITATIONS.memory.error
-                          ? '#F87171'
-                          : historyDetail?.memory_usage_percent > LIMITATIONS.memory.warn
-                            ? '#F97316'
-                            : '#008236'};">
-                      </div>
-                    </div>
-                  </div>
-                {/if}
-
-                {#if historyDetail?.disk_usage_percent}
-                  <div class="flex flex-col items-center w-full gap-1">
-                    <div class="w-full flex justify-start items-center gap-2.5">
-                      <span
-                        style="box-shadow: 0 0 10px 1px #22c55e;"
-                        class="size-1.5 rounded-full bg-[#00bc7d]"></span>
-                      <div class="flex-1 flex justify-between items-center gap-2.5">
-                        <span
-                          class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
-                          >Disk :</span>
-                        <span
-                          class="flex justify-center items-center text-sm text-nowrap {historyDetail?.disk_usage_percent >
-                          LIMITATIONS.disk.error
-                            ? 'text-[#F87171]'
-                            : historyDetail?.disk_usage_percent > LIMITATIONS.disk.warn
-                              ? 'text-[#F97316]'
-                              : 'text-green-700'}">{historyDetail?.disk_usage_percent}%</span>
-                      </div>
-                    </div>
-                    <div class="w-full h-0.5 rounded-full bg-black/10 dark:bg-white/10">
-                      <div
-                        class="h-full rounded-full {historyDetail?.disk_usage_percent >
-                        LIMITATIONS.disk.error
-                          ? 'bg-[#F87171]'
-                          : historyDetail?.disk_usage_percent > LIMITATIONS.disk.warn
-                            ? 'bg-[#F97316]'
-                            : 'bg-green-700'}"
-                        style="width: {Math.min(
-                          historyDetail?.disk_usage_percent,
-                          100,
-                        )}%;box-shadow: 0 0 10px 1px {historyDetail?.disk_usage_percent >
-                        LIMITATIONS.disk.error
-                          ? '#F87171'
-                          : historyDetail?.disk_usage_percent > LIMITATIONS.disk.warn
-                            ? '#F97316'
-                            : '#008236'};">
-                      </div>
-                    </div>
-                  </div>
-                {/if}
-                {#if historyDetail?.is_offline}
-                  <div class="w-full flex justify-between items-center gap-2.5">
-                    <span
-                      class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
-                      >Status :</span>
-                    <span
-                      class="flex justify-center items-center text-sm text-nowrap capitalize text-[#F87171]"
-                      >Offline</span>
-                  </div>
-                {/if}
-
-                <div
-                  class="w-full flex justify-start items-center text-sm text-nowrap text-[#6a7282] text-center border-t-black/10 dark:border-t-white/15 border-t pt-1.5">
-                  {new Date(historyDetail?.collected_at).toLocaleString('en-CA', {
-                    year: 'numeric',
-                    month: '2-digit',
-                    day: '2-digit',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    second: '2-digit',
-                    hour12: false,
-                  })}
                 </div>
               {/if}
+              {#if historyDetail?.is_offline}
+                <div class="w-full flex justify-between items-center gap-2.5">
+                  <span class="flex justify-center items-center text-sm text-nowrap text-[#6a7282]"
+                    >Status :</span>
+                  <span
+                    class="flex justify-center items-center text-sm text-nowrap capitalize text-[#F87171]"
+                    >Offline</span>
+                </div>
+              {/if}
+
+              <div
+                class="w-full flex justify-start items-center text-sm text-nowrap text-[#6a7282] text-center border-t-black/10 dark:border-t-white/15 border-t pt-1.5">
+                {new Date(historyDetail?.collected_at).toLocaleString('en-CA', {
+                  year: 'numeric',
+                  month: '2-digit',
+                  day: '2-digit',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  second: '2-digit',
+                  hour12: false,
+                })}
+              </div>
+            </div>
+          {:else}
+            <div
+              class="absolute text-nowrap py-2 px-3 group-hover:flex hidden bottom-10 start-1/2 -translate-x-1/2 bg-white/40 dark:bg-black/80 backdrop-blur-md dark:backdrop-blur-3xl justify-center items-center overflow-hidden rounded-xl text-red-500/50 border border-[#F87171]/15 text-sm">
+              <div
+                class="w-full h-full relative flex justify-center items-center rounded-xl animate-pulse text-nowrap">
+                <div
+                  class="absolute top-1/2 start-1/2 -translate-1/2 h-0 rounded-full w-1/2"
+                  style="box-shadow: 0 0 500px 100px rgb(255,100,103,0.1)">
+                  <div class="w-full h-full bg-white/5"></div>
+                </div>
+
+                <div class="flex justify-center items-center gap-1 text-nowrap">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path
+                      d="M10.0003 18.3332C14.6027 18.3332 18.3337 14.6022 18.3337 9.99984C18.3337 5.39746 14.6027 1.6665 10.0003 1.6665C5.39795 1.6665 1.66699 5.39746 1.66699 9.99984C1.66699 14.6022 5.39795 18.3332 10.0003 18.3332Z"
+                      stroke="#B4242B"
+                      stroke-width="1.66667"
+                      stroke-linecap="round"
+                      stroke-linejoin="round" />
+                    <path
+                      d="M10 6.6665V9.99984"
+                      stroke="#B4242B"
+                      stroke-width="1.66667"
+                      stroke-linecap="round"
+                      stroke-linejoin="round" />
+                    <path
+                      d="M10 13.3335H10.0083"
+                      stroke="#B4242B"
+                      stroke-width="1.66667"
+                      stroke-linecap="round"
+                      stroke-linejoin="round" />
+                  </svg>
+                  <span class="text-red-500/70 mt-0.5 text-nowrap">Something Is Wrong</span>
+                </div>
+              </div>
             </div>
           {/if}
         </button>
       {/each}
+    </div>
+  </div>
+{:else}
+  <div
+    class="relative h-29 sm:h-32.75 flex justify-center items-center overflow-hidden dark:bg-[#0D0D0D] bg-[#FFFFFF] border rounded-[14px] text-red-500/50 animate-pulse border-[#F87171]/15 text-xl">
+    <div
+      class="absolute top-1/2 start-1/2 -translate-1/2 h-0 rounded-full w-1/2"
+      style="box-shadow: 0 0 500px 100px rgb(255,100,103,0.1)">
+      <div class="w-full h-full bg-white/5"></div>
+    </div>
+
+    <div class="flex justify-center items-center gap-1">
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 20 20"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M10.0003 18.3332C14.6027 18.3332 18.3337 14.6022 18.3337 9.99984C18.3337 5.39746 14.6027 1.6665 10.0003 1.6665C5.39795 1.6665 1.66699 5.39746 1.66699 9.99984C1.66699 14.6022 5.39795 18.3332 10.0003 18.3332Z"
+          stroke="#B4242B"
+          stroke-width="1.66667"
+          stroke-linecap="round"
+          stroke-linejoin="round" />
+        <path
+          d="M10 6.6665V9.99984"
+          stroke="#B4242B"
+          stroke-width="1.66667"
+          stroke-linecap="round"
+          stroke-linejoin="round" />
+        <path
+          d="M10 13.3335H10.0083"
+          stroke="#B4242B"
+          stroke-width="1.66667"
+          stroke-linecap="round"
+          stroke-linejoin="round" />
+      </svg>
+      <span class="text-xl text-red-500/70 mt-0.5">Something Is Wrong</span>
     </div>
   </div>
 {/if}
