@@ -183,18 +183,177 @@
   }
 </script>
 
-<section class="w-full m-auto h-[90vh] sm:p-7.75 sm:pt-2.5">
+<section class="w-full flex flex-col gap-8 m-auto h-[90vh] sm:p-7.75 sm:pt-2.5">
+  <div class="w-full grid grid-cols-12 gap-4 h-85">
+    <div class="col-span-3 grid grid-cols-3 grid-rows-2 gap-3">
+      <div
+        class="border rounded-[14px] border-[#2B7FFF]/20 flex flex-col justify-between items-center p-1 w-full h-full relative overflow-hidden group">
+        <div
+          class="absolute -top-5 end-0 size-0 rounded-full group-hover:top-5 group-hover:end-5 transition-all duration-700"
+          style="box-shadow: 0 0 100px 30px rgba(0,102,255,1);">
+          <div class="w-full h-full bg-white/5"></div>
+        </div>
+
+        <div
+          class="relative flex items-center justify-center gap-2.5 bg-[#2B7FFF]/10 w-full rounded-xl py-0.5">
+          <img
+            class="absolute top-1/2 -translate-y-1/2 start-1.5 w-4.5"
+            width="20"
+            src="/icons/total.svg"
+            alt="total" />
+          <span class="text-base text-black dark:text-white">Total</span>
+        </div>
+
+        <span
+          class="text-3xl xl:text-2xl 2xl:text-3xl p-4 xl:p-3 2xl:p-2.5 text-[#3b82f6] my-auto 3xl:text-4xl"
+          >27</span>
+        <img
+          class="opacity-5 absolute bottom-0 end-0"
+          width="70"
+          src="/icons/total.svg"
+          alt="total" />
+      </div>
+      <div
+        class="border rounded-[14px] border-[#00bc7d]/20 flex flex-col justify-between items-center p-1 w-full h-full relative overflow-hidden group">
+        <div
+          class="absolute -top-5 end-0 size-0 rounded-full group-hover:top-5 group-hover:end-5 transition-all duration-700"
+          style="box-shadow: 0 0 100px 30px rgb(0,212,146,0.8);">
+          <div class="w-full h-full bg-white/5"></div>
+        </div>
+
+        <div
+          class="relative flex items-center justify-center gap-2.5 bg-[#00bc7d]/10 w-full rounded-xl py-0.5">
+          <img
+            class="absolute top-1/2 -translate-y-1/2 start-1.5 w-4.5"
+            width="20"
+            src="/icons/online.png"
+            alt="total" />
+          <span class="text-base text-black dark:text-white">Enable</span>
+        </div>
+
+        <span
+          class="text-3xl xl:text-2xl 2xl:text-3xl p-4 xl:p-3 2xl:p-2.5 text-[#00bc7d] my-auto 3xl:text-4xl"
+          >10</span>
+        <img
+          class="opacity-5 absolute bottom-0 end-0"
+          width="70"
+          src="/icons/online.png"
+          alt="total" />
+      </div>
+      <div
+        class="border rounded-[14px] border-[#FB2C36]/15 flex flex-col justify-between items-center p-1 w-full h-full relative overflow-hidden group">
+        <div
+          class="absolute -top-5 end-0 size-0 rounded-full group-hover:top-5 group-hover:end-5 transition-all duration-700"
+          style="box-shadow: 0 0 100px 30px rgb(255,100,103)">
+          <div class="w-full h-full bg-white/5"></div>
+        </div>
+
+        <div
+          class="relative flex items-center justify-center gap-2.5 bg-[#F87171]/10 w-full rounded-xl py-0.5">
+          <img
+            class="absolute top-1/2 -translate-y-1/2 start-1.5 w-4.5"
+            width="20"
+            src="/icons/offline.png"
+            alt="total" />
+          <span class="text-base text-black dark:text-white">Disable</span>
+        </div>
+
+        <span
+          class="text-3xl xl:text-2xl 2xl:text-3xl p-4 xl:p-3 2xl:p-2.5 text-[#F87171] my-auto 3xl:text-4xl"
+          >27</span>
+        <img
+          class="opacity-5 absolute bottom-0 end-0"
+          width="80"
+          src="/icons/offline.png"
+          alt="total" />
+      </div>
+      <div
+        class="border rounded-[14px] border-[#2B7FFF]/20 flex flex-col justify-between items-center p-1 w-full h-full relative overflow-hidden group">
+        <div
+          class="absolute -top-5 end-0 size-0 rounded-full group-hover:top-5 group-hover:end-5 transition-all duration-700"
+          style="box-shadow: 0 0 100px 30px rgba(0,102,255,1);">
+          <div class="w-full h-full bg-white/5"></div>
+        </div>
+
+        <div
+          class="relative flex items-center justify-center gap-2.5 bg-[#2B7FFF]/10 w-full rounded-xl py-0.5">
+          <img
+            class="absolute top-1/2 -translate-y-1/2 start-1.5 w-4.5"
+            width="20"
+            src="/icons/total.svg"
+            alt="total" />
+          <span class="text-base text-black dark:text-white">Total</span>
+        </div>
+
+        <span
+          class="text-3xl xl:text-2xl 2xl:text-3xl p-4 xl:p-3 2xl:p-2.5 text-[#3b82f6] my-auto 3xl:text-4xl"
+          >27</span>
+        <img
+          class="opacity-5 absolute bottom-0 end-0"
+          width="80"
+          src="/icons/total.svg"
+          alt="total" />
+      </div>
+      <div
+        class="border rounded-[14px] border-[#2B7FFF]/20 flex flex-col justify-between items-center p-1 w-full h-full relative overflow-hidden group">
+        <div
+          class="absolute -top-5 end-0 size-0 rounded-full group-hover:top-5 group-hover:end-5 transition-all duration-700"
+          style="box-shadow: 0 0 100px 30px rgba(0,102,255,1);">
+          <div class="w-full h-full bg-white/5"></div>
+        </div>
+
+        <div
+          class="relative flex items-center justify-center gap-2.5 bg-[#2B7FFF]/10 w-full rounded-xl py-0.5">
+          <img
+            class="absolute top-1/2 -translate-y-1/2 start-1.5 w-4.5"
+            width="20"
+            src="/icons/total.svg"
+            alt="total" />
+          <span class="text-base text-black dark:text-white">Total</span>
+        </div>
+
+        <span
+          class="text-3xl xl:text-2xl 2xl:text-3xl p-4 xl:p-3 2xl:p-2.5 text-[#3b82f6] my-auto 3xl:text-4xl"
+          >27</span>
+        <img
+          class="opacity-5 absolute bottom-0 end-0"
+          width="80"
+          src="/icons/total.svg"
+          alt="total" />
+      </div>
+      <div
+        class="border rounded-[14px] border-[#2B7FFF]/20 flex flex-col justify-between items-center p-1 w-full h-full relative overflow-hidden group">
+        <div
+          class="absolute -top-5 end-0 size-0 rounded-full group-hover:top-5 group-hover:end-5 transition-all duration-700"
+          style="box-shadow: 0 0 100px 30px rgba(0,102,255,1);">
+          <div class="w-full h-full bg-white/5"></div>
+        </div>
+
+        <div
+          class="relative flex items-center justify-center gap-2.5 bg-[#2B7FFF]/10 w-full rounded-xl py-0.5">
+          <img
+            class="absolute top-1/2 -translate-y-1/2 start-1.5 w-4.5"
+            width="20"
+            src="/icons/total.svg"
+            alt="total" />
+          <span class="text-base text-black dark:text-white">Total</span>
+        </div>
+
+        <span
+          class="text-3xl xl:text-2xl 2xl:text-3xl p-4 xl:p-3 2xl:p-2.5 text-[#3b82f6] my-auto 3xl:text-4xl"
+          >27</span>
+        <img
+          class="opacity-5 absolute bottom-0 end-0"
+          width="80"
+          src="/icons/total.svg"
+          alt="total" />
+      </div>
+    </div>
+    <div class="col-span-9 border border-white grid grid-cols-12 gap-4"></div>
+  </div>
+
   <div
     class="w-full h-full px-6 sm:py-6 rounded-[14px] dark:bg-[#0D0D0D] bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5 flex flex-col gap-7.75 overflow-y-auto custom-scroll pb-4">
-    <div class="flex justify-start items-center gap-4">
-      <div
-        class="flex justify-center items-center size-12 rounded-2xl bg-[#0D0D0D]/5 dark:bg-white/5">
-        <img src="/icons/bell.png" alt="bell" />
-      </div>
-
-      <span class="text-black dark:text-white text-xl">Alerts History</span>
-    </div>
-
     <div class="w-full flex flex-col justify-start items-center gap-2">
       <div
         class="w-full flex flex-col justify-start items-start gap-2 border p-3 border-[#0D0D0D]/5 dark:border-white/5 rounded-lg">
