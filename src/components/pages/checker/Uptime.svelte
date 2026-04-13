@@ -207,7 +207,7 @@
           <button
             type="button"
             aria-label="detail of status"
-            onmouseover={() => {
+            onmouseenter={() => {
               historyDetail = null;
               historyDetailLoading = true;
               http
@@ -231,7 +231,7 @@
                 });
             }}
             onblur={() => {
-              historyDetailDetail = null;
+              historyDetail = null;
             }}
             class="w-full h-4 rounded-[1px] hover:h-6 transition-all cursor-pointer relative group {status ===
               'error' || status === 'down'

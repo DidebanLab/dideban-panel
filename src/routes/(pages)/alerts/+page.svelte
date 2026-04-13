@@ -7,8 +7,12 @@
   import { http } from '../../../services/http.svelte';
   import { opener } from '../../../stores/modal.svelte';
   import { LIMITATIONS } from '../../../components/config.svelte';
+  import { goto } from '$app/navigation';
 
   let isMobile = $state(innerWidth < 641);
+
+  let relationInfo = $state(null);
+  let relationInfoLoading = $state(true);
 
   let filter = $state({
     id: '',
@@ -22,67 +26,72 @@
   let data = $state({
     results: [
       {
-        id: 'main',
+        id: 1,
+        check_id: 1,
+        agent_id: null,
         type: 'telegram',
-        rel: 'agent',
-        healthType: 'cpu',
-        message:
-          'Lorem ipsum dolor sit amet consec tetur adipisicing elit. Quibusdam, voluptatum quis incidunt amet quod numquam aspernatur accusantium nam rem repellendus et fugit magni pariatur cum, unde dolorem impedit! Magni, dolore!',
-        data: [0, 50, 20, 80],
+        config: '{"token":"...","chat_id":"..."}',
+        condition_type: 'status_down',
+        condition_value: null,
+        enabled: true, // enable , disable
+        notify_on_recovery: true,
+        repeat_interval_seconds: 300,
+        escalation_delay_seconds: 0,
+        machine_state: 'resolved', //idle , resolved , firing
+        last_fired_at: '2026-04-10T08:30:00Z',
+        last_status: 'sent',
+        created_at: '2026-03-01T12:00:00Z',
       },
       {
-        id: 'main',
+        id: 2,
+        check_id: 2,
+        agent_id: null,
         type: 'telegram',
-        rel: 'agent',
-        healthType: 'cpu',
-        message:
-          'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam, voluptatum quis incidunt amet quod numquam aspernatur accusantium nam rem repellendus et fugit magni pariatur cum, unde dolorem impedit! Magni, dolore!',
-        data: [0, 50, 20, 80],
+        config: '{"token":"...","chat_id":"..."}',
+        condition_type: 'status_down',
+        condition_value: null,
+        enabled: true, // enable , disable
+        notify_on_recovery: true,
+        repeat_interval_seconds: 300,
+        escalation_delay_seconds: 0,
+        machine_state: 'resolved', //idle , resolved , firing
+        last_fired_at: '2026-04-10T08:30:00Z',
+        last_status: 'sent',
+        created_at: '2026-03-01T12:00:00Z',
       },
       {
-        id: 'main',
+        id: 3,
+        check_id: 3,
+        agent_id: null,
         type: 'telegram',
-        rel: 'agent',
-        healthType: 'cpu',
-        message:
-          'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam, voluptatum quis incidunt amet quod numquam aspernatur accusantium nam rem repellendus et fugit magni pariatur cum, unde dolorem impedit! Magni, dolore!',
-        data: [0, 50, 20, 80],
+        config: '{"token":"...","chat_id":"..."}',
+        condition_type: 'status_down',
+        condition_value: null,
+        enabled: true, // enable , disable
+        notify_on_recovery: true,
+        repeat_interval_seconds: 300,
+        escalation_delay_seconds: 0,
+        machine_state: 'resolved', //idle , resolved , firing
+        last_fired_at: '2026-04-10T08:30:00Z',
+        last_status: 'sent',
+        created_at: '2026-03-01T12:00:00Z',
       },
       {
-        id: 'main',
+        id: 4,
+        check_id: 5,
+        agent_id: null,
         type: 'telegram',
-        rel: 'agent',
-        healthType: 'cpu',
-        message:
-          'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam, voluptatum quis incidunt amet quod numquam aspernatur accusantium nam rem repellendus et fugit magni pariatur cum, unde dolorem impedit! Magni, dolore!',
-        data: [0, 50, 20, 80],
-      },
-      {
-        id: 'main',
-        type: 'telegram',
-        rel: 'agent',
-        healthType: 'cpu',
-        message:
-          'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam, voluptatum quis incidunt amet quod numquam aspernatur accusantium nam rem repellendus et fugit magni pariatur cum, unde dolorem impedit! Magni, dolore!',
-        data: [0, 50, 20, 80],
-      },
-      {
-        id: 'test1',
-        type: 'sms',
-        rel: 'checker',
-        healthType: 'collect_duration_ms',
-        message:
-          'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam, voluptatum quis incidunt amet quod numquam aspernatur accusantium nam rem repellendus et fugit magni pariatur cum, unde dolorem impedit! Magni, dolore!',
-        data: [1000, 2000, 1000, 4200],
-      },
-      {
-        id: 'development',
-        type: 'email',
-        rel: 'agent',
-        healthType: 'disk',
-        message:
-          'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam, voluptatum quis incidunt amet quod numquam aspernatur accusantium nam rem repellendus et fugit magni pariatur cum, unde dolorem impedit! Magni, dolore!',
-        data: [0, 40, 10, 70],
+        config: '{"token":"...","chat_id":"..."}',
+        condition_type: 'status_down',
+        condition_value: null,
+        enabled: true, // enable , disable
+        notify_on_recovery: true,
+        repeat_interval_seconds: 300,
+        escalation_delay_seconds: 0,
+        machine_state: 'resolved', //idle , resolved , firing
+        last_fired_at: '2026-04-10T08:30:00Z',
+        last_status: 'sent',
+        created_at: '2026-03-01T12:00:00Z',
       },
     ],
     count: '',
@@ -90,60 +99,63 @@
     prev: '',
   });
 
-  $effect(() => {
-    const params = {
-      id: '',
-      rel: 'all',
-      type: 'all',
-      healthType: 'all',
-      limit: filter.limit,
-      offset: filter.offset,
-    };
+  // $effect(() => {
+  //   const params = {
+  //     id: '',
+  //     rel: 'all',
+  //     type: 'all',
+  //     healthType: 'all',
+  //     limit: filter.limit,
+  //     offset: filter.offset,
+  //   };
 
-    http.get(endpoints.alerts, { params }).then(res => {
-      data = {
-        results: res.data.results,
-        count: Math.ceil(res.data.count / filter.limit),
-        next: res.data.next,
-        prev: res.data.previous,
-      };
-    });
-  });
+  //   http.get(endpoints.alerts, { params }).then(res => {
+  //     data = {
+  //       results: res.data.results,
+  //       count: Math.ceil(res.data.count / filter.limit),
+  //       next: res.data.next,
+  //       prev: res.data.previous,
+  //     };
+  //   });
+  // });
 
-  function errorSelector(healthType) {
-    switch (healthType) {
-      case 'cpu':
-        return LIMITATIONS.cpu.error;
-      case 'collect_duration_ms':
-        return LIMITATIONS.collect_duration_ms.error;
-      case 'memory':
-        return LIMITATIONS.memory.error;
-      case 'disk':
-        return LIMITATIONS.disk.error;
-    }
-  }
-
-  function iconSelector(type, error) {
+  function iconSelector(type) {
     switch (type) {
       case 'telegram':
         return `<svg
-            width="22"
+            width="20"
             class="telegram-icon"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
-            fill=${error ? '#ef4444' : '#F97316'}
+            fill='#32ABE7'
             aria-label="Telegram">
             <path d="M22.5 3.5L1.7 11.6c-1 .4-.9 1.8.1 2.1l5.3 1.7 2 6.3c.3.9 1.5 1.1 2.1.4l3-3.4 5.5 4.1c.8.6 2 .1 2.2-.9l3.3-17.2c.2-1.1-.8-2-1.9-1.6zm-4.3 5.2l-8.5 7.6-.3 3.1-1.4-4.4 10.2-6.3z" />
           </svg>`;
 
-      case 'sms':
+      case 'webhook':
         return `<svg
               xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
+              width="22"
+              height="22"
               viewBox="0 0 24 24"
               fill="none"
-              stroke=${error ? '#ef4444' : '#F97316'}
+              stroke='#ef4444'
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+              <line x1="7" y1="8" x2="17" y2="8" />
+              <line x1="7" y1="12" x2="13" y2="12" />
+            </svg>`;
+      //Bale icon is Fake
+      case 'bale':
+        return `<svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke='#ef4444'
               stroke-width="2"
               stroke-linecap="round"
               stroke-linejoin="round">
@@ -154,11 +166,11 @@
 
       case 'email':
         return `<svg
-            width="24"
+            width="22"
             class="email-icon"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
-            fill=${error ? '#ef4444' : '#F97316'}
+            fill='#ef4444' 
             aria-label="Email">
             <path
               d="M20 4H4c-1.1 0-2 .9-2 2v12c0 
@@ -183,7 +195,7 @@
   }
 </script>
 
-<section class="w-full flex flex-col gap-8 m-auto h-[90vh] sm:p-7.75 sm:pt-2.5">
+<section class="w-full flex flex-col gap-8 sm:p-7.75 sm:pt-2.5">
   <div
     class="w-full sm:dark:bg-[#0D0D0D] sm:bg-[#FFFFFF] flex flex-col gap-8 p-6 border border-[#0D0D0D]/5 dark:border-white/5 rounded-[14px] h-100">
     <div class="flex flex-col justify-start items-start gap-1">
@@ -192,73 +204,32 @@
     </div>
 
     <div class="w-full h-full grid grid-cols-5 gap-6">
-      <div class="flex flex-col h-full gap-6">
+      <div
+        class="rounded-[14px] border border-[#0D0D0D]/5 dark:border-white/5 p-4 flex flex-col justify-between gap-3">
         <div
-          class="rounded-[14px] border group border-[#2B7FFF]/20 overflow-hidden h-[100px] p-2 flex relative justify-between">
-          <div
-            class="absolute -top-7 start-2 size-0 rounded-full group-hover:-top-3 group-hover:start-7 transition-all duration-1000"
-            style="box-shadow: 0 0 100px 30px rgba(0,102,255,1);">
-            <div class="w-full h-full bg-white/5"></div>
-          </div>
-          <span class="text-black dark:text-white text-nowrap text-xl">Total</span><span
-            class="text-[#3b82f6] text-nowrap text-2xl">235</span>
+          class="text-base text-white w-full border-b border-[#0D0D0D]/5 dark:border-white/5 pb-1">
+          Status
         </div>
-        <div class="rounded-[14px] h-full w-full flex gap-1.75">
-          <div
-            class="border-[#2B7FFF]/20 flex flex-col justify-between items-center p-1 rounded-[14px] border w-full h-full relative overflow-hidden group">
-            <div
-              class="absolute -top-5 end-0 size-0 rounded-full group-hover:top-5 group-hover:end-5 transition-all duration-700"
-              style="box-shadow: 0 0 100px 30px rgba(0,102,255,1);">
-              <div class="w-full h-full bg-white/5"></div>
-            </div>
-            <div
-              class="relative flex items-center justify-center gap-2.5 bg-[#2B7FFF]/10 w-full rounded-xl py-1">
-              <img
-                class="absolute top-1/2 -translate-y-1/2 start-1.5 w-4.5"
-                width="20"
-                src="/icons/total.svg"
-                alt="total" />
-              <span class="text-base text-black dark:text-white w-4.5">Total</span>
-            </div>
 
-            <span
-              class="text-3xl xl:text-2xl 2xl:text-3xl p-4 xl:p-3 2xl:p-2.5 text-[#3b82f6] my-auto"
-              >3</span>
-            <img
-              class="opacity-5 absolute bottom-0 end-0"
-              width="70"
-              src="/icons/total.svg"
-              alt="total" />
+        <div class="h-full w-full flex flex-col gap-1.75">
+          <div
+            class="flex justify-between items-center w-full bg-white/5 px-2 py-1 rounded-lg shadow shadow-white/10">
+            <span class="text-white text-sm">Total </span>
+            <span class="text-white 29 text-sm">20</span>
           </div>
           <div
-            class="border-[#2B7FFF]/20 flex flex-col justify-between items-center p-1 rounded-[14px] border w-full h-full relative overflow-hidden group">
-            <div
-              class="absolute -top-5 end-0 size-0 rounded-full group-hover:top-5 group-hover:end-5 transition-all duration-700"
-              style="box-shadow: 0 0 100px 30px rgba(0,102,255,1);">
-              <div class="w-full h-full bg-white/5"></div>
-            </div>
-            <div
-              class="relative flex items-center justify-center gap-2.5 bg-[#2B7FFF]/10 w-full rounded-xl py-1">
-              <img
-                class="absolute top-1/2 -translate-y-1/2 start-1.5 w-4.5"
-                width="20"
-                src="/icons/total.svg"
-                alt="total" />
-              <span class="text-base text-black dark:text-white w-4.5">Total</span>
-            </div>
+            class="flex justify-between items-center w-full bg-white/5 px-2 py-1 rounded-lg shadow shadow-white/10">
+            <span class="text-white text-sm">Enable </span>
+            <span class="text-white 29 text-sm">10</span>
+          </div>
 
-            <span
-              class="text-3xl xl:text-2xl 2xl:text-3xl p-4 xl:p-3 2xl:p-2.5 text-[#3b82f6] my-auto"
-              >3</span>
-            <img
-              class="opacity-5 absolute bottom-0 end-0"
-              width="70"
-              src="/icons/total.svg"
-              alt="total" />
+          <div
+            class="flex justify-between items-center w-full bg-white/5 px-2 py-1 rounded-lg shadow shadow-white/10">
+            <span class="text-white text-sm">Disable </span>
+            <span class="text-white 29 text-sm">20</span>
           </div>
         </div>
       </div>
-
       <div
         class="rounded-[14px] border border-[#0D0D0D]/5 dark:border-white/5 p-4 flex flex-col justify-between gap-3">
         <div
@@ -390,7 +361,7 @@
   </div>
 
   <div
-    class="w-full h-full px-6 sm:py-6 rounded-[14px] dark:bg-[#0D0D0D] bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5 flex flex-col gap-7.75 overflow-y-auto custom-scroll pb-4">
+    class="w-full h-[90vh] px-6 sm:py-6 rounded-[14px] dark:bg-[#0D0D0D] bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5 flex flex-col gap-7.75 overflow-y-auto custom-scroll pb-4">
     <div class="w-full flex flex-col justify-start items-center gap-2">
       <div
         class="w-full flex flex-col justify-start items-start gap-2 border p-3 border-[#0D0D0D]/5 dark:border-white/5 rounded-lg">
@@ -422,7 +393,7 @@
               <Select
                 className="bg-transparent! backdrop-blur-none! px-1.5! capitalize"
                 bind:value={filter.rel}
-                options={[{ name: 'all' }, { name: 'agent' }, { name: 'checker' }]} />
+                options={[{ name: 'all' }, { name: 'agent' }, { name: 'check' }]} />
             </div>
             <div
               class="flex gap-1.5 ps-3 justify-start items-center bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-md w-fit">
@@ -473,129 +444,307 @@
         </div>
       </div>
 
-      <div class="w-full flex flex-col gap-2 text-sm">
-        <div class="w-full flex justify-start gap-1 items-center text-white">
+      <div class="w-full flex flex-col gap-1.5 text-sm">
+        <div class="w-full mb-0.5 flex justify-start gap-1 items-center text-white">
           <span
             class="w-12 md:w-13 text-black dark:text-white text-center py-2 backdrop-blur-3xl bg-[#0D0D0D]/5 dark:bg-white/5 rounded-md"
             >Type</span>
-          <span
-            class="w-22 md:w-25 xl:w-45 text-black dark:text-white text-center py-2 backdrop-blur-3xl bg-[#0D0D0D]/5 dark:bg-white/5 rounded-md"
-            >Id</span>
+
           <span
             class="w-15 lg:w-18 xl:w-25 text-black dark:text-white text-center py-2 backdrop-blur-3xl bg-[#0D0D0D]/5 dark:bg-white/5 rounded-md"
             >Rel</span>
           <span
-            class="w-18 xl:w-25 text-black dark:text-white text-center py-2 backdrop-blur-3xl bg-[#0D0D0D]/5 dark:bg-white/5 rounded-md text-nowrap"
-            >Hl Type</span>
-          <span
-            class="hidden lg:inline w-18 xl:w-25 text-black dark:text-white text-center py-2 backdrop-blur-3xl bg-[#0D0D0D]/5 dark:bg-white/5 rounded-md text-nowrap"
+            class="w-15 lg:w-18 xl:w-25 text-black dark:text-white text-center py-2 backdrop-blur-3xl bg-[#0D0D0D]/5 dark:bg-white/5 rounded-md text-nowrap"
             >Status</span>
           <span
-            class="flex-1 hidden lg:inline text-black dark:text-white text-center py-2 backdrop-blur-3xl bg-[#0D0D0D]/5 dark:bg-white/5 rounded-md"
-            >Message</span>
+            class="flex-1 text-black dark:text-white text-center py-2 backdrop-blur-3xl bg-[#0D0D0D]/5 dark:bg-white/5 rounded-md text-nowrap"
+            >Condition Type</span>
           <span
-            class="max-lg:flex-1 hidden sm:inline md:w-30 xl:w-61 text-black dark:text-white text-center py-2 backdrop-blur-3xl bg-[#0D0D0D]/5 dark:bg-white/5 rounded-md"
-            >Chart</span>
+            class="flex-1 text-black dark:text-white text-center py-2 backdrop-blur-3xl bg-[#0D0D0D]/5 dark:bg-white/5 rounded-md text-nowrap"
+            >Condition Value</span>
           <span
-            class="p-2 text-black dark:text-white text-center backdrop-blur-3xl bg-[#0D0D0D]/5 dark:bg-white/5 rounded-md"
-            >Detail</span>
+            class="flex-1 text-black dark:text-white text-center py-2 backdrop-blur-3xl bg-[#0D0D0D]/5 dark:bg-white/5 rounded-md text-nowrap"
+            >Machine State</span>
+          <span
+            class="flex-1 text-black dark:text-white text-center py-2 backdrop-blur-3xl bg-[#0D0D0D]/5 dark:bg-white/5 rounded-md text-nowrap"
+            >Send Status</span>
+          <span
+            class="flex-1 text-black dark:text-white text-center py-2 backdrop-blur-3xl bg-[#0D0D0D]/5 dark:bg-white/5 rounded-md text-nowrap"
+            >Date</span>
+
+          <span
+            class="p-2 w-22 text-black dark:text-white text-center backdrop-blur-3xl bg-[#0D0D0D]/5 dark:bg-white/5 rounded-md"
+            >Actions</span>
         </div>
 
         {#each data.results as result}
-          {@const error = result.data[result.data.length - 1] > errorSelector(result.healthType)}
           <div
-            class="w-full h-12 sm:h-14 flex justify-start items-center gap-1 rounded-xl dark:text-white sm:p-1 border {error
-              ? 'border-[#EF4444]/20 bg-[#610000]/5'
-              : 'bg-[#F97316]/5 border-[#F97316]/15'}">
-            <div
-              class="flex justify-center items-center p-2.5 md:p-3 lg:bg-[#EF4444]/10 rounded-xl">
-              {@html iconSelector(result.type, error)}
+            class="w-full h-12 flex justify-start items-center gap-1 rounded-xl dark:text-white sm:p-1 border border-[#EF4444]/15 bg-[#610000]/5">
+            <div class="w-12 flex justify-start items-center">
+              <div
+                class="flex justify-center items-center p-2 md:p-2 md:pe-2.5 rounded-xl {result.type ===
+                'telegram'
+                  ? 'bg-[#28a1da]/10'
+                  : ''}">
+                {@html iconSelector(result.type)}
+              </div>
             </div>
-            <div class=" h-full w-19 sm:w-22 md:w-25 xl:w-45 flex items-center justify-center">
-              <span class="text-xs md:text-sm xl:text-lg capitalize">{result.id}</span>
+
+            <div class=" h-full w-15 lg:w-18 xl:w-25 flex items-center justify-center">
+              <button
+                type="button"
+                aria-label="relation type"
+                onmouseenter={() => {
+                  relationInfo = null;
+                  relationInfoLoading = true;
+
+                  let url;
+                  if (result.check_id) {
+                    http
+                      .get(endpoints.singleCheck(result.check_id))
+                      .then(
+                        res =>
+                          (relationInfo = { name: res.data?.data?.name, id: res.data?.data?.id }),
+                      )
+                      .finally(() => {
+                        relationInfoLoading = false;
+                      });
+                  } else if (result.agent_id) {
+                    http
+                      .get(endpoints.singleAgent(result.agent_id))
+                      .then(
+                        res =>
+                          (relationInfo = { name: res.data?.data?.name, id: res.data?.data?.id }),
+                      )
+                      .finally(() => {
+                        relationInfoLoading = false;
+                      });
+                  } else return;
+                }}
+                onmouseleave={() => {
+                  relationInfo = null;
+                }}
+                onfocus={() => {
+                  relationInfo = null;
+                  relationInfoLoading = true;
+
+                  let url;
+                  if (result.check_id) {
+                    url = endpoints.singleCheck(result.check_id);
+                  } else if (result.agent_id) {
+                    url = endpoints.singleAgent(result.agent_id);
+                  } else return;
+
+                  http
+                    .get(url)
+                    .then(
+                      res =>
+                        (relationInfo = { name: res.data?.data?.name, id: res.data?.data?.id }),
+                    )
+                    .finally(() => {
+                      relationInfoLoading = false;
+                    });
+                }}
+                onblur={() => {
+                  relationInfo = null;
+                }}
+                class="flex group relative justify-start items-center gap-1">
+                <a
+                  href={result.agent_id
+                    ? `/agents/${result.agent_id}`
+                    : `/checkers/${result.check_id}`}
+                  class="text-xs cursor-pointer lg:text-sm xl:text-md text-black dark:text-white capitalize">
+                  {result.agent_id ? 'Agent' : 'Check'}
+                </a>
+                <img
+                  class="cursor-pointer"
+                  width="20"
+                  height="20"
+                  src="/icons/question.png"
+                  alt="question" />
+                {#if relationInfoLoading}
+                  <div
+                    class="absolute *:text-nowrap bottom-5 start-1/2 -translate-x-1/2 bg-black/50 backdrop-blur-2xl hidden group-hover:flex text-white/30 text-sm border border-white/10 rounded-xl py-3 px-4 flex-col gap-1">
+                    <div class="flex justify-between items-center w-full gap-2">
+                      <span>id :</span>
+                      <span class="bg-white/5 w-7 rounded-md animate-pulse h-4"></span>
+                    </div>
+
+                    <div class="flex justify-between min-w-30 items-center w-full gap-2">
+                      <span>name :</span>
+                      <span class="bg-white/5 w-20 rounded-md animate-pulse h-4"></span>
+                    </div>
+                  </div>
+                {:else if relationInfo}
+                  <div
+                    class="absolute *:text-nowrap bottom-5 start-1/2 -translate-x-1/2 bg-black/50 backdrop-blur-2xl hidden group-hover:flex text-white/30 text-sm border border-white/10 rounded-xl py-3 px-4 flex-col gap-1">
+                    <div class="flex justify-between items-center w-full gap-2">
+                      <span>Id :</span>
+                      <span class="text-white">{relationInfo.id}</span>
+                    </div>
+
+                    <div class="flex justify-between items-center min-w-30 w-full gap-2">
+                      <span>Name :</span>
+                      <span class="text-white">{relationInfo.name}</span>
+                    </div>
+
+                    <a
+                      href={result.agent_id
+                        ? `/agents/${result.agent_id}`
+                        : `/checkers/${relationInfo.id}`}
+                      aria-label="go to relation page"
+                      class="text-nowrap gap-2 justify-center items-center flex cursor-pointer mt-2 hover:opacity-70 rounded-md border border-[#2B7FFF]/20 px-2 py-1 w-full text-[#2B7FFF] text-xs">
+                      Go to Page
+                    </a>
+                  </div>
+                {:else}
+                  <div
+                    class="absolute text-nowrap py-2 px-3 group-hover:flex hidden bottom-5 start-1/2 -translate-x-1/2 bg-white/40 dark:bg-black/80 backdrop-blur-md dark:backdrop-blur-3xl justify-center items-center overflow-hidden rounded-xl text-red-500/50 border border-[#F87171]/15 text-sm">
+                    <div
+                      class="w-full h-full relative flex justify-center items-center rounded-xl animate-pulse text-nowrap">
+                      <div
+                        class="absolute top-1/2 start-1/2 -translate-1/2 h-0 rounded-full w-1/2"
+                        style="box-shadow: 0 0 500px 100px rgb(255,100,103,0.1)">
+                        <div class="w-full h-full bg-white/5"></div>
+                      </div>
+
+                      <div class="flex justify-center items-center gap-1 text-nowrap">
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 20 20"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg">
+                          <path
+                            d="M10.0003 18.3332C14.6027 18.3332 18.3337 14.6022 18.3337 9.99984C18.3337 5.39746 14.6027 1.6665 10.0003 1.6665C5.39795 1.6665 1.66699 5.39746 1.66699 9.99984C1.66699 14.6022 5.39795 18.3332 10.0003 18.3332Z"
+                            stroke="#B4242B"
+                            stroke-width="1.66667"
+                            stroke-linecap="round"
+                            stroke-linejoin="round" />
+                          <path
+                            d="M10 6.6665V9.99984"
+                            stroke="#B4242B"
+                            stroke-width="1.66667"
+                            stroke-linecap="round"
+                            stroke-linejoin="round" />
+                          <path
+                            d="M10 13.3335H10.0083"
+                            stroke="#B4242B"
+                            stroke-width="1.66667"
+                            stroke-linecap="round"
+                            stroke-linejoin="round" />
+                        </svg>
+                        <span class="text-red-500/70 mt-0.5 text-nowrap">Something Is Wrong</span>
+                      </div>
+                    </div>
+                  </div>
+                {/if}
+              </button>
             </div>
-            <div class=" h-full w-14 sm:w-15 lg:w-18 xl:w-25 flex items-center justify-center">
+            <div class=" h-full w-15 lg:w-18 xl:w-25 flex items-center justify-center">
               <span
-                class="text-xs lg:text-sm xl:text-lg text-black/60 dark:text-white/30 capitalize"
-                >{result.rel}</span>
+                class="text-xs lg:text-sm xl:text-md capitalize rounded-md w-15.75 py-0.5 flex justify-center items-center {result.enabled
+                  ? 'text-[#00bc7d]/90 bg-[#00bc7d]/5'
+                  : 'text-[#fa5757]/90 bg-[#F87171]/5'}">
+                {result.enabled ? 'Enable' : 'Disable'}</span>
             </div>
-            <div class=" h-full w-16 sm:w-18 xl:w-25 flex items-center justify-center">
-              <span
-                class="text-xs lg:text-sm xl:text-lg text-black/60 dark:text-white/30 capitalize"
-                >{result.healthType === 'collect_duration_ms'
-                  ? 'latency'
-                  : result.healthType}</span>
+            <div class=" h-full flex-1 flex items-center justify-center">
+              <span class="text-xs lg:text-sm xl:text-md text-white capitalize"
+                >{result.condition_type}</span>
             </div>
-            <div
-              class="hidden lg:flex h-full w-18 xl:w-25 items-center justify-center overflow-hidden rounded-lg">
-              <span
-                class="text-xs lg:text-sm xl:text-lg {error
-                  ? 'text-[#ef4444]/90'
-                  : 'text-[#F97316]'}"
-                >{result.data[result.data.length - 1]}{result.healthType === 'collect_duration_ms'
-                  ? 'ms'
-                  : '%'}</span>
+            <div class=" h-full flex-1 flex items-center justify-center">
+              <span class="text-xs lg:text-sm xl:text-md text-white capitalize"
+                >{result.condition_value ? result.condition_value + '%' : '-'}</span>
             </div>
-            <div
-              class="flex-1 hidden lg:flex justify-center items-center h-full
-         bg-linear-to-r via-[#0D0D0D]/5 dark:via-white/5
-         rounded-md">
-              <p
-                class="px-2 lg:px-1 text-xs lg:text-sm xl:px-3 line-clamp-2 text-start text-black/60 dark:text-white/70">
-                {result.message}
-              </p>
+            <div class=" h-full flex-1 flex items-center justify-center">
+              <span class="text-xs lg:text-sm xl:text-md text-white capitalize"
+                >{result.machine_state}</span>
             </div>
-            <div
-              class="hidden sm:w-45 ms-auto md:w-78 lg:w-45 xl:w-62 sm:flex justify-center items-center h-full rounded-md mt-4 scale-x-105">
-              <LatencyChart
-                name="Latency"
-                height={isMobile ? 65 : 70}
-                data={[...result.data]}
-                unit={result.healthType === 'collect_duration_ms' ? 'ms' : '%'} />
+            <div class=" h-full flex-1 flex items-center justify-center gap-1">
+              {#if result.last_status === 'sent'}
+                <img class="mb-0.5 opacity-50" width="17" src="/icons/tick.svg" alt="tick" />
+              {:else if result.last_status === 'failed'}
+                <img class="mb-0.5 opacity-70" width="17" src="/icons/error.svg" alt="error" />
+              {/if}
+
+              <span class="text-xs lg:text-sm xl:text-md text-white capitalize"
+                >{result.last_status}</span>
             </div>
-            <button
-              type="button"
-              aria-label="alert modal"
-              onclick={() => {
-                opener({
-                  id: `create-alert`,
-                  content: '',
-                });
-              }}
-              class="w-11 pe-2 sm:pe-1 md:pe-0 lg:pe-1 flex justify-center items-center cursor-pointer">
-              <svg
-                width="25"
-                height="25"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                aria-label="Menu">
-                <line
-                  class="dark:stroke-white stroke-[#686a6e]"
-                  x1="3"
-                  y1="6"
-                  x2="21"
-                  y2="6"
-                  stroke-width="2"
-                  stroke-linecap="round" />
-                <line
-                  class="dark:stroke-white stroke-[#686a6e]"
-                  x1="3"
-                  y1="12"
-                  x2="21"
-                  y2="12"
-                  stroke-width="2"
-                  stroke-linecap="round" />
-                <line
-                  class="dark:stroke-white stroke-[#686a6e]"
-                  x1="3"
-                  y1="18"
-                  x2="21"
-                  y2="18"
-                  stroke-width="2"
-                  stroke-linecap="round" />
-              </svg>
-            </button>
+            <div class=" h-full flex-1 flex items-center justify-center gap-1">
+              <img class="mb-0.5" width="19" height="19" src="/icons/clock.png" alt="clock" />
+              <span class="text-xs lg:text-sm xl:text-sm text-white/30">
+                {new Date(result.last_fired_at).toLocaleString('en-CA', {
+                  year: 'numeric',
+                  month: '2-digit',
+                  day: '2-digit',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  second: '2-digit',
+                  hour12: false,
+                })}</span>
+            </div>
+            <div class="flex justify-end pe-2.5 gap-2 items-center w-22">
+              <button
+                type="button"
+                aria-label="alert modal"
+                onclick={() => {
+                  opener({
+                    id: `create-alert`,
+                    content: '',
+                  });
+                }}
+                class="flex justify-center items-center cursor-pointer">
+                <img
+                  class="size-4 sm:size-5"
+                  src="/icons/trash.png"
+                  alt="trash"
+                  width="20"
+                  height="20" />
+              </button>
+              <button
+                type="button"
+                aria-label="alert modal"
+                onclick={() => {
+                  opener({
+                    id: `create-alert`,
+                    content: '',
+                  });
+                }}
+                class="flex justify-center items-center cursor-pointer">
+                <svg
+                  width="25"
+                  height="25"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-label="Menu">
+                  <line
+                    class="dark:stroke-white stroke-[#686a6e]"
+                    x1="3"
+                    y1="6"
+                    x2="21"
+                    y2="6"
+                    stroke-width="2"
+                    stroke-linecap="round" />
+                  <line
+                    class="dark:stroke-white stroke-[#686a6e]"
+                    x1="3"
+                    y1="12"
+                    x2="21"
+                    y2="12"
+                    stroke-width="2"
+                    stroke-linecap="round" />
+                  <line
+                    class="dark:stroke-white stroke-[#686a6e]"
+                    x1="3"
+                    y1="18"
+                    x2="21"
+                    y2="18"
+                    stroke-width="2"
+                    stroke-linecap="round" />
+                </svg>
+              </button>
+            </div>
           </div>
         {/each}
       </div>

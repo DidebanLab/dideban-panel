@@ -191,7 +191,7 @@
         <button
           type="button"
           aria-label="detail of status"
-          onmouseover={() => {
+          onmouseenter={() => {
             historyDetailLoading = true;
             http
               .get(endpoints.checkHistoryDetail(checkId, id))

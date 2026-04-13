@@ -206,7 +206,7 @@
           <button
             type="button"
             aria-label="detail of status"
-            onmouseover={() => {
+            onmouseenter={() => {
               historyDetail = null;
               historyDetailLoading = true;
               http
