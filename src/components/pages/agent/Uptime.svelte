@@ -114,7 +114,7 @@
           <div aria-hidden="true" class="w-full h-6 rounded-[1px] bg-white/5 relative">
             <div class="h-2 w-px bg-white/10 absolute -end-px -bottom-3"></div>
             <div class="h-2 w-px text-white/20 absolute end-3.25 text-xs -bottom-7">
-              {(24 - i).toString().padStart(2, '0')}:00
+              {(i+1).toString().padStart(2, '0')}:00
             </div>
           </div>
         {/each}
@@ -526,9 +526,10 @@
             <button
               type="button"
               aria-label="detail of status"
-              class="min-w-[40.5px] sm:min-w-[60.5px] w-full h-6 transition-all cursor-pointer relative group {uptime.collect_count
-                ? 'bg-green-700 hover:h-6'
+              class="min-w-[40.5px] sm:min-w-[60.5px] w-full h-6 transition-all relative group {uptime.collect_count && uptime.avg_collect_duration_ms
+                ? 'bg-green-700 hover:h-6 cursor-pointer'
                 : 'bg-[#FFFFFF]/10'}">
+
               {#if uptime.avg_collect_duration_ms}
                 <div
                   class="absolute w-fit group-hover:flex hidden bottom-10 start-1/2 -translate-x-1/2 rounded-xl text-white bg-white/40 dark:bg-black/80 backdrop-blur-md dark:backdrop-blur-3xl border-[#0D0D0D]/5 border dark:border-white/10 px-3 py-2 flex-col justify-start items-start gap-1.5">

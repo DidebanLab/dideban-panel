@@ -115,10 +115,7 @@
       http
         .get(endpoints.agentSummaryDate(id, date))
         .then(res => {
-          summaryWithDate = {
-            ...res.data.data,
-            uptime_series: res.data?.data?.uptime_series?.reverse(),
-          };
+          summaryWithDate = res.data.data;
         })
         .finally(() => {
           loading.summaryWithDate = false;
