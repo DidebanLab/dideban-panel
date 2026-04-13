@@ -81,9 +81,9 @@
 
 {#if historyLoading}
   <div
-    class="w-full relative flex flex-col gap-4 sm:gap-6 border-[#0D0D0D]/5 dark:border-white/5 {date
-      ? 'sm:h-43 sm:rounded-[14px] sm:dark:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border sm:px-6 sm:py-6'
-      : 'h-29 sm:h-35 rounded-[14px] dark:bg-[#0D0D0D] bg-[#FFFFFF] border  px-4.25 py-4 sm:px-6 sm:py-6'}">
+    class="w-full relative flex flex-col gap-4 border-[#0D0D0D]/5 dark:border-white/5 {date
+      ? 'h-28 sm:h-43 sm:rounded-[14px] sm:dark:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border sm:px-6 sm:py-6'
+      : 'h-29 sm:h-35 rounded-[14px] dark:bg-[#0D0D0D] bg-[#FFFFFF] border px-4.25 py-4 sm:px-6 sm:py-6'}">
     <div class="w-full flex justify-between items-start">
       <div class="w-fit flex flex-col justify-start items-start">
         <span class="text-lg text-black dark:text-white">Uptime</span>
@@ -102,8 +102,8 @@
     </div>
 
     <div
-      class="w-full z-10 flex gap-0.5 justify-start items-end animate-pulse {date
-        ? 'overflow-x-auto overflow-y-hidden 3xl:overflow-x-visible 3xl:overflow-y-visible relative pb-10 3xl:pb-0'
+      class="w-full z-10 flex gap-0.5 justify-start items-end animate-pulse mt-auto {date
+        ? ' overflow-x-clip 3xl:overflow-x-visible 3xl:overflow-y-visible relative pb-7 custom-scroll'
         : 'bottom-4 sm:bottom-6 absolute start-1/2 -translate-x-1/2 px-4.25 sm:px-6'}">
       {#if !date}
         {#each Array(REQUIRED_HISTORY_COUNT) as _, i}
@@ -111,15 +111,17 @@
         {/each}
       {:else}
         {#each Array(24) as _, i}
-          <div aria-hidden="true" class="w-full h-6 rounded-[1px] bg-white/5 relative">
+          <div
+            aria-hidden="true"
+            class="min-w-[40.5px] sm:min-w-[60.5px] w-full h-6 rounded-[1px] bg-white/5 relative">
             <div class="h-2 w-px bg-white/10 absolute -end-px -bottom-3"></div>
             <div class="h-2 w-px text-white/20 absolute end-3.25 text-xs -bottom-7">
-              {(i+1).toString().padStart(2, '0')}:00
+              {(i + 1).toString().padStart(2, '0')}:00
             </div>
           </div>
         {/each}
 
-        <div class="absolute -bottom-1 start-1/2 -translate-x-1/2 w-full">
+        <div class="absolute bottom-6 start-1/2 -translate-x-1/2 w-full">
           <div class="h-px w-full bg-white/10"></div>
         </div>
       {/if}
@@ -127,8 +129,8 @@
   </div>
 {:else if date ? summaryWithDate : history}
   <div
-    class="w-full relative flex flex-col gap-4 sm:gap-6 border-[#0D0D0D]/5 dark:border-white/5 {date
-      ? 'sm:h-43 sm:rounded-[14px] sm:dark:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border sm:px-6 sm:py-6'
+    class="w-full relative flex flex-col gap-4 border-[#0D0D0D]/5 dark:border-white/5 {date
+      ? 'h-28 sm:h-43 sm:rounded-[14px] sm:dark:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border sm:px-6 sm:py-6'
       : 'h-29 sm:h-35 rounded-[14px] dark:bg-[#0D0D0D] bg-[#FFFFFF] border  px-4.25 py-4 sm:px-6 sm:py-6'}">
     <div class="w-full flex justify-between items-start">
       <div class="w-fit flex flex-col justify-start items-start">
@@ -188,8 +190,8 @@
     </div>
 
     <div
-      class="w-full z-10 flex gap-0.5 justify-start items-end {date
-        ? 'overflow-x-auto overflow-y-hidden 3xl:overflow-x-visible 3xl:overflow-y-visible relative pb-10 3xl:pb-0'
+      class="w-full z-10 flex gap-0.5 justify-start items-end mt-auto {date
+        ? 'overflow-x-auto 3xl:overflow-x-visible 3xl:overflow-y-visible relative pb-7 custom-scroll-y'
         : 'bottom-4 sm:bottom-6 absolute start-1/2 -translate-x-1/2 px-4.25 sm:px-6'}">
       {#if !date}
         {#each Array(Math.max(0, REQUIRED_HISTORY_COUNT - (history?.data?.length || 0)))}
@@ -526,10 +528,10 @@
             <button
               type="button"
               aria-label="detail of status"
-              class="min-w-[40.5px] sm:min-w-[60.5px] w-full h-6 transition-all relative group {uptime.collect_count && uptime.avg_collect_duration_ms
+              class="min-w-[40.5px] sm:min-w-[60.5px] w-full h-6 transition-all cursor-pointer relative group {uptime.collect_count &&
+              uptime.avg_collect_duration_ms
                 ? 'bg-green-700 hover:h-6 cursor-pointer'
                 : 'bg-[#FFFFFF]/10'}">
-
               {#if uptime.avg_collect_duration_ms}
                 <div
                   class="absolute w-fit group-hover:flex hidden bottom-10 start-1/2 -translate-x-1/2 rounded-xl text-white bg-white/40 dark:bg-black/80 backdrop-blur-md dark:backdrop-blur-3xl border-[#0D0D0D]/5 border dark:border-white/10 px-3 py-2 flex-col justify-start items-start gap-1.5">
@@ -706,7 +708,7 @@
           {/each}
         {/if}
 
-        <div class="absolute -bottom-1 start-1/2 -translate-x-1/2 w-full">
+        <div class="absolute bottom-6 start-1/2 -translate-x-1/2 w-full">
           <div class="h-px w-full bg-white/10"></div>
         </div>
       {/if}
@@ -753,3 +755,21 @@
     </div>
   </div>
 {/if}
+
+<style>
+  .custom-scroll-y::-webkit-scrollbar {
+    height: 4px;
+    overflow-x: auto;
+   
+  }
+
+  .custom-scroll-y::-webkit-scrollbar-track {
+    background: rgba(69, 74, 82, 0.5);
+    border-radius: 9999px;
+  }
+
+  .custom-scroll-y::-webkit-scrollbar-thumb {
+    background: #454a52;
+    border-radius: 9999px;
+  }
+</style>

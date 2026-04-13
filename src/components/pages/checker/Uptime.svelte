@@ -84,7 +84,7 @@
   <div
     class="w-full relative flex flex-col gap-4 border-[#0D0D0D]/5 dark:border-white/5 {date
       ? 'h-28 sm:h-43 sm:rounded-[14px] sm:dark:bg-[#0D0D0D] sm:bg-[#FFFFFF] sm:border sm:px-6 sm:py-6'
-      : 'h-29 sm:h-35 rounded-[14px] dark:bg-[#0D0D0D] bg-[#FFFFFF] border  px-4.25 py-4 sm:px-6 sm:py-6'}">
+      : 'h-29 sm:h-35 rounded-[14px] dark:bg-[#0D0D0D] bg-[#FFFFFF] border px-4.25 py-4 sm:px-6 sm:py-6'}">
     <div class="w-full flex justify-between items-start">
       <div class="w-fit flex flex-col justify-start items-start">
         <span class="text-lg text-black dark:text-white">Uptime</span>
@@ -154,7 +154,8 @@
                   hour12: false,
                 })}</span>
             {/if}
-          </div>{/if}
+          </div>
+        {/if}
       </div>
 
       {#if date}
@@ -191,7 +192,7 @@
 
     <div
       class="w-full z-10 flex gap-0.5 justify-start items-end mt-auto {date
-        ? 'overflow-x-clip 3xl:overflow-x-visible 3xl:overflow-y-visible relative pb-7'
+        ? 'overflow-x-auto 3xl:overflow-x-visible overflow-y-visible relative pb-7'
         : 'bottom-4 sm:bottom-6 absolute start-1/2 -translate-x-1/2 px-4.25 sm:px-6'}">
       {#if !date}
         {#each Array(Math.max(0, REQUIRED_HISTORY_COUNT - (history?.data?.length || 0))) as _, i}
