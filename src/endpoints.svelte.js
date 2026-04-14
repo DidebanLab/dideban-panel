@@ -3,6 +3,8 @@ export const endpoints = {
   checksStats: '/checks/stats',
   agents: '/agents',
   checks: '/checks',
+  alerts: '/alerts',
+  alertsStats: '/alerts/stats',
   singleCheck: id => `/checks/${id}`,
   checksSummaryDate: (id, date) => `/checks/${id}/summary/${date}`,
   checkLatency: id => `/checks/${id}/latency`,
@@ -18,13 +20,13 @@ export const endpoints = {
   agentCollectDuration: agentId => `/agents/${agentId}/collect-duration`,
   agentSummaryYearly: id => `/agents/${id}/summary/yearly`,
   agentSummaryDate: (id, date) => `/agents/${id}/summary/${date}`,
-  agentChart:id => `/agents/${id}/chart`,
+  agentChart: id => `/agents/${id}/chart`,
+  singleAlert: id => `/alerts/${id}`,
+  alertHistory: id => `/alerts/${id}/history`,
+  alertHistoryDetail: (alertId, historyId) => `/alerts/${alertId}/history/${historyId}`,
+  alertState: id => `/alerts/${id}/state`,
+
   //---------------
 
   login: '',
-  performanceOverview: '',
-  topRight: '',
-  statusOverview: '.../',
-
-  alerts: '/',
 };
