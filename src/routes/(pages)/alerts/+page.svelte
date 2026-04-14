@@ -442,7 +442,7 @@
         {#each data.results as result}
           <a
             href={`/alerts/${result.id}`}
-            class="w-full h-12 flex hover:scale-x-101 hover:brightness-150 transition-all duration-500 justify-start items-center gap-1 rounded-xl dark:text-white sm:p-1 border border-[#EF4444]/15 bg-[#640000bc]/5">
+            class="w-full h-12 flex hover:scale-x-101 transition-all duration-300 justify-start items-center gap-1 rounded-xl dark:text-white sm:p-1 border border-[#EF4444]/15 bg-[#640000bc]/5">
             <div class="w-12 flex justify-start items-center">
               <div
                 class="flex justify-center items-center p-2 md:p-2 md:pe-2.5 rounded-xl {result.type ===
