@@ -39,7 +39,7 @@
 
     for (const key of keys) {
       const value = params.get(key);
-      if (value.length) {
+      if (value.length && value !== 'all') {
         result.unshift([key, params.get(key)]);
       }
     }
