@@ -471,10 +471,6 @@
           <span
             class="flex-1 text-black dark:text-white text-center py-2 backdrop-blur-3xl bg-[#0D0D0D]/5 dark:bg-white/5 rounded-md text-nowrap"
             >Date</span>
-
-          <span
-            class="p-2 w-22 text-black dark:text-white text-center backdrop-blur-3xl bg-[#0D0D0D]/5 dark:bg-white/5 rounded-md"
-            >Actions</span>
         </div>
 
         {#each data.results as result}
@@ -682,68 +678,6 @@
                   second: '2-digit',
                   hour12: false,
                 })}</span>
-            </div>
-            <div class="flex justify-end pe-2.5 gap-2 items-center w-22">
-              <button
-                type="button"
-                aria-label="alert modal"
-                onclick={() => {
-                  opener({
-                    id: `create-alert`,
-                    content: '',
-                  });
-                }}
-                class="flex justify-center items-center cursor-pointer">
-                <img
-                  class="size-4 sm:size-5"
-                  src="/icons/trash.png"
-                  alt="trash"
-                  width="20"
-                  height="20" />
-              </button>
-              <button
-                type="button"
-                aria-label="alert modal"
-                onclick={() => {
-                  opener({
-                    id: `create-alert`,
-                    content: '',
-                  });
-                }}
-                class="flex justify-center items-center cursor-pointer">
-                <svg
-                  width="25"
-                  height="25"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  aria-label="Menu">
-                  <line
-                    class="dark:stroke-white stroke-[#686a6e]"
-                    x1="3"
-                    y1="6"
-                    x2="21"
-                    y2="6"
-                    stroke-width="2"
-                    stroke-linecap="round" />
-                  <line
-                    class="dark:stroke-white stroke-[#686a6e]"
-                    x1="3"
-                    y1="12"
-                    x2="21"
-                    y2="12"
-                    stroke-width="2"
-                    stroke-linecap="round" />
-                  <line
-                    class="dark:stroke-white stroke-[#686a6e]"
-                    x1="3"
-                    y1="18"
-                    x2="21"
-                    y2="18"
-                    stroke-width="2"
-                    stroke-linecap="round" />
-                </svg>
-              </button>
             </div>
           </div>
         {/each}
