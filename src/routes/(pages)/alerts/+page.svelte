@@ -31,10 +31,17 @@
     const params = $page.url.searchParams;
     const result = [];
 
-    const keys = [...params.keys()];
+    const keys = [...params.keys()].filter(key =>
+      ['id', 'rel', 'status', 'type', 'condition_type', 'machine_state', 'last_status'].includes(
+        key,
+      ),
+    );
 
     for (const key of keys) {
-      result.unshift([key, params.get(key)]);
+      const value = params.get(key);
+      if (value.length) {
+        result.unshift([key, params.get(key)]);
+      }
     }
 
     return result;
@@ -123,11 +130,14 @@
   });
 
   function removeParam(keyToRemove) {
+    const url = new SvelteURL($page.url);
     if (keyToRemove === 'id') {
       filter.id = '';
     } else {
       filter[keyToRemove] = 'all';
     }
+    url.searchParams.delete(keyToRemove);
+    goto(url.toString(), { keepFocus: true, noScroll: true });
   }
 
   function handleParameters(key, value) {
@@ -443,7 +453,7 @@
               type="text" />
           </div>
 
-          <div class="flex justify-start items-center w-full gap-3 max-sm:flex-wrap">
+          <div class="flex justify-start items-center w-full gap-3 max-sm:flex-wrap select-none">
             <div
               class="flex gap-1.5 ps-3 justify-start items-center bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-md">
               <span
