@@ -39,7 +39,7 @@
 
     for (const key of keys) {
       const value = params.get(key);
-      if (value.length && value !== 'all') {
+      if (value.length) {
         result.unshift([key, params.get(key)]);
       }
     }
@@ -154,7 +154,7 @@
           url.searchParams.append('id', value);
         }
       }
-    } else if (filter[key] !== 'all') {
+    } else if (value === 'all') {
       url.searchParams.delete(key);
     } else {
       url.searchParams.set(key, value);
@@ -519,7 +519,7 @@
                 className="bg-transparent! backdrop-blur-none! px-1.5! capitalize"
                 bind:value={filter.condition_type}
                 options={[
-                  { name: 'All' },
+                  { name: 'all' },
                   { name: 'status_Down' },
                   { name: 'cpu_above' },
                   { name: 'memory_above' },
@@ -543,7 +543,7 @@
                 className="bg-transparent! backdrop-blur-none! px-1.5! capitalize"
                 bind:value={filter.machine_state}
                 options={[
-                  { name: 'All' },
+                  { name: 'all' },
                   { name: 'idle' },
                   { name: 'firing' },
                   { name: 'resolved' },
@@ -563,7 +563,7 @@
                 }}
                 className="bg-transparent! backdrop-blur-none! px-1.5! capitalize"
                 bind:value={filter.last_status}
-                options={[{ name: 'All' }, { name: 'sent' }, { name: 'failed' }]} />
+                options={[{ name: 'all' }, { name: 'sent' }, { name: 'failed' }]} />
             </div>
           </div>
         </div>
