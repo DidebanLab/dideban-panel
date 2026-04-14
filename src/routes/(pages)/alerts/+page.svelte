@@ -205,7 +205,6 @@
   $effect(() => {
     if (!$page.url) return;
 
-    const url = new URL($page.url);
     let hasChanges = false;
 
     const filterKeys = [
@@ -221,21 +220,23 @@
     for (const key of filterKeys) {
       const val = filter[key];
       if (val === 'all' || val === '') {
-        if (url.searchParams.has(key)) {
-          url.searchParams.delete(key);
+        if ($page.url.searchParams.has(key)) {
+          $page.url.searchParams.delete(key);
           hasChanges = true;
         }
       } else {
-        if (url.searchParams.get(key) !== val) {
-          url.searchParams.set(key, val);
+        if ($page.url.searchParams.get(key) !== val) {
+          $page.url.searchParams.set(key, val);
           hasChanges = true;
         }
       }
     }
 
     if (hasChanges) {
-      goto(url.toString(), { keepFocus: true, noScroll: true });
+      goto($page.url.toString(), { keepFocus: true, noScroll: true });
     }
+
+    console.log('slam');
   });
 </script>
 
