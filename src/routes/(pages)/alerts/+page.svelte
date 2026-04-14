@@ -474,8 +474,9 @@
         </div>
 
         {#each data.results as result}
-          <div
-            class="w-full h-12 flex justify-start items-center gap-1 rounded-xl dark:text-white sm:p-1 border border-[#EF4444]/15 bg-[#610000]/5">
+          <a
+            href={`/alerts/${result.id}`}
+            class="w-full h-12 flex hover:scale-x-101 hover:brightness-150 transition-all duration-500 justify-start items-center gap-1 rounded-xl dark:text-white sm:p-1 border border-[#EF4444]/15 bg-[#640000bc]/5">
             <div class="w-12 flex justify-start items-center">
               <div
                 class="flex justify-center items-center p-2 md:p-2 md:pe-2.5 rounded-xl {result.type ===
@@ -545,13 +546,10 @@
                   relationInfo = null;
                 }}
                 class="flex group relative justify-start items-center gap-1">
-                <a
-                  href={result.agent_id
-                    ? `/agents/${result.agent_id}`
-                    : `/checkers/${result.check_id}`}
+                <div
                   class="text-xs cursor-pointer lg:text-sm xl:text-md text-black dark:text-white capitalize">
                   {result.agent_id ? 'Agent' : 'Check'}
-                </a>
+                </div>
                 <img
                   class="cursor-pointer"
                   width="20"
@@ -584,13 +582,14 @@
                       <span class="text-white">{relationInfo.name}</span>
                     </div>
 
+                    <!-- svelte-ignore node_invalid_placement_ssr -->
                     <a
                       href={result.agent_id
                         ? `/agents/${result.agent_id}`
                         : `/checkers/${relationInfo.id}`}
                       aria-label="go to relation page"
                       class="text-nowrap gap-2 justify-center items-center flex cursor-pointer mt-2 hover:opacity-70 rounded-md border border-[#2B7FFF]/20 px-2 py-1 w-full text-[#2B7FFF] text-xs">
-                      Go to Page
+                      {result.agent_id ? 'Agent' : 'Checker'} Page
                     </a>
                   </div>
                 {:else}
@@ -679,7 +678,7 @@
                   hour12: false,
                 })}</span>
             </div>
-          </div>
+          </a>
         {/each}
       </div>
     </div>
