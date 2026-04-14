@@ -8,19 +8,41 @@
   import { opener } from '../../../stores/modal.svelte';
   import { LIMITATIONS } from '../../../components/config.svelte';
   import { goto } from '$app/navigation';
+  import { page } from '$app/stores';
 
   let isMobile = $state(innerWidth < 641);
 
   let relationInfo = $state(null);
   let relationInfoLoading = $state(true);
+  let paramsList = $state([]);
 
   let filter = $state({
-    id: '',
-    rel: 'all',
-    type: 'all',
-    healthType: 'all',
-    limit: 10,
-    offset: 0,
+    id: $page.url.searchParams.get('id') || '',
+    rel: $page.url.searchParams.get('rel') || 'all',
+    status: $page.url.searchParams.get('status') || 'all',
+    type: $page.url.searchParams.get('type') || 'all',
+    condition_type: $page.url.searchParams.get('condition_type') || 'all',
+    machine_state: $page.url.searchParams.get('machine_state') || 'all',
+    last_status: $page.url.searchParams.get('last_status') || 'all',
+  });
+
+  const getAllParams = () => {
+    const params = $page.url.searchParams;
+    const result = [];
+
+    const keys = [...params.keys()];
+
+    for (const key of keys) {
+      result.unshift([key, params.get(key)]);
+    }
+
+    return result;
+  };
+
+  $effect(() => {
+    if ($page.url.searchParams) {
+      paramsList = getAllParams();
+    }
   });
 
   let data = $state({
@@ -99,6 +121,14 @@
     prev: '',
   });
 
+  function removeParam(keyToRemove) {
+    if (keyToRemove === 'id') {
+      filter.id = '';
+    } else {
+      filter[keyToRemove] = 'all';
+    }
+  }
+
   function iconSelector(type) {
     switch (type) {
       case 'telegram':
@@ -160,6 +190,53 @@
           </svg>`;
     }
   }
+
+  function handleParameters(key, value) {
+    const url = new URL($page.url);
+    if (filter[key].length && filter[key] !== 'all') {
+      url.searchParams.delete(key);
+      url.searchParams.append(key, value);
+    } else {
+      url.searchParams.delete(key);
+    }
+    goto(url.toString(), { keepFocus: true, noScroll: true });
+  }
+
+  $effect(() => {
+    if (!$page.url) return;
+
+    const url = new URL($page.url);
+    let hasChanges = false;
+
+    const filterKeys = [
+      'id',
+      'rel',
+      'status',
+      'type',
+      'condition_type',
+      'machine_state',
+      'last_status',
+    ];
+
+    for (const key of filterKeys) {
+      const val = filter[key];
+      if (val === 'all' || val === '') {
+        if (url.searchParams.has(key)) {
+          url.searchParams.delete(key);
+          hasChanges = true;
+        }
+      } else {
+        if (url.searchParams.get(key) !== val) {
+          url.searchParams.set(key, val);
+          hasChanges = true;
+        }
+      }
+    }
+
+    if (hasChanges) {
+      goto(url.toString(), { keepFocus: true, noScroll: true });
+    }
+  });
 </script>
 
 <section class="w-full flex flex-col gap-8 sm:p-7.75 sm:pt-2.5">
@@ -333,10 +410,9 @@
       <div
         class="w-full flex flex-col justify-start items-start gap-2 border p-3 border-[#0D0D0D]/5 dark:border-white/5 rounded-lg">
         <span class="text-sm text-black dark:text-white">Filter</span>
-        <div
-          class="w-full flex flex-col md:flex-row justify-start gap-3 items-start md:items-center z-10">
+        <div class="w-full flex flex-col justify-start gap-3 items-start md:items-center z-10">
           <div
-            class="flex gap-1.5 px-3 justify-start items-center bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-md w-full">
+            class="flex w-full gap-1.5 px-3 justify-start items-center bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-md">
             <label
               for="id"
               class="text-black dark:text-white text-base text-nowrap border-e pe-3 border-e-[#0D0D0D]/20 dark:border-e-white/20"
@@ -345,25 +421,14 @@
             <input
               id="id"
               bind:value={filter.id}
-              placeholder="Please enter the (Id)"
+              placeholder="Filter With Id"
               class="px-2.5 h-9 w-full rounded-md placeholder:text-gray-400/40 text-gray-400 text-sm outline-none tracking-wide"
               type="text" />
           </div>
 
           <div class="flex justify-start items-center w-full gap-3 max-sm:flex-wrap">
             <div
-              class="flex gap-1.5 w-[125.7px] ps-3 justify-start items-center bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-md">
-              <span
-                class="text-black pe-3 dark:text-white text-sm text-nowrap border-e border-e-[#0D0D0D]/20 dark:border-e-white/20"
-                >Rel</span>
-
-              <Select
-                className="bg-transparent! backdrop-blur-none! px-1.5! capitalize justify-between!"
-                bind:value={filter.rel}
-                options={[{ name: 'all' }, { name: 'agent' }, { name: 'check' }]} />
-            </div>
-            <div
-              class="flex gap-1.5 ps-3 justify-start items-center bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-md w-fit">
+              class="flex gap-1.5 ps-3 justify-start items-center bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-md">
               <span
                 class="text-black dark:text-white text-sm text-nowrap border-e pe-3 border-e-[#0D0D0D]/20 dark:border-e-white/20"
                 >Type</span>
@@ -375,42 +440,111 @@
                   { name: 'all' },
                   { name: 'telegram' },
                   { name: 'bale' },
-                  { name: 'sms' },
                   { name: 'email' },
+                  { name: 'webhook' },
                 ]} />
             </div>
+
             <div
-              class="flex gap-1.5 ps-3 justify-start items-center bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-md w-fit">
+              class="flex gap-1.5 ps-3 justify-start items-center bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-md">
+              <span
+                class="text-black pe-3 dark:text-white text-sm text-nowrap border-e border-e-[#0D0D0D]/20 dark:border-e-white/20"
+                >Rel</span>
+
+              <Select
+                className="bg-transparent! backdrop-blur-none! px-1.5! capitalize justify-between!"
+                bind:value={filter.rel}
+                options={[{ name: 'all' }, { name: 'agent' }, { name: 'check' }]} />
+            </div>
+
+            <div
+              class="flex gap-1.5 ps-3 justify-start items-center bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-md">
               <span
                 class="text-black dark:text-white text-sm text-nowrap border-e pe-3 border-e-[#0D0D0D]/20 dark:border-e-white/20"
-                >Health Type</span>
+                >status</span>
 
               <Select
                 className="bg-transparent! backdrop-blur-none! px-1.5! capitalize"
-                bind:value={filter.healthType}
+                bind:value={filter.status}
+                options={[{ name: 'all' }, { name: 'enable' }, { name: 'disable' }]} />
+            </div>
+
+            <div
+              class="flex gap-1.5 ps-3 justify-start items-center bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-md">
+              <span
+                class="text-black dark:text-white text-sm text-nowrap border-e pe-3 border-e-[#0D0D0D]/20 dark:border-e-white/20">
+                Condition Type
+              </span>
+
+              <Select
+                className="bg-transparent! backdrop-blur-none! px-1.5! capitalize"
+                bind:value={filter.condition_type}
                 options={[
-                  { name: 'all' },
-                  { name: 'cpu' },
-                  { name: 'memory' },
-                  { name: 'disk' },
-                  { name: 'uptime' },
-                  { name: 'latency' },
+                  { name: 'All' },
+                  { name: 'status_Down' },
+                  { name: 'cpu_above' },
+                  { name: 'memory_above' },
+                  { name: 'disk_above' },
+                  { name: 'status_timeout' },
+                  { name: 'status_up' },
                 ]} />
             </div>
-            <button
-              disabled={filter.healthType === 'all' &&
-                filter.rel === 'all' &&
-                filter.type === 'all' &&
-                filter.id === ''}
-              type="button"
-              class="w-fit px-9 sm:px-7 md:px-10 ms-auto text-sm text-[#10b981] h-8.5 flex justify-center items-center rounded-md cursor-pointer bg-[#22c55e]/10 hover:opacity-60 border border-[#00bc7d]/10 disabled:opacity-50 disabled:dark:opacity-30 disabled:cursor-not-allowed">
-              Filter
-            </button>
+
+            <div
+              class="flex gap-1.5 ps-3 justify-start items-center bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-md">
+              <span
+                class="text-black dark:text-white text-sm text-nowrap border-e pe-3 border-e-[#0D0D0D]/20 dark:border-e-white/20">
+                Machine State
+              </span>
+
+              <Select
+                className="bg-transparent! backdrop-blur-none! px-1.5! capitalize"
+                bind:value={filter.machine_state}
+                options={[
+                  { name: 'All' },
+                  { name: 'idle' },
+                  { name: 'firing' },
+                  { name: 'resolved' },
+                ]} />
+            </div>
+
+            <div
+              class="flex gap-1.5 ps-3 justify-start items-center bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-md">
+              <span
+                class="text-black dark:text-white text-sm text-nowrap border-e pe-3 border-e-[#0D0D0D]/20 dark:border-e-white/20">
+                Sending status
+              </span>
+
+              <Select
+                className="bg-transparent! backdrop-blur-none! px-1.5! capitalize"
+                bind:value={filter.last_status}
+                options={[{ name: 'All' }, { name: 'sent' }, { name: 'failed' }]} />
+            </div>
           </div>
         </div>
       </div>
 
       <div class="w-full flex flex-col gap-1.5 text-sm">
+        <div
+          class="w-full flex gap-2 justify-end items-center border-b pb-1.5 border-[#0D0D0D]/5 dark:border-white/5">
+          {#each paramsList as filteredItem}
+            <div
+              class="px-4 relative py-1.25 rounded-md border border-blue-500/20 shadow-md shadow-blue-500/10 text-blue-500">
+              <button
+                aria-label="delete filter"
+                type="button"
+                onclick={() => {
+                  removeParam(filteredItem[0]);
+                }}
+                class="absolute start-0 -top-1 px-1 py-1 rounded-sm bg-[#EF4444]/15 flex justify-center items-center cursor-pointer hover:bg-[#EF4444]/20">
+                <div class="bg-[#ef4444] w-2 h-0.5"></div>
+              </button>
+
+              {filteredItem[1]}
+            </div>
+          {/each}
+        </div>
+
         <div class="w-full mb-0.5 flex justify-start gap-1 items-center text-white">
           <span
             class="w-12 md:w-13 text-black dark:text-white text-center py-2 backdrop-blur-3xl bg-[#0D0D0D]/5 dark:bg-white/5 rounded-md"
