@@ -1,5 +1,5 @@
 <script>
-  import { onMount } from 'svelte';
+  import { onMount, untrack } from 'svelte';
   import Pagination from '../../../components/common/Pagination.svelte';
   import Select from '../../../components/common/Select.svelte';
   import LatencyChart from '../../../components/common/LatencyChart.svelte';
@@ -27,29 +27,38 @@
     last_status: $page.url.searchParams.get('last_status') || 'all',
   });
 
-  const getAllParams = () => {
-    const params = $page.url.searchParams;
-    const result = [];
-
-    const keys = [...params.keys()].filter(key =>
-      ['id', 'rel', 'status', 'type', 'condition_type', 'machine_state', 'last_status'].includes(
-        key,
-      ),
-    );
-
-    for (const key of keys) {
-      const value = params.get(key);
-      if (value.length) {
-        result.unshift([key, params.get(key)]);
-      }
-    }
-
-    return result;
-  };
+  let isMounted = false;
+  let timeoutId = null;
+  let abortController;
 
   $effect(() => {
-    if ($page.url.searchParams) {
-      paramsList = getAllParams();
+    const paramsEntries = getAllParams();
+    const paramsObject = Object.fromEntries(paramsEntries);
+    paramsList = paramsEntries;
+
+    if (abortController) {
+      abortController.abort();
+    }
+
+    abortController = new AbortController();
+
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+
+    if (!isMounted) {
+      http.get(endpoints.alerts, { params: paramsObject });
+
+      untrack(() => {
+        isMounted = true;
+      });
+    } else {
+      timeoutId = setTimeout(() => {
+        http.get(endpoints.alerts, {
+          params: paramsObject,
+          signal: abortController.signal,
+        });
+      }, 3000);
     }
   });
 
@@ -128,6 +137,26 @@
     next: '',
     prev: '',
   });
+
+  const getAllParams = () => {
+    const params = $page.url.searchParams;
+    const result = [];
+
+    const keys = [...params.keys()].filter(
+      key =>
+        ['id', 'rel', 'status', 'type', 'condition_type', 'machine_state', 'last_status'].includes(
+          key,
+        ) && params.get(key).length,
+    );
+
+    for (const key of keys) {
+      const value = params.get(key);
+
+      result.unshift([key, params.get(key)]);
+    }
+
+    return result;
+  };
 
   function removeParam(keyToRemove) {
     const url = new SvelteURL($page.url);
@@ -224,43 +253,6 @@
           </svg>`;
     }
   }
-
-  // $effect(() => {
-  //   if (!$page.url) return;
-
-  //   let hasChanges = false;
-
-  //   const filterKeys = [
-  //     'id',
-  //     'rel',
-  //     'status',
-  //     'type',
-  //     'condition_type',
-  //     'machine_state',
-  //     'last_status',
-  //   ];
-
-  //   for (const key of filterKeys) {
-  //     const val = filter[key];
-  //     if (val === 'all' || val === '') {
-  //       if ($page.url.searchParams.has(key)) {
-  //         $page.url.searchParams.delete(key);
-  //         hasChanges = true;
-  //       }
-  //     } else {
-  //       if ($page.url.searchParams.get(key) !== val) {
-  //         $page.url.searchParams.set(key, val);
-  //         hasChanges = true;
-  //       }
-  //     }
-  //   }
-
-  //   if (hasChanges) {
-  //     goto($page.url.toString(), { keepFocus: true, noScroll: true });
-  //   }
-
-  //   console.log('slam');
-  // });
 </script>
 
 <section class="w-full flex flex-col gap-8 sm:p-7.75 sm:pt-2.5">
@@ -520,7 +512,7 @@
                 bind:value={filter.condition_type}
                 options={[
                   { name: 'all' },
-                  { name: 'status_Down' },
+                  { name: 'status_down' },
                   { name: 'cpu_above' },
                   { name: 'memory_above' },
                   { name: 'disk_above' },
