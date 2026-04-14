@@ -99,26 +99,6 @@
     prev: '',
   });
 
-  // $effect(() => {
-  //   const params = {
-  //     id: '',
-  //     rel: 'all',
-  //     type: 'all',
-  //     healthType: 'all',
-  //     limit: filter.limit,
-  //     offset: filter.offset,
-  //   };
-
-  //   http.get(endpoints.alerts, { params }).then(res => {
-  //     data = {
-  //       results: res.data.results,
-  //       count: Math.ceil(res.data.count / filter.limit),
-  //       next: res.data.next,
-  //       prev: res.data.previous,
-  //     };
-  //   });
-  // });
-
   function iconSelector(type) {
     switch (type) {
       case 'telegram':
@@ -179,19 +159,6 @@
              4-8 5-8-5V6l8 5 8-5v2z" />
           </svg>`;
     }
-  }
-
-  function filterHandler() {
-    const params = { ...filter, offset: 0, limit: 10 };
-
-    http.get(endpoints.alerts, { params }).then(res => {
-      data = {
-        results: res.data.results,
-        count: Math.ceil(res.data.count / filter.limit),
-        next: res.data.next,
-        prev: res.data.previous,
-      };
-    });
   }
 </script>
 
@@ -385,13 +352,13 @@
 
           <div class="flex justify-start items-center w-full gap-3 max-sm:flex-wrap">
             <div
-              class="flex gap-1.5 ps-3 justify-start items-center bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-md w-fit">
+              class="flex gap-1.5 w-[125.7px] ps-3 justify-start items-center bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-md">
               <span
-                class="text-black dark:text-white text-sm text-nowrap border-e pe-3 border-e-[#0D0D0D]/20 dark:border-e-white/20"
+                class="text-black pe-3 dark:text-white text-sm text-nowrap border-e border-e-[#0D0D0D]/20 dark:border-e-white/20"
                 >Rel</span>
 
               <Select
-                className="bg-transparent! backdrop-blur-none! px-1.5! capitalize"
+                className="bg-transparent! backdrop-blur-none! px-1.5! capitalize justify-between!"
                 bind:value={filter.rel}
                 options={[{ name: 'all' }, { name: 'agent' }, { name: 'check' }]} />
             </div>
@@ -435,7 +402,6 @@
                 filter.rel === 'all' &&
                 filter.type === 'all' &&
                 filter.id === ''}
-              onclick={filterHandler}
               type="button"
               class="w-fit px-9 sm:px-7 md:px-10 ms-auto text-sm text-[#10b981] h-8.5 flex justify-center items-center rounded-md cursor-pointer bg-[#22c55e]/10 hover:opacity-60 border border-[#00bc7d]/10 disabled:opacity-50 disabled:dark:opacity-30 disabled:cursor-not-allowed">
               Filter
