@@ -9,6 +9,7 @@
   import { LIMITATIONS } from '../../../components/config.svelte';
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
+  import { SvelteURL } from 'svelte/reactivity';
 
   let isMobile = $state(innerWidth < 641);
 
@@ -129,6 +130,29 @@
     }
   }
 
+  function handleParameters(key, value) {
+    const url = new SvelteURL($page.url);
+    if (key === 'id') {
+      if (url.searchParams.has('id')) {
+        if (value.length) {
+          url.searchParams.set('id', value);
+        } else {
+          url.searchParams.delete('id');
+        }
+      } else {
+        if (value.length) {
+          url.searchParams.append('id', value);
+        }
+      }
+    } else if (filter[key] !== 'all') {
+      url.searchParams.delete(key);
+    } else {
+      url.searchParams.set(key, value);
+    }
+
+    goto(url.toString(), { keepFocus: true, noScroll: true });
+  }
+
   function iconSelector(type) {
     switch (type) {
       case 'telegram':
@@ -191,53 +215,42 @@
     }
   }
 
-  function handleParameters(key, value) {
-    const url = new URL($page.url);
-    if (filter[key].length && filter[key] !== 'all') {
-      url.searchParams.delete(key);
-      url.searchParams.append(key, value);
-    } else {
-      url.searchParams.delete(key);
-    }
-    goto(url.toString(), { keepFocus: true, noScroll: true });
-  }
+  // $effect(() => {
+  //   if (!$page.url) return;
 
-  $effect(() => {
-    if (!$page.url) return;
+  //   let hasChanges = false;
 
-    let hasChanges = false;
+  //   const filterKeys = [
+  //     'id',
+  //     'rel',
+  //     'status',
+  //     'type',
+  //     'condition_type',
+  //     'machine_state',
+  //     'last_status',
+  //   ];
 
-    const filterKeys = [
-      'id',
-      'rel',
-      'status',
-      'type',
-      'condition_type',
-      'machine_state',
-      'last_status',
-    ];
+  //   for (const key of filterKeys) {
+  //     const val = filter[key];
+  //     if (val === 'all' || val === '') {
+  //       if ($page.url.searchParams.has(key)) {
+  //         $page.url.searchParams.delete(key);
+  //         hasChanges = true;
+  //       }
+  //     } else {
+  //       if ($page.url.searchParams.get(key) !== val) {
+  //         $page.url.searchParams.set(key, val);
+  //         hasChanges = true;
+  //       }
+  //     }
+  //   }
 
-    for (const key of filterKeys) {
-      const val = filter[key];
-      if (val === 'all' || val === '') {
-        if ($page.url.searchParams.has(key)) {
-          $page.url.searchParams.delete(key);
-          hasChanges = true;
-        }
-      } else {
-        if ($page.url.searchParams.get(key) !== val) {
-          $page.url.searchParams.set(key, val);
-          hasChanges = true;
-        }
-      }
-    }
+  //   if (hasChanges) {
+  //     goto($page.url.toString(), { keepFocus: true, noScroll: true });
+  //   }
 
-    if (hasChanges) {
-      goto($page.url.toString(), { keepFocus: true, noScroll: true });
-    }
-
-    console.log('slam');
-  });
+  //   console.log('slam');
+  // });
 </script>
 
 <section class="w-full flex flex-col gap-8 sm:p-7.75 sm:pt-2.5">
@@ -421,6 +434,9 @@
 
             <input
               id="id"
+              oninput={() => {
+                handleParameters('id', filter.id);
+              }}
               bind:value={filter.id}
               placeholder="Filter With Id"
               class="px-2.5 h-9 w-full rounded-md placeholder:text-gray-400/40 text-gray-400 text-sm outline-none tracking-wide"
@@ -435,6 +451,9 @@
                 >Type</span>
 
               <Select
+                onParamHandle={val => {
+                  handleParameters('type', val);
+                }}
                 className="bg-transparent! backdrop-blur-none! px-1.5! capitalize"
                 bind:value={filter.type}
                 options={[
@@ -453,6 +472,9 @@
                 >Rel</span>
 
               <Select
+                onParamHandle={val => {
+                  handleParameters('rel', val);
+                }}
                 className="bg-transparent! backdrop-blur-none! px-1.5! capitalize justify-between!"
                 bind:value={filter.rel}
                 options={[{ name: 'all' }, { name: 'agent' }, { name: 'check' }]} />
@@ -465,6 +487,9 @@
                 >status</span>
 
               <Select
+                onParamHandle={val => {
+                  handleParameters('status', val);
+                }}
                 className="bg-transparent! backdrop-blur-none! px-1.5! capitalize"
                 bind:value={filter.status}
                 options={[{ name: 'all' }, { name: 'enable' }, { name: 'disable' }]} />
@@ -478,6 +503,9 @@
               </span>
 
               <Select
+                onParamHandle={val => {
+                  handleParameters('condition_type', val);
+                }}
                 className="bg-transparent! backdrop-blur-none! px-1.5! capitalize"
                 bind:value={filter.condition_type}
                 options={[
@@ -499,6 +527,9 @@
               </span>
 
               <Select
+                onParamHandle={val => {
+                  handleParameters('machine_state', val);
+                }}
                 className="bg-transparent! backdrop-blur-none! px-1.5! capitalize"
                 bind:value={filter.machine_state}
                 options={[
@@ -517,6 +548,9 @@
               </span>
 
               <Select
+                onParamHandle={val => {
+                  handleParameters('last_status', val);
+                }}
                 className="bg-transparent! backdrop-blur-none! px-1.5! capitalize"
                 bind:value={filter.last_status}
                 options={[{ name: 'All' }, { name: 'sent' }, { name: 'failed' }]} />

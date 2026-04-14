@@ -1,7 +1,13 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
 
-  let { options = [], title = 'Select option', value = $bindable(null), className = '' } = $props();
+  let {
+    options = [],
+    title = 'Select option',
+    value = $bindable(null),
+    className = '',
+    onParamHandle = () => {},
+  } = $props();
 
   let open = $state(false);
   let selectRef;
@@ -12,6 +18,7 @@
   }
 
   function selectOption(val) {
+    onParamHandle?.(val);
     value = val;
     open = false;
   }
