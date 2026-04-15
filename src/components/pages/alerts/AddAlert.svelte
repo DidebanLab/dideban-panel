@@ -59,8 +59,8 @@
     enabled: true,
     notify_on_recovery: true,
     timeout: 30,
-    repeat_interval_seconds: 300,
-    escalation_delay_seconds: 60,
+    repeat_interval_seconds: 0,
+    escalation_delay_seconds: 0,
   });
 
   function addAlertHandler() {
@@ -183,7 +183,9 @@
 
           <button
             type="button"
-            onclick={() => (form.timeout -= 1)}
+            onclick={() => {
+              if (form.timeout > 10) form.timeout -= 1;
+            }}
             class="size-0.5 flex items-center justify-center text-gray-500 hover:text-gray-300 scale-70 cursor-pointer">
             ▼
           </button>
@@ -202,48 +204,9 @@
           </div>
           <div class="p-4 w-full h-full flex flex-col max-h-70 overflow-y-auto custom-scroll gap-4">
             {#if form.type === 'webhook'}
-              <div class="flex flex-col gap-1">
-                <div class="flex flex-col gap-1.5 justify-start items-start w-full">
-                  <span class="text-gray-400 text-sm">Headers</span>
-                  <div
-                    class="w-full overflow-y-auto custom-scroll h-fit max-h-32 flex flex-col gap-1.5">
-                    {#each webhookConfig.headers as header, i}
-                      <div class="flex justify-between items-center gap-1.5 w-full relative">
-                        <input
-                          bind:value={webhookConfig.headers[i].key}
-                          placeholder="Key"
-                          class="px-3 h-9 w-1/4 bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-md placeholder:text-gray-400/40 text-gray-400 text-sm outline-none tracking-wide"
-                          type="text" />
-                        <input
-                          bind:value={webhookConfig.headers[i].value}
-                          placeholder="Value"
-                          class="px-3 h-9 w-3/4 bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-md placeholder:text-gray-400/40 text-gray-400 text-sm outline-none tracking-wide"
-                          type="text" />
-                        {#if header === webhookConfig.headers[webhookConfig.headers.length - 1] && header !== webhookConfig.headers[0]}
-                          <button
-                            onclick={() => {
-                              webhookConfig.headers.pop();
-                            }}
-                            type="button"
-                            class="absolute start-0 -bottom-6 w-6 h-4 rounded-md bg-[#EF4444]/10 text-[#ef4444] flex justify-center items-center text-base cursor-pointer hover:bg-[#EF4444]/20">
-                            -
-                          </button>
-                        {/if}
-                      </div>
-                    {/each}
-                  </div>
-                </div>
-                <button
-                  onclick={() => webhookConfig.headers.push({ key: '', value: '' })}
-                  type="button"
-                  class="flex justify-center items-center gap-1.5 ms-auto text-gray-400 cursor-pointer hover:text-gray-200 transition-all mt-1">
-                  <span class="flex justify-center items-center text-[13px]">Add Header</span>
-                  <span class="flex justify-center items-center text-base">+</span>
-                </button>
-              </div>
               <div
-                class="w-full flex flex-col sm:flex-row justify-start sm:justify-between items-start gap-6 z-11">
-                <div class="flex flex-col justify-start items-start gap-1.5 w-full z-10">
+                class="w-full flex flex-col sm:flex-row justify-start sm:justify-between items-start gap-2 z-11">
+                <div class="flex flex-col justify-start items-start gap-1.5 w-35 z-10">
                   <span class="text-gray-400 text-sm">Method</span>
                   <Select
                     bind:value={webhookConfig.method}
@@ -267,6 +230,45 @@
                     class="px-3 h-9 w-full bg-[#0D0D0D]/5 dark:bg-white/5 disabled:opacity-50 disabled:cursor-not-allowed backdrop-blur-sm rounded-lg placeholder:text-gray-400/40 text-gray-400 text-sm outline-none tracking-wide"
                     type="text" />
                 </div>
+              </div>
+              <div class="flex flex-col gap-1">
+                <div class="flex flex-col gap-1.5 justify-start items-start w-full">
+                  <span class="text-gray-400 text-sm">Headers</span>
+                  <div
+                    class="w-full overflow-y-auto custom-scroll h-fit max-h-32 flex flex-col gap-1.5">
+                    {#each webhookConfig.headers as header, i}
+                      <div class="flex justify-between items-center gap-1.5 w-full relative">
+                        <input
+                          bind:value={webhookConfig.headers[i].key}
+                          placeholder="Key"
+                          class="px-3 h-9 w-1/4 bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-md placeholder:text-gray-400/40 text-gray-400 text-sm outline-none tracking-wide"
+                          type="text" />
+                        <input
+                          bind:value={webhookConfig.headers[i].value}
+                          placeholder="Value"
+                          class="px-3 h-9 w-3/4 bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-md placeholder:text-gray-400/40 text-gray-400 text-sm outline-none tracking-wide"
+                          type="text" />
+                        {#if i > 0}
+                          <button
+                            type="button"
+                            class="absolute right-2 top-1/2 text-md cursor-pointer -translate-y-1/2 w-5 h-5 flex items-center justify-center rounded-lg bg-[#EF4444]/10 text-[#ef4444] hover:bg-[#EF4444]/20 transition-colors z-10"
+                            onclick={() => {
+                              webhookConfig.headers.splice(i, 1);
+                            }}>
+                            -
+                          </button>
+                        {/if}
+                      </div>
+                    {/each}
+                  </div>
+                </div>
+                <button
+                  onclick={() => webhookConfig.headers.push({ key: '', value: '' })}
+                  type="button"
+                  class="flex justify-center items-center gap-1.5 ms-auto text-gray-400 cursor-pointer hover:text-gray-200 transition-all mt-1">
+                  <span class="flex justify-center items-center text-[13px]">Add Header</span>
+                  <span class="flex justify-center items-center text-base">+</span>
+                </button>
               </div>
 
               <div
@@ -387,7 +389,7 @@
                         const value = Number(e.target.value);
                         if (Number.isNaN(value) || value < 1) emailConfig.smtp_port = 465;
                       }}
-                      class="px-3 h-9 w-full text-start bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-md text-gray-400 text-sm outline-none tracking-wide appearance-none text-center" />
+                      class="px-3 h-9 w-full text-start bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-md text-gray-400 text-sm outline-none tracking-wide appearance-none" />
 
                     <!-- Custom Arrows -->
                     <div
@@ -454,22 +456,21 @@
                     <span class="text-gray-400 text-sm">To</span>
                     <span class="text-black/10 dark:text-white/10 text-sm">(required)</span>
                   </div>
-                  <div
-                    class="w-full overflow-y-auto custom-scroll h-fit max-h-32 flex flex-col gap-1.5">
-                    {#each emailConfig.to as header, i}
+                  <div class="w-full overflow-y-auto custom-scroll max-h-25 flex flex-col gap-1.5">
+                    {#each emailConfig.to as receiver, i}
                       <div class="flex justify-between items-center gap-1.5 w-full relative">
                         <input
                           bind:value={emailConfig.to[i]}
                           placeholder="Value"
                           class="px-3 h-9 w-full bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-md placeholder:text-gray-400/40 text-gray-400 text-sm outline-none tracking-wide"
                           type="text" />
-                        {#if header === emailConfig.to[emailConfig.to.length - 1] && header !== emailConfig.to[0]}
+                        {#if i > 0}
                           <button
-                            onclick={() => {
-                              emailConfig.to.pop();
-                            }}
                             type="button"
-                            class="absolute start-0 -bottom-6 w-6 h-4 rounded-md bg-[#EF4444]/10 text-[#ef4444] flex justify-center items-center text-base cursor-pointer hover:bg-[#EF4444]/20">
+                            class="absolute right-2 top-1/2 text-md cursor-pointer -translate-y-1/2 w-5 h-5 flex items-center justify-center rounded-lg bg-[#EF4444]/10 text-[#ef4444] hover:bg-[#EF4444]/20 transition-colors z-10"
+                            onclick={() => {
+                              emailConfig.to.splice(i, 1);
+                            }}>
                             -
                           </button>
                         {/if}
@@ -508,7 +509,111 @@
       </div>
     {/if}
 
-  
+    <div class="flex flex-col gap-2 w-full">
+      <div
+        class="flex w-full justify-between items-center text-sm text-gray-400 border-b pb-2 border-b-[#0D0D0D]/5 dark:border-b-white/10">
+        <div class="flex justify-start items-center gap-1">
+          <span class="flex justify-center items-center text-white">Repeat interval</span>
+          <span class="flex justify-center items-center text-black/10 dark:text-white/10"
+            >(seconds)</span>
+        </div>
+
+        <div class="relative w-15 flex">
+          <input
+            type="number"
+            value={form.repeat_interval_seconds}
+            oninput={e => {
+              form.repeat_interval_seconds = Number(e.target.value);
+            }}
+            onblur={e => {
+              const value = Number(e.target.value);
+              if (Number.isNaN(value) || value < 0) form.repeat_interval_seconds = 0;
+            }}
+            class="px-3 h-6.5 w-full bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-md text-gray-400 text-sm outline-none tracking-wide appearance-none text-center" />
+
+          <!-- Custom Arrows -->
+          <div
+            class="absolute end-2 top-1/2 -translate-y-1/2 flex flex-col justify-center items-center gap-2.25 h-full">
+            <button
+              type="button"
+              onclick={() => (form.repeat_interval_seconds += 1)}
+              class="size-0.5 flex items-center justify-center text-gray-500 hover:text-gray-300 scale-70 cursor-pointer">
+              ▲
+            </button>
+
+            <button
+              type="button"
+              onclick={() => {
+                if (form.repeat_interval_seconds) form.repeat_interval_seconds -= 1;
+              }}
+              clas
+              class="size-0.5 flex items-center justify-center text-gray-500 hover:text-gray-300 scale-70 cursor-pointer">
+              ▼
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex w-full justify-between items-center text-sm text-gray-400">
+        <div class="flex justify-start items-center gap-1">
+          <span class="flex justify-center items-center text-white">Escalation delay</span>
+          <span class="flex justify-center items-center text-black/10 dark:text-white/10"
+            >(seconds)</span>
+        </div>
+
+        <div class="relative w-15 flex">
+          <input
+            type="number"
+            value={form.escalation_delay_seconds}
+            oninput={e => {
+              form.escalation_delay_seconds = Number(e.target.value);
+            }}
+            onblur={e => {
+              const value = Number(e.target.value);
+              if (Number.isNaN(value) || value < 0) form.escalation_delay_seconds = 0;
+            }}
+            class="px-3 h-6.5 w-full bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-md text-gray-400 text-sm outline-none tracking-wide appearance-none text-center" />
+
+          <!-- Custom Arrows -->
+          <div
+            class="absolute end-2 top-1/2 -translate-y-1/2 flex flex-col justify-center items-center gap-2.25 h-full">
+            <button
+              type="button"
+              onclick={() => (form.escalation_delay_seconds += 1)}
+              class="size-0.5 flex items-center justify-center text-gray-500 hover:text-gray-300 scale-70 cursor-pointer">
+              ▲
+            </button>
+
+            <button
+              type="button"
+              onclick={() => {
+                if (form.escalation_delay_seconds) form.escalation_delay_seconds -= 1;
+              }}
+              class="size-0.5 flex items-center justify-center text-gray-500 hover:text-gray-300 scale-70 cursor-pointer">
+              ▼
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex justify-between items-center text-sm w-full">
+      <span class="flex justify-center items-center text-white text-sm">Notify of eecovery</span>
+
+      <button
+        aria-label="notify on recovery toggle"
+        onclick={() => (form.notify_on_recovery = !form.notify_on_recovery)}
+        class="w-11 h-6 rounded-full relative cursor-pointer {form.notify_on_recovery
+          ? 'bg-[#00bc7d]/20 border border-[#00bc7d]/30'
+          : 'bg-[#6a7282]/10 border border-[#6a7282]/20 '}">
+        <div
+          style={form.notify_on_recovery ? 'box-shadow: 0 0 5px 0.5px #00bc7d' : ''}
+          class="absolute top-1/2 -translate-y-1/2 left-px size-5 rounded-full transition-transform duration-300 ease-in-out {form.notify_on_recovery
+            ? 'translate-x-5 bg-[#00bc7d]'
+            : 'translate-x-0 bg-[#4d4d4d]'}">
+        </div>
+      </button>
+    </div>
 
     <div class="w-full flex justify-between items-center md:mt-10">
       <button
