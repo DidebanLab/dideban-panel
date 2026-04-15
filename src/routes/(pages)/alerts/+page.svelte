@@ -1,5 +1,5 @@
 <script>
-  import { onMount, untrack } from 'svelte';
+  import { onDestroy, onMount, untrack } from 'svelte';
   import Pagination from '../../../components/common/Pagination.svelte';
   import Select from '../../../components/common/Select.svelte';
   import LatencyChart from '../../../components/common/LatencyChart.svelte';
@@ -10,9 +10,13 @@
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
   import { SvelteURL } from 'svelte/reactivity';
+  import { off, on, subscribe, unsubscribe } from '../../../services/ws.svelte';
+
+  let isMounted = false;
+  let timeoutId = null;
+  let abortController;
 
   let isMobile = $state(innerWidth < 641);
-
   let relationInfo = $state(null);
   let relationInfoLoading = $state(true);
   let paramsList = $state([]);
@@ -27,42 +31,39 @@
     last_status: $page.url.searchParams.get('last_status') || 'all',
   });
 
-  let isMounted = false;
-  let timeoutId = null;
-  let abortController;
-
-  $effect(() => {
-    const paramsEntries = getAllParams();
-    const paramsObject = Object.fromEntries(paramsEntries);
-    paramsList = paramsEntries;
-
-    if (abortController) {
-      abortController.abort();
-    }
-
-    abortController = new AbortController();
-
-    if (timeoutId) {
-      clearTimeout(timeoutId);
-    }
-
-    if (!isMounted) {
-      http.get(endpoints.alerts, { params: paramsObject });
-
-      untrack(() => {
-        isMounted = true;
-      });
-    } else {
-      timeoutId = setTimeout(() => {
-        http.get(endpoints.alerts, {
-          params: paramsObject,
-          signal: abortController.signal,
-        });
-      }, 3000);
-    }
+  let alertStats = $state({
+    total: 42,
+    enabled: 35,
+    disabled: 7,
+    firing: 3,
+    resolved: 2,
+    idle,
+    by_type: {
+      telegram: 20,
+      bale: 5,
+      email: 15,
+      webhook: 2,
+    },
+    by_condition: {
+      status_down: 25,
+      status_timeout: 25,
+      status_up: 25,
+      cpu_above: 10,
+      memory_above: 10,
+      disk_above: 10,
+      offline: 7,
+    },
+    history: {
+      total: 1250,
+      sent: 1100,
+      failed: 100,
+      pending: 50,
+    },
   });
 
-  let data = $state({
+  let alertStatsLoading = $state(true);
+
+  let alerts = $state({
     results: [
       {
         id: 1,
@@ -137,6 +138,21 @@
     next: '',
     prev: '',
   });
+
+  let alertsLoading = $state(true);
+
+  function handleCreated(data) {
+    alerts = [data, ...alerts];
+  }
+
+  function handleUpdated(data) {
+    const initailAlets = alerts.filter(item => item.id !== data?.id);
+    alerts = [data, ...initailAlerts];
+  }
+
+  function handleDeleted(data) {
+    alerts = alerts.filter(item => item.id !== data?.id);
+  }
 
   const getAllParams = () => {
     const params = $page.url.searchParams;
@@ -253,6 +269,86 @@
           </svg>`;
     }
   }
+
+  onMount(async () => {
+    alertStatsLoading = true;
+
+    await http
+      .get(endpoints.alertsStats)
+      .then(res => {
+        alertStats = res.data?.data;
+      })
+      .finally(() => {
+        alertStatsLoading = false;
+      });
+
+    subscribe('alerts');
+    on('alert.created', handleCreated);
+    on('alert.updated', handleUpdated);
+    on('alert.deleted', handleDeleted);
+    on('alert.stats.updated', data => {
+      alertStats = data;
+    });
+  });
+
+  onDestroy(() => {
+    off('alert.created', handleCreated);
+    off('alert.updated', handleUpdated);
+    off('alert.deleted', handleDeleted);
+    off('alert.stats.updated', data => {
+      alertStats = data;
+    });
+
+    unsubscribe('alerts');
+  });
+
+  $effect(() => {
+    alertsLoading = true;
+    alerts = null;
+
+    const paramsEntries = getAllParams();
+    const paramsObject = Object.fromEntries(paramsEntries);
+    paramsList = paramsEntries;
+
+    if (abortController) {
+      abortController.abort();
+    }
+
+    abortController = new AbortController();
+
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+
+    if (!isMounted) {
+      http
+        .get(endpoints.alerts, { params: paramsObject })
+        .then(res => {
+          alerts = res.data?.data;
+        })
+        .finally(() => {
+          alertsLoading = false;
+        });
+
+      untrack(() => {
+        isMounted = true;
+      });
+    } else {
+      timeoutId = setTimeout(() => {
+        http
+          .get(endpoints.alerts, {
+            params: paramsObject,
+            signal: abortController.signal,
+          })
+          .then(res => {
+            alerts = res.data?.data;
+          })
+          .finally(() => {
+            alertsLoading = false;
+          });
+      }, 3000);
+    }
+  });
 </script>
 
 <section class="w-full flex flex-col gap-8 sm:p-7.75 sm:pt-2.5">
@@ -275,18 +371,18 @@
           <div
             class="flex justify-between items-center w-full bg-white/5 px-2 py-1 rounded-lg shadow shadow-white/10">
             <span class="text-white text-sm">Total </span>
-            <span class="text-white 29 text-sm">20</span>
+            <span class="text-white 29 text-sm">{alertStats.total}</span>
           </div>
           <div
             class="flex justify-between items-center w-full bg-white/5 px-2 py-1 rounded-lg shadow shadow-white/10">
             <span class="text-white text-sm">Enable </span>
-            <span class="text-white 29 text-sm">10</span>
+            <span class="text-white 29 text-sm">{alertStats.enabled}</span>
           </div>
 
           <div
             class="flex justify-between items-center w-full bg-white/5 px-2 py-1 rounded-lg shadow shadow-white/10">
             <span class="text-white text-sm">Disable </span>
-            <span class="text-white 29 text-sm">20</span>
+            <span class="text-white 29 text-sm">{alertStats.disabled}</span>
           </div>
         </div>
       </div>
@@ -301,18 +397,18 @@
           <div
             class="flex justify-between items-center w-full bg-white/5 px-2 py-1 rounded-lg shadow shadow-white/10">
             <span class="text-white text-sm">Idle </span>
-            <span class="text-white 29 text-sm">20</span>
+            <span class="text-white 29 text-sm">{alertStats.idle}</span>
           </div>
           <div
             class="flex justify-between items-center w-full bg-white/5 px-2 py-1 rounded-lg shadow shadow-white/10">
             <span class="text-white text-sm">Resolved </span>
-            <span class="text-white 29 text-sm">10</span>
+            <span class="text-white 29 text-sm">{alertStats.resolved}</span>
           </div>
 
           <div
             class="flex justify-between items-center w-full bg-white/5 px-2 py-1 rounded-lg shadow shadow-white/10">
             <span class="text-white text-sm">Firing </span>
-            <span class="text-white 29 text-sm">20</span>
+            <span class="text-white 29 text-sm">{alertStats.firing}</span>
           </div>
         </div>
       </div>
@@ -327,23 +423,23 @@
           <div
             class="flex justify-between items-center w-full bg-white/5 px-2 py-1 rounded-lg shadow shadow-white/10">
             <span class="text-white text-sm">Email </span>
-            <span class="text-white 29 text-sm">10</span>
+            <span class="text-white 29 text-sm">{alertStats.by_type.email}</span>
           </div>
 
           <div
             class="flex justify-between items-center w-full bg-white/5 px-2 py-1 rounded-lg shadow shadow-white/10">
             <span class="text-white text-sm">Telegram </span>
-            <span class="text-white 29 text-sm">20</span>
+            <span class="text-white 29 text-sm">{alertStats.by_type.telegram}</span>
           </div>
           <div
             class="flex justify-between items-center w-full bg-white/5 px-2 py-1 rounded-lg shadow shadow-white/10">
             <span class="text-white text-sm">Bale </span>
-            <span class="text-white 29 text-sm">20</span>
+            <span class="text-white 29 text-sm">{alertStats.by_type.bale}</span>
           </div>
           <div
             class="flex justify-between items-center w-full bg-white/5 px-2 py-1 rounded-lg shadow shadow-white/10">
             <span class="text-white text-sm">Webhook </span>
-            <span class="text-white 29 text-sm">20</span>
+            <span class="text-white 29 text-sm">{alertStats.by_type.webhook}</span>
           </div>
         </div>
       </div>
@@ -359,29 +455,29 @@
           <div
             class="flex justify-between items-center w-full bg-white/5 px-2 py-1 rounded-lg shadow shadow-white/10">
             <span class="text-white text-sm">Status Down </span>
-            <span class="text-white 29 text-sm">10</span>
+            <span class="text-white 29 text-sm">{alertStats.by_condition.status_down}</span>
           </div>
 
           <div
             class="flex justify-between items-center w-full bg-white/5 px-2 py-1 rounded-lg shadow shadow-white/10">
             <span class="text-white text-sm">Offline </span>
-            <span class="text-white 29 text-sm">20</span>
+            <span class="text-white 29 text-sm">{alertStats.by_condition.offline}</span>
           </div>
           <div
             class="flex justify-between items-center w-full bg-white/5 px-2 py-1 rounded-lg shadow shadow-white/10">
             <span class="text-white text-sm">Cpu Above </span>
-            <span class="text-white 29 text-sm">20</span>
+            <span class="text-white 29 text-sm">{alertStats.by_condition.cpu_above}</span>
           </div>
           <div
             class="flex justify-between items-center w-full bg-white/5 px-2 py-1 rounded-lg shadow shadow-white/10">
             <span class="text-white text-sm">Memory Above </span>
-            <span class="text-white 29 text-sm">20</span>
+            <span class="text-white 29 text-sm">{alertStats.by_condition.memory_above}</span>
           </div>
 
           <div
             class="flex justify-between items-center w-full bg-white/5 px-2 py-1 rounded-lg shadow shadow-white/10">
             <span class="text-white text-sm">Disk Above </span>
-            <span class="text-white 29 text-sm">20</span>
+            <span class="text-white 29 text-sm">{alertStats.by_condition.disk_above}</span>
           </div>
         </div>
       </div>
@@ -397,23 +493,23 @@
           <div
             class="flex justify-between items-center w-full bg-white/5 px-2 py-1 rounded-lg shadow shadow-white/10">
             <span class="text-white text-sm">Total </span>
-            <span class="text-white 29 text-sm">10</span>
+            <span class="text-white 29 text-sm">{alertStats.history.total}</span>
           </div>
 
           <div
             class="flex justify-between items-center w-full bg-white/5 px-2 py-1 rounded-lg shadow shadow-white/10">
             <span class="text-white text-sm">Sent </span>
-            <span class="text-white 29 text-sm">20</span>
+            <span class="text-white 29 text-sm">{alertStats.history.sent}</span>
           </div>
           <div
             class="flex justify-between items-center w-full bg-white/5 px-2 py-1 rounded-lg shadow shadow-white/10">
             <span class="text-white text-sm">Failed </span>
-            <span class="text-white 29 text-sm">20</span>
+            <span class="text-white 29 text-sm">{alertStats.history.failed}</span>
           </div>
           <div
             class="flex justify-between items-center w-full bg-white/5 px-2 py-1 rounded-lg shadow shadow-white/10">
             <span class="text-white text-sm">Pending </span>
-            <span class="text-white 29 text-sm">20</span>
+            <span class="text-white 29 text-sm">{alertStats.history.pending}</span>
           </div>
         </div>
       </div>
@@ -609,219 +705,220 @@
             class="flex-1 text-black dark:text-white text-center py-2 backdrop-blur-3xl bg-[#0D0D0D]/5 dark:bg-white/5 rounded-md text-nowrap"
             >Date</span>
         </div>
-
-        {#each data.results as result}
-          <a
-            href={`/alerts/${result.id}`}
-            class="w-full h-12 flex hover:scale-x-101 transition-all duration-300 justify-start items-center gap-1 rounded-xl dark:text-white sm:p-1 border border-[#EF4444]/15 bg-[#640000bc]/5">
-            <div class="w-12 flex justify-start items-center">
-              <div
-                class="flex justify-center items-center p-2 md:p-2 md:pe-2.5 rounded-xl {result.type ===
-                'telegram'
-                  ? 'bg-[#28a1da]/10'
-                  : ''}">
-                {@html iconSelector(result.type)}
-              </div>
-            </div>
-
-            <div class=" h-full w-15 lg:w-18 xl:w-25 flex items-center justify-center">
-              <button
-                type="button"
-                aria-label="relation type"
-                onmouseenter={() => {
-                  relationInfo = null;
-                  relationInfoLoading = true;
-
-                  let url;
-                  if (result.check_id) {
-                    http
-                      .get(endpoints.singleCheck(result.check_id))
-                      .then(
-                        res =>
-                          (relationInfo = { name: res.data?.data?.name, id: res.data?.data?.id }),
-                      )
-                      .finally(() => {
-                        relationInfoLoading = false;
-                      });
-                  } else if (result.agent_id) {
-                    http
-                      .get(endpoints.singleAgent(result.agent_id))
-                      .then(
-                        res =>
-                          (relationInfo = { name: res.data?.data?.name, id: res.data?.data?.id }),
-                      )
-                      .finally(() => {
-                        relationInfoLoading = false;
-                      });
-                  } else return;
-                }}
-                onmouseleave={() => {
-                  relationInfo = null;
-                }}
-                onfocus={() => {
-                  relationInfo = null;
-                  relationInfoLoading = true;
-
-                  let url;
-                  if (result.check_id) {
-                    url = endpoints.singleCheck(result.check_id);
-                  } else if (result.agent_id) {
-                    url = endpoints.singleAgent(result.agent_id);
-                  } else return;
-
-                  http
-                    .get(url)
-                    .then(
-                      res =>
-                        (relationInfo = { name: res.data?.data?.name, id: res.data?.data?.id }),
-                    )
-                    .finally(() => {
-                      relationInfoLoading = false;
-                    });
-                }}
-                onblur={() => {
-                  relationInfo = null;
-                }}
-                class="flex group relative justify-start items-center gap-1">
+        {#if alertsLoading}{:else if alerts}
+          {#each alerts.results as result}
+            <a
+              href={`/alerts/${result.id}`}
+              class="w-full h-12 flex hover:scale-x-101 transition-all duration-300 justify-start items-center gap-1 rounded-xl dark:text-white sm:p-1 border border-[#EF4444]/15 bg-[#640000bc]/5">
+              <div class="w-12 flex justify-start items-center">
                 <div
-                  class="text-xs cursor-pointer lg:text-sm xl:text-md text-black dark:text-white capitalize">
-                  {result.agent_id ? 'Agent' : 'Check'}
+                  class="flex justify-center items-center p-2 md:p-2 md:pe-2.5 rounded-xl {result.type ===
+                  'telegram'
+                    ? 'bg-[#28a1da]/10'
+                    : ''}">
+                  {@html iconSelector(result.type)}
                 </div>
-                <img
-                  class="cursor-pointer"
-                  width="20"
-                  height="20"
-                  src="/icons/question.png"
-                  alt="question" />
-                {#if relationInfoLoading}
-                  <div
-                    class="absolute *:text-nowrap bottom-5 start-1/2 -translate-x-1/2 bg-black/50 backdrop-blur-2xl hidden group-hover:flex text-white/30 text-sm border border-white/10 rounded-xl py-3 px-4 flex-col gap-1">
-                    <div class="flex justify-between items-center w-full gap-2">
-                      <span>id :</span>
-                      <span class="bg-white/5 w-7 rounded-md animate-pulse h-4"></span>
-                    </div>
+              </div>
 
-                    <div class="flex justify-between min-w-30 items-center w-full gap-2">
-                      <span>name :</span>
-                      <span class="bg-white/5 w-20 rounded-md animate-pulse h-4"></span>
-                    </div>
+              <div class=" h-full w-15 lg:w-18 xl:w-25 flex items-center justify-center">
+                <button
+                  type="button"
+                  aria-label="relation type"
+                  onmouseenter={() => {
+                    relationInfo = null;
+                    relationInfoLoading = true;
+
+                    let url;
+                    if (result.check_id) {
+                      http
+                        .get(endpoints.singleCheck(result.check_id))
+                        .then(
+                          res =>
+                            (relationInfo = { name: res.data?.data?.name, id: res.data?.data?.id }),
+                        )
+                        .finally(() => {
+                          relationInfoLoading = false;
+                        });
+                    } else if (result.agent_id) {
+                      http
+                        .get(endpoints.singleAgent(result.agent_id))
+                        .then(
+                          res =>
+                            (relationInfo = { name: res.data?.data?.name, id: res.data?.data?.id }),
+                        )
+                        .finally(() => {
+                          relationInfoLoading = false;
+                        });
+                    } else return;
+                  }}
+                  onmouseleave={() => {
+                    relationInfo = null;
+                  }}
+                  onfocus={() => {
+                    relationInfo = null;
+                    relationInfoLoading = true;
+
+                    let url;
+                    if (result.check_id) {
+                      url = endpoints.singleCheck(result.check_id);
+                    } else if (result.agent_id) {
+                      url = endpoints.singleAgent(result.agent_id);
+                    } else return;
+
+                    http
+                      .get(url)
+                      .then(
+                        res =>
+                          (relationInfo = { name: res.data?.data?.name, id: res.data?.data?.id }),
+                      )
+                      .finally(() => {
+                        relationInfoLoading = false;
+                      });
+                  }}
+                  onblur={() => {
+                    relationInfo = null;
+                  }}
+                  class="flex group relative justify-start items-center gap-1">
+                  <div
+                    class="text-xs cursor-pointer lg:text-sm xl:text-md text-black dark:text-white capitalize">
+                    {result.agent_id ? 'Agent' : 'Check'}
                   </div>
-                {:else if relationInfo}
-                  <div
-                    class="absolute *:text-nowrap bottom-5 start-1/2 -translate-x-1/2 bg-black/50 backdrop-blur-2xl hidden group-hover:flex text-white/30 text-sm border border-white/10 rounded-xl py-3 px-4 flex-col gap-1">
-                    <div class="flex justify-between items-center w-full gap-2">
-                      <span>Id :</span>
-                      <span class="text-white">{relationInfo.id}</span>
-                    </div>
-
-                    <div class="flex justify-between items-center min-w-30 w-full gap-2">
-                      <span>Name :</span>
-                      <span class="text-white">{relationInfo.name}</span>
-                    </div>
-
-                    <!-- svelte-ignore node_invalid_placement_ssr -->
-                    <a
-                      href={result.agent_id
-                        ? `/agents/${result.agent_id}`
-                        : `/checkers/${relationInfo.id}`}
-                      aria-label="go to relation page"
-                      class="text-nowrap gap-2 justify-center items-center flex cursor-pointer mt-2 hover:opacity-70 rounded-md border border-[#2B7FFF]/20 px-2 py-1 w-full text-[#2B7FFF] text-xs">
-                      {result.agent_id ? 'Agent' : 'Checker'} Page
-                    </a>
-                  </div>
-                {:else}
-                  <div
-                    class="absolute text-nowrap py-2 px-3 group-hover:flex hidden bottom-5 start-1/2 -translate-x-1/2 bg-white/40 dark:bg-black/80 backdrop-blur-md dark:backdrop-blur-3xl justify-center items-center overflow-hidden rounded-xl text-red-500/50 border border-[#F87171]/15 text-sm">
+                  <img
+                    class="cursor-pointer"
+                    width="20"
+                    height="20"
+                    src="/icons/question.png"
+                    alt="question" />
+                  {#if relationInfoLoading}
                     <div
-                      class="w-full h-full relative flex justify-center items-center rounded-xl animate-pulse text-nowrap">
-                      <div
-                        class="absolute top-1/2 start-1/2 -translate-1/2 h-0 rounded-full w-1/2"
-                        style="box-shadow: 0 0 500px 100px rgb(255,100,103,0.1)">
-                        <div class="w-full h-full bg-white/5"></div>
+                      class="absolute *:text-nowrap bottom-5 start-1/2 -translate-x-1/2 bg-black/50 backdrop-blur-2xl hidden group-hover:flex text-white/30 text-sm border border-white/10 rounded-xl py-3 px-4 flex-col gap-1">
+                      <div class="flex justify-between items-center w-full gap-2">
+                        <span>id :</span>
+                        <span class="bg-white/5 w-7 rounded-md animate-pulse h-4"></span>
                       </div>
 
-                      <div class="flex justify-center items-center gap-1 text-nowrap">
-                        <svg
-                          width="20"
-                          height="20"
-                          viewBox="0 0 20 20"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg">
-                          <path
-                            d="M10.0003 18.3332C14.6027 18.3332 18.3337 14.6022 18.3337 9.99984C18.3337 5.39746 14.6027 1.6665 10.0003 1.6665C5.39795 1.6665 1.66699 5.39746 1.66699 9.99984C1.66699 14.6022 5.39795 18.3332 10.0003 18.3332Z"
-                            stroke="#B4242B"
-                            stroke-width="1.66667"
-                            stroke-linecap="round"
-                            stroke-linejoin="round" />
-                          <path
-                            d="M10 6.6665V9.99984"
-                            stroke="#B4242B"
-                            stroke-width="1.66667"
-                            stroke-linecap="round"
-                            stroke-linejoin="round" />
-                          <path
-                            d="M10 13.3335H10.0083"
-                            stroke="#B4242B"
-                            stroke-width="1.66667"
-                            stroke-linecap="round"
-                            stroke-linejoin="round" />
-                        </svg>
-                        <span class="text-red-500/70 mt-0.5 text-nowrap">Something Is Wrong</span>
+                      <div class="flex justify-between min-w-30 items-center w-full gap-2">
+                        <span>name :</span>
+                        <span class="bg-white/5 w-20 rounded-md animate-pulse h-4"></span>
                       </div>
                     </div>
-                  </div>
-                {/if}
-              </button>
-            </div>
-            <div class=" h-full w-15 lg:w-18 xl:w-25 flex items-center justify-center">
-              <span
-                class="text-xs lg:text-sm xl:text-md capitalize rounded-md w-15.75 py-0.5 flex justify-center items-center {result.enabled
-                  ? 'text-[#00bc7d]/90 bg-[#00bc7d]/5'
-                  : 'text-[#fa5757]/90 bg-[#F87171]/5'}">
-                {result.enabled ? 'Enable' : 'Disable'}</span>
-            </div>
-            <div class=" h-full flex-1 flex items-center justify-center">
-              <span class="text-xs lg:text-sm xl:text-md text-white capitalize"
-                >{result.condition_type}</span>
-            </div>
-            <div class=" h-full flex-1 flex items-center justify-center">
-              <span class="text-xs lg:text-sm xl:text-md text-white capitalize"
-                >{result.condition_value ? result.condition_value + '%' : '-'}</span>
-            </div>
-            <div class=" h-full flex-1 flex items-center justify-center">
-              <span class="text-xs lg:text-sm xl:text-md text-white capitalize"
-                >{result.machine_state}</span>
-            </div>
-            <div class=" h-full flex-1 flex items-center justify-center gap-1">
-              {#if result.last_status === 'sent'}
-                <img class="mb-0.5 opacity-50" width="17" src="/icons/tick.svg" alt="tick" />
-              {:else if result.last_status === 'failed'}
-                <img class="mb-0.5 opacity-70" width="17" src="/icons/error.svg" alt="error" />
-              {/if}
+                  {:else if relationInfo}
+                    <div
+                      class="absolute *:text-nowrap bottom-5 start-1/2 -translate-x-1/2 bg-black/50 backdrop-blur-2xl hidden group-hover:flex text-white/30 text-sm border border-white/10 rounded-xl py-3 px-4 flex-col gap-1">
+                      <div class="flex justify-between items-center w-full gap-2">
+                        <span>Id :</span>
+                        <span class="text-white">{relationInfo.id}</span>
+                      </div>
 
-              <span class="text-xs lg:text-sm xl:text-md text-white capitalize"
-                >{result.last_status}</span>
-            </div>
-            <div class=" h-full flex-1 flex items-center justify-center gap-1">
-              <img class="mb-0.5" width="19" height="19" src="/icons/clock.png" alt="clock" />
-              <span class="text-xs lg:text-sm xl:text-sm text-white/30">
-                {new Date(result.last_fired_at).toLocaleString('en-CA', {
-                  year: 'numeric',
-                  month: '2-digit',
-                  day: '2-digit',
-                  hour: '2-digit',
-                  minute: '2-digit',
-                  second: '2-digit',
-                  hour12: false,
-                })}</span>
-            </div>
-          </a>
-        {/each}
+                      <div class="flex justify-between items-center min-w-30 w-full gap-2">
+                        <span>Name :</span>
+                        <span class="text-white">{relationInfo.name}</span>
+                      </div>
+
+                      <!-- svelte-ignore node_invalid_placement_ssr -->
+                      <a
+                        href={result.agent_id
+                          ? `/agents/${result.agent_id}`
+                          : `/checkers/${relationInfo.id}`}
+                        aria-label="go to relation page"
+                        class="text-nowrap gap-2 justify-center items-center flex cursor-pointer mt-2 hover:opacity-70 rounded-md border border-[#2B7FFF]/20 px-2 py-1 w-full text-[#2B7FFF] text-xs">
+                        {result.agent_id ? 'Agent' : 'Checker'} Page
+                      </a>
+                    </div>
+                  {:else}
+                    <div
+                      class="absolute text-nowrap py-2 px-3 group-hover:flex hidden bottom-5 start-1/2 -translate-x-1/2 bg-white/40 dark:bg-black/80 backdrop-blur-md dark:backdrop-blur-3xl justify-center items-center overflow-hidden rounded-xl text-red-500/50 border border-[#F87171]/15 text-sm">
+                      <div
+                        class="w-full h-full relative flex justify-center items-center rounded-xl animate-pulse text-nowrap">
+                        <div
+                          class="absolute top-1/2 start-1/2 -translate-1/2 h-0 rounded-full w-1/2"
+                          style="box-shadow: 0 0 500px 100px rgb(255,100,103,0.1)">
+                          <div class="w-full h-full bg-white/5"></div>
+                        </div>
+
+                        <div class="flex justify-center items-center gap-1 text-nowrap">
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 20 20"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path
+                              d="M10.0003 18.3332C14.6027 18.3332 18.3337 14.6022 18.3337 9.99984C18.3337 5.39746 14.6027 1.6665 10.0003 1.6665C5.39795 1.6665 1.66699 5.39746 1.66699 9.99984C1.66699 14.6022 5.39795 18.3332 10.0003 18.3332Z"
+                              stroke="#B4242B"
+                              stroke-width="1.66667"
+                              stroke-linecap="round"
+                              stroke-linejoin="round" />
+                            <path
+                              d="M10 6.6665V9.99984"
+                              stroke="#B4242B"
+                              stroke-width="1.66667"
+                              stroke-linecap="round"
+                              stroke-linejoin="round" />
+                            <path
+                              d="M10 13.3335H10.0083"
+                              stroke="#B4242B"
+                              stroke-width="1.66667"
+                              stroke-linecap="round"
+                              stroke-linejoin="round" />
+                          </svg>
+                          <span class="text-red-500/70 mt-0.5 text-nowrap">Something Is Wrong</span>
+                        </div>
+                      </div>
+                    </div>
+                  {/if}
+                </button>
+              </div>
+              <div class=" h-full w-15 lg:w-18 xl:w-25 flex items-center justify-center">
+                <span
+                  class="text-xs lg:text-sm xl:text-md capitalize rounded-md w-15.75 py-0.5 flex justify-center items-center {result.enabled
+                    ? 'text-[#00bc7d]/90 bg-[#00bc7d]/5'
+                    : 'text-[#fa5757]/90 bg-[#F87171]/5'}">
+                  {result.enabled ? 'Enable' : 'Disable'}</span>
+              </div>
+              <div class=" h-full flex-1 flex items-center justify-center">
+                <span class="text-xs lg:text-sm xl:text-md text-white capitalize"
+                  >{result.condition_type}</span>
+              </div>
+              <div class=" h-full flex-1 flex items-center justify-center">
+                <span class="text-xs lg:text-sm xl:text-md text-white capitalize"
+                  >{result.condition_value ? result.condition_value + '%' : '-'}</span>
+              </div>
+              <div class=" h-full flex-1 flex items-center justify-center">
+                <span class="text-xs lg:text-sm xl:text-md text-white capitalize"
+                  >{result.machine_state}</span>
+              </div>
+              <div class=" h-full flex-1 flex items-center justify-center gap-1">
+                {#if result.last_status === 'sent'}
+                  <img class="mb-0.5 opacity-50" width="17" src="/icons/tick.svg" alt="tick" />
+                {:else if result.last_status === 'failed'}
+                  <img class="mb-0.5 opacity-70" width="17" src="/icons/error.svg" alt="error" />
+                {/if}
+
+                <span class="text-xs lg:text-sm xl:text-md text-white capitalize"
+                  >{result.last_status}</span>
+              </div>
+              <div class=" h-full flex-1 flex items-center justify-center gap-1">
+                <img class="mb-0.5" width="19" height="19" src="/icons/clock.png" alt="clock" />
+                <span class="text-xs lg:text-sm xl:text-sm text-white/30">
+                  {new Date(result.last_fired_at).toLocaleString('en-CA', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: false,
+                  })}</span>
+              </div>
+            </a>
+          {/each}
+        {:else}{/if}
       </div>
     </div>
 
-    {#if data?.results?.length && data.count > 1}
-      <Pagination {filter} count={data.count} prev={data.prev} next={data.next} />
+    {#if alerts?.results?.length && alerts.count > 1}
+      <Pagination {filter} count={alerts.count} prev={alerts.prev} next={alerts.next} />
     {/if}
   </div>
 </section>
