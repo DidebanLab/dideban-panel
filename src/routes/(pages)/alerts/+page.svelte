@@ -141,7 +141,7 @@
     prev: '',
   });
 
-  let alertsLoading = $state(true);
+  let alertsLoading = $state(false);
 
   function handleCreated(data) {
     alerts = [data, ...alerts];
@@ -305,8 +305,8 @@
   });
 
   $effect(() => {
-    alertsLoading = true;
-    alerts = null;
+    // alertsLoading = true;
+    // alerts = null;
 
     const paramsEntries = getAllParams();
     const paramsObject = Object.fromEntries(paramsEntries);
@@ -326,10 +326,10 @@
       http
         .get(endpoints.alerts, { params: paramsObject })
         .then(res => {
-          alerts = res.data?.data;
+          // alerts = res.data?.data;
         })
         .finally(() => {
-          alertsLoading = false;
+          // alertsLoading = false;
         });
 
       untrack(() => {
@@ -343,10 +343,10 @@
             signal: abortController.signal,
           })
           .then(res => {
-            alerts = res.data?.data;
+            // alerts = res.data?.data;
           })
           .finally(() => {
-            alertsLoading = false;
+            // alertsLoading = false;
           });
       }, 3000);
     }
@@ -396,60 +396,199 @@
       <span class="text-sm text-[#99a1af]">Lorem ipsum dolor sit amet psum</span>
     </div>
 
-    <div class="w-full h-full grid grid-cols-5 gap-6">
+    <div class="w-full h-full grid grid-cols-5 gap-3">
       <div
-        class="rounded-[14px] border border-[#0D0D0D]/5 dark:border-white/5 p-4 flex flex-col justify-between gap-3">
+        class="rounded-[14px] col-span-1 border border-[#0D0D0D]/5 dark:border-white/5 p-4 flex flex-col justify-between gap-3">
         <div
           class="text-base text-white w-full border-b border-[#0D0D0D]/5 dark:border-white/5 pb-1">
-          Status
+          Alert Overview
         </div>
 
         <div class="h-full w-full flex flex-col gap-1.75">
           <div
-            class="flex justify-between items-center w-full bg-white/5 px-2 py-1 rounded-lg shadow shadow-white/10">
-            <span class="text-white text-sm">Total </span>
-            <span class="text-white 29 text-sm">{alertStats.total}</span>
-          </div>
-          <div
-            class="flex justify-between items-center w-full bg-white/5 px-2 py-1 rounded-lg shadow shadow-white/10">
-            <span class="text-white text-sm">Enable </span>
-            <span class="text-white 29 text-sm">{alertStats.enabled}</span>
+            class="flex justify-between items-center border-[#2B7FFF]/20 rounded-[14px] border w-full h-full relative overflow-hidden group p-1 pe-4">
+            <div
+              class="absolute -top-5 end-0 size-0 rounded-full group-hover:top-5 group-hover:end-5 transition-all duration-700"
+              style="box-shadow: 0 0 100px 30px rgba(0,102,255,1);">
+            </div>
+
+            <span
+              class="text-white bg-[#2B7FFF]/10 flex justify-center items-center rounded-xl py-2 px-3 h-full w-[71px]"
+              >Total
+            </span>
+            <span class="text-white text-2xl">{alertStats.total}</span>
           </div>
 
           <div
-            class="flex justify-between items-center w-full bg-white/5 px-2 py-1 rounded-lg shadow shadow-white/10">
-            <span class="text-white text-sm">Disable </span>
-            <span class="text-white 29 text-sm">{alertStats.disabled}</span>
+            class="flex justify-between items-center border-[#00bc7d]/20 rounded-[14px] border w-full h-full relative overflow-hidden group p-1 pe-4">
+            <div
+              class="absolute -top-5 end-0 size-0 rounded-full group-hover:top-5 group-hover:end-5 transition-all duration-700"
+              style="box-shadow: 0 0 100px 30px rgb(0,212,146,0.8);">
+            </div>
+
+            <span
+              class="text-white text-sm bg-[#00bc7d]/5 flex justify-center items-center rounded-xl py-2 px-3 h-full w-[71px]"
+              >Enable
+            </span>
+            <span class="text-white text-2xl">{alertStats.enabled}</span>
+          </div>
+
+          <div
+            class="flex justify-between items-center border-[#FB2C36]/15 rounded-[14px] border w-full h-full relative overflow-hidden group p-1 pe-4">
+            <div
+              class="absolute -top-5 end-0 size-0 rounded-full group-hover:top-5 group-hover:end-5 transition-all duration-700"
+              style="box-shadow: 0 0 100px 30px rgb(255,100,103)">
+            </div>
+
+            <span
+              class="text-white text-sm bg-[#F87171]/5 flex justify-center items-center rounded-xl py-2 px-3 h-full w-[71px]"
+              >Disable
+            </span>
+            <span class="text-white text-2xl">{alertStats.disabled}</span>
           </div>
         </div>
       </div>
-      <div
-        class="rounded-[14px] border border-[#0D0D0D]/5 dark:border-white/5 p-4 flex flex-col justify-between gap-3">
+
+      <div class="w-full h-full flex-col gap-2 grid grid-cols-2 grid-rows-2 col-span-4">
         <div
-          class="text-base text-white w-full border-b border-[#0D0D0D]/5 dark:border-white/5 pb-1">
-          State Machine
+          class="rounded-[14px] border border-[#0D0D0D]/5 dark:border-white/5 p-4 flex flex-col justify-between gap-3 w-full">
+          <div
+            class="text-base text-white w-full border-b border-[#0D0D0D]/5 dark:border-white/5 pb-1">
+            State Machine
+          </div>
+
+          <div class="h-full w-full flex gap-0.5">
+            <div
+              class=" w-1/5 bg-[#31AAE6] rounded-s-md h-2 hover:opacity-80 cursor-pointer relative">
+            </div>
+            <div class=" w-3/5 bg-[#FDC700] h-2 hover:opacity-80 cursor-pointer relative"></div>
+            <div
+              class=" w-1/5 bg-[#00BC7D] rounded-e-md h-2 hover:opacity-80 cursor-pointer relative">
+            </div>
+          </div>
+          <div class="flex justify-start gap-12 items-end">
+            <span class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5">
+              <span class="size-2 bg-[#31AAE6]"></span> idle
+            </span>
+            <span class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5">
+              <span class="size-2 bg-[#FDC700]"></span> firing
+            </span>
+
+            <span class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5">
+              <span class="size-2 bg-[#00BC7D]"></span> resolved
+            </span>
+          </div>
         </div>
-
-        <div class="h-full w-full flex flex-col gap-1.75">
+        <div
+          class="rounded-[14px] border border-[#0D0D0D]/5 dark:border-white/5 p-4 flex flex-col justify-between gap-3 w-full">
           <div
-            class="flex justify-between items-center w-full bg-white/5 px-2 py-1 rounded-lg shadow shadow-white/10">
-            <span class="text-white text-sm">Idle </span>
-            <span class="text-white 29 text-sm">{alertStats.idle}</span>
-          </div>
-          <div
-            class="flex justify-between items-center w-full bg-white/5 px-2 py-1 rounded-lg shadow shadow-white/10">
-            <span class="text-white text-sm">Resolved </span>
-            <span class="text-white 29 text-sm">{alertStats.resolved}</span>
+            class="text-base text-white w-full border-b border-[#0D0D0D]/5 dark:border-white/5 pb-1">
+            Type
           </div>
 
+          <div class="h-full w-full flex gap-0.5">
+            <div
+              class=" w-1/5 bg-[#00BC7D] rounded-s-md h-2 hover:opacity-80 cursor-pointer relative">
+            </div>
+            <div class=" w-3/5 bg-[#31AAE6] h-2 hover:opacity-80 cursor-pointer relative"></div>
+            <div class=" w-1/5 bg-[#CE493B] h-2 hover:opacity-80 cursor-pointer relative"></div>
+            <div
+              class=" w-1/5 bg-[#9718ff] rounded-e-md h-2 hover:opacity-80 cursor-pointer relative">
+            </div>
+          </div>
+          <div class="flex justify-start gap-12 items-end">
+            <span class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5">
+              <span class="size-2 bg-[#00BC7D]"></span> bale
+            </span>
+            <span class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5">
+              <span class="size-2 bg-[#31AAE6]"></span> telegram
+            </span>
+            <span class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5">
+              <span class="size-2 bg-[#CE493B]"></span> email
+            </span>
+            <span class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5">
+              <span class="size-2 bg-[#9718ff]"></span> webhook
+            </span>
+          </div>
+        </div>
+        <div
+          class="rounded-[14px] border border-[#0D0D0D]/5 dark:border-white/5 p-4 flex flex-col justify-between gap-3 w-full">
           <div
-            class="flex justify-between items-center w-full bg-white/5 px-2 py-1 rounded-lg shadow shadow-white/10">
-            <span class="text-white text-sm">Firing </span>
-            <span class="text-white 29 text-sm">{alertStats.firing}</span>
+            class="text-base text-white w-full border-b border-[#0D0D0D]/5 dark:border-white/5 pb-1">
+            Condition Type
+          </div>
+
+          <div class="h-full w-full flex gap-0.5">
+            <div
+              class=" w-1/5 bg-[#EF4444] rounded-s-md h-2 hover:opacity-80 cursor-pointer relative">
+            </div>
+            <div class=" w-3/5 bg-[#FDC700] h-2 hover:opacity-80 cursor-pointer relative"></div>
+            <div class=" w-1/5 bg-[#00BC7D] h-2 hover:opacity-80 cursor-pointer relative"></div>
+            <div class=" w-1/5 bg-[#9718ff] h-2 hover:opacity-80 cursor-pointer relative"></div>
+            <div class=" w-1/5 bg-[#31AAE6] h-2 hover:opacity-80 cursor-pointer relative"></div>
+            <div
+              class=" w-1/5 bg-orange-500 rounded-e-md h-2 hover:opacity-80 cursor-pointer relative">
+            </div>
+          </div>
+
+          <div class="flex justify-between items-end">
+            <span class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5">
+              <span class="size-2 bg-[#EF4444]"></span> down
+            </span>
+
+            <span class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5">
+              <span class="size-2 bg-[#FDC700]"></span> timeout
+            </span>
+            <span class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5">
+              <span class="size-2 bg-[#00BC7D]"></span> up
+            </span>
+            <span class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5">
+              <span class="size-2 bg-[#9718ff]"></span> cpu above
+            </span>
+            <span class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5">
+              <span class="size-2 bg-[#31AAE6]"></span> memory above
+            </span>
+            <span class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5">
+              <span class="size-2 bg-orange-500"></span> disk above
+            </span>
+          </div>
+        </div>
+        <div
+          class="rounded-[14px] border border-[#0D0D0D]/5 dark:border-white/5 p-4 flex flex-col justify-between gap-3 w-full">
+          <div
+            class="text-base text-white w-full border-b border-[#0D0D0D]/5 dark:border-white/5 pb-1">
+            History
+          </div>
+
+          <div class="h-full w-full flex gap-0.5">
+            <div
+              class=" w-1/5 bg-[#31AAE6] rounded-s-md h-2 hover:opacity-80 cursor-pointer relative">
+            </div>
+            <div class=" w-3/5 bg-[#FDC700] h-2 hover:opacity-80 cursor-pointer relative"></div>
+            <div class=" w-1/5 bg-[#00BC7D] h-2 hover:opacity-80 cursor-pointer relative"></div>
+            <div
+              class=" w-1/5 bg-[#EF4444] rounded-e-md h-2 hover:opacity-80 cursor-pointer relative">
+            </div>
+          </div>
+
+          <div class="flex justify-start gap-12 items-end">
+            <span class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5">
+              <span class="size-2 bg-[#31AAE6]"></span> total
+            </span>
+            <span class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5">
+              <span class="size-2 bg-[#FDC700]"></span> pending
+            </span>
+            <span class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5">
+              <span class="size-2 bg-[#00BC7D]"></span> sent
+            </span>
+            <span class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5">
+              <span class="size-2 bg-[#EF4444]"></span> failed
+            </span>
           </div>
         </div>
       </div>
-      <div
+
+      <!-- <div
         class="rounded-[14px] border border-[#0D0D0D]/5 dark:border-white/5 p-4 flex flex-col justify-between gap-3">
         <div
           class="text-base text-white w-full border-b border-[#0D0D0D]/5 dark:border-white/5 pb-1">
@@ -549,7 +688,7 @@
             <span class="text-white 29 text-sm">{alertStats.history.pending}</span>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 
