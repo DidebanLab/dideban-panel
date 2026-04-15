@@ -1,4 +1,5 @@
 <script>
+  import Alert from './../../../components/global/Alert.svelte';
   import { onDestroy, onMount, untrack } from 'svelte';
   import Pagination from '../../../components/common/Pagination.svelte';
   import Select from '../../../components/common/Select.svelte';
@@ -11,6 +12,7 @@
   import { page } from '$app/stores';
   import { SvelteURL } from 'svelte/reactivity';
   import { off, on, subscribe, unsubscribe } from '../../../services/ws.svelte';
+  import AddAlert from '../../../components/pages/alerts/AddAlert.svelte';
 
   let isMounted = false;
   let timeoutId = null;
@@ -37,7 +39,7 @@
     disabled: 7,
     firing: 3,
     resolved: 2,
-    idle,
+    idle: 23,
     by_type: {
       telegram: 20,
       bale: 5,
@@ -349,9 +351,44 @@
       }, 3000);
     }
   });
+
+  function handleGlobalKeyDown(event) {
+    const isAKey = event.key === 'A' || event.code === 'KeyA';
+
+    if ((event.ctrlKey || event.metaKey) && event.shiftKey && isAKey) {
+      event.preventDefault();
+
+      opener({
+        id: 'create-alert',
+        content: AddAlert,
+        props: {
+          // onAdded: () => {
+          //   trigger += 1;
+          // },
+        },
+      });
+    }
+  }
+
+  onMount(() => {
+    window.addEventListener('keydown', handleGlobalKeyDown);
+  });
+
+  onDestroy(() => {
+    window.removeEventListener('keydown', handleGlobalKeyDown);
+  });
 </script>
 
-<section class="w-full flex flex-col gap-8 sm:p-7.75 sm:pt-2.5">
+<!-- svelte-ignore a11y_no_static_element_interactions -->
+<section
+  onkeydown={event => {
+    if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key === 'A') {
+      event.preventDefault();
+
+      console.log('salam');
+    }
+  }}
+  class="w-full flex flex-col gap-8 sm:p-7.75 sm:pt-2.5">
   <div
     class="w-full sm:dark:bg-[#0D0D0D] sm:bg-[#FFFFFF] flex flex-col gap-8 p-6 border border-[#0D0D0D]/5 dark:border-white/5 rounded-[14px] h-100">
     <div class="flex flex-col justify-start items-start gap-1">
@@ -518,10 +555,35 @@
 
   <div
     class="w-full h-[90vh] px-6 sm:py-6 rounded-[14px] dark:bg-[#0D0D0D] bg-[#FFFFFF] sm:border border-[#0D0D0D]/5 dark:border-white/5 flex flex-col gap-7.75 overflow-y-auto custom-scroll pb-4">
-    <div class="w-full flex flex-col justify-start items-center gap-2">
+    <div class="w-full flex justify-between items-center">
+      <div class="flex flex-col justify-start items-start gap-1">
+        <div class="text-lg sm:text-xl dark:text-white capitalize">Alerts List</div>
+        <span class="text-sm text-[#99a1af]">Lorem ipsum dolor sit amet psum</span>
+      </div>
+
+      <button
+        type="button"
+        onclick={() => {
+          opener({
+            id: 'create-alert',
+            content: AddAlert,
+            props: {
+              // onAdded: () => {
+              //   trigger += 1;
+              // },
+            },
+          });
+        }}
+        class="w-10 sm:w-34.25 h-10 flex justify-center gap-2 px-4 items-center bg-[#22c55e]/10 rounded-lg text-xl text-[#10b981] cursor-pointer">
+        <span class="text-nowrap text-sm hidden sm:flex justify-center items-center"
+          >Add Alert</span>
+        +
+      </button>
+    </div>
+    <div class="w-full flex flex-col justify-start items-center gap-2 h-full">
       <div
         class="w-full flex flex-col justify-start items-start gap-2 border p-3 border-[#0D0D0D]/5 dark:border-white/5 rounded-lg">
-        <span class="text-sm text-black dark:text-white">Filter</span>
+        <span class="text-base text-black dark:text-white">Filter</span>
         <div class="w-full flex flex-col justify-start gap-3 items-start md:items-center z-10">
           <div
             class="flex w-full gap-1.5 px-3 justify-start items-center bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-md">
@@ -657,7 +719,7 @@
         </div>
       </div>
 
-      <div class="w-full flex flex-col gap-1.5 text-sm">
+      <div class="w-full flex flex-col gap-1.5 text-sm h-full">
         <div
           class="w-full flex gap-2 justify-end items-center border-b pb-1.5 border-[#0D0D0D]/5 dark:border-white/5">
           {#each paramsList as filteredItem}
@@ -706,213 +768,258 @@
             >Date</span>
         </div>
         {#if alertsLoading}{:else if alerts}
-          {#each alerts.results as result}
-            <a
-              href={`/alerts/${result.id}`}
-              class="w-full h-12 flex hover:scale-x-101 transition-all duration-300 justify-start items-center gap-1 rounded-xl dark:text-white sm:p-1 border border-[#EF4444]/15 bg-[#640000bc]/5">
-              <div class="w-12 flex justify-start items-center">
-                <div
-                  class="flex justify-center items-center p-2 md:p-2 md:pe-2.5 rounded-xl {result.type ===
-                  'telegram'
-                    ? 'bg-[#28a1da]/10'
-                    : ''}">
-                  {@html iconSelector(result.type)}
+          {#if alerts.results.length}
+            {#each alerts.results as result}
+              <a
+                href={`/alerts/${result.id}`}
+                class="w-full h-12 flex hover:scale-x-101 transition-all duration-300 justify-start items-center gap-1 rounded-xl dark:text-white sm:p-1 border border-[#EF4444]/15 bg-[#640000bc]/5">
+                <div class="w-12 flex justify-start items-center">
+                  <div
+                    class="flex justify-center items-center p-2 md:p-2 md:pe-2.5 rounded-xl {result.type ===
+                    'telegram'
+                      ? 'bg-[#28a1da]/10'
+                      : ''}">
+                    {@html iconSelector(result.type)}
+                  </div>
                 </div>
-              </div>
 
-              <div class=" h-full w-15 lg:w-18 xl:w-25 flex items-center justify-center">
+                <div class=" h-full w-15 lg:w-18 xl:w-25 flex items-center justify-center">
+                  <button
+                    type="button"
+                    aria-label="relation type"
+                    onmouseenter={() => {
+                      relationInfo = null;
+                      relationInfoLoading = true;
+
+                      let url;
+                      if (result.check_id) {
+                        http
+                          .get(endpoints.singleCheck(result.check_id))
+                          .then(
+                            res =>
+                              (relationInfo = {
+                                name: res.data?.data?.name,
+                                id: res.data?.data?.id,
+                              }),
+                          )
+                          .finally(() => {
+                            relationInfoLoading = false;
+                          });
+                      } else if (result.agent_id) {
+                        http
+                          .get(endpoints.singleAgent(result.agent_id))
+                          .then(
+                            res =>
+                              (relationInfo = {
+                                name: res.data?.data?.name,
+                                id: res.data?.data?.id,
+                              }),
+                          )
+                          .finally(() => {
+                            relationInfoLoading = false;
+                          });
+                      } else return;
+                    }}
+                    onmouseleave={() => {
+                      relationInfo = null;
+                    }}
+                    onfocus={() => {
+                      relationInfo = null;
+                      relationInfoLoading = true;
+
+                      let url;
+                      if (result.check_id) {
+                        url = endpoints.singleCheck(result.check_id);
+                      } else if (result.agent_id) {
+                        url = endpoints.singleAgent(result.agent_id);
+                      } else return;
+
+                      http
+                        .get(url)
+                        .then(
+                          res =>
+                            (relationInfo = { name: res.data?.data?.name, id: res.data?.data?.id }),
+                        )
+                        .finally(() => {
+                          relationInfoLoading = false;
+                        });
+                    }}
+                    onblur={() => {
+                      relationInfo = null;
+                    }}
+                    class="flex group relative justify-start items-center gap-1">
+                    <div
+                      class="text-xs cursor-pointer lg:text-sm xl:text-md text-black dark:text-white capitalize">
+                      {result.agent_id ? 'Agent' : 'Check'}
+                    </div>
+                    <img
+                      class="cursor-pointer"
+                      width="20"
+                      height="20"
+                      src="/icons/question.png"
+                      alt="question" />
+                    {#if relationInfoLoading}
+                      <div
+                        class="absolute *:text-nowrap bottom-5 start-1/2 -translate-x-1/2 bg-black/50 backdrop-blur-2xl hidden group-hover:flex text-white/30 text-sm border border-white/10 rounded-xl py-3 px-4 flex-col gap-1">
+                        <div class="flex justify-between items-center w-full gap-2">
+                          <span>id :</span>
+                          <span class="bg-white/5 w-7 rounded-md animate-pulse h-4"></span>
+                        </div>
+
+                        <div class="flex justify-between min-w-30 items-center w-full gap-2">
+                          <span>name :</span>
+                          <span class="bg-white/5 w-20 rounded-md animate-pulse h-4"></span>
+                        </div>
+                      </div>
+                    {:else if relationInfo}
+                      <div
+                        class="absolute *:text-nowrap bottom-5 start-1/2 -translate-x-1/2 bg-black/50 backdrop-blur-2xl hidden group-hover:flex text-white/30 text-sm border border-white/10 rounded-xl py-3 px-4 flex-col gap-1">
+                        <div class="flex justify-between items-center w-full gap-2">
+                          <span>Id :</span>
+                          <span class="text-white">{relationInfo.id}</span>
+                        </div>
+
+                        <div class="flex justify-between items-center min-w-30 w-full gap-2">
+                          <span>Name :</span>
+                          <span class="text-white">{relationInfo.name}</span>
+                        </div>
+
+                        <!-- svelte-ignore node_invalid_placement_ssr -->
+                        <a
+                          href={result.agent_id
+                            ? `/agents/${result.agent_id}`
+                            : `/checkers/${relationInfo.id}`}
+                          aria-label="go to relation page"
+                          class="text-nowrap gap-2 justify-center items-center flex cursor-pointer mt-2 hover:opacity-70 rounded-md border border-[#2B7FFF]/20 px-2 py-1 w-full text-[#2B7FFF] text-xs">
+                          {result.agent_id ? 'Agent' : 'Checker'} Page
+                        </a>
+                      </div>
+                    {:else}
+                      <div
+                        class="absolute text-nowrap py-2 px-3 group-hover:flex hidden bottom-5 start-1/2 -translate-x-1/2 bg-white/40 dark:bg-black/80 backdrop-blur-md dark:backdrop-blur-3xl justify-center items-center overflow-hidden rounded-xl text-red-500/50 border border-[#F87171]/15 text-sm">
+                        <div
+                          class="w-full h-full relative flex justify-center items-center rounded-xl animate-pulse text-nowrap">
+                          <div
+                            class="absolute top-1/2 start-1/2 -translate-1/2 h-0 rounded-full w-1/2"
+                            style="box-shadow: 0 0 500px 100px rgb(255,100,103,0.1)">
+                            <div class="w-full h-full bg-white/5"></div>
+                          </div>
+
+                          <div class="flex justify-center items-center gap-1 text-nowrap">
+                            <svg
+                              width="20"
+                              height="20"
+                              viewBox="0 0 20 20"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg">
+                              <path
+                                d="M10.0003 18.3332C14.6027 18.3332 18.3337 14.6022 18.3337 9.99984C18.3337 5.39746 14.6027 1.6665 10.0003 1.6665C5.39795 1.6665 1.66699 5.39746 1.66699 9.99984C1.66699 14.6022 5.39795 18.3332 10.0003 18.3332Z"
+                                stroke="#B4242B"
+                                stroke-width="1.66667"
+                                stroke-linecap="round"
+                                stroke-linejoin="round" />
+                              <path
+                                d="M10 6.6665V9.99984"
+                                stroke="#B4242B"
+                                stroke-width="1.66667"
+                                stroke-linecap="round"
+                                stroke-linejoin="round" />
+                              <path
+                                d="M10 13.3335H10.0083"
+                                stroke="#B4242B"
+                                stroke-width="1.66667"
+                                stroke-linecap="round"
+                                stroke-linejoin="round" />
+                            </svg>
+                            <span class="text-red-500/70 mt-0.5 text-nowrap"
+                              >Something Is Wrong</span>
+                          </div>
+                        </div>
+                      </div>
+                    {/if}
+                  </button>
+                </div>
+                <div class=" h-full w-15 lg:w-18 xl:w-25 flex items-center justify-center">
+                  <span
+                    class="text-xs lg:text-sm xl:text-md capitalize rounded-md w-15.75 py-0.5 flex justify-center items-center {result.enabled
+                      ? 'text-[#00bc7d]/90 bg-[#00bc7d]/5'
+                      : 'text-[#fa5757]/90 bg-[#F87171]/5'}">
+                    {result.enabled ? 'Enable' : 'Disable'}</span>
+                </div>
+                <div class=" h-full flex-1 flex items-center justify-center">
+                  <span class="text-xs lg:text-sm xl:text-md text-white capitalize"
+                    >{result.condition_type}</span>
+                </div>
+                <div class=" h-full flex-1 flex items-center justify-center">
+                  <span class="text-xs lg:text-sm xl:text-md text-white capitalize"
+                    >{result.condition_value ? result.condition_value + '%' : '-'}</span>
+                </div>
+                <div class=" h-full flex-1 flex items-center justify-center">
+                  <span class="text-xs lg:text-sm xl:text-md text-white capitalize"
+                    >{result.machine_state}</span>
+                </div>
+                <div class=" h-full flex-1 flex items-center justify-center gap-1">
+                  {#if result.last_status === 'sent'}
+                    <img class="mb-0.5 opacity-50" width="17" src="/icons/tick.svg" alt="tick" />
+                  {:else if result.last_status === 'failed'}
+                    <img class="mb-0.5 opacity-70" width="17" src="/icons/error.svg" alt="error" />
+                  {/if}
+
+                  <span class="text-xs lg:text-sm xl:text-md text-white capitalize"
+                    >{result.last_status}</span>
+                </div>
+                <div class=" h-full flex-1 flex items-center justify-center gap-1">
+                  <img class="mb-0.5" width="19" height="19" src="/icons/clock.png" alt="clock" />
+                  <span class="text-xs lg:text-sm xl:text-sm text-white/30">
+                    {new Date(result.last_fired_at).toLocaleString('en-CA', {
+                      year: 'numeric',
+                      month: '2-digit',
+                      day: '2-digit',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                      second: '2-digit',
+                      hour12: false,
+                    })}</span>
+                </div>
+              </a>
+            {/each}
+          {:else}
+            <div class="m-auto flex flex-col justify-center items-center gap-1 w-55">
+              <span class="text-white text-2xl">No alerts found</span>
+              <p class="text-[#99a1af] text-center">Your alert list is currently empty.</p>
+              <p class="text-[#99a1af] text-center">Add your first alert.</p>
+
+              <div class="flex justify-center items-center gap-2 mt-2">
+                <div class="flex justify-start items-center gap-0.75 text-white">
+                  <span class="bg-white/10 text-[10px] px-2 py-0.75 rounded-md">Ctrl</span>
+                  +
+                  <span class="bg-white/10 text-[10px] px-2 py-0.75 rounded-md">Shift</span>
+                  +
+                  <span class="bg-white/10 text-[10px] px-2 py-0.75 rounded-md">A</span>
+                </div>
+
+                <div class=" text-white/20 text-sm">or</div>
                 <button
                   type="button"
-                  aria-label="relation type"
-                  onmouseenter={() => {
-                    relationInfo = null;
-                    relationInfoLoading = true;
-
-                    let url;
-                    if (result.check_id) {
-                      http
-                        .get(endpoints.singleCheck(result.check_id))
-                        .then(
-                          res =>
-                            (relationInfo = { name: res.data?.data?.name, id: res.data?.data?.id }),
-                        )
-                        .finally(() => {
-                          relationInfoLoading = false;
-                        });
-                    } else if (result.agent_id) {
-                      http
-                        .get(endpoints.singleAgent(result.agent_id))
-                        .then(
-                          res =>
-                            (relationInfo = { name: res.data?.data?.name, id: res.data?.data?.id }),
-                        )
-                        .finally(() => {
-                          relationInfoLoading = false;
-                        });
-                    } else return;
+                  onclick={() => {
+                    opener({
+                      id: 'create-alert',
+                      content: AddAlert,
+                      props: {
+                        // onAdded: () => {
+                        //   trigger += 1;
+                        // },
+                      },
+                    });
                   }}
-                  onmouseleave={() => {
-                    relationInfo = null;
-                  }}
-                  onfocus={() => {
-                    relationInfo = null;
-                    relationInfoLoading = true;
-
-                    let url;
-                    if (result.check_id) {
-                      url = endpoints.singleCheck(result.check_id);
-                    } else if (result.agent_id) {
-                      url = endpoints.singleAgent(result.agent_id);
-                    } else return;
-
-                    http
-                      .get(url)
-                      .then(
-                        res =>
-                          (relationInfo = { name: res.data?.data?.name, id: res.data?.data?.id }),
-                      )
-                      .finally(() => {
-                        relationInfoLoading = false;
-                      });
-                  }}
-                  onblur={() => {
-                    relationInfo = null;
-                  }}
-                  class="flex group relative justify-start items-center gap-1">
-                  <div
-                    class="text-xs cursor-pointer lg:text-sm xl:text-md text-black dark:text-white capitalize">
-                    {result.agent_id ? 'Agent' : 'Check'}
-                  </div>
-                  <img
-                    class="cursor-pointer"
-                    width="20"
-                    height="20"
-                    src="/icons/question.png"
-                    alt="question" />
-                  {#if relationInfoLoading}
-                    <div
-                      class="absolute *:text-nowrap bottom-5 start-1/2 -translate-x-1/2 bg-black/50 backdrop-blur-2xl hidden group-hover:flex text-white/30 text-sm border border-white/10 rounded-xl py-3 px-4 flex-col gap-1">
-                      <div class="flex justify-between items-center w-full gap-2">
-                        <span>id :</span>
-                        <span class="bg-white/5 w-7 rounded-md animate-pulse h-4"></span>
-                      </div>
-
-                      <div class="flex justify-between min-w-30 items-center w-full gap-2">
-                        <span>name :</span>
-                        <span class="bg-white/5 w-20 rounded-md animate-pulse h-4"></span>
-                      </div>
-                    </div>
-                  {:else if relationInfo}
-                    <div
-                      class="absolute *:text-nowrap bottom-5 start-1/2 -translate-x-1/2 bg-black/50 backdrop-blur-2xl hidden group-hover:flex text-white/30 text-sm border border-white/10 rounded-xl py-3 px-4 flex-col gap-1">
-                      <div class="flex justify-between items-center w-full gap-2">
-                        <span>Id :</span>
-                        <span class="text-white">{relationInfo.id}</span>
-                      </div>
-
-                      <div class="flex justify-between items-center min-w-30 w-full gap-2">
-                        <span>Name :</span>
-                        <span class="text-white">{relationInfo.name}</span>
-                      </div>
-
-                      <!-- svelte-ignore node_invalid_placement_ssr -->
-                      <a
-                        href={result.agent_id
-                          ? `/agents/${result.agent_id}`
-                          : `/checkers/${relationInfo.id}`}
-                        aria-label="go to relation page"
-                        class="text-nowrap gap-2 justify-center items-center flex cursor-pointer mt-2 hover:opacity-70 rounded-md border border-[#2B7FFF]/20 px-2 py-1 w-full text-[#2B7FFF] text-xs">
-                        {result.agent_id ? 'Agent' : 'Checker'} Page
-                      </a>
-                    </div>
-                  {:else}
-                    <div
-                      class="absolute text-nowrap py-2 px-3 group-hover:flex hidden bottom-5 start-1/2 -translate-x-1/2 bg-white/40 dark:bg-black/80 backdrop-blur-md dark:backdrop-blur-3xl justify-center items-center overflow-hidden rounded-xl text-red-500/50 border border-[#F87171]/15 text-sm">
-                      <div
-                        class="w-full h-full relative flex justify-center items-center rounded-xl animate-pulse text-nowrap">
-                        <div
-                          class="absolute top-1/2 start-1/2 -translate-1/2 h-0 rounded-full w-1/2"
-                          style="box-shadow: 0 0 500px 100px rgb(255,100,103,0.1)">
-                          <div class="w-full h-full bg-white/5"></div>
-                        </div>
-
-                        <div class="flex justify-center items-center gap-1 text-nowrap">
-                          <svg
-                            width="20"
-                            height="20"
-                            viewBox="0 0 20 20"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <path
-                              d="M10.0003 18.3332C14.6027 18.3332 18.3337 14.6022 18.3337 9.99984C18.3337 5.39746 14.6027 1.6665 10.0003 1.6665C5.39795 1.6665 1.66699 5.39746 1.66699 9.99984C1.66699 14.6022 5.39795 18.3332 10.0003 18.3332Z"
-                              stroke="#B4242B"
-                              stroke-width="1.66667"
-                              stroke-linecap="round"
-                              stroke-linejoin="round" />
-                            <path
-                              d="M10 6.6665V9.99984"
-                              stroke="#B4242B"
-                              stroke-width="1.66667"
-                              stroke-linecap="round"
-                              stroke-linejoin="round" />
-                            <path
-                              d="M10 13.3335H10.0083"
-                              stroke="#B4242B"
-                              stroke-width="1.66667"
-                              stroke-linecap="round"
-                              stroke-linejoin="round" />
-                          </svg>
-                          <span class="text-red-500/70 mt-0.5 text-nowrap">Something Is Wrong</span>
-                        </div>
-                      </div>
-                    </div>
-                  {/if}
+                  class="py-1 flex justify-center gap-1 px-2.5 items-center bg-[#22c55e]/10 rounded-lg text-sm text-[#10b981] cursor-pointer">
+                  <span class="text-nowrap text-xs hidden sm:flex justify-center items-center"
+                    >Add Alert</span>
+                  +
                 </button>
               </div>
-              <div class=" h-full w-15 lg:w-18 xl:w-25 flex items-center justify-center">
-                <span
-                  class="text-xs lg:text-sm xl:text-md capitalize rounded-md w-15.75 py-0.5 flex justify-center items-center {result.enabled
-                    ? 'text-[#00bc7d]/90 bg-[#00bc7d]/5'
-                    : 'text-[#fa5757]/90 bg-[#F87171]/5'}">
-                  {result.enabled ? 'Enable' : 'Disable'}</span>
-              </div>
-              <div class=" h-full flex-1 flex items-center justify-center">
-                <span class="text-xs lg:text-sm xl:text-md text-white capitalize"
-                  >{result.condition_type}</span>
-              </div>
-              <div class=" h-full flex-1 flex items-center justify-center">
-                <span class="text-xs lg:text-sm xl:text-md text-white capitalize"
-                  >{result.condition_value ? result.condition_value + '%' : '-'}</span>
-              </div>
-              <div class=" h-full flex-1 flex items-center justify-center">
-                <span class="text-xs lg:text-sm xl:text-md text-white capitalize"
-                  >{result.machine_state}</span>
-              </div>
-              <div class=" h-full flex-1 flex items-center justify-center gap-1">
-                {#if result.last_status === 'sent'}
-                  <img class="mb-0.5 opacity-50" width="17" src="/icons/tick.svg" alt="tick" />
-                {:else if result.last_status === 'failed'}
-                  <img class="mb-0.5 opacity-70" width="17" src="/icons/error.svg" alt="error" />
-                {/if}
-
-                <span class="text-xs lg:text-sm xl:text-md text-white capitalize"
-                  >{result.last_status}</span>
-              </div>
-              <div class=" h-full flex-1 flex items-center justify-center gap-1">
-                <img class="mb-0.5" width="19" height="19" src="/icons/clock.png" alt="clock" />
-                <span class="text-xs lg:text-sm xl:text-sm text-white/30">
-                  {new Date(result.last_fired_at).toLocaleString('en-CA', {
-                    year: 'numeric',
-                    month: '2-digit',
-                    day: '2-digit',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    second: '2-digit',
-                    hour12: false,
-                  })}</span>
-              </div>
-            </a>
-          {/each}
+            </div>
+          {/if}
         {:else}{/if}
       </div>
     </div>
