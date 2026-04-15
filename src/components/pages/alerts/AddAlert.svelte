@@ -8,6 +8,9 @@
   import { fly } from 'svelte/transition';
 
   let { onAdded } = $props();
+  let baleTokenVisibility = $state(false);
+  let telegramTokenVisibility = $state(false);
+  let passwordVisibility = $state(false);
 
   function normalizeHeaders(headersArray) {
     return headersArray.reduce((acc, { key, value }) => {
@@ -46,7 +49,6 @@
       { key: 'Authorization', value: '' },
       { key: 'X-Custom-Header', value: '' },
     ],
-    timeout: 10,
     retry_count: 3,
   });
 
@@ -85,7 +87,7 @@
       onAdded?.();
 
       alertStore.addAlert({
-        message: `Alert of ${res.data.data.rel} (${data}) has been added successfully.`,
+        message: `New alert has been added successfully.`,
         type: 'successful',
       });
 
@@ -121,8 +123,8 @@
         type="text" />
     </div>
 
-    <div class="flex items-center gap-6 w-full">
-      <div class="flex flex-col justify-start items-start gap-1.5 w-full z-10">
+    <div class="flex items-center gap-2 w-full z-20">
+      <div class="flex flex-col justify-start items-start gap-1.5 w-full z-20">
         <div class="flex items-center gap-1">
           <span class="text-black dark:text-white text-sm">Relation</span>
           <span class="text-black/10 dark:text-white/10 text-sm">(required)</span>
@@ -133,7 +135,7 @@
           title="Select Relation"
           options={[{ name: 'agent' }, { name: 'check' }]} />
       </div>
-      <div class="flex flex-col justify-start items-start gap-1.5 w-full z-10">
+      <div class="flex flex-col justify-start items-start gap-1.5 w-full z-20">
         <div class="flex items-center gap-1">
           <span class="text-black dark:text-white text-sm">Type</span>
           <span class="text-black/10 dark:text-white/10 text-sm">(required)</span>
@@ -150,6 +152,57 @@
           ]} />
       </div>
     </div>
+
+    <div class="flex items-center gap-2 w-full z-10">
+      <div class="flex flex-col justify-start items-start gap-1.5 w-full z-10">
+        <div class="flex items-center gap-1">
+          <span class="text-black dark:text-white text-sm">Condition type</span>
+          <span class="text-black/10 dark:text-white/10 text-sm">(required)</span>
+        </div>
+        <Select
+          className="capitalize!"
+          bind:value={form.condition_type}
+          title="Select Condition Type"
+          options={[
+            { name: 'status_down' },
+            { name: 'status_up' },
+            { name: 'status_timeout' },
+            { name: 'cpu_above' },
+            { name: 'memory_above' },
+            { name: 'disk_above' },
+          ]} />
+      </div>
+      <div class="flex flex-col justify-start items-start gap-1.5 w-full z-10">
+        <div class="flex items-center gap-1">
+          <span
+            class="text-black dark:text-white text-sm {form.condition_type === 'status_down' ||
+            form.condition_type === 'status_timeout' ||
+            form.condition_type === 'status_up'
+              ? 'text-black/5 dark:text-white/5'
+              : ''}">Condition value</span>
+          <span
+            class="text-black/10 dark:text-white/10 text-sm {form.condition_type ===
+              'status_down' ||
+            form.condition_type === 'status_timeout' ||
+            form.condition_type === 'status_up'
+              ? 'hidden'
+              : ''}">(required)</span>
+        </div>
+        <input
+          disabled={form.condition_type === 'status_down' ||
+            form.condition_type === 'status_timeout' ||
+            form.condition_type === 'status_up'}
+          bind:value={form.condition_value}
+          placeholder="Please enter the checker/agent (id)"
+          class="px-3 h-9 w-full bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-lg placeholder:text-gray-400/40 text-gray-400 text-sm outline-none tracking-wide {form.condition_type ===
+            'status_down' ||
+          form.condition_type === 'status_timeout' ||
+          form.condition_type === 'status_up'
+            ? 'opacity-30'
+            : ''}"
+          type="text" />
+      </div>
+    </div>
     <div
       class="flex w-full justify-between items-center text-sm text-gray-400 border-b pb-2 border-b-[#0D0D0D]/5 dark:border-b-white/10">
       <div class="flex justify-start items-center gap-1">
@@ -161,7 +214,7 @@
       <div class="relative w-15 flex">
         <input
           type="number"
-          value={form.timeout}
+          bind:value={form.timeout}
           oninput={e => {
             form.timeout = Number(e.target.value);
           }}
@@ -278,7 +331,7 @@
                 <div class="relative w-15 flex">
                   <input
                     type="number"
-                    value={webhookConfig.retry_count}
+                    bind:value={webhookConfig.retry_count}
                     oninput={e => {
                       webhookConfig.retry_count = Number(e.target.value);
                     }}
@@ -315,11 +368,23 @@
                   <span class="text-gray-400 text-sm">Token</span>
                   <span class="text-black/10 dark:text-white/10 text-sm">(required)</span>
                 </div>
-                <input
-                  bind:value={baleConfig.token}
-                  placeholder="Please enter token"
-                  class="px-3 h-9 w-full bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-lg placeholder:text-gray-400/40 text-gray-400 text-sm outline-none tracking-wide"
-                  type="text" />
+                <div
+                  class="flex items-center justify-center w-full h-9 bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-lg overflow-hidden px-3">
+                  <input
+                    placeholder="Please enter token"
+                    bind:value={baleConfig.token}
+                    class="flex pt-px pe-3 h-9 w-full rounded-lg placeholder:text-gray-400/40 text-gray-400 text-sm outline-none tracking-wide"
+                    type={baleTokenVisibility ? 'text' : 'password'} />
+
+                  <button
+                    class="flex justify-center items-center cursor-pointer"
+                    onclick={() => (baleTokenVisibility = !baleTokenVisibility)}
+                    type="button">
+                    <img
+                      width="20"
+                      src={baleTokenVisibility ? '/icons/eye-slash.png' : '/icons/eye.png'}
+                      alt="password display" /></button>
+                </div>
               </div>
 
               <div class="flex flex-col justify-start items-start gap-1.5 w-full">
@@ -339,11 +404,23 @@
                   <span class="text-gray-400 text-sm">Token</span>
                   <span class="text-black/10 dark:text-white/10 text-sm">(required)</span>
                 </div>
-                <input
-                  bind:value={telegramConfig.token}
-                  placeholder="Please enter token"
-                  class="px-3 h-9 w-full bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-lg placeholder:text-gray-400/40 text-gray-400 text-sm outline-none tracking-wide"
-                  type="text" />
+                <div
+                  class="flex items-center justify-center w-full h-9 bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-lg overflow-hidden px-3">
+                  <input
+                    placeholder="Please enter token"
+                    bind:value={telegramConfig.token}
+                    class="flex pt-px pe-3 h-9 w-full rounded-lg placeholder:text-gray-400/40 text-gray-400 text-sm outline-none tracking-wide"
+                    type={telegramTokenVisibility ? 'text' : 'password'} />
+
+                  <button
+                    class="flex justify-center items-center cursor-pointer"
+                    onclick={() => (telegramTokenVisibility = !telegramTokenVisibility)}
+                    type="button">
+                    <img
+                      width="20"
+                      src={telegramTokenVisibility ? '/icons/eye-slash.png' : '/icons/eye.png'}
+                      alt="password display" /></button>
+                </div>
               </div>
 
               <div class="flex flex-col justify-start items-start gap-1.5 w-full">
@@ -381,7 +458,7 @@
                   <div class="relative w-full flex">
                     <input
                       type="number"
-                      value={emailConfig.smtp_port}
+                      bind:value={emailConfig.smtp_port}
                       oninput={e => {
                         emailConfig.smtp_port = Number(e.target.value);
                       }}
@@ -430,11 +507,23 @@
                     <span class="text-gray-400 text-sm">Password</span>
                     <span class="text-black/10 dark:text-white/10 text-sm">(required)</span>
                   </div>
-                  <input
-                    bind:value={emailConfig.password}
-                    placeholder="Please enter your password"
-                    class="px-3 h-9 w-full bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-lg placeholder:text-gray-400/40 text-gray-400 text-sm outline-none tracking-wide"
-                    type="text" />
+                  <div
+                    class="flex items-center justify-center w-full h-9 bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-lg overflow-hidden px-3">
+                    <input
+                      placeholder="Please enter your password"
+                      bind:value={emailConfig.password}
+                      class="flex pt-px pe-3 h-9 w-full rounded-lg placeholder:text-gray-400/40 text-gray-400 text-sm outline-none tracking-wide"
+                      type={passwordVisibility ? 'text' : 'password'} />
+
+                    <button
+                      class="flex justify-center items-center cursor-pointer"
+                      onclick={() => (passwordVisibility = !passwordVisibility)}
+                      type="button">
+                      <img
+                        width="20"
+                        src={passwordVisibility ? '/icons/eye-slash.png' : '/icons/eye.png'}
+                        alt="password display" /></button>
+                  </div>
                 </div>
               </div>
 
@@ -521,7 +610,7 @@
         <div class="relative w-15 flex">
           <input
             type="number"
-            value={form.repeat_interval_seconds}
+            bind:value={form.repeat_interval_seconds}
             oninput={e => {
               form.repeat_interval_seconds = Number(e.target.value);
             }}
@@ -564,7 +653,7 @@
         <div class="relative w-15 flex">
           <input
             type="number"
-            value={form.escalation_delay_seconds}
+            bind:value={form.escalation_delay_seconds}
             oninput={e => {
               form.escalation_delay_seconds = Number(e.target.value);
             }}
@@ -627,7 +716,7 @@
               ? baleConfig.chat_id && baleConfig.token
               : form.type === 'email'
                 ? emailConfig.smtp_host &&
-                  emailConfig.port &&
+                  emailConfig.smtp_port &&
                   emailConfig.username &&
                   emailConfig.password &&
                   emailConfig.from &&
