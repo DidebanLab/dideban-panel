@@ -217,7 +217,7 @@
                         .then(res => {
                           trigger += 1;
                           alertStore.addAlert({
-                            message: `alert ${id} activation updated successfully.`,
+                            message: `alert of ${`${alert.check_id ? 'checker' : alert.agent_id && 'agent'}`} ${relationData?.name} activation updated successfully.`,
                             type: 'successful',
                           });
                         });
