@@ -71,11 +71,11 @@
         id: 1,
         check_id: 1,
         agent_id: null,
-        type: 'telegram',
+        type: 'bale',
         config: '{"token":"...","chat_id":"..."}',
-        condition_type: 'status_down',
+        condition_type: 'status_up',
         condition_value: null,
-        enabled: true, // enable , disable
+        enabled: false, // enable , disable
         notify_on_recovery: true,
         repeat_interval_seconds: 300,
         escalation_delay_seconds: 0,
@@ -88,7 +88,7 @@
         id: 2,
         check_id: 2,
         agent_id: null,
-        type: 'telegram',
+        type: 'email',
         config: '{"token":"...","chat_id":"..."}',
         condition_type: 'status_down',
         condition_value: null,
@@ -105,7 +105,7 @@
         id: 3,
         check_id: 3,
         agent_id: null,
-        type: 'telegram',
+        type: 'webhook',
         config: '{"token":"...","chat_id":"..."}',
         condition_type: 'status_down',
         condition_value: null,
@@ -224,51 +224,16 @@
           </svg>`;
 
       case 'webhook':
-        return `<svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="22"
-              height="22"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke='#ef4444'
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round">
-              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-              <line x1="7" y1="8" x2="17" y2="8" />
-              <line x1="7" y1="12" x2="13" y2="12" />
-            </svg>`;
+        return `<div class="flex flex-col justify-center items-center">
+          <span class="text-white text-xs">Web</span>
+          <span class="text-white text-xs">hook</span>
+          </div>`;
       //Bale icon is Fake
       case 'bale':
-        return `<svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="22"
-              height="22"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke='#ef4444'
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round">
-              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-              <line x1="7" y1="8" x2="17" y2="8" />
-              <line x1="7" y1="12" x2="13" y2="12" />
-            </svg>`;
+        return `  <img src="/icons/bale.png" alt="bale" width="22" />`;
 
       case 'email':
-        return `<svg
-            width="22"
-            class="email-icon"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill='#ef4444' 
-            aria-label="Email">
-            <path
-              d="M20 4H4c-1.1 0-2 .9-2 2v12c0 
-             1.1.9 2 2 2h16c1.1 0 2-.9 
-             2-2V6c0-1.1-.9-2-2-2zm0 
-             4-8 5-8-5V6l8 5 8-5v2z" />
-          </svg>`;
+        return `<img src="/icons/email.png" alt="bale" width="23" />`;
     }
   }
 
@@ -1082,13 +1047,18 @@
             {#each alerts.results as result}
               <a
                 href={`/alerts/${result.id}`}
-                class="w-full h-12 flex hover:scale-x-101 transition-all duration-300 justify-start items-center gap-1 rounded-xl dark:text-white sm:p-1 border border-[#EF4444]/15 bg-[#640000bc]/5">
-                <div class="w-12 flex justify-start items-center">
+                class="w-full flex hover:scale-x-101 transition-all duration-300 justify-start items-center gap-1 rounded-xl dark:text-white sm:p-0.5 border border-[#EF4444]/15 bg-[#640000bc]/5">
+                <div class="size-[42px] flex justify-start items-center">
                   <div
-                    class="flex justify-center items-center p-2 md:p-2 md:pe-2.5 rounded-xl {result.type ===
+                    class="flex justify-center items-center w-full h-full rounded-lg {result.type ===
                     'telegram'
                       ? 'bg-[#28a1da]/10'
-                      : ''}">
+                      : result.type === 'bale'
+                        ? 'bg-[#0ACA9B]/10 '
+                        : result.type === 'email'
+                          ? 'bg-[#B5B41F]/10 '
+                          :  result.type === 'webhook'
+                          ? 'bg-white/5 ':''}">
                     {@html iconSelector(result.type)}
                   </div>
                 </div>
