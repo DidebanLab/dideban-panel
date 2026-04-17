@@ -10,8 +10,8 @@
   import { alertStore } from '../../../../stores/alert.svelte';
   import { goto } from '$app/navigation';
   import getDate from '../../../../utils/getDate';
-  import DeleteAlert from '../../../../components/common/DeleteAlert.svelte';
   import { on, subscribe, off, unsubscribe } from '../../../../services/ws.svelte';
+  import DeleteNotice from '../../../../components/common/DeleteNotice.svelte';
 
   const id = $page.params.alert;
   let trigger = $state(0);
@@ -59,7 +59,7 @@
   //     opener({
   //       id: 'delete-alert',
   //       isOutClicker: false,
-  //       content: DeleteAlert,
+  //       content: DeleteNotice,
   //       props: { type: 'check' },
   //     });
   //   }
@@ -147,10 +147,10 @@
                 onclick={() => {
                   opener({
                     id: 'delete-alert',
-                    content: DeleteChecker,
+                    content: DeleteAlert,
                     props: {
                       name: relationData?.name,
-                      id: re?.id,
+                      id,
                       onDelete: () => (isDeleted = true),
                     },
                   });
@@ -168,7 +168,7 @@
                 onclick={() => {
                   opener({
                     id: 'edit-alert',
-                    content: EditChecker,
+                    content: EditAlert,
                     props: {
                       data: alert,
                       onEdited: () => {
@@ -199,7 +199,7 @@
                     if (enabled) {
                       opener({
                         id: 'confirm-edit',
-                        content: ConfirmEditChecker,
+                        content: confirmEditAlert,
                         props: {
                           name: relationData?.name,
                           onEdited: () => {
@@ -209,13 +209,13 @@
                       });
                     } else {
                       http
-                        .patch(endpoints.singleAlert(alert?.id), {
+                        .patch(endpoints.singleAlert(id), {
                           enabled: true,
                         })
                         .then(res => {
                           trigger += 1;
                           alertStore.addAlert({
-                            message: `alert ${alert?.id} activation updated successfully.`,
+                            message: `alert ${id} activation updated successfully.`,
                             type: 'successful',
                           });
                         });

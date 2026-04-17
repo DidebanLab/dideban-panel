@@ -17,7 +17,7 @@
   import CollectDuration from '../../../../components/pages/agent/CollectDuration.svelte';
   import Metrics from '../../../../components/pages/agent/Metrics.svelte';
   import { off, on, subscribe, unsubscribe } from '../../../../services/ws.svelte.js';
-  import DeleteAlert from '../../../../components/common/DeleteAlert.svelte';
+  import DeleteNotice from '../../../../components/common/DeleteNotice.svelte';
 
   const id = $page.params.agent;
   let trigger = $state(0);
@@ -70,7 +70,7 @@
     opener({
       id: 'delete-alert',
       isOutClicker: false,
-      content: DeleteAlert,
+      content: DeleteNotice,
       props: { type: 'agent' },
     });
   }

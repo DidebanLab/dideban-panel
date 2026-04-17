@@ -1,4 +1,5 @@
 <script>
+  import DeleteNotice from './../../../../components/common/DeleteNotice.svelte';
   import SummaryCalender from './../../../../components/common/SummaryCalender.svelte';
   import Latency from '../../../../components/common/Latency.svelte';
   import { opener } from '../../../../stores/modal.svelte';
@@ -19,7 +20,6 @@
   import ApdexHistory from '../../../../components/pages/checker/ApdexHistory.svelte';
   import ApdexHistogram from '../../../../components/pages/checker/ApdexHistogram.svelte';
   import { off, on, subscribe, unsubscribe } from '../../../../services/ws.svelte';
-  import DeleteAlert from '../../../../components/common/DeleteAlert.svelte';
 
   const id = $page.params.checker;
   let trigger = $state(0);
@@ -70,7 +70,7 @@
     opener({
       id: 'delete-alert',
       isOutClicker: false,
-      content: DeleteAlert,
+      content: DeleteNotice,
       props: { type: 'check' },
     });
   }
