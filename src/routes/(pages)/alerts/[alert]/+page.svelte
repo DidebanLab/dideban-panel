@@ -13,6 +13,7 @@
   import { on, subscribe, off, unsubscribe } from '../../../../services/ws.svelte';
   import DeleteNotice from '../../../../components/common/DeleteNotice.svelte';
   import ConfirmEditAlert from '../../../../components/pages/alerts/ConfirmEditAlert.svelte';
+  import DeleteAlert from '../../../../components/pages/alerts/DeleteAlert.svelte';
 
   const id = $page.params.alert;
   let trigger = $state(0);
@@ -152,6 +153,7 @@
                     props: {
                       name: relationData?.name,
                       id,
+                      relType: `${alert.check_id ? 'checker' : alert.agent_id && 'agent'}`,
                       onDelete: () => (isDeleted = true),
                     },
                   });
