@@ -12,6 +12,7 @@
   import getDate from '../../../../utils/getDate';
   import { on, subscribe, off, unsubscribe } from '../../../../services/ws.svelte';
   import DeleteNotice from '../../../../components/common/DeleteNotice.svelte';
+  import ConfirmEditAlert from '../../../../components/pages/alerts/ConfirmEditAlert.svelte';
 
   const id = $page.params.alert;
   let trigger = $state(0);
@@ -199,8 +200,9 @@
                     if (enabled) {
                       opener({
                         id: 'confirm-edit',
-                        content: confirmEditAlert,
+                        content: ConfirmEditAlert,
                         props: {
+                          relType: `${alert.check_id ? 'checker' : alert.agent_id && 'agent'}`,
                           name: relationData?.name,
                           onEdited: () => {
                             trigger += 1;
