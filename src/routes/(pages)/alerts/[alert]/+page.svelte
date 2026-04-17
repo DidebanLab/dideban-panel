@@ -14,6 +14,7 @@
   import DeleteNotice from '../../../../components/common/DeleteNotice.svelte';
   import ConfirmEditAlert from '../../../../components/pages/alerts/ConfirmEditAlert.svelte';
   import DeleteAlert from '../../../../components/pages/alerts/DeleteAlert.svelte';
+  import EditAlert from '../../../../components/pages/alerts/EditAlert.svelte';
 
   const id = $page.params.alert;
   let trigger = $state(0);
@@ -21,9 +22,10 @@
     check_id: 2,
     agent_id: null,
     type: 'telegram',
-    config: '{"token":"1234:ABC","chat_id":"987654","timeout":"10s"}',
+    config: '{"token":"1234:ABC","chat_id":"987654"}',
     condition_type: 'status_down',
     condition_value: null,
+    timeout: 10,
     enabled: true,
     notify_on_recovery: true,
     repeat_interval_seconds: 300,
@@ -173,6 +175,7 @@
                     id: 'edit-alert',
                     content: EditAlert,
                     props: {
+                      id,
                       data: alert,
                       onEdited: () => {
                         trigger += 1;

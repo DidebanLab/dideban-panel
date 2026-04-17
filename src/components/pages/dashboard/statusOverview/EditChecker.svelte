@@ -9,9 +9,17 @@
   import { fly } from 'svelte/transition';
   import { checkerNameRegex, checkerTargetRegexes } from '../../../../validators.svelte';
 
+  let nameInput;
   const { data, onEdited } = $props();
 
-  let nameInput;
+  let form = $state({
+    name: data?.name,
+    target: data?.target,
+    timeout_seconds: data?.timeout_seconds,
+    interval_seconds: data?.interval_seconds,
+    enabled: data?.enabled,
+    type: data?.type,
+  });
 
   let body = $state(data?.config?.body ?? '');
 
@@ -30,15 +38,6 @@
     count: data?.config?.count,
     size: data?.config?.size,
     interval: data?.config?.interval,
-  });
-
-  let form = $state({
-    name: data?.name,
-    target: data?.target,
-    timeout_seconds: data?.timeout_seconds,
-    interval_seconds: data?.interval_seconds,
-    enabled: data?.enabled ?? true,
-    type: data?.type,
   });
 
   function normalizeHeaders(headersArray) {
