@@ -230,7 +230,7 @@
           </div>`;
       //Bale icon is Fake
       case 'bale':
-        return `  <img src="/icons/bale.png" alt="bale" width="22" />`;
+        return `<img src="/icons/bale.png" alt="bale" width="22" />`;
 
       case 'email':
         return `<img src="/icons/email.png" alt="bale" width="23" />`;
@@ -1057,8 +1057,9 @@
                         ? 'bg-[#0ACA9B]/10 '
                         : result.type === 'email'
                           ? 'bg-[#B5B41F]/10 '
-                          :  result.type === 'webhook'
-                          ? 'bg-white/5 ':''}">
+                          : result.type === 'webhook'
+                            ? 'bg-white/5 '
+                            : ''}">
                     {@html iconSelector(result.type)}
                   </div>
                 </div>
