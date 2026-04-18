@@ -7,6 +7,7 @@
     value = $bindable(null),
     className = '',
     onParamHandle = () => {},
+    onAction,
   } = $props();
 
   let open = $state(false);
@@ -18,7 +19,6 @@
   }
 
   function selectOption(val) {
-    onParamHandle?.(val);
     value = val;
     open = false;
   }
@@ -72,6 +72,8 @@
             if (item.name === value) return;
 
             selectOption(item.name);
+            onParamHandle?.(item.name);
+            onAction?.();
           }}>
           {item.name}
         </li>

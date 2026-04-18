@@ -22,13 +22,13 @@
     check_id: 2,
     agent_id: null,
     type: 'telegram',
-    config: '{"token":"1234:ABC","chat_id":"987654"}',
-    condition_type: 'status_down',
-    condition_value: null,
+    config: {token:"ABC",chat_id:"987654"},
+    condition_type: 'cpu_above',
+    condition_value: "ali",
     timeout: 10,
     enabled: true,
     notify_on_recovery: true,
-    repeat_interval_seconds: 300,
+    repeat_interval_seconds: 20,
     escalation_delay_seconds: 60,
   });
   let enabled = $state(null);

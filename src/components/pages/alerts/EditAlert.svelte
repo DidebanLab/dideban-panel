@@ -8,23 +8,7 @@
   import { fly } from 'svelte/transition';
 
   let idInput;
-  let {
-    data = {
-      check_id: 2,
-      agent_id: null,
-      type: 'telegram',
-      config: '{"token":"1234:ABC","chat_id":"987654"}',
-      condition_type: 'status_down',
-      condition_value: null,
-      timeout: 10,
-      enabled: true,
-      notify_on_recovery: true,
-      repeat_interval_seconds: 300,
-      escalation_delay_seconds: 60,
-    },
-    onEdited,
-    id,
-  } = $props();
+  let { data, onEdited, id } = $props();
 
   let form = $state({
     id,
@@ -40,40 +24,44 @@
   });
 
   let telegramConfig = $state({
-    token: null,
-    chat_id: null,
+    token: data.type === 'telegram' ? data?.config?.token : null,
+    chat_id: data.type === 'telegram' ? data?.config?.chat_id : null,
   });
 
   let baleConfig = $state({
-    token: null,
-    chat_id: null,
+    token: data.type === 'bale' ? data?.config?.token : null,
+    chat_id: data.type === 'bale' ? data?.config?.chat_id : null,
   });
 
   let emailConfig = $state({
-    smtp_host: null,
-    smtp_port: 587,
-    username: null,
-    password: null,
-    from: null,
-    to: [''],
-    use_starttls: true,
+    smtp_host: data.type === 'email' ? data?.config?.smtp_host : null,
+    smtp_port: data.type === 'email' ? data?.config?.smtp_port : 587,
+    username: data.type === 'email' ? data?.config?.username : null,
+    password: data.type === 'email' ? data?.config.password : null,
+    from: data.type === 'email' ? data?.config?.from : null,
+    to: data.type === 'email' ? data?.config?.to : [''],
+    use_starttls: data.type === 'email' ? data?.config?.use_starttls : true,
   });
 
   let webhookConfig = $state({
-    url: null,
-    method: 'POST',
-    headers: [
-      { key: 'Authorization', value: '' },
-      { key: 'X-Custom-Header', value: '' },
-    ],
-    retry_count: 3,
+    url: data.type === 'webhook' ? data?.config?.url : null,
+    method: data.type === 'webhook' ? data?.config?.method : 'POST',
+    headers:
+      data.type === 'webhook' && data?.config?.headers
+        ? Object.entries(data?.config?.headers).map(([key, value]) => ({ key, value }))
+        : [
+            { key: 'Authorization', value: '' },
+            { key: 'X-Custom-Header', value: '' },
+          ],
+    retry_count: data.type === 'webhook' ? data?.config?.retry_count : 3,
   });
 
   let isBaleTokenChanged = $state(false);
   let isTelegramTokenChanged = $state(false);
-
   let baleTokenVisibility = $state(false);
   let telegramTokenVisibility = $state(false);
+
+  let isPasswordChanged = $state(false);
   let passwordVisibility = $state(false);
 
   function normalizeHeaders(headersArray) {
@@ -126,7 +114,7 @@
   class="bg-[#F9FAFB] dark:bg-[#121212] backdrop-blur-3xl border border-[#0D0D0D]/5 dark:border-white/10 rounded-xl w-[90vw] max-h-[90vh] md:h-fit sm:w-150 flex flex-col">
   <div
     class="relative text-black dark:text-white border-b py-2 border-b-[#0D0D0D]/5 dark:border-b-white/10 flex justify-center items-center text-base capitalize">
-    Add New Alert
+    Edit Alert
   </div>
   <div
     class="relative flex flex-col justify-start items-start p-6 gap-6 custom-scroll overflow-y-auto">
@@ -180,6 +168,9 @@
           <span class="text-black/10 dark:text-white/10 text-sm">(required)</span>
         </div>
         <Select
+          onAction={() => {
+            if (form.condition_type !== data.condition_type) form.condition_value = null;
+          }}
           className="capitalize!"
           bind:value={form.condition_type}
           title="Select Condition Type"
@@ -560,14 +551,29 @@
                   <div
                     class="flex items-center justify-center w-full h-9 bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-lg overflow-hidden px-3">
                     <input
-                      placeholder="Please enter your password"
                       bind:value={emailConfig.password}
+                      oncopy={e => e.preventDefault()}
+                      oncontextmenu={e => e.preventDefault()}
+                      onkeypress={e => {
+                        if (!isPasswordChanged) {
+                          emailConfig.password = '';
+
+                          isPasswordChanged = true;
+                        }
+                      }}
+                      placeholder="Please enter your password"
                       class="flex pt-px pe-3 h-9 w-full rounded-lg placeholder:text-gray-400/40 text-gray-400 text-sm outline-none tracking-wide"
                       type={passwordVisibility ? 'text' : 'password'} />
 
                     <button
-                      class="flex justify-center items-center cursor-pointer"
-                      onclick={() => (passwordVisibility = !passwordVisibility)}
+                      class="flex justify-center items-center {!isPasswordChanged
+                        ? 'cursor-not-allowed'
+                        : 'cursor-pointer'}"
+                      onclick={() => {
+                        if (isPasswordChanged) {
+                          passwordVisibility = !passwordVisibility;
+                        }
+                      }}
                       type="button">
                       <img
                         width="20"
@@ -758,8 +764,49 @@
       <button
         disabled={!(
           form.id &&
+          (form.enabled !== data.enabled ||
+            form.escalation_delay_seconds !== data.escalation_delay_seconds ||
+            form.notify_on_recovery !== data.notify_on_recovery ||
+            form.repeat_interval_seconds !== data.repeat_interval_seconds ||
+            form.timeout !== data.timeout ||
+            form.type !== data.type ||
+            form.id !== id ||
+            form.rel !== (data.check_id ? 'check' : 'agent') ||
+            form.condition_type !== data.condition_type ||
+            (() => {
+              if (
+                form.condition_type === 'cpu_above' ||
+                form.condition_type === 'memory_above' ||
+                form.condition_type === 'disk_above'
+              ) {
+                return form.condition_value !== data.condition_value;
+              } else return false;
+            })() ||
+            (form.type === 'telegram'
+              ? telegramConfig.chat_id !== data.config.chat_id ||
+                telegramConfig.token !== data.config.token
+              : form.type === 'bale'
+                ? baleConfig.chat_id !== data.config.chat_id ||
+                  baleConfig.token !== data.config.token
+                : form.type === 'email'
+                  ? emailConfig.smtp_host !== data.config.smtp_host ||
+                    emailConfig.smtp_port !== data.config.smtp_port ||
+                    emailConfig.username !== data.config.username ||
+                    emailConfig.password !== data.config.password ||
+                    emailConfig.from !== data.config.from ||
+                    emailConfig.to !== data.config.to
+                  : form.type === 'webhook' || webhookConfig.url !== data.config.url)) &&
           form.rel &&
           form.condition_type &&
+          (() => {
+            if (
+              form.condition_type === 'cpu_above' ||
+              form.condition_type === 'memory_above' ||
+              form.condition_type === 'disk_above'
+            ) {
+              return form.condition_value;
+            } else return true;
+          })() &&
           (form.type === 'telegram'
             ? telegramConfig.chat_id && telegramConfig.token
             : form.type === 'bale'
@@ -778,7 +825,7 @@
         }}
         type="button"
         class="me-auto w-fit px-5 sm:px-10 text-sm text-[#10b981] h-8.5 flex justify-center items-center rounded-md cursor-pointer bg-[#22c55e]/10 hover:opacity-60 border border-[#00bc7d]/10 disabled:opacity-50 disabled:dark:opacity-30 disabled:cursor-not-allowed">
-        Add Alert
+        Edit Alert
       </button>
       <div class="flex justify-around items-center gap-3">
         <span class="text-sm w-[47.5px] {form.enabled ? 'text-[#00bc7d]' : 'text-[#6a7282]'}">
