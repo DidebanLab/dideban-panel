@@ -34,33 +34,30 @@
   });
 
   let alertStats = $state({
-    total: 42,
-    enabled: 35,
-    disabled: 7,
-    firing: 3,
-    resolved: 2,
-    idle: 23,
-    by_type: {
-      telegram: 20,
-      bale: 5,
-      email: 15,
-      webhook: 2,
-    },
-    by_condition: {
-      status_down: 25,
-      status_timeout: 25,
-      status_up: 25,
-      cpu_above: 10,
-      memory_above: 10,
-      disk_above: 10,
-      offline: 7,
-    },
+    total: 10,
+    enabled: 8,
+    disabled: 2,
+    firing: 1,
+    resolved: 0,
     history: {
-      total: 1250,
-      sent: 1100,
-      failed: 100,
-      pending: 50,
+      total: 500,
+      sent: 480,
+      failed: 15,
+      pending: 5,
     },
+  });
+
+  let channelStats = $state({
+    total: 5,
+    enabled: 4,
+    disabled: 1,
+    by_type: {
+      telegram: 2,
+      bale: 1,
+      email: 1,
+      webhook: 1,
+    },
+    linked_alerts: 12,
   });
 
   let alertStatsLoading = $state(true);
@@ -210,8 +207,8 @@
     goto(url.toString(), { keepFocus: true, noScroll: true });
   }
 
-  function iconSelector(type) {
-    switch (type) {
+  function iconSelector(channel) {
+    switch (channel) {
       case 'telegram':
         return `<svg
             width="20"
@@ -355,7 +352,7 @@
   }}
   class="w-full flex flex-col gap-8 sm:p-7.75 sm:pt-2.5">
   <div
-    class="w-full sm:dark:bg-[#0D0D0D] sm:bg-[#FFFFFF] flex flex-col gap-8 p-6 border border-[#0D0D0D]/5 dark:border-white/5 rounded-[14px] h-95">
+    class="w-full sm:dark:bg-[#0D0D0D] sm:bg-[#FFFFFF] h-auto flex flex-col gap-8 p-6 border border-[#0D0D0D]/5 dark:border-white/5 rounded-[14px]">
     <div class="flex flex-col justify-start items-start gap-1">
       <div class="text-lg sm:text-xl dark:text-white capitalize">Alerts Stats</div>
       <span class="text-sm text-[#99a1af]">Lorem ipsum dolor sit amet psum</span>
@@ -414,417 +411,326 @@
         </div>
       </div>
 
-      <div class="w-full h-full flex-col gap-2 grid grid-cols-2 grid-rows-2 col-span-4">
+      <div class="w-full h-full flex-col gap-2 grid grid-cols-5 col-span-4">
         <div
-          class="rounded-[14px] border border-[#0D0D0D]/5 dark:border-white/5 p-4 flex flex-col justify-between gap-3 w-full">
+          class="rounded-[14px] border border-[#0D0D0D]/5 dark:border-white/5 p-4 flex flex-col justify-start gap-2 col-span-2">
           <div
             class="text-base text-white w-full border-b border-[#0D0D0D]/5 dark:border-white/5 pb-1">
-            State Machine
+            Channels
           </div>
 
-          <div class="h-full w-full flex gap-0.5">
-            <div
-              class=" w-1/5 bg-[#31AAE6] hover:bg-[#31AAE6]/60 rounded-s-md h-2 cursor-pointer relative group">
+          <div class="w-full grid grid-rows-2 gap-2">
+            <div class="w-full gap-2 h-full grid grid-cols-4">
               <div
-                class="absolute hidden w-40 text-xs group-hover:flex -top-10 start-1/2 -translate-x-1/2 rounded-lg border bg-black/80 backdrop-blur-2xl border-white/15 justify-between items-center py-2 px-3">
-                <span
-                  class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5 capitalize">
-                  <span class="size-2 bg-[#31AAE6]"></span> idle
-                </span>
+                class="border-[#2B7FFF]/20 flex flex-col justify-between items-center p-1 rounded-[14px] border col-span-1 h-full relative overflow-hidden group">
+                <div
+                  class="absolute -top-5 end-0 size-0 rounded-full group-hover:top-5 group-hover:end-5 transition-all duration-700"
+                  style="box-shadow: 0 0 100px 30px rgba(0,102,255,1);">
+                  <div class="w-full h-full bg-white/5"></div>
+                </div>
+                <div
+                  class="relative flex items-center justify-center gap-2.5 bg-[#2B7FFF]/10 w-full rounded-xl py-px">
+                  <span class="text-base text-black dark:text-white">Total</span>
+                </div>
 
-                <span class="text-white/40">{alertStats.idle}</span>
+                <span class=" xl:text-2xl 2xl:text-3xl text-white my-auto text-xl"
+                  >{channelStats?.total || 0}</span>
+              </div>
+
+              <div class="h-full col-span-3 flex flex-col gap-2">
+                <div
+                  class="flex justify-between items-center border-[#00bc7d]/20 rounded-[14px] border w-full h-full relative overflow-hidden group p-1 pe-4">
+                  <div
+                    class="absolute -top-5 end-0 size-0 rounded-full group-hover:top-5 group-hover:end-5 transition-all duration-700"
+                    style="box-shadow: 0 0 100px 30px rgb(0,212,146,0.8);">
+                  </div>
+
+                  <span
+                    class="text-white text-sm bg-[#00bc7d]/5 flex justify-center items-center rounded-xl py-2 px-3 h-full w-17.75"
+                    >Enable
+                  </span>
+                  <span class="text-white text-2xl">{channelStats.enabled}</span>
+                </div>
+
+                <div
+                  class="flex justify-between items-center border-[#FB2C36]/15 rounded-[14px] border w-full h-full relative overflow-hidden group p-1 pe-4">
+                  <div
+                    class="absolute -top-5 end-0 size-0 rounded-full group-hover:top-5 group-hover:end-5 transition-all duration-700"
+                    style="box-shadow: 0 0 100px 30px rgb(255,100,103)">
+                  </div>
+
+                  <span
+                    class="text-white text-sm bg-[#F87171]/5 flex justify-center items-center rounded-xl py-2 px-3 h-full w-17.75"
+                    >Disable
+                  </span>
+                  <span class="text-white text-2xl">{channelStats.disabled}</span>
+                </div>
               </div>
             </div>
-            <div
-              class=" w-3/5 bg-[#FDC700] hover:bg-[#FDC700]/60 h-2 cursor-pointer relative group">
-              <div
-                class="absolute hidden w-40 text-xs group-hover:flex -top-10 start-1/2 -translate-x-1/2 rounded-lg border bg-black/80 backdrop-blur-2xl border-white/15 justify-between items-center py-2 px-3">
-                <span
-                  class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5 capitalize">
-                  <span class="size-2 bg-[#FDC700]"></span> firing
-                </span>
 
-                <span class="text-white/40">{alertStats.firing}</span>
+            <div class="flex justify-between items-center gap-2 h-full">
+              <div
+                class="border-[#B5B41F]/20 flex flex-col justify-between items-center p-1 rounded-[14px] border w-full h-full relative overflow-hidden group">
+                <div
+                  class="absolute -top-5 end-0 size-0 rounded-full group-hover:top-5 group-hover:end-5 transition-all duration-700"
+                  style="box-shadow: 0 0 100px 30px rgb(252,200,0);">
+                  <div class="w-full h-full bg-white/5"></div>
+                </div>
+                <div
+                  class="relative flex items-center justify-around gap-2.5 bg-[#B5B41F]/10 w-full rounded-xl h-[26px]">
+                  <img
+                    class="absolute top-1/2 -translate-y-1/2 start-1.5 w-[17px]"
+                    width="18"
+                    src="/icons/email.png"
+                    alt="bale" />
+                  <span class="text-sm text-black dark:text-white pt-px">Email</span>
+                </div>
+
+                <span class="xl:text-2xl 2xl:text-3xl text-white text-xl my-auto"
+                  >{channelStats?.by_type.email || 0}</span>
+                <img
+                  class="opacity-5 absolute bottom-0 end-0"
+                  width="70"
+                  src="/icons/email.png"
+                  alt="bale" />
+              </div>
+              <div
+                class="border-white/10 flex flex-col justify-between items-center p-1 rounded-[14px] border w-full h-full relative overflow-hidden group">
+                <div
+                  class="absolute -top-5 end-0 size-0 rounded-full group-hover:top-5 group-hover:end-5 transition-all duration-700"
+                  style="box-shadow: 0 0 100px 30px rgba(255,255,255,0.5);">
+                  <div class="w-full h-full bg-white/5"></div>
+                </div>
+                <div
+                  class="relative flex items-center justify-center gap-2.5 bg-white/5 w-full rounded-xl h-[26px]">
+                  <div class="flex flex-col justify-center items-center">
+                    <span class="text-white text-xs">WH</span>
+                  </div>
+
+                  <span class="text-xs text-black dark:text-white flex justify-start items-end">
+                    Webhook
+                  </span>
+                </div>
+
+                <span class="xl:text-2xl 2xl:text-3xl text-white text-xl my-auto"
+                  >{channelStats?.by_type.webhook || 0}</span>
+                <div
+                  class="flex justify-center items-center rounded-md bg-white/5 opacity-5 absolute bottom-1 end-0">
+                  <div class="flex flex-col justify-center items-center">
+                    <span class="text-white text-2xl">Web</span>
+                    <span class="text-white text-lg">hook</span>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="border-[#28a1da]/20 flex flex-col justify-between items-center p-1 rounded-[14px] border w-full h-full relative overflow-hidden group">
+                <div
+                  class="absolute -top-5 end-0 size-0 rounded-full group-hover:top-5 group-hover:end-5 transition-all duration-700"
+                  style="box-shadow: 0 0 100px 30px rgba(50, 171, 231, 1)">
+                  <div class="w-full h-full bg-white/5"></div>
+                </div>
+                <div
+                  class="relative flex items-center justify-start px-1.5 gap-2.5 bg-[#28a1da]/10 w-full rounded-xl h-[26px]">
+                  <svg
+                    width="19.5"
+                    class="telegram-icon w-4"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="#32ABE7"
+                    aria-label="Telegram">
+                    <path
+                      d="M22.5 3.5L1.7 11.6c-1 .4-.9 1.8.1 2.1l5.3 1.7 2 6.3c.3.9 1.5 1.1 2.1.4l3-3.4 5.5 4.1c.8.6 2 .1 2.2-.9l3.3-17.2c.2-1.1-.8-2-1.9-1.6zm-4.3 5.2l-8.5 7.6-.3 3.1-1.4-4.4 10.2-6.3z" />
+                  </svg>
+                  <span class="text-xs text-black dark:text-white first-letter:text-sm"
+                    >Telegram</span>
+                </div>
+
+                <span class="xl:text-2xl 2xl:text-3xl text-white text-xl my-auto"
+                  >{channelStats?.by_type.telegram || 0}</span>
+                <svg
+                  width="70"
+                  class="telegram-icon opacity-10 absolute bottom-0 end-0"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="#32ABE7"
+                  aria-label="Telegram">
+                  <path
+                    d="M22.5 3.5L1.7 11.6c-1 .4-.9 1.8.1 2.1l5.3 1.7 2 6.3c.3.9 1.5 1.1 2.1.4l3-3.4 5.5 4.1c.8.6 2 .1 2.2-.9l3.3-17.2c.2-1.1-.8-2-1.9-1.6zm-4.3 5.2l-8.5 7.6-.3 3.1-1.4-4.4 10.2-6.3z" />
+                </svg>
+              </div>
+              <div
+                class="border-[#0ACA9B]/20 flex flex-col justify-between items-center p-1 rounded-[14px] border w-full h-full relative overflow-hidden group">
+                <div
+                  class="absolute -top-5 end-0 size-0 rounded-full group-hover:top-5 group-hover:end-5 transition-all duration-700"
+                  style="box-shadow: 0 0 100px 30px rgba(10, 202, 155, 0.7);">
+                  <div class="w-full h-full bg-white/5"></div>
+                </div>
+                <div
+                  class="relative flex items-center justify-center gap-2.5 bg-[#0ACA9B]/10 w-full rounded-xl py-px">
+                  <img
+                    class="absolute top-1/2 -translate-y-1/2 start-1.5 w-4.5"
+                    width="20"
+                    src="/icons/bale.png"
+                    alt="bale" />
+                  <span class="text-base text-black dark:text-white">Bale</span>
+                </div>
+
+                <span class="xl:text-2xl 2xl:text-3xl text-white text-xl my-auto"
+                  >{channelStats?.by_type.bale || 0}</span>
+                <img
+                  class="opacity-5 absolute bottom-0 end-0"
+                  width="70"
+                  src="/icons/bale.png"
+                  alt="bale" />
               </div>
             </div>
-            <div
-              class=" w-1/5 bg-[#00BC7D] hover:bg-[#00BC7D]/60 rounded-e-md h-2 cursor-pointer relative group">
-              <div
-                class="absolute hidden w-40 text-xs group-hover:flex -top-10 start-1/2 -translate-x-1/2 rounded-lg border bg-black/80 backdrop-blur-2xl border-white/15 justify-between items-center py-2 px-3">
-                <span
-                  class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5 capitalize">
-                  <span class="size-2 bg-[#00BC7D]"></span> resolved
-                </span>
-
-                <span class="text-white/40">{alertStats.firing}</span>
-              </div>
-            </div>
-          </div>
-          <div class="flex justify-start gap-12 items-end">
-            <span class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5">
-              <span class="size-2 bg-[#31AAE6]"></span> idle
-            </span>
-            <span class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5">
-              <span class="size-2 bg-[#FDC700]"></span> firing
-            </span>
-
-            <span class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5">
-              <span class="size-2 bg-[#00BC7D]"></span> resolved
-            </span>
           </div>
         </div>
-        <div
-          class="rounded-[14px] border border-[#0D0D0D]/5 dark:border-white/5 p-4 flex flex-col justify-between gap-3 w-full">
+
+        <div class="col-span-3 h-full flex flex-col gap-2">
           <div
-            class="text-base text-white w-full border-b border-[#0D0D0D]/5 dark:border-white/5 pb-1">
-            Type
+            class="rounded-[14px] border border-[#0D0D0D]/5 dark:border-white/5 p-4 flex flex-col justify-between gap-3 w-full h-full">
+            <div
+              class="text-base text-white w-full border-b border-[#0D0D0D]/5 dark:border-white/5 pb-1">
+              State Machine
+            </div>
+
+            <div class="h-full w-full gap-0.5 flex justify-center items-center">
+              <div
+                style="width:{((alertStats.enabled - (alertStats.firing + alertStats.resolved)) *
+                  100) /
+                  alertStats.enabled}%;"
+                class="bg-[#31AAE6] hover:bg-[#31AAE6]/60 rounded-s-md h-2 cursor-pointer relative group">
+                <div
+                  class="absolute hidden w-40 text-xs group-hover:flex -top-10 start-1/2 -translate-x-1/2 rounded-lg border bg-black/80 backdrop-blur-2xl border-white/15 justify-between items-center py-2 px-3">
+                  <span
+                    class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5 capitalize">
+                    <span class="size-2 bg-[#31AAE6]"></span> idle
+                  </span>
+
+                  <span class="text-white/40"
+                    >{alertStats.enabled - (alertStats.firing + alertStats.resolved)}</span>
+                </div>
+              </div>
+              <div
+                style="width:{((alertStats.enabled - alertStats.firing) * 100) /
+                  alertStats.enabled}%;"
+                class=" bg-[#FDC700] hover:bg-[#FDC700]/60 h-2 cursor-pointer relative group">
+                <div
+                  class="absolute hidden w-40 text-xs group-hover:flex -top-10 start-1/2 -translate-x-1/2 rounded-lg border bg-black/80 backdrop-blur-2xl border-white/15 justify-between items-center py-2 px-3">
+                  <span
+                    class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5 capitalize">
+                    <span class="size-2 bg-[#FDC700]"></span> firing
+                  </span>
+
+                  <span class="text-white/40">{alertStats.firing}</span>
+                </div>
+              </div>
+              <div
+                style="width:{((alertStats.enabled - alertStats.resolved) * 100) /
+                  alertStats.enabled}%;"
+                class=" w-1/5 bg-[#00BC7D] hover:bg-[#00BC7D]/60 rounded-e-md h-2 cursor-pointer relative group">
+                <div
+                  class="absolute hidden w-40 text-xs group-hover:flex -top-10 start-1/2 -translate-x-1/2 rounded-lg border bg-black/80 backdrop-blur-2xl border-white/15 justify-between items-center py-2 px-3">
+                  <span
+                    class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5 capitalize">
+                    <span class="size-2 bg-[#00BC7D]"></span> resolved
+                  </span>
+
+                  <span class="text-white/40">{alertStats.firing}</span>
+                </div>
+              </div>
+            </div>
+            <div class="flex justify-start gap-12 items-end">
+              <span class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5">
+                <span class="size-2 bg-[#31AAE6]"></span> idle
+              </span>
+              <span class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5">
+                <span class="size-2 bg-[#FDC700]"></span> firing
+              </span>
+
+              <span class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5">
+                <span class="size-2 bg-[#00BC7D]"></span> resolved
+              </span>
+            </div>
           </div>
 
-          <div class="h-full w-full flex gap-0.5">
-            <div
-              class=" w-1/5 bg-[#00BC7D] hover:bg-[#00BC7D]/60 rounded-s-md h-2 cursor-pointer relative group">
-              <div
-                class="absolute hidden w-40 text-xs group-hover:flex -top-10 start-1/2 -translate-x-1/2 rounded-lg border bg-black/80 backdrop-blur-2xl border-white/15 justify-between items-center py-2 px-3">
-                <span
-                  class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5 capitalize">
-                  <span class="size-2 bg-[#00BC7D]"></span> bale
-                </span>
-
-                <span class="text-white/40">{alertStats.by_type.bale}</span>
-              </div>
-            </div>
-            <div
-              class=" w-3/5 bg-[#31AAE6] hover:bg-[#31AAE6]/60 h-2 cursor-pointer relative group">
-              <div
-                class="absolute hidden w-40 text-xs group-hover:flex -top-10 start-1/2 -translate-x-1/2 rounded-lg border bg-black/80 backdrop-blur-2xl border-white/15 justify-between items-center py-2 px-3">
-                <span
-                  class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5 capitalize">
-                  <span class="size-2 bg-[#31AAE6]"></span> telegram
-                </span>
-
-                <span class="text-white/40">{alertStats.by_type.telegram}</span>
-              </div>
-            </div>
-            <div
-              class=" w-1/5 bg-[#CE493B] hover:bg-[#CE493B]/60 h-2 cursor-pointer relative group">
-              <div
-                class="absolute hidden w-40 text-xs group-hover:flex -top-10 start-1/2 -translate-x-1/2 rounded-lg border bg-black/80 backdrop-blur-2xl border-white/15 justify-between items-center py-2 px-3">
-                <span
-                  class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5 capitalize">
-                  <span class="size-2 bg-[#CE493B]"></span> email
-                </span>
-
-                <span class="text-white/40">{alertStats.by_type.email}</span>
-              </div>
-            </div>
-            <div
-              class=" w-1/5 bg-[#9718ff] hover:bg-[#9718ff]/60 rounded-e-md h-2 cursor-pointer relative group">
-              <div
-                class="absolute hidden w-40 text-xs group-hover:flex -top-10 start-1/2 -translate-x-1/2 rounded-lg border bg-black/80 backdrop-blur-2xl border-white/15 justify-between items-center py-2 px-3">
-                <span
-                  class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5 capitalize">
-                  <span class="size-2 bg-[#9718ff]"></span> webhok
-                </span>
-
-                <span class="text-white/40">{alertStats.by_type.email}</span>
-              </div>
-            </div>
-          </div>
-          <div class="flex justify-start gap-12 items-end">
-            <span class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5">
-              <span class="size-2 bg-[#00BC7D]"></span> bale
-            </span>
-            <span class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5">
-              <span class="size-2 bg-[#31AAE6]"></span> telegram
-            </span>
-            <span class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5">
-              <span class="size-2 bg-[#CE493B]"></span> email
-            </span>
-            <span class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5">
-              <span class="size-2 bg-[#9718ff]"></span> webhook
-            </span>
-          </div>
-        </div>
-        <div
-          class="rounded-[14px] border border-[#0D0D0D]/5 dark:border-white/5 p-4 flex flex-col justify-between gap-3 w-full">
           <div
-            class="text-base text-white w-full border-b border-[#0D0D0D]/5 dark:border-white/5 pb-1">
-            Condition Type
-          </div>
-
-          <div class="h-full w-full flex gap-0.5">
+            class="rounded-[14px] border border-[#0D0D0D]/5 dark:border-white/5 p-4 flex flex-col justify-between gap-3 w-full h-full">
             <div
-              class=" w-1/5 bg-[#EF4444] hover:bg-[#EF4444]/60 rounded-s-md h-2 cursor-pointer relative group">
-              <div
-                class="absolute hidden w-40 text-xs group-hover:flex -top-10 start-1/2 -translate-x-1/2 rounded-lg border bg-black/80 backdrop-blur-2xl border-white/15 justify-between items-center py-2 px-3">
-                <span
-                  class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5 capitalize">
-                  <span class="size-2 bg-[#EF4444]"></span> down
-                </span>
-
-                <span class="text-white/40">{alertStats.by_condition.status_down}</span>
-              </div>
+              class="text-base text-white w-full border-b border-[#0D0D0D]/5 dark:border-white/5 pb-1">
+              History
             </div>
-            <div
-              class=" w-3/5 bg-[#FDC700] h-2 hover:bg-[#FDC700]/60 cursor-pointer relative group">
-              <div
-                class="absolute hidden w-40 text-xs group-hover:flex -top-10 start-1/2 -translate-x-1/2 rounded-lg border bg-black/80 backdrop-blur-2xl border-white/15 justify-between items-center py-2 px-3">
-                <span
-                  class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5 capitalize">
-                  <span class="size-2 bg-[#FDC700]"></span> timeout
-                </span>
 
-                <span class="text-white/40">{alertStats.by_condition.status_timeout}</span>
+            <div class="h-full w-full gap-0.5 flex justify-center items-center">
+              <div
+                class=" w-1/5 bg-[#31AAE6] hover:bg-[#31AAE6]/60 rounded-s-md h-2 cursor-pointer relative group">
+                <div
+                  class="absolute hidden w-40 text-xs group-hover:flex -top-10 start-1/2 -translate-x-1/2 rounded-lg border bg-black/80 backdrop-blur-2xl border-white/15 justify-between items-center py-2 px-3">
+                  <span
+                    class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5 capitalize">
+                    <span class="size-2 bg-[#31AAE6]"></span> total
+                  </span>
+
+                  <span class="text-white/40">{alertStats.history.total}</span>
+                </div>
               </div>
-            </div>
-            <div
-              class=" w-1/5 bg-[#00BC7D] h-2 hover:bg-[#00BC7D]/60 cursor-pointer relative group">
               <div
-                class="absolute hidden w-40 text-xs group-hover:flex -top-10 start-1/2 -translate-x-1/2 rounded-lg border bg-black/80 backdrop-blur-2xl border-white/15 justify-between items-center py-2 px-3">
-                <span
-                  class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5 capitalize">
-                  <span class="size-2 bg-[#00BC7D]"></span> up
-                </span>
+                class=" w-3/5 bg-[#FDC700] hover:bg-[#FDC700]/60 h-2 cursor-pointer relative group">
+                <div
+                  class="absolute hidden w-40 text-xs group-hover:flex -top-10 start-1/2 -translate-x-1/2 rounded-lg border bg-black/80 backdrop-blur-2xl border-white/15 justify-between items-center py-2 px-3">
+                  <span
+                    class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5 capitalize">
+                    <span class="size-2 bg-[#FDC700]"></span> pending
+                  </span>
 
-                <span class="text-white/40">{alertStats.by_condition.status_up}</span>
+                  <span class="text-white/40">{alertStats.history.pending}</span>
+                </div>
               </div>
-            </div>
-            <div
-              class=" w-1/5 bg-[#9718ff] h-2 hover:bg-[#9718ff]/60 cursor-pointer relative group">
               <div
-                class="absolute hidden w-40 text-xs group-hover:flex -top-10 start-1/2 -translate-x-1/2 rounded-lg border bg-black/80 backdrop-blur-2xl border-white/15 justify-between items-center py-2 px-3">
-                <span
-                  class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5 capitalize">
-                  <span class="size-2 bg-[#9718ff]"></span> cpu above
-                </span>
+                class=" w-1/5 bg-[#00BC7D] hover:bg-[#00BC7D]/60 h-2 cursor-pointer relative group">
+                <div
+                  class="absolute hidden w-40 text-xs group-hover:flex -top-10 start-1/2 -translate-x-1/2 rounded-lg border bg-black/80 backdrop-blur-2xl border-white/15 justify-between items-center py-2 px-3">
+                  <span
+                    class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5 capitalize">
+                    <span class="size-2 bg-[#00BC7D]"></span> sent
+                  </span>
 
-                <span class="text-white/40">{alertStats.by_condition.cpu_above}</span>
+                  <span class="text-white/40">{alertStats.history.sent}</span>
+                </div>
               </div>
-            </div>
-            <div
-              class=" w-1/5 bg-[#31AAE6] h-2 hover:bg-[#31AAE6]/60 cursor-pointer relative group">
+
               <div
-                class="absolute hidden w-40 text-xs group-hover:flex -top-10 start-1/2 -translate-x-1/2 rounded-lg border bg-black/80 backdrop-blur-2xl border-white/15 justify-between items-center py-2 px-3">
-                <span
-                  class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5 capitalize">
-                  <span class="size-2 bg-[#31AAE6]"></span> memory_above
-                </span>
+                class=" w-1/5 bg-[#EF4444] hover:bg-[#EF4444]/60 h-2 rounded-e-full cursor-pointer relative group">
+                <div
+                  class="absolute hidden w-40 text-xs group-hover:flex -top-10 start-1/2 -translate-x-1/2 rounded-lg border bg-black/80 backdrop-blur-2xl border-white/15 justify-between items-center py-2 px-3">
+                  <span
+                    class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5 capitalize">
+                    <span class="size-2 bg-[#EF4444]"></span> failed
+                  </span>
 
-                <span class="text-white/40">{alertStats.by_condition.memory_above}</span>
-              </div>
-            </div>
-            <div class=" w-1/5 bg-orange-500 rounded-e-md h-2 cursor-pointer relative group">
-              <div
-                class="absolute hidden w-40 text-xs group-hover:flex -top-10 start-1/2 -translate-x-1/2 rounded-lg border bg-black/80 backdrop-blur-2xl border-white/15 justify-between items-center py-2 px-3">
-                <span
-                  class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5 capitalize">
-                  <span class="size-2 bg-orange-500"></span> disk above
-                </span>
-
-                <span class="text-white/40">{alertStats.by_condition.disk_above}</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="flex justify-between items-end">
-            <span class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5">
-              <span class="size-2 bg-[#EF4444]"></span> down
-            </span>
-
-            <span class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5">
-              <span class="size-2 bg-[#FDC700]"></span> timeout
-            </span>
-            <span class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5">
-              <span class="size-2 bg-[#00BC7D]"></span> up
-            </span>
-            <span class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5">
-              <span class="size-2 bg-[#9718ff]"></span> cpu above
-            </span>
-            <span class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5">
-              <span class="size-2 bg-[#31AAE6]"></span> memory above
-            </span>
-            <span class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5">
-              <span class="size-2 bg-orange-500"></span> disk above
-            </span>
-          </div>
-        </div>
-        <div
-          class="rounded-[14px] border border-[#0D0D0D]/5 dark:border-white/5 p-4 flex flex-col justify-between gap-3 w-full">
-          <div
-            class="text-base text-white w-full border-b border-[#0D0D0D]/5 dark:border-white/5 pb-1">
-            History
-          </div>
-
-          <div class="h-full w-full flex gap-0.5">
-            <div
-              class=" w-1/5 bg-[#31AAE6] hover:bg-[#31AAE6]/60 rounded-s-md h-2 cursor-pointer relative group">
-              <div
-                class="absolute hidden w-40 text-xs group-hover:flex -top-10 start-1/2 -translate-x-1/2 rounded-lg border bg-black/80 backdrop-blur-2xl border-white/15 justify-between items-center py-2 px-3">
-                <span
-                  class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5 capitalize">
-                  <span class="size-2 bg-[#31AAE6]"></span> total
-                </span>
-
-                <span class="text-white/40">{alertStats.history.total}</span>
-              </div>
-            </div>
-            <div
-              class=" w-3/5 bg-[#FDC700] hover:bg-[#FDC700]/60 h-2 cursor-pointer relative group">
-              <div
-                class="absolute hidden w-40 text-xs group-hover:flex -top-10 start-1/2 -translate-x-1/2 rounded-lg border bg-black/80 backdrop-blur-2xl border-white/15 justify-between items-center py-2 px-3">
-                <span
-                  class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5 capitalize">
-                  <span class="size-2 bg-[#FDC700]"></span> pending
-                </span>
-
-                <span class="text-white/40">{alertStats.history.pending}</span>
-              </div>
-            </div>
-            <div
-              class=" w-1/5 bg-[#00BC7D] hover:bg-[#00BC7D]/60 h-2 cursor-pointer relative group">
-              <div
-                class="absolute hidden w-40 text-xs group-hover:flex -top-10 start-1/2 -translate-x-1/2 rounded-lg border bg-black/80 backdrop-blur-2xl border-white/15 justify-between items-center py-2 px-3">
-                <span
-                  class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5 capitalize">
-                  <span class="size-2 bg-[#00BC7D]"></span> sent
-                </span>
-
-                <span class="text-white/40">{alertStats.history.sent}</span>
+                  <span class="text-white/40">{alertStats.history.failed}</span>
+                </div>
               </div>
             </div>
 
-            <div
-              class=" w-1/5 bg-[#EF4444] hover:bg-[#EF4444]/60 h-2 cursor-pointer relative group">
-              <div
-                class="absolute hidden w-40 text-xs group-hover:flex -top-10 start-1/2 -translate-x-1/2 rounded-lg border bg-black/80 backdrop-blur-2xl border-white/15 justify-between items-center py-2 px-3">
-                <span
-                  class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5 capitalize">
-                  <span class="size-2 bg-[#EF4444]"></span> failed
-                </span>
-
-                <span class="text-white/40">{alertStats.history.failed}</span>
-              </div>
+            <div class="flex justify-start gap-12 items-end">
+              <span class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5">
+                <span class="size-2 bg-[#31AAE6]"></span> total
+              </span>
+              <span class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5">
+                <span class="size-2 bg-[#FDC700]"></span> pending
+              </span>
+              <span class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5">
+                <span class="size-2 bg-[#00BC7D]"></span> sent
+              </span>
+              <span class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5">
+                <span class="size-2 bg-[#EF4444]"></span> failed
+              </span>
             </div>
-          </div>
-
-          <div class="flex justify-start gap-12 items-end">
-            <span class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5">
-              <span class="size-2 bg-[#31AAE6]"></span> total
-            </span>
-            <span class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5">
-              <span class="size-2 bg-[#FDC700]"></span> pending
-            </span>
-            <span class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5">
-              <span class="size-2 bg-[#00BC7D]"></span> sent
-            </span>
-            <span class="flex justify-center items-center text-xs text-white text-nowrap gap-1.5">
-              <span class="size-2 bg-[#EF4444]"></span> failed
-            </span>
           </div>
         </div>
       </div>
-
-      <!-- <div
-        class="rounded-[14px] border border-[#0D0D0D]/5 dark:border-white/5 p-4 flex flex-col justify-between gap-3">
-        <div
-          class="text-base text-white w-full border-b border-[#0D0D0D]/5 dark:border-white/5 pb-1">
-          Type
-        </div>
-
-        <div class="h-full w-full flex flex-col gap-1.75">
-          <div
-            class="flex justify-between items-center w-full bg-white/5 px-2 py-1 rounded-lg shadow shadow-white/10">
-            <span class="text-white text-sm">Email </span>
-            <span class="text-white 29 text-sm">{alertStats.by_type.email}</span>
-          </div>
-
-          <div
-            class="flex justify-between items-center w-full bg-white/5 px-2 py-1 rounded-lg shadow shadow-white/10">
-            <span class="text-white text-sm">Telegram </span>
-            <span class="text-white 29 text-sm">{alertStats.by_type.telegram}</span>
-          </div>
-          <div
-            class="flex justify-between items-center w-full bg-white/5 px-2 py-1 rounded-lg shadow shadow-white/10">
-            <span class="text-white text-sm">Bale </span>
-            <span class="text-white 29 text-sm">{alertStats.by_type.bale}</span>
-          </div>
-          <div
-            class="flex justify-between items-center w-full bg-white/5 px-2 py-1 rounded-lg shadow shadow-white/10">
-            <span class="text-white text-sm">Webhook </span>
-            <span class="text-white 29 text-sm">{alertStats.by_type.webhook}</span>
-          </div>
-        </div>
-      </div>
-
-      <div
-        class="rounded-[14px] border border-[#0D0D0D]/5 dark:border-white/5 p-4 flex flex-col justify-between gap-3">
-        <div
-          class="text-base text-white w-full border-b border-[#0D0D0D]/5 dark:border-white/5 pb-1">
-          Condition
-        </div>
-
-        <div class="h-full w-full flex flex-col gap-1.75">
-          <div
-            class="flex justify-between items-center w-full bg-white/5 px-2 py-1 rounded-lg shadow shadow-white/10">
-            <span class="text-white text-sm">Status Down </span>
-            <span class="text-white 29 text-sm">{alertStats.by_condition.status_down}</span>
-          </div>
-
-          <div
-            class="flex justify-between items-center w-full bg-white/5 px-2 py-1 rounded-lg shadow shadow-white/10">
-            <span class="text-white text-sm">Offline </span>
-            <span class="text-white 29 text-sm">{alertStats.by_condition.offline}</span>
-          </div>
-          <div
-            class="flex justify-between items-center w-full bg-white/5 px-2 py-1 rounded-lg shadow shadow-white/10">
-            <span class="text-white text-sm">Cpu Above </span>
-            <span class="text-white 29 text-sm">{alertStats.by_condition.cpu_above}</span>
-          </div>
-          <div
-            class="flex justify-between items-center w-full bg-white/5 px-2 py-1 rounded-lg shadow shadow-white/10">
-            <span class="text-white text-sm">Memory Above </span>
-            <span class="text-white 29 text-sm">{alertStats.by_condition.memory_above}</span>
-          </div>
-
-          <div
-            class="flex justify-between items-center w-full bg-white/5 px-2 py-1 rounded-lg shadow shadow-white/10">
-            <span class="text-white text-sm">Disk Above </span>
-            <span class="text-white 29 text-sm">{alertStats.by_condition.disk_above}</span>
-          </div>
-        </div>
-      </div>
-
-      <div
-        class="rounded-[14px] border border-[#0D0D0D]/5 dark:border-white/5 p-4 flex flex-col justify-between gap-3">
-        <div
-          class="text-base text-white w-full border-b border-[#0D0D0D]/5 dark:border-white/5 pb-1">
-          History
-        </div>
-
-        <div class="h-full w-full flex flex-col gap-1.75">
-          <div
-            class="flex justify-between items-center w-full bg-white/5 px-2 py-1 rounded-lg shadow shadow-white/10">
-            <span class="text-white text-sm">Total </span>
-            <span class="text-white 29 text-sm">{alertStats.history.total}</span>
-          </div>
-
-          <div
-            class="flex justify-between items-center w-full bg-white/5 px-2 py-1 rounded-lg shadow shadow-white/10">
-            <span class="text-white text-sm">Sent </span>
-            <span class="text-white 29 text-sm">{alertStats.history.sent}</span>
-          </div>
-          <div
-            class="flex justify-between items-center w-full bg-white/5 px-2 py-1 rounded-lg shadow shadow-white/10">
-            <span class="text-white text-sm">Failed </span>
-            <span class="text-white 29 text-sm">{alertStats.history.failed}</span>
-          </div>
-          <div
-            class="flex justify-between items-center w-full bg-white/5 px-2 py-1 rounded-lg shadow shadow-white/10">
-            <span class="text-white text-sm">Pending </span>
-            <span class="text-white 29 text-sm">{alertStats.history.pending}</span>
-          </div>
-        </div>
-      </div> -->
     </div>
   </div>
 
@@ -883,7 +789,7 @@
               class="flex gap-1.5 ps-3 justify-start items-center bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-md">
               <span
                 class="text-black dark:text-white text-sm text-nowrap border-e pe-3 border-e-[#0D0D0D]/20 dark:border-e-white/20"
-                >Type</span>
+                >Channel</span>
 
               <Select
                 onParamHandle={val => {
@@ -928,30 +834,6 @@
                 className="bg-transparent! backdrop-blur-none! px-1.5! capitalize"
                 bind:value={filter.status}
                 options={[{ name: 'all' }, { name: 'enable' }, { name: 'disable' }]} />
-            </div>
-
-            <div
-              class="flex gap-1.5 ps-3 justify-start items-center bg-[#0D0D0D]/5 dark:bg-white/5 backdrop-blur-sm rounded-md">
-              <span
-                class="text-black dark:text-white text-sm text-nowrap border-e pe-3 border-e-[#0D0D0D]/20 dark:border-e-white/20">
-                Condition Type
-              </span>
-
-              <Select
-                onParamHandle={val => {
-                  handleParameters('condition_type', val);
-                }}
-                className="bg-transparent! backdrop-blur-none! px-1.5! capitalize"
-                bind:value={filter.condition_type}
-                options={[
-                  { name: 'all' },
-                  { name: 'status_down' },
-                  { name: 'cpu_above' },
-                  { name: 'memory_above' },
-                  { name: 'disk_above' },
-                  { name: 'status_timeout' },
-                  { name: 'status_up' },
-                ]} />
             </div>
 
             <div
@@ -1026,12 +908,7 @@
           <span
             class="w-15 lg:w-18 xl:w-25 text-black dark:text-white text-center py-2 backdrop-blur-3xl bg-[#0D0D0D]/5 dark:bg-white/5 rounded-md text-nowrap"
             >Status</span>
-          <span
-            class="flex-1 text-black dark:text-white text-center py-2 backdrop-blur-3xl bg-[#0D0D0D]/5 dark:bg-white/5 rounded-md text-nowrap"
-            >Condition Type</span>
-          <span
-            class="flex-1 text-black dark:text-white text-center py-2 backdrop-blur-3xl bg-[#0D0D0D]/5 dark:bg-white/5 rounded-md text-nowrap"
-            >Condition Value</span>
+
           <span
             class="flex-1 text-black dark:text-white text-center py-2 backdrop-blur-3xl bg-[#0D0D0D]/5 dark:bg-white/5 rounded-md text-nowrap"
             >Machine State</span>
@@ -1227,14 +1104,7 @@
                       : 'text-[#fa5757]/90 bg-[#F87171]/5'}">
                     {result.enabled ? 'Enable' : 'Disable'}</span>
                 </div>
-                <div class=" h-full flex-1 flex items-center justify-center">
-                  <span class="text-xs lg:text-sm xl:text-md text-white capitalize"
-                    >{result.condition_type}</span>
-                </div>
-                <div class=" h-full flex-1 flex items-center justify-center">
-                  <span class="text-xs lg:text-sm xl:text-md text-white capitalize"
-                    >{result.condition_value ? result.condition_value + '%' : '-'}</span>
-                </div>
+
                 <div class=" h-full flex-1 flex items-center justify-center">
                   <span class="text-xs lg:text-sm xl:text-md text-white capitalize"
                     >{result.machine_state}</span>
