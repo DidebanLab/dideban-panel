@@ -19,17 +19,38 @@
   const id = $page.params.alert;
   let trigger = $state(0);
   let alert = $state({
-    check_id: 2,
+    id: 1,
+    check_id: 5,
     agent_id: null,
-    type: 'telegram',
-    config: { token: 'ABC', chat_id: '987654' },
-    condition_type: 'cpu_above',
-    condition_value: 'ali',
-    timeout: 10,
+    channel_id: 1,
+    channel: {
+      id: 1,
+      name: 'ربات بله عملیات',
+      type: 'bale',
+      enabled: true,
+    },
+    conditions: {
+      operator: 'AND',
+      conditions: [
+        {
+          type: 'cpu_above',
+          value: 85,
+        },
+        {
+          type: 'memory_above',
+          value: 90,
+        },
+      ],
+    },
     enabled: true,
     notify_on_recovery: true,
-    repeat_interval_seconds: 20,
+    repeat_interval_seconds: 300,
     escalation_delay_seconds: 60,
+    custom_message: '',
+    merge_with_system_message: true,
+    last_fired_at: '2026-04-20T10:00:00Z',
+    last_status: 'sent',
+    created_at: '2026-01-01T10:00:00Z',
   });
   let enabled = $state(null);
   let summary = $state(null);
@@ -283,15 +304,35 @@
         </div>
       {/if}
     </div>
-    <div class="w-full grid grid-cols-12 gap-4">
+    <div class="w-full grid grid-cols-12 gap-4 h-80">
       <div
         class="col-span-5 lg:border border-[#0D0D0D]/5 dark:border-white/5 p-5 lg:rounded-xl flex flex-col gap-2">
       </div>
       <div
         class="col-span-7 lg:border flex flex-col gap-4 border-[#0D0D0D]/5 dark:border-white/5 p-5 lg:rounded-xl">
         <div class="flex justify-between items-start text-sm w-full">
-          <span class="flex justify-center items-center text-white text-sm sm:text-lg"
-            >Alert Config</span>
+          <div class="flex flex-col gap-1 me-auto items-start">
+            <span class="flex justify-center items-center text-white text-sm sm:text-lg"
+              >Alert Config</span>
+
+            <div class="flex justify-end items-center gap-2 text-white/15">
+              <span class="flex justify-center items-center text-nowrap text-xs">
+                <img width="17" height="17" src="/icons/clock.png" alt="clock" />Last fired :</span>
+
+              <div
+                class="text-xs flex justify-center items-center gap-1 text-[#707B76]/40 text-nowrap">
+                {new Date(alert.last_fired_at).toLocaleString('en-CA', {
+                  year: 'numeric',
+                  month: '2-digit',
+                  day: '2-digit',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  second: '2-digit',
+                  hour12: false,
+                })}
+              </div>
+            </div>
+          </div>
 
           <div
             class="border w-20 py-1.5 rounded-lg flex justify-center items-center {alert.enabled
@@ -301,106 +342,125 @@
           </div>
         </div>
 
-        <div class="w-full grid grid-cols-12 gap-2 h-full">
-          <div
-            class="flex-col flex w-full h-full gap-3 col-span-4 p-4 border border-[#0D0D0D]/10 dark:border-white/5 rounded-xl">
-            <span class="text-white text-base">Type</span>
+        <div class="w-full flex gap-3 h-full">
+          <div class=" flex flex-col gap-1 h-full w-full">
+            <div class="border border-white/5 rounded-lg p-4 flex flex-col gap-1 h-full"></div>
+            <div class="border border-white/5 rounded-lg p-4 flex flex-col gap-1 h-full"></div>
+            <div class="border border-white/5 rounded-lg p-4 flex flex-col gap-1 h-full"></div>
+            <div class="border border-white/5 rounded-lg p-4 flex flex-col gap-1 h-full"></div>
+          </div>
+          <div class="border border-white/5 rounded-lg p-4 flex flex-col gap-1 h-full w-full"></div>
+          <div class="border border-white/5 rounded-lg p-4 flex flex-col gap-3 w-full h-full">
+            <span class="text-lg text-white">Condition</span>
 
-            <div class=" flex flex-col gap-1.5 w-full h-full">
-              <div
-                class="flex justify-between items-center border-[#0ACA9B]/20 rounded-[10px] border hover:scale-x-98 transition-all duration-300 w-full h-full relative overflow-hidden group p-1 pe-4">
-                <div
-                  class="absolute -top-5 end-0 size-0 rounded-full group-hover:top-5 group-hover:end-5 transition-all duration-700"
-                  style="box-shadow: 0 0 100px 30px rgba(10, 202, 155, 0.7);">
-                </div>
-                <div class="text-[#0ACA9B]/40 text-base absolute top-1/2 start-1/2 -translate-1/2">
-                  Bale
-                </div>
+            <div class="flex flex-col gap-3 w-full text-sm h-full">
+              <div class="flex items-start flex-col gap-1 w-full">
+                <span class="text-white h-full flex justify-center">Type</span>
 
-                <div class="size-[37px] flex justify-start items-center">
-                  <div
-                    class="flex justify-center items-center w-full h-full rounded-md bg-[#0ACA9B]/10">
-                    <img src="/icons/bale.png" alt="bale" width="22" />
-                  </div>
-                </div>
-                <span class="text-[#0ACA9B] text-xl">3</span>
+                <span class="text-white/30 text-sm flex items-center"
+                  >{alert.conditions.operator ? 'multi conditions' : alert.conditions.type}</span>
               </div>
-              <div
-                class="flex justify-between items-center border-[#B5B41F]/20 rounded-[10px] border hover:scale-x-98 transition-all duration-300 w-full h-full relative overflow-hidden group p-1 pe-4">
-                <div
-                  class="absolute -top-5 end-0 size-0 rounded-full group-hover:top-5 group-hover:end-5 transition-all duration-700"
-                  style="box-shadow: 0 0 100px 30px rgb(252,200,0);">
-                </div>
-                <div class="text-[#B5B41F]/30 text-base absolute top-1/2 start-1/2 -translate-1/2">
-                  Email
-                </div>
+              {#if !alert.conditions.operator && !(alert.conditions.type === 'status_down' || alert.conditions.type === 'status_up' || alert.conditions.type === 'status_timeout' || alert.conditions.type === 'status_error' || alert.conditions.type === 'offline')}
+                <div class="flex items-start flex-col gap-1 w-full">
+                  <span class="text-white h-full flex justify-center">Value</span>
 
-                <div class="size-[37px] flex justify-start items-center">
-                  <div
-                    class="flex justify-center items-center w-full h-full rounded-md bg-[#B5B41F]/10">
-                    <img src="/icons/email.png" alt="bale" width="23" />
-                  </div>
+                  <span class="text-white/30 text-sm flex items-center pt-px">
+                    {alert.conditions.value}%</span>
                 </div>
-                <span class="text-[#B5B41F] text-xl">3</span>
-              </div>
-              <div
-                class="flex justify-between items-center border-[#28a1da]/20 rounded-[10px] border hover:scale-x-98 transition-all duration-300 w-full h-full relative overflow-hidden group p-1 pe-4">
-                <div
-                  class="absolute -top-5 end-0 size-0 rounded-full group-hover:top-5 group-hover:end-5 transition-all duration-700"
-                  style="box-shadow: 0 0 100px 30px rgba(50, 171, 231, 1)">
-                </div>
-                <div class="text-[#28a1da]/30 text-base absolute top-1/2 start-1/2 -translate-1/2">
-                  Telegram
-                </div>
+              {:else}
+                <div class="flex items-start flex-col gap-1 w-full h-full">
+                  <span class="text-white h-full flex justify-center">Conditions Tree</span>
 
-                <div class="size-[37px] flex justify-start items-center">
-                  <div
-                    class="flex justify-center items-center w-full h-full rounded-md bg-[#28a1da]/10">
-                    <svg
-                      width="19.5"
-                      class="telegram-icon me-0.5"
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="#32ABE7"
-                      aria-label="Telegram">
-                      <path
-                        d="M22.5 3.5L1.7 11.6c-1 .4-.9 1.8.1 2.1l5.3 1.7 2 6.3c.3.9 1.5 1.1 2.1.4l3-3.4 5.5 4.1c.8.6 2 .1 2.2-.9l3.3-17.2c.2-1.1-.8-2-1.9-1.6zm-4.3 5.2l-8.5 7.6-.3 3.1-1.4-4.4 10.2-6.3z" />
-                    </svg>
-                  </div>
-                </div>
-                <span class="text-[#28a1da] text-xl">3</span>
-              </div>
-              <div
-                class="flex justify-between items-center border-white/10 rounded-[10px] border hover:scale-x-98 transition-all duration-300 w-full h-full relative overflow-hidden group p-1 pe-4">
-                <div
-                  class="absolute -top-5 end-0 size-0 rounded-full group-hover:top-5 group-hover:end-5 transition-all duration-700"
-                  style="box-shadow: 0 0 100px 30px rgba(255,255,255,0.5);">
-                </div>
-                <div class="text-white/15 text-base absolute top-1/2 start-1/2 -translate-1/2">
-                  Webhook
-                </div>
+                  <div class="flex w-full h-full justify-start items-center">
+                    <div
+                      class="relative text-[10px] text-white rounded-md flex justify-center items-center">
+                      <div
+                        class="absolute border border-e-0 border-white w-7 start-5 top-1/2 -translate-y-1/2 {alert
+                          .conditions?.length > 2
+                          ? 'h-9'
+                          : 'h-7'}">
+                        <div class="w-full h-full relative">
+                          <div
+                            class="absolute  flex justify-center items-center group transition-all cursor-pointer -top-1.75 -end-2 size-3.5 rounded-full bg-white/10 {alert
+                              .conditions?.conditions?.operator
+                              ? ''
+                              : 'hover:bg-white/20 animate-pulse hover:animate-none'}">
+                            <div class="bg-white/40 rounded-full size-1.5 group-hover:size-2"></div>
+                          </div>
+                        </div>
+                      </div>
 
-                <div class="size-[37px] flex justify-start items-center">
-                  <div class="flex justify-center items-center w-full h-full rounded-md bg-white/5">
-                    <div class="flex flex-col justify-center items-center">
-                      <span class="text-white text-[10px]">Web</span>
-                      <span class="text-white text-[10px]">hook</span>
+                      <div
+                        class="absolute border border-e-0 border-white w-7 start-5 top-1/2 -translate-y-1/2 {alert
+                          .conditions?.length > 2
+                          ? 'h-9'
+                          : 'h-7'}">
+                        <div class="w-full h-full relative">
+                          <div
+                            class="absolute flex justify-center items-center group transition-all cursor-pointer -bottom-1.75 -end-2 size-3.5 rounded-full bg-white/10 {alert
+                              .conditions?.conditions?.operator
+                              ? ''
+                              : 'hover:bg-white/20 animate-pulse hover:animate-none'}">
+                            <div class="bg-white/40 rounded-full size-1.5 group-hover:size-2"></div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {#if alert.conditions?.length > 2}
+                        <div class="absolute bg-white h-px w-7 start-7 top-1/2 -translate-y-1/2">
+                        </div>
+                      {/if}
+
+                      <span class="z-20 bg-[#0D0D0D] text-orange-500 pe-1 py-px">AND</span>
                     </div>
                   </div>
                 </div>
-                <span class="text-white text-xl">3</span>
+              {/if}
+            </div>
+          </div>
+          <div class="border border-white/5 rounded-lg p-4 flex flex-col gap-3 w-full h-full">
+            <div class="w-full flex justify-between items-start">
+              <span class="text-lg text-white">Channel</span>
+              <div
+                class=" text-xs lg:text-sm xl:text-md rounded-md w-15.75 py-0.5 flex justify-center items-center bg-[#00bc7d]/5 {alert.enabled
+                  ? 'text-[#00bc7d]/80 '
+                  : 'text-[#fa5757]/80 '}">
+                {alert.channel.enabled ? 'enable' : 'disable'}
+              </div>
+            </div>
+
+            <div class="flex flex-col gap-3 w-full text-sm h-full">
+              <div class="flex items-start flex-col gap-1 w-full">
+                <span class="text-white h-full flex justify-center">name</span>
+
+                <span class="text-white/30 text-sm flex items-center">{alert.channel.name}</span>
+              </div>
+              <div class="flex items-start flex-col gap-1 w-full">
+                <span class="text-white h-full flex justify-center">Type</span>
+
+                <div class="flex items-center gap-1">
+                  <img class="opacity-50" src="/icons/bale.png" alt="bale" width="12" />
+                  <span class="text-white/30 text-sm flex items-center pt-px">
+                    {alert.channel.type}</span>
+                </div>
               </div>
             </div>
           </div>
-
-          <div
-            class="flex-col flex w-full h-full gap-3 col-span-3 p-4 border border-[#0D0D0D]/10 dark:border-white/5 rounded-xl">
-            <span class="text-white text-base">Type</span>
-          </div>
-
-          <div class="col-span-5 border border-white"></div>
         </div>
       </div>
     </div>
   </div>
 </section>
+
+<!-- <div class="w-full flex justify-end items-end">
+  <div class="flex gap-1 items-center justify-center">
+    {#if alert.last_status === 'sent'}
+      <img class="mb-0.5" width="15" src="/icons/tick.svg" alt="tick" />
+      <span class="text-[#00bc7d]/50 text-sm">Sent</span>
+    {:else if alert.last_status === 'failed'}
+      <img class="mb-0.5 opacity-70" width="15" src="/icons/error.svg" alt="error" />
+
+      <span class="text-white text-sm">Failed</span>
+    {/if}
+  </div>
+</div> -->

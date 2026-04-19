@@ -482,7 +482,7 @@
                     class="absolute top-1/2 -translate-y-1/2 start-1.5 w-[17px]"
                     width="18"
                     src="/icons/email.png"
-                    alt="bale" />
+                    alt="email" />
                   <span class="text-sm text-black dark:text-white pt-px">Email</span>
                 </div>
 
@@ -492,7 +492,7 @@
                   class="opacity-5 absolute bottom-0 end-0"
                   width="70"
                   src="/icons/email.png"
-                  alt="bale" />
+                  alt="email" />
               </div>
               <div
                 class="border-white/10 flex flex-col justify-between items-center p-1 rounded-[14px] border w-full h-full relative overflow-hidden group">
@@ -566,13 +566,13 @@
                   <div class="w-full h-full bg-white/5"></div>
                 </div>
                 <div
-                  class="relative flex items-center justify-center gap-2.5 bg-[#0ACA9B]/10 w-full rounded-xl py-px">
+                  class="relative flex items-center justify-center gap-2.5 bg-[#0ACA9B]/10 w-full rounded-xl h-[26px]">
                   <img
                     class="absolute top-1/2 -translate-y-1/2 start-1.5 w-4.5"
                     width="20"
                     src="/icons/bale.png"
                     alt="bale" />
-                  <span class="text-base text-black dark:text-white">Bale</span>
+                  <span class="text-sm text-black dark:text-white">Bale</span>
                 </div>
 
                 <span class="xl:text-2xl 2xl:text-3xl text-white text-xl my-auto"
@@ -779,7 +779,7 @@
                 handleParameters('id', filter.id);
               }}
               bind:value={filter.id}
-              placeholder="Filter With Id"
+              placeholder={`Enter ${filter.rel === 'check' ? 'checker id' : filter.rel === 'agent' ? 'agent id' : 'checker/agent id'}`}
               class="px-2.5 h-9 w-full rounded-md placeholder:text-gray-400/40 text-gray-400 text-sm outline-none tracking-wide"
               type="text" />
           </div>
@@ -878,7 +878,7 @@
 
       <div class="w-full flex flex-col gap-1.5 text-sm h-full">
         <div
-          class="w-full flex gap-2 justify-end items-center border-b pb-1.5 border-[#0D0D0D]/5 dark:border-white/5">
+          class="w-full flex gap-2 justify-start items-center border-b pb-1.5 border-[#0D0D0D]/5 dark:border-white/5">
           {#each paramsList as filteredItem}
             <div
               class="px-4 relative py-1.25 rounded-md border border-blue-500/20 shadow-md shadow-blue-500/10 text-blue-500">
@@ -899,8 +899,8 @@
 
         <div class="w-full mb-0.5 flex justify-start gap-1 items-center text-white">
           <span
-            class="w-12 md:w-13 text-black dark:text-white text-center py-2 backdrop-blur-3xl bg-[#0D0D0D]/5 dark:bg-white/5 rounded-md"
-            >Type</span>
+            class="w-12 md:w-20 text-black dark:text-white text-center py-2 backdrop-blur-3xl bg-[#0D0D0D]/5 dark:bg-white/5 rounded-md"
+            >Channel</span>
 
           <span
             class="w-15 lg:w-18 xl:w-25 text-black dark:text-white text-center py-2 backdrop-blur-3xl bg-[#0D0D0D]/5 dark:bg-white/5 rounded-md"
@@ -924,20 +924,22 @@
             {#each alerts.results as result}
               <a
                 href={`/alerts/${result.id}`}
-                class="w-full flex hover:scale-x-101 transition-all duration-300 justify-start items-center gap-1 rounded-xl dark:text-white sm:p-0.5 border border-[#EF4444]/15 bg-[#640000bc]/5">
-                <div class="size-[42px] flex justify-start items-center">
-                  <div
-                    class="flex justify-center items-center w-full h-full rounded-lg {result.type ===
-                    'telegram'
-                      ? 'bg-[#28a1da]/10'
-                      : result.type === 'bale'
-                        ? 'bg-[#0ACA9B]/10 '
-                        : result.type === 'email'
-                          ? 'bg-[#B5B41F]/10 '
-                          : result.type === 'webhook'
-                            ? 'bg-white/5 '
-                            : ''}">
-                    {@html iconSelector(result.type)}
+                class="w-full flex hover:scale-x-101 transition-all duration-300 justify-start items-center gap-1 rounded-xl dark:text-white sm:p-0.5 border border-[#ef444427] bg-[#640000bc]/5">
+                <div class="w-20">
+                  <div class="size-[42px] flex justify-start items-center me-auto">
+                    <div
+                      class="flex justify-center items-center w-full h-full rounded-lg {result.type ===
+                      'telegram'
+                        ? 'bg-[#28a1da]/10'
+                        : result.type === 'bale'
+                          ? 'bg-[#0ACA9B]/10 '
+                          : result.type === 'email'
+                            ? 'bg-[#B5B41F]/10 '
+                            : result.type === 'webhook'
+                              ? 'bg-white/5 '
+                              : ''}">
+                      {@html iconSelector(result.type)}
+                    </div>
                   </div>
                 </div>
 
