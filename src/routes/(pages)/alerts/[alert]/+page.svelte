@@ -35,31 +35,18 @@
       conditions: [
         {
           type: 'cpu_above',
-          value: 10,
+          value: 80,
         },
         {
-          type: 'memory_above',
-          value: 20,
-        },
-        {
-          operator: 'AND',
+          operator: 'OR',
           conditions: [
             {
-              operator: 'OR',
-              conditions: [
-                {
-                  type: 'memory_above',
-                  value: 40,
-                },
-                {
-                  type: 'disk_above',
-                  value: 50,
-                },
-              ],
+              type: 'memory_above',
+              value: 90,
             },
             {
               type: 'disk_above',
-              value: 30,
+              value: 95,
             },
           ],
         },
@@ -78,10 +65,11 @@
 
   let conditionsHandler = $state({
     level: 1,
-    operator: alert.conditions.operator,
-    singleConditions: alert.conditions.conditions.filter(cd => !cd.operator),
-    // parentsOperators: alert.conditions.conditions.filter(cd => cd.operator),
-    conditions: [{ ...alert.conditions }],
+    operator: alert?.conditions?.operator,
+    singleConditions: Array.isArray(alert?.conditions?.conditions)
+      ? alert.conditions.conditions.filter(cd => !cd?.operator)
+      : [],
+    conditions: Array.isArray(alert?.conditions?.conditions) ? [{ ...alert.conditions }] : [], // اگر آرایه نبود، شرایط را خالی بگذار
   });
 
   let enabled = $state(null);
@@ -426,7 +414,7 @@
                   <span class="text-white/30 text-sm flex items-center pt-px">
                     {alert.conditions.value}%</span>
                 </div>
-              {:else}
+              {:else if alert.conditions.operator}
                 <div class="flex w-full h-full justify-start items-center overflow-x-visible">
                   <div class=" w-full rounded-lg border border-white/5 p-2 flex flex-col gap-1">
                     <div class="flex justify-between items-center w-full">
@@ -493,7 +481,7 @@
                               </div>
                             </div>
 
-                            {#if conditionsHandler.conditions[conditionsHandler.level - 1]?.conditions?.filter(cd => cd?.operator)?.length}
+                            {#if conditionsHandler?.conditions[conditionsHandler.level - 1]?.conditions?.filter(cd => cd?.operator)?.length}
                               <div class="flex justify-between w-full mt-2">
                                 <span class="text-white text-sm"> Group Conditions : </span>
                                 <span class="text-white/30 text-sm"
