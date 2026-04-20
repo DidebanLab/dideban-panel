@@ -15,6 +15,7 @@
   import ConfirmEditAlert from '../../../../components/pages/alerts/ConfirmEditAlert.svelte';
   import DeleteAlert from '../../../../components/pages/alerts/DeleteAlert.svelte';
   import EditAlert from '../../../../components/pages/alerts/EditAlert.svelte';
+  import { theme } from '../../../../stores/theme.svelte';
 
   const id = $page.params.alert;
   let trigger = $state(0);
@@ -33,12 +34,46 @@
       operator: 'AND',
       conditions: [
         {
-          type: 'cpu_above',
-          value: 85,
+          operator: 'OR',
+          conditions: [
+            {
+              operator: 'OR',
+              conditions: [
+                {
+                  type: 'cpu_above',
+                  value: 85,
+                },
+                {
+                  type: 'memory_above',
+                  value: 90,
+                },
+              ],
+            },
+            {
+              type: 'memory_above',
+              value: 90,
+            },
+          ],
+        },
+        {
+          operator: 'AND',
+          conditions: [
+            {
+              type: 'cpu_above',
+              value: 85,
+            },
+            {
+              type: 'memory_above',
+              value: 90,
+            },
+          ],
         },
         {
           type: 'memory_above',
           value: 90,
+        },
+        {
+          type: 'memory_cpu',
         },
       ],
     },
@@ -59,12 +94,44 @@
   let alertLoading = $state(false);
 
   let relationData = $state(null);
-
-  onMount(() => {
-    http.get(endpoints.singleCheck(2)).then(res => {
-      relationData = res.data?.data;
-    });
+  let conditionsHandler = $state({
+    level: 1,
+    operator: alert.conditions.operator,
+    singleConditions: alert.conditions.conditions.filter(cd => !cd.operator),
+    // parentsOperators: alert.conditions.conditions.filter(cd => cd.operator),
+    conditions: [{ ...alert.conditions }],
   });
+  let isConditionsBoxVisibility = $state(false);
+
+  $effect(() => {
+    console.log(conditionsHandler);
+  });
+
+  function singleConditions(conditions) {
+    let singleConditions = [];
+    const initArray = conditions.filter(cd => !cd.operator);
+
+    singleConditions = [...initArray.filter(cd => !cd.value), ...initArray.filter(cd => cd.value)];
+
+    return singleConditions;
+  }
+
+  function conditionsCounter(conditions, operator = null) {
+    let conditionsCounter;
+    if (operator) {
+      conditionsCounter = conditions.length + 1;
+    } else {
+      conditionsCounter = conditions.length;
+    }
+
+    return conditionsCounter;
+  }
+
+  // onMount(() => {
+  //   http.get(endpoints.singleCheck(2)).then(res => {
+  //     relationData = res.data?.data;
+  //   });
+  // });
 
   //   onMount(() => {
   //     subscribe(`alerts:${id}`);
@@ -120,7 +187,13 @@
   //   });
 </script>
 
-<section class="w-full m-auto h-auto flex flex-col col-span-10 gap-7.75 px-6 sm:p-7.75 sm:py-2">
+<!-- svelte-ignore a11y_click_events_have_key_events -->
+<!-- svelte-ignore a11y_no_static_element_interactions -->
+<section
+  onclick={() => {
+    isConditionsBoxVisibility = false;
+  }}
+  class="w-full m-auto h-auto flex flex-col col-span-10 gap-7.75 px-6 sm:p-7.75 sm:py-2">
   <div
     class="w-full flex flex-col justify-start items-start gap-6 lg:border border-[#0D0D0D]/5 dark:border-white/5 lg:px-6 pt-1 pb-6 lg:py-6 lg:rounded-xl sm:dark:bg-[#0D0D0D] sm:bg-[#FFFFFF]">
     <div
@@ -368,50 +441,155 @@
                     {alert.conditions.value}%</span>
                 </div>
               {:else}
-                <div class="flex items-start flex-col gap-1 w-full h-full">
-                  <span class="text-white h-full flex justify-center">Conditions Tree</span>
-
-                  <div class="flex w-full h-full justify-start items-center">
-                    <div
-                      class="relative text-[10px] text-white rounded-md flex justify-center items-center">
-                      <div
-                        class="absolute border border-e-0 border-white w-7 start-5 top-1/2 -translate-y-1/2 {alert
-                          .conditions?.length > 2
-                          ? 'h-9'
-                          : 'h-7'}">
-                        <div class="w-full h-full relative">
-                          <div
-                            class="absolute  flex justify-center items-center group transition-all cursor-pointer -top-1.75 -end-2 size-3.5 rounded-full bg-white/10 {alert
-                              .conditions?.conditions?.operator
-                              ? ''
-                              : 'hover:bg-white/20 animate-pulse hover:animate-none'}">
-                            <div class="bg-white/40 rounded-full size-1.5 group-hover:size-2"></div>
-                          </div>
-                        </div>
-                      </div>
+                <div class="flex w-full h-full justify-start items-center overflow-x-visible">
+                  <div class=" w-full rounded-lg border border-white/5 p-2 flex flex-col gap-1">
+                    <div class="flex justify-between items-center w-full">
+                      <span class="text-white text-sm">Parent Operator :</span>
+                      <span class="text-[#2B7FFF] text-sm">{alert.conditions.operator}</span>
+                    </div>
+                    <div class="flex justify-between items-center w-full">
+                      <span class="text-white text-sm">Conditions :</span>
 
                       <div
-                        class="absolute border border-e-0 border-white w-7 start-5 top-1/2 -translate-y-1/2 {alert
-                          .conditions?.length > 2
-                          ? 'h-9'
-                          : 'h-7'}">
-                        <div class="w-full h-full relative">
+                        class="flex gap-2 justify-center items-center border border-white/5 rounded-lg px-2 py-1">
+                        <span class="text-white text-sm pt-0.5"
+                          >{conditionsCounter(alert.conditions.conditions, alert?.operator)}</span>
+                        <button
+                          onclick={e => {
+                            e.stopPropagation();
+                            isConditionsBoxVisibility = !isConditionsBoxVisibility;
+                          }}
+                          class="bg-white/15 size-3.5 hover:bg-white/25 duration-75 cursor-pointer relative group transition-all rounded-full">
                           <div
-                            class="absolute flex justify-center items-center group transition-all cursor-pointer -bottom-1.75 -end-2 size-3.5 rounded-full bg-white/10 {alert
-                              .conditions?.conditions?.operator
-                              ? ''
-                              : 'hover:bg-white/20 animate-pulse hover:animate-none'}">
-                            <div class="bg-white/40 rounded-full size-1.5 group-hover:size-2"></div>
+                            onclick={e => {
+                              e.stopPropagation();
+                            }}
+                            class="absolute min-w-80 h-fit bottom-full cursor-default start-1/2 -translate-x-1/2 rounded-lg border border-white/10 bg-black/40 backdrop-blur-xl z-20 p-4 flex-col gap-1 {isConditionsBoxVisibility
+                              ? 'flex'
+                              : 'hidden'}">
+                            <div class="flex justify-between w-full">
+                              <span class="text-white text-sm"> Level : </span>
+                              <span class="text-white/30 text-sm">{conditionsHandler.level}</span>
+                            </div>
+
+                            <div class="flex justify-between w-full">
+                              <span class="text-white text-sm"> Parent Operator : </span>
+                              <span class="text-[#2B7FFF] text-sm"
+                                >{conditionsHandler.operator}</span>
+                            </div>
+
+                            <div class="flex justify-between w-full">
+                              <span class="text-white text-sm"> Single Conditions : </span>
+                              <span class="text-white/30 text-sm"
+                                >{conditionsCounter(conditionsHandler.singleConditions)}</span>
+                            </div>
+
+                            <div class="w-full flex gap-2 h-auto">
+                              <div class="bg-white rounded-full h-auto w-px mt-2"></div>
+                              <div class="flex flex-col w-full mt-2 gap-2">
+                                {#each conditionsHandler.singleConditions as condition}
+                                  <div class="flex gap-2 w-full">
+                                    <div
+                                      class="flex justify-between items-center w-full rounded-lg border border-white/5 px-2 py-1">
+                                      <span class="text-white text-sm text-nowrap"> type : </span>
+
+                                      <span class="text-white/30 text-sm">{condition.type}</span>
+                                    </div>
+                                    {#if condition?.value}
+                                      <div
+                                        class="flex justify-center items-center rounded-lg border border-white/5 py-1 w-14">
+                                        <span class="text-white/30 text-sm"
+                                          >{condition?.value}%</span>
+                                      </div>
+                                    {/if}
+                                  </div>
+                                {/each}
+                              </div>
+                            </div>
+
+                            {#if conditionsHandler.conditions[conditionsHandler.level - 1]?.conditions?.filter(cd => cd?.operator)?.length}
+                              <div class="flex justify-between w-full mt-2">
+                                <span class="text-white text-sm"> Group Conditions : </span>
+                                <span class="text-white/30 text-sm"
+                                  >{conditionsCounter(
+                                    conditionsHandler.conditions[
+                                      conditionsHandler.level - 1
+                                    ].conditions?.filter(cd => cd?.operator),
+                                  )}</span>
+                              </div>
+
+                              <div class="w-full flex gap-2 h-auto">
+                                <div class="bg-white rounded-full h-auto w-px mt-2"></div>
+                                <div class="flex flex-col w-full mt-2 gap-2">
+                                  {#each [...conditionsHandler.conditions[conditionsHandler.level - 1].conditions?.filter(cd => cd?.operator)] as condition}
+                                    <!-- svelte-ignore node_invalid_placement_ssr -->
+                                    <button
+                                      onclick={e => {
+                                        e.preventDefault();
+                                        conditionsHandler = {
+                                          level: conditionsHandler.level + 1,
+                                          operator: condition.operator,
+
+                                          singleConditions: conditionsHandler.conditions[
+                                            conditionsHandler.level - 1
+                                          ]?.conditions?.filter(cd => !cd?.operator),
+                                          conditions: [...conditionsHandler.conditions, condition],
+                                        };
+                                      }}
+                                      class="flex justify-between items-center w-full rounded-lg border border-[#2B7FFF]/20 px-2 py-1 bg-[#2B7FFF]/5 cursor-pointer hover:scale-101 transition-all">
+                                      <span class="text-white text-sm text-nowrap">
+                                        Condtion Operatior :
+                                      </span>
+
+                                      <span class="text-sm text-[#2B7FFF]"
+                                        >{condition.operator}</span>
+                                    </button>
+                                  {/each}
+                                </div>
+                              </div>
+                            {/if}
+
+                            {#if conditionsHandler.level > 1}
+                              <!-- svelte-ignore node_invalid_placement_ssr -->
+                              <button
+                                class="cursor-pointer me-auto mt-2"
+                                onclick={() => {
+                                  if (conditionsHandler.level > 1) {
+                                    conditionsHandler = {
+                                      level: --conditionsHandler.level,
+                                      operator:
+                                        conditionsHandler.conditions[conditionsHandler.level - 1]
+                                          .operator,
+
+                                      singleConditions: conditionsHandler.conditions[
+                                        conditionsHandler.level - 2
+                                      ]?.conditions?.filter(cd => !cd?.operator),
+                                      ...conditionsHandler,
+                                    };
+                                  }
+                                }}
+                                aria-label="prev slide"
+                                type="button">
+                                <svg
+                                  class="rotate-180"
+                                  version="1.1"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  height="27"
+                                  viewBox="0 0 50 50">
+                                  <path
+                                    d="M0 0 C3.50602742 0.58046812 5.20849502 1.80123031 7.6875 4.3125 C8.28949219 4.90675781 8.89148437 5.50101563 9.51171875 6.11328125 C11.15761446 8.19981046 11.88713672 9.3374526 12 12 C10.63671875 14.0703125 10.63671875 14.0703125 8.6875 16.125 C8.05199219 16.80820312 7.41648438 17.49140625 6.76171875 18.1953125 C5.51591496 19.47150175 4.26108804 20.73891196 3 22 C2.01 22 1.02 22 0 22 C0.52162717 17.30535551 2.12514403 16.87485597 6 13 C-7.86 12.67 -21.72 12.34 -36 12 C-36 11.34 -36 10.68 -36 10 C-22.14 9.67 -8.28 9.34 6 9 C4.02 7.02 2.04 5.04 0 3 C0 2.01 0 1.02 0 0 Z"
+                                    fill={$theme === 'dark' ? 'white' : '#0D0D0D'}
+                                    transform="translate(37,14)" />
+                                </svg>
+                              </button>
+                            {/if}
                           </div>
-                        </div>
+
+                          <span
+                            class="absolute top-1/2 start-1/2 -translate-1/2 bg-white/50 group-hover:bg-white/70 duration-75 cursor-pointer transition-all size-1.75 rounded-full"
+                          ></span>
+                        </button>
                       </div>
-
-                      {#if alert.conditions?.length > 2}
-                        <div class="absolute bg-white h-px w-7 start-7 top-1/2 -translate-y-1/2">
-                        </div>
-                      {/if}
-
-                      <span class="z-20 bg-[#0D0D0D] text-orange-500 pe-1 py-px">AND</span>
                     </div>
                   </div>
                 </div>
