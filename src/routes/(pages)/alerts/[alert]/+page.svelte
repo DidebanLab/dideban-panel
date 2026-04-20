@@ -34,46 +34,34 @@
       operator: 'AND',
       conditions: [
         {
-          operator: 'OR',
-          conditions: [
-            {
-              operator: 'OR',
-              conditions: [
-                {
-                  type: 'cpu_above',
-                  value: 85,
-                },
-                {
-                  type: 'memory_above',
-                  value: 90,
-                },
-              ],
-            },
-            {
-              type: 'memory_above',
-              value: 90,
-            },
-          ],
+          type: 'cpu_above',
+          value: 10,
+        },
+        {
+          type: 'memory_above',
+          value: 20,
         },
         {
           operator: 'AND',
           conditions: [
             {
-              type: 'cpu_above',
-              value: 85,
+              operator: 'OR',
+              conditions: [
+                {
+                  type: 'memory_above',
+                  value: 40,
+                },
+                {
+                  type: 'disk_above',
+                  value: 50,
+                },
+              ],
             },
             {
-              type: 'memory_above',
-              value: 90,
+              type: 'disk_above',
+              value: 30,
             },
           ],
-        },
-        {
-          type: 'memory_above',
-          value: 90,
-        },
-        {
-          type: 'memory_cpu',
         },
       ],
     },
@@ -87,13 +75,7 @@
     last_status: 'sent',
     created_at: '2026-01-01T10:00:00Z',
   });
-  let enabled = $state(null);
-  let summary = $state(null);
-  let summaryWithDate = $state(null);
-  let isDeleted = $state(false);
-  let alertLoading = $state(false);
 
-  let relationData = $state(null);
   let conditionsHandler = $state({
     level: 1,
     operator: alert.conditions.operator,
@@ -101,20 +83,24 @@
     // parentsOperators: alert.conditions.conditions.filter(cd => cd.operator),
     conditions: [{ ...alert.conditions }],
   });
+
+  let enabled = $state(null);
+  let summary = $state(null);
+  let summaryWithDate = $state(null);
+  let isDeleted = $state(false);
+  let alertLoading = $state(false);
+
+  let relationData = $state(null);
+
   let isConditionsBoxVisibility = $state(false);
 
   $effect(() => {
-    console.log(conditionsHandler);
+    console.log(
+      conditionsHandler.conditions[conditionsHandler.level - 1]?.conditions?.filter(
+        cd => !cd?.operator,
+      ),
+    );
   });
-
-  function singleConditions(conditions) {
-    let singleConditions = [];
-    const initArray = conditions.filter(cd => !cd.operator);
-
-    singleConditions = [...initArray.filter(cd => !cd.value), ...initArray.filter(cd => cd.value)];
-
-    return singleConditions;
-  }
 
   function conditionsCounter(conditions, operator = null) {
     let conditionsCounter;
@@ -527,13 +513,13 @@
                                       onclick={e => {
                                         e.preventDefault();
                                         conditionsHandler = {
-                                          level: conditionsHandler.level + 1,
                                           operator: condition.operator,
 
-                                          singleConditions: conditionsHandler.conditions[
-                                            conditionsHandler.level - 1
-                                          ]?.conditions?.filter(cd => !cd?.operator),
+                                          singleConditions: condition.conditions.filter(
+                                            cd => !cd.operator,
+                                          ),
                                           conditions: [...conditionsHandler.conditions, condition],
+                                          level: conditionsHandler.level + 1,
                                         };
                                       }}
                                       class="flex justify-between items-center w-full rounded-lg border border-[#2B7FFF]/20 px-2 py-1 bg-[#2B7FFF]/5 cursor-pointer hover:scale-101 transition-all">
@@ -556,6 +542,7 @@
                                 onclick={() => {
                                   if (conditionsHandler.level > 1) {
                                     conditionsHandler = {
+                                      ...conditionsHandler,
                                       level: --conditionsHandler.level,
                                       operator:
                                         conditionsHandler.conditions[conditionsHandler.level - 1]
@@ -563,8 +550,7 @@
 
                                       singleConditions: conditionsHandler.conditions[
                                         conditionsHandler.level - 2
-                                      ]?.conditions?.filter(cd => !cd?.operator),
-                                      ...conditionsHandler,
+                                      ].conditions.filter(cd => !cd.operator),
                                     };
                                   }
                                 }}
