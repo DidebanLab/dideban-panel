@@ -112,13 +112,25 @@
   let summaryWithDate = $state(null);
   let isDeleted = $state(false);
   let alertLoading = $state(false);
+  let isHeadersVisibility = $state(false);
+  let isExpectedContentVisibility = $state(false);
+  let isConditionsVisibility = $state(false);
+  let isBodyVisibility = $state(false);
 
   let relationData = $state({
     id: 42,
     name: 'Production API',
-    type: 'ping',
+    type: 'http',
     target: 'https://api.example.com/heh',
-    config: { count: 3, size: 56, interval: 300 },
+    config: {
+      method: 'GET',
+      expected_status: 200,
+      expected_content: '',
+      follow_redirects: true,
+      verify_ssl: true,
+      headers: { key: 'sds', value: '' },
+      body: {},
+    },
     enabled: true,
     interval_seconds: 60,
     timeout_seconds: 10,
@@ -127,8 +139,6 @@
     created_at: '2026-01-30T08:00:00Z',
     updated_at: '2026-01-31T14:30:00Z',
   });
-
-  let isConditionsBoxVisibility = $state(false);
 
   function conditionsCounter(conditions, operator = null) {
     let conditionsCounter;
@@ -205,7 +215,10 @@
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <section
   onclick={() => {
-    isConditionsBoxVisibility = false;
+    isConditionsVisibility = false;
+    isHeadersVisibility = false;
+    isExpectedContentVisibility = false;
+    isBodyVisibility = false;
   }}
   class="w-full m-auto h-auto flex flex-col col-span-10 gap-7.75 px-6 sm:p-7.75 sm:py-2">
   <div
@@ -513,44 +526,191 @@
                     <span class="text-white text-sm">ping count</span>
 
                     <span class="text-sm flex items-center text-[#e75500]"
-                      >{relationData.config.count}</span>
+                      >{relationData?.config?.count}</span>
                   </div>
                   <div
                     class="w-full py-2 border border-white/5 flex justify-between items-center rounded-lg p-4">
                     <span class="text-white text-sm">packet size</span>
 
                     <span class="text-sm flex items-center text-[#e75500]"
-                      >{relationData.config.size}</span>
+                      >{relationData?.config?.size}</span>
                   </div>
                   <div
                     class="w-full py-2 border border-white/5 flex justify-between items-center rounded-lg p-4">
                     <span class="text-white text-sm">interval</span>
 
                     <span class="text-sm flex items-center text-[#e75500]"
-                      >{relationData.config.interval}</span>
+                      >{relationData?.config?.interval}</span>
                   </div>
                 </div>
               </div>
             {:else}
-              <div class="border border-white/5 rounded-lg p-4 flex flex-col gap-3 w-1/2 h-full">
-                <span class="text-lg text-white">Channel</span>
+              <div
+                class="border border-white/5 rounded-lg p-4 flex flex-col gap-3 w-1/2 h-full relative">
+                <span class="text-lg text-white capitalize">{relationData.type} Config</span>
 
-                <div class="flex flex-col gap-3 w-full text-sm h-full">
-                  <div class="flex items-start flex-col gap-1 w-full">
-                    <span class="text-white h-full flex justify-center">name</span>
+                <span class="text-white/30 text-sm flex items-center pt-px w-full break-all">
+                  {relationData.target}</span>
 
-                    <span class="text-white/30 text-sm flex items-center"
-                      >{alert.channel.name}</span>
-                  </div>
-                  <div class="flex items-start flex-col gap-1 w-full">
-                    <span class="text-white h-full flex justify-center">type</span>
+                <div
+                  onclick={e => {
+                    e.stopPropagation();
+                  }}
+                  class="absolute min-w-50 h-fit bottom-full cursor-default start-full top-1/2 -translate-y-1/2 rounded-lg border border-white/10 bg-black/40 backdrop-blur-xl z-20 p-4 flex-col gap-1 {isHeadersVisibility ||
+                  isExpectedContentVisibility ||
+                  isBodyVisibility
+                    ? 'flex'
+                    : 'hidden'}">
+                  <span class="text-white text-sm mb-1 me-auto"
+                    >{isExpectedContentVisibility
+                      ? 'Expected Content'
+                      : isHeadersVisibility
+                        ? 'Headers'
+                        : isBodyVisibility && 'Body'}</span>
+                  {#if isHeadersVisibility}
+                    {#each relationData?.config?.headers && Object.entries(relationData?.config?.headers).filter(ent => ent[1]) as [key, value]}
+                      <div
+                        class="w-full py-2 border border-white/5 flex justify-between items-center rounded-lg p-4 gap-15">
+                        <span class="text-white text-sm">{key}</span>
 
-                    <div class="flex items-center gap-1">
-                      <img src="/icons/bale.png" alt="bale" width="12" />
-                      <span class="text-white/30 text-sm flex items-center pt-px">
-                        {alert.channel.type}</span>
+                        <span class="text-sm flex items-center text-white/30">{value}</span>
+                      </div>
+                    {/each}
+                  {:else if isBodyVisibility}
+                    <div
+                      class=" py-2 border border-white/5 rounded-lg p-4 text-white/30 text-sm min-h-20 w-50 break-all">
+                      {JSON.stringify(relationData?.config?.body)}
                     </div>
-                  </div>
+                  {:else if isExpectedContentVisibility}
+                    <div
+                      class="w-full py-2 border border-white/5 rounded-lg p-4 text-white/30 text-sm min-h-20">
+                      {relationData?.config?.expected_content}
+                    </div>
+                  {/if}
+                </div>
+
+                <div
+                  class="flex flex-col gap-1 w-full mt-auto custom-scroll overflow-y-auto overflow-x-visible max-h-30 pe-2">
+                  {#if 'method' in relationData.config}
+                    <div
+                      class="w-full py-2 border border-white/5 flex justify-between items-center rounded-lg p-4">
+                      <span class="text-white text-sm">method</span>
+
+                      <span class="text-sm flex items-center text-white/30"
+                        >{relationData?.config?.method}</span>
+                    </div>
+                  {/if}
+
+                  {#if 'follow_redirects' in relationData.config}
+                    <div
+                      class="w-full py-2 border border-white/5 flex justify-between items-center rounded-lg p-4">
+                      <span class="text-white text-sm">follow redirects</span>
+
+                      <span
+                        class="text-sm flex items-center {relationData?.config?.follow_redirects
+                          ? 'text-[#00bc7d]'
+                          : 'text-[#fa5757]'}"
+                        >{relationData?.config?.follow_redirects ? 'Yes' : 'No'}</span>
+                    </div>
+                  {/if}
+
+                  {#if 'verify_ssl' in relationData.config}
+                    <div
+                      class="w-full py-2 border border-white/5 flex justify-between items-center rounded-lg p-4">
+                      <span class="text-white text-sm">verify ssl</span>
+
+                      <span
+                        class="text-sm flex items-center {relationData?.config?.verify_ssl
+                          ? 'text-[#00bc7d]'
+                          : 'text-[#fa5757]'}"
+                        >{relationData?.config?.verify_ssl ? 'Yes' : 'No'}</span>
+                    </div>
+                  {/if}
+
+                  {#if relationData?.config?.body && Object.values(relationData?.config?.body).filter(h => h)?.length}
+                    <div
+                      class="w-full py-2 border border-white/5 flex justify-between items-center rounded-lg p-4">
+                      <span class="text-white text-sm">body</span>
+
+                      <div class="flex gap-2 justify-center items-center">
+                        <span class="text-white text-sm pt-0.5"
+                          >{Object.values(relationData?.config?.body).filter(h => h)?.length}</span>
+                        <!-- svelte-ignore a11y_consider_explicit_label -->
+                        <button
+                          onclick={e => {
+                            e.stopPropagation();
+
+                            isConditionsVisibility = false;
+                            isHeadersVisibility = false;
+                            isExpectedContentVisibility = false;
+
+                            isBodyVisibility = !isBodyVisibility;
+                          }}
+                          class="bg-white/15 size-3.5 hover:bg-white/25 duration-75 cursor-pointer relative group transition-all rounded-full">
+                          <span
+                            class="absolute top-1/2 start-1/2 -translate-1/2 bg-white/50 group-hover:bg-white/70 duration-75 cursor-pointer transition-all size-1.75 rounded-full"
+                          ></span>
+                        </button>
+                      </div>
+                    </div>
+                  {/if}
+                  {#if relationData?.config?.headers && Object.values(relationData?.config?.headers).filter(h => h)?.length}
+                    <div
+                      class="w-full py-2 border border-white/5 flex justify-between items-center rounded-lg p-4">
+                      <span class="text-white text-sm">headers</span>
+
+                      <div class="flex gap-2 justify-center items-center">
+                        <span class="text-white text-sm pt-0.5"
+                          >{Object.values(relationData?.config?.headers).filter(h => h)
+                            ?.length}</span>
+                        <!-- svelte-ignore a11y_consider_explicit_label -->
+                        <button
+                          onclick={e => {
+                            e.stopPropagation();
+                            isConditionsVisibility = false;
+                            isExpectedContentVisibility = false;
+                            isBodyVisibility = false;
+                            isHeadersVisibility = !isHeadersVisibility;
+                          }}
+                          class="bg-white/15 size-3.5 hover:bg-white/25 duration-75 cursor-pointer relative group transition-all rounded-full">
+                          <span
+                            class="absolute top-1/2 start-1/2 -translate-1/2 bg-white/50 group-hover:bg-white/70 duration-75 cursor-pointer transition-all size-1.75 rounded-full"
+                          ></span>
+                        </button>
+                      </div>
+                    </div>
+                  {/if}
+
+                  {#if relationData?.config?.expected_status}
+                    <div
+                      class="w-full py-2 border border-white/5 flex flex-col gap-1 rounded-lg p-4">
+                      <span class="text-white text-sm">expected status code</span>
+
+                      <span class="text-xs flex items-center text-white/30"
+                        >{relationData?.config?.expected_status}</span>
+                    </div>
+                  {/if}
+                  {#if relationData?.config?.expected_content?.length}
+                    <div
+                      class="w-full py-2 border border-white/5 flex justify-between items-center rounded-lg p-4">
+                      <span class="text-white text-sm">expected content</span>
+
+                      <!-- svelte-ignore a11y_consider_explicit_label -->
+                      <button
+                        onclick={e => {
+                          e.stopPropagation();
+                          isConditionsVisibility = false;
+                          isHeadersVisibility = false;
+                          isBodyVisibility = false;
+                          isExpectedContentVisibility = !isExpectedContentVisibility;
+                        }}
+                        class="bg-white/15 size-3.5 hover:bg-white/25 duration-75 cursor-pointer relative group transition-all rounded-full">
+                        <span
+                          class="absolute top-1/2 start-1/2 -translate-1/2 bg-white/50 group-hover:bg-white/70 duration-75 cursor-pointer transition-all size-1.75 rounded-full"
+                        ></span>
+                      </button>
+                    </div>
+                  {/if}
                 </div>
               </div>
             {/if}
@@ -674,14 +834,17 @@
                         <button
                           onclick={e => {
                             e.stopPropagation();
-                            isConditionsBoxVisibility = !isConditionsBoxVisibility;
+                            isHeadersVisibility = false;
+                            isExpectedContentVisibility = false;
+                            isBodyVisibility = false;
+                            isConditionsVisibility = !isConditionsVisibility;
                           }}
                           class="bg-white/15 size-3.5 hover:bg-white/25 duration-75 cursor-pointer relative group transition-all rounded-full">
                           <div
                             onclick={e => {
                               e.stopPropagation();
                             }}
-                            class="absolute min-w-80 h-fit bottom-full cursor-default start-1/2 -translate-x-1/2 rounded-lg border border-white/10 bg-black/40 backdrop-blur-xl z-20 p-4 flex-col gap-1 {isConditionsBoxVisibility
+                            class="absolute min-w-80 h-fit bottom-full cursor-default start-1/2 -translate-x-1/2 rounded-lg border border-white/10 bg-black/40 backdrop-blur-xl z-20 p-4 flex-col gap-1 {isConditionsVisibility
                               ? 'flex'
                               : 'hidden'}">
                             <div class="flex justify-between w-full">
