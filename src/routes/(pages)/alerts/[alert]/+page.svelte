@@ -21,8 +21,8 @@
   let trigger = $state(0);
   let alert = $state({
     id: 1,
-    check_id: null,
-    agent_id: 1,
+    check_id: 5,
+    agent_id: null,
     channel_id: 1,
     channel: {
       id: 1,
@@ -114,15 +114,18 @@
   let alertLoading = $state(false);
 
   let relationData = $state({
-    id: 5,
-    name: 'Web Server - Production',
+    id: 42,
+    name: 'Production API',
+    type: 'ping',
+    target: 'https://api.example.com/heh',
+    config: { count: 3, size: 56, interval: 300 },
     enabled: true,
     interval_seconds: 60,
-    auth_token: 'a1b2c3d4********',
-    status: 'online',
-    last_seen: '2026-01-31T12:45:30Z',
-    created_at: '2026-01-31T12:30:45Z',
-    updated_at: '2026-01-31T12:45:30Z',
+    timeout_seconds: 10,
+    status: 'up',
+    last_checked_at: '2026-01-31T14:30:00Z',
+    created_at: '2026-01-30T08:00:00Z',
+    updated_at: '2026-01-31T14:30:00Z',
   });
 
   let isConditionsBoxVisibility = $state(false);
@@ -417,41 +420,142 @@
             </div>
           </div>
         </div>
-        <div class="border border-white/5 rounded-lg p-4 flex flex-col gap-3 h-full w-full">
-          <span class="text-lg text-white">Config</span>
 
-          <div class="flex flex-col gap-3 w-full text-sm h-full">
-            <div class="flex items-start flex-col gap-1 w-full">
-              <span class="text-white h-full flex justify-center"
-                >name</span>
+        {#if alert.agent_id}
+          <div class="border border-white/5 rounded-lg p-4 flex flex-col gap-3 h-full w-full">
+            <span class="text-lg text-white">Config</span>
 
-              <span class="text-white/30 text-sm flex items-center"
-                >{relationData.name}</span>
+            <div class="flex flex-col gap-3 w-full text-sm h-full">
+              <div class="flex items-start flex-col gap-1 w-full">
+                <span class="text-white h-full flex justify-center">name</span>
+
+                <span class="text-white/30 text-sm flex items-center">{relationData.name}</span>
+              </div>
+              <div class="w-full mt-auto flex flex-col gap-2">
+                <div
+                  class="w-full py-2.5 border border-white/5 flex justify-between items-center rounded-lg p-4 mt-auto">
+                  <span class="text-white text-sm">status</span>
+
+                  <div
+                    class=" text-xs lg:text-sm xl:text-md rounded-md w-15.75 py-0.5 flex justify-center items-center bg-[#00bc7d]/5 {relationData.status ===
+                    'online'
+                      ? 'text-[#00bc7d] '
+                      : 'text-[#fa5757] '}">
+                    {relationData.status}
+                  </div>
+                </div>
+
+                <div
+                  class="w-full py-2 border border-white/5 flex justify-between items-center rounded-lg p-4">
+                  <span class="text-white text-sm">interval</span>
+
+                  <span class="text-sm flex items-center text-[#e75500]"
+                    >{relationData.interval_seconds}s</span>
+                </div>
+              </div>
             </div>
-            <div class="w-full mt-auto flex flex-col gap-2">
+          </div>
+        {:else}
+          <div class="w-full h-full flex justify-between gap-3">
+            <div class="border border-white/5 rounded-lg p-4 flex flex-col gap-1 w-1/2 h-full">
+              <a
+                href={alert.check_id
+                  ? `/checkers/${alert.check_id}`
+                  : alert.agent_id
+                    ? `/agents/${alert.agent_id}`
+                    : '#'}
+                class="border w-full py-0.75 text-sm flex justify-center items-center border-[#2B7FFF]/20 text-[#2B7FFF] bg-[#2B7FFF]/5 rounded-sm text-nowrap"
+                >{relationData.name}</a>
+
               <div
-                class="w-full py-2.5 border border-white/5 flex justify-between items-center rounded-lg p-4 mt-auto">
+                class="w-full py-2 border border-white/5 flex justify-between items-center rounded-lg p-4 mt-auto">
                 <span class="text-white text-sm">status</span>
 
                 <div
-                  class=" text-xs lg:text-sm xl:text-md rounded-md w-15.75 py-0.5 flex justify-center items-center bg-[#00bc7d]/5 {relationData.status ===
-                  'online'
+                  class="text-sm flex justify-center items-center {relationData.enabled
                     ? 'text-[#00bc7d] '
                     : 'text-[#fa5757] '}">
-                  {relationData.enabled ? 'online' : 'offline'}
+                  {relationData.enabled ? 'enable' : 'disable'}
                 </div>
               </div>
-
               <div
-                class="w-full py-3 border border-white/5 flex justify-between items-center rounded-lg p-4">
+                class="w-full py-2 border border-white/5 flex justify-between items-center rounded-lg p-4">
+                <span class="text-white text-sm">Type</span>
+
+                <span class="text-sm flex items-center text-white/30">{relationData.type}</span>
+              </div>
+              <div
+                class="w-full py-2 border border-white/5 flex justify-between items-center rounded-lg p-4">
                 <span class="text-white text-sm">interval</span>
 
                 <span class="text-sm flex items-center text-[#e75500]"
                   >{relationData.interval_seconds}s</span>
               </div>
+              <div
+                class="w-full py-2 border border-white/5 flex justify-between items-center rounded-lg p-4">
+                <span class="text-white text-sm">timeout</span>
+
+                <span class="text-sm flex items-center text-[#e75500]"
+                  >{relationData.timeout_seconds}s</span>
+              </div>
             </div>
+
+            {#if relationData.type.toLowerCase() === 'ping'}
+              <div class="border border-white/5 rounded-lg p-4 flex flex-col gap-3 w-1/2 h-full">
+                <span class="text-lg text-white">Ping Config</span>
+
+                <span class="text-white/30 text-sm flex items-center pt-px w-full break-all">
+                  {relationData.target}</span>
+
+                <div class="flex flex-col gap-1 w-full mt-auto">
+                  <div
+                    class="w-full py-2 border border-white/5 flex justify-between items-center rounded-lg p-4">
+                    <span class="text-white text-sm">ping count</span>
+
+                    <span class="text-sm flex items-center text-[#e75500]"
+                      >{relationData.config.count}</span>
+                  </div>
+                  <div
+                    class="w-full py-2 border border-white/5 flex justify-between items-center rounded-lg p-4">
+                    <span class="text-white text-sm">packet size</span>
+
+                    <span class="text-sm flex items-center text-[#e75500]"
+                      >{relationData.config.size}</span>
+                  </div>
+                  <div
+                    class="w-full py-2 border border-white/5 flex justify-between items-center rounded-lg p-4">
+                    <span class="text-white text-sm">interval</span>
+
+                    <span class="text-sm flex items-center text-[#e75500]"
+                      >{relationData.config.interval}</span>
+                  </div>
+                </div>
+              </div>
+            {:else}
+              <div class="border border-white/5 rounded-lg p-4 flex flex-col gap-3 w-1/2 h-full">
+                <span class="text-lg text-white">Channel</span>
+
+                <div class="flex flex-col gap-3 w-full text-sm h-full">
+                  <div class="flex items-start flex-col gap-1 w-full">
+                    <span class="text-white h-full flex justify-center">name</span>
+
+                    <span class="text-white/30 text-sm flex items-center"
+                      >{alert.channel.name}</span>
+                  </div>
+                  <div class="flex items-start flex-col gap-1 w-full">
+                    <span class="text-white h-full flex justify-center">type</span>
+
+                    <div class="flex items-center gap-1">
+                      <img src="/icons/bale.png" alt="bale" width="12" />
+                      <span class="text-white/30 text-sm flex items-center pt-px">
+                        {alert.channel.type}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {/if}
           </div>
-        </div>
+        {/if}
       </div>
       <div
         class="lg:border flex flex-col gap-4 border-[#0D0D0D]/5 dark:border-white/5 p-5 lg:rounded-xl {alert.check_id
@@ -516,16 +620,16 @@
                 <span class="text-white/30 text-sm flex items-center"
                   >{alert.check_id ? alert.check_id : alert.agent_id}</span>
               </div>
-              <div class="w-full flex flex-col gap-2 mt-auto">
+              <div class="w-full flex flex-col gap-1 mt-auto">
                 <div
-                  class="w-full py-3 border border-white/5 flex justify-between items-center rounded-lg p-4">
+                  class="w-full py-2 border border-white/5 flex justify-between items-center rounded-lg p-4">
                   <span class="text-white text-sm">repeat interval</span>
 
                   <span class="text-sm flex items-center text-[#e75500]"
                     >{alert.repeat_interval_seconds}s</span>
                 </div>
                 <div
-                  class="w-full py-3 border border-white/5 flex justify-between items-center rounded-lg p-4">
+                  class="w-full py-2 border border-white/5 flex justify-between items-center rounded-lg p-4">
                   <span class="text-white text-sm">escalation delay</span>
 
                   <span class="text-sm flex items-center text-[#e75500]"
@@ -554,10 +658,11 @@
               {:else if alert.conditions.operator}
                 <div class="flex w-full h-full justify-start items-center overflow-x-visible">
                   <div
-                    class=" w-full mt-auto rounded-lg border border-white/5 p-3 flex flex-col gap-2">
+                    class=" w-full mt-auto rounded-lg border border-white/5 p-3 py-2 flex flex-col gap-2">
                     <div class="flex justify-between items-center w-full">
                       <span class="text-white text-sm">parent operator :</span>
-                      <span class="text-[#2B7FFF] text-sm">{alert.conditions.operator}</span>
+                      <span class="text-[#2B7FFF] text-sm lowercase"
+                        >{alert.conditions.operator}</span>
                     </div>
                     <div class="flex justify-between items-center w-full">
                       <span class="text-white text-sm">conditions :</span>
@@ -724,7 +829,7 @@
               <div class="flex items-start flex-col gap-2 w-full h-full">
                 {#if alert.custom_message.length}
                   <div
-                    class=" w-full h-full rounded-lg border border-white/5 p-3 flex flex-col gap-2 text-white/30">
+                    class=" w-full mt-auto rounded-lg border border-white/5 p-3 py-2 flex flex-col gap-2 text-white/30">
                     <span class="text-white flex justify-center me-auto">Custom Message</span>
 
                     <p class="line-clamp-2">
