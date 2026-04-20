@@ -38,6 +38,41 @@
           value: 80,
         },
         {
+          operator: 'AND',
+          conditions: [
+            {
+              type: 'cpu_above',
+              value: 80,
+            },
+            {
+              operator: 'OR',
+              conditions: [
+                {
+                  type: 'memory_above',
+                  value: 90,
+                },
+                {
+                  type: 'disk_above',
+                  value: 95,
+                },
+              ],
+            },
+            {
+              operator: 'OR',
+              conditions: [
+                {
+                  type: 'memory_above',
+                  value: 90,
+                },
+                {
+                  type: 'disk_above',
+                  value: 95,
+                },
+              ],
+            },
+          ],
+        },
+        {
           operator: 'OR',
           conditions: [
             {
@@ -56,7 +91,7 @@
     notify_on_recovery: true,
     repeat_interval_seconds: 300,
     escalation_delay_seconds: 60,
-    custom_message: '',
+    custom_message: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum nostrum veniam',
     merge_with_system_message: true,
     last_fired_at: '2026-04-20T10:00:00Z',
     last_status: 'sent',
@@ -353,30 +388,45 @@
     </div>
     <div class="w-full grid grid-cols-12 gap-4 h-80">
       <div
-        class="col-span-5 lg:border border-[#0D0D0D]/5 dark:border-white/5 p-5 lg:rounded-xl flex flex-col gap-2">
+        class="col-span-4 lg:border border-[#0D0D0D]/5 dark:border-white/5 p-5 lg:rounded-xl flex flex-col gap-2">
       </div>
       <div
-        class="col-span-7 lg:border flex flex-col gap-4 border-[#0D0D0D]/5 dark:border-white/5 p-5 lg:rounded-xl">
+        class="col-span-8 lg:border flex flex-col gap-4 border-[#0D0D0D]/5 dark:border-white/5 p-5 lg:rounded-xl">
         <div class="flex justify-between items-start text-sm w-full">
           <div class="flex flex-col gap-1 me-auto items-start">
             <span class="flex justify-center items-center text-white text-sm sm:text-lg"
               >Alert Config</span>
 
-            <div class="flex justify-end items-center gap-2 text-white/15">
-              <span class="flex justify-center items-center text-nowrap text-xs">
-                <img width="17" height="17" src="/icons/clock.png" alt="clock" />Last fired :</span>
+            <div class="flex items-center gap-2">
+              <div class="flex justify-end items-center gap-2 text-white/30">
+                <span class="flex justify-center items-center text-nowrap text-xs">
+                  <img width="17" height="17" src="/icons/clock.png" alt="clock" />Last Fired :</span>
 
-              <div
-                class="text-xs flex justify-center items-center gap-1 text-[#707B76]/40 text-nowrap">
-                {new Date(alert.last_fired_at).toLocaleString('en-CA', {
-                  year: 'numeric',
-                  month: '2-digit',
-                  day: '2-digit',
-                  hour: '2-digit',
-                  minute: '2-digit',
-                  second: '2-digit',
-                  hour12: false,
-                })}
+                <div class="text-xs flex justify-center items-center gap-1 text-nowrap">
+                  {new Date(alert.last_fired_at).toLocaleString('en-CA', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: false,
+                  })}
+                </div>
+              </div>
+
+              <div class="bg-white/10 w-px h-4"></div>
+
+              <div class="flex justify-end items-end">
+                <div class="flex gap-1 items-center justify-center">
+                  {#if alert.last_status === 'sent'}
+                    <span class="text-[#00bc7d] text-sm">Sent</span>
+                  {:else if alert.last_status === 'failed'}
+                    <span class="text-[#fa5757] text-sm">Failed</span>
+                  {:else if alert.last_status === 'pending'}
+                    <span class="text-[#FDC700]/30 text-sm animate-pulse">Pending ...</span>
+                  {/if}
+                </div>
               </div>
             </div>
           </div>
@@ -390,19 +440,41 @@
         </div>
 
         <div class="w-full flex gap-3 h-full">
-          <div class=" flex flex-col gap-1 h-full w-full">
-            <div class="border border-white/5 rounded-lg p-4 flex flex-col gap-1 h-full"></div>
-            <div class="border border-white/5 rounded-lg p-4 flex flex-col gap-1 h-full"></div>
-            <div class="border border-white/5 rounded-lg p-4 flex flex-col gap-1 h-full"></div>
-            <div class="border border-white/5 rounded-lg p-4 flex flex-col gap-1 h-full"></div>
+          <div class="border border-white/5 rounded-lg p-4 flex flex-col gap-3 h-full w-full">
+            <span class="text-lg text-white">Control</span>
+
+            <div class="flex flex-col gap-3 w-full text-sm h-full">
+              <div class="flex items-start flex-col gap-1 w-full">
+                <span class="text-white h-full flex justify-center"
+                  >{alert.check_id ? 'checker id' : 'agent id'}</span>
+
+                <span class="text-white/30 text-sm flex items-center"
+                  >{alert.check_id ? alert.check_id : alert.agent_id}</span>
+              </div>
+              <div class="w-full flex flex-col gap-2 mt-auto">
+                <div
+                  class="w-full py-3 border border-white/5 flex justify-between items-center rounded-lg p-4">
+                  <span class="text-white text-sm">repeat interval</span>
+
+                  <span class="text-sm flex items-center text-[#e75500]"
+                    >{alert.repeat_interval_seconds}s</span>
+                </div>
+                <div
+                  class="w-full py-3 border border-white/5 flex justify-between items-center rounded-lg p-4">
+                  <span class="text-white text-sm">escalation delay</span>
+
+                  <span class="text-sm flex items-center text-[#e75500]"
+                    >{alert.escalation_delay_seconds}s</span>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="border border-white/5 rounded-lg p-4 flex flex-col gap-1 h-full w-full"></div>
           <div class="border border-white/5 rounded-lg p-4 flex flex-col gap-3 w-full h-full">
             <span class="text-lg text-white">Condition</span>
 
             <div class="flex flex-col gap-3 w-full text-sm h-full">
               <div class="flex items-start flex-col gap-1 w-full">
-                <span class="text-white h-full flex justify-center">Type</span>
+                <span class="text-white h-full flex justify-center">type</span>
 
                 <span class="text-white/30 text-sm flex items-center"
                   >{alert.conditions.operator ? 'multi conditions' : alert.conditions.type}</span>
@@ -416,13 +488,14 @@
                 </div>
               {:else if alert.conditions.operator}
                 <div class="flex w-full h-full justify-start items-center overflow-x-visible">
-                  <div class=" w-full rounded-lg border border-white/5 p-2 flex flex-col gap-1">
+                  <div
+                    class=" w-full mt-auto rounded-lg border border-white/5 p-3 flex flex-col gap-2">
                     <div class="flex justify-between items-center w-full">
-                      <span class="text-white text-sm">Parent Operator :</span>
+                      <span class="text-white text-sm">parent operator :</span>
                       <span class="text-[#2B7FFF] text-sm">{alert.conditions.operator}</span>
                     </div>
                     <div class="flex justify-between items-center w-full">
-                      <span class="text-white text-sm">Conditions :</span>
+                      <span class="text-white text-sm">conditions :</span>
 
                       <div
                         class="flex gap-2 justify-center items-center border border-white/5 rounded-lg px-2 py-1">
@@ -570,32 +643,78 @@
               {/if}
             </div>
           </div>
-          <div class="border border-white/5 rounded-lg p-4 flex flex-col gap-3 w-full h-full">
-            <div class="w-full flex justify-between items-start">
-              <span class="text-lg text-white">Channel</span>
-              <div
-                class=" text-xs lg:text-sm xl:text-md rounded-md w-15.75 py-0.5 flex justify-center items-center bg-[#00bc7d]/5 {alert.enabled
-                  ? 'text-[#00bc7d]/80 '
-                  : 'text-[#fa5757]/80 '}">
-                {alert.channel.enabled ? 'enable' : 'disable'}
-              </div>
-            </div>
+
+          <div class="border border-white/5 rounded-lg p-4 flex flex-col gap-3 h-full w-full">
+            <span class="text-lg text-white">Message</span>
 
             <div class="flex flex-col gap-3 w-full text-sm h-full">
               <div class="flex items-start flex-col gap-1 w-full">
-                <span class="text-white h-full flex justify-center">name</span>
+                <span class="text-white h-full flex justify-center">merge with system message</span>
 
-                <span class="text-white/30 text-sm flex items-center">{alert.channel.name}</span>
+                <span
+                  class="text-sm flex items-center {alert.merge_with_system_message
+                    ? 'text-[#00bc7d]'
+                    : 'text-[#fa5757]'}">{alert.merge_with_system_message ? 'Yes' : 'No'}</span>
               </div>
-              <div class="flex items-start flex-col gap-1 w-full">
-                <span class="text-white h-full flex justify-center">Type</span>
+              <div class="flex items-start flex-col gap-2 w-full h-full">
+                {#if alert.custom_message.length}
+                  <div
+                    class=" w-full h-full rounded-lg border border-white/5 p-3 flex flex-col gap-2 text-white/30">
+                    <span class="text-white flex justify-center me-auto">Custom Message</span>
 
-                <div class="flex items-center gap-1">
-                  <img class="opacity-50" src="/icons/bale.png" alt="bale" width="12" />
-                  <span class="text-white/30 text-sm flex items-center pt-px">
-                    {alert.channel.type}</span>
+                    <p class="line-clamp-2">
+                      {alert.custom_message}
+                    </p>
+                  </div>
+                {:else}
+                  <div
+                    class=" w-full h-full rounded-lg border border-white/5 p-3 flex flex-col gap-2 text-white/30">
+                    <span class="text-white flex">Custom Message</span>
+                    <span class="mx-auto border border-white/5 p-2 rounded-lg mt-auto"
+                      >Custom message not set</span>
+                  </div>
+                {/if}
+              </div>
+            </div>
+          </div>
+
+          <div class="w-full h-full flex flex-col gap-2">
+            <div class="border border-white/5 rounded-lg p-4 flex flex-col gap-3 w-full h-full">
+              <div class="w-full flex justify-between items-start">
+                <span class="text-lg text-white">Channel</span>
+                <div
+                  class=" text-xs lg:text-sm xl:text-md rounded-md w-15.75 py-0.5 flex justify-center items-center bg-[#00bc7d]/5 {alert.enabled
+                    ? 'text-[#00bc7d] '
+                    : 'text-[#fa5757] '}">
+                  {alert.channel.enabled ? 'enable' : 'disable'}
                 </div>
               </div>
+
+              <div class="flex flex-col gap-3 w-full text-sm h-full">
+                <div class="flex items-start flex-col gap-1 w-full">
+                  <span class="text-white h-full flex justify-center">name</span>
+
+                  <span class="text-white/30 text-sm flex items-center">{alert.channel.name}</span>
+                </div>
+                <div class="flex items-start flex-col gap-1 w-full">
+                  <span class="text-white h-full flex justify-center">type</span>
+
+                  <div class="flex items-center gap-1">
+                    <img src="/icons/bale.png" alt="bale" width="12" />
+                    <span class="text-white/30 text-sm flex items-center pt-px">
+                      {alert.channel.type}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="w-full py-4 border border-white/5 flex justify-between items-center rounded-lg p-4">
+              <span class="text-white text-sm">notify on recovery</span>
+
+              <span
+                class="text-sm flex items-center {alert.notify_on_recovery
+                  ? 'text-[#00bc7d]'
+                  : 'text-[#fa5757]'}">{alert.notify_on_recovery ? 'Yes' : 'No'}</span>
             </div>
           </div>
         </div>
