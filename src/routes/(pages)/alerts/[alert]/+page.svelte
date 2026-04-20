@@ -21,8 +21,8 @@
   let trigger = $state(0);
   let alert = $state({
     id: 1,
-    check_id: 5,
-    agent_id: null,
+    check_id: null,
+    agent_id: 1,
     channel_id: 1,
     channel: {
       id: 1,
@@ -113,17 +113,19 @@
   let isDeleted = $state(false);
   let alertLoading = $state(false);
 
-  let relationData = $state(null);
+  let relationData = $state({
+    id: 5,
+    name: 'Web Server - Production',
+    enabled: true,
+    interval_seconds: 60,
+    auth_token: 'a1b2c3d4********',
+    status: 'online',
+    last_seen: '2026-01-31T12:45:30Z',
+    created_at: '2026-01-31T12:30:45Z',
+    updated_at: '2026-01-31T12:45:30Z',
+  });
 
   let isConditionsBoxVisibility = $state(false);
-
-  $effect(() => {
-    console.log(
-      conditionsHandler.conditions[conditionsHandler.level - 1]?.conditions?.filter(
-        cd => !cd?.operator,
-      ),
-    );
-  });
 
   function conditionsCounter(conditions, operator = null) {
     let conditionsCounter;
@@ -386,12 +388,75 @@
         </div>
       {/if}
     </div>
-    <div class="w-full grid grid-cols-12 gap-4 h-80">
+    <div class="w-full grid grid-cols-12 gap-4">
       <div
-        class="col-span-4 lg:border border-[#0D0D0D]/5 dark:border-white/5 p-5 lg:rounded-xl flex flex-col gap-2">
+        class=" lg:border border-[#0D0D0D]/5 dark:border-white/5 p-5 lg:rounded-xl flex flex-col gap-4 {alert.check_id
+          ? 'col-span-4'
+          : 'col-span-3'}">
+        <!-- mahdi -->
+        <div class="flex justify-between items-start text-sm w-full">
+          <div class="flex flex-col gap-1 me-auto items-start h-13">
+            <span class="flex justify-center items-center text-white text-sm sm:text-lg"
+              >{alert.check_id ? 'Checker' : 'Agent'} Config</span>
+
+            <div class="flex justify-end items-center gap-1 text-white/30">
+              <span class="flex justify-center items-center gap-1 text-nowrap text-xs">
+                <img width="17" height="17" src="/icons/clock.png" alt="clock" />Updated :</span>
+
+              <div class="text-xs flex justify-center items-center gap-1 text-nowrap">
+                {new Date(relationData.updated_at).toLocaleString('en-CA', {
+                  year: 'numeric',
+                  month: '2-digit',
+                  day: '2-digit',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  second: '2-digit',
+                  hour12: false,
+                })}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="border border-white/5 rounded-lg p-4 flex flex-col gap-3 h-full w-full">
+          <span class="text-lg text-white">Config</span>
+
+          <div class="flex flex-col gap-3 w-full text-sm h-full">
+            <div class="flex items-start flex-col gap-1 w-full">
+              <span class="text-white h-full flex justify-center"
+                >name</span>
+
+              <span class="text-white/30 text-sm flex items-center"
+                >{relationData.name}</span>
+            </div>
+            <div class="w-full mt-auto flex flex-col gap-2">
+              <div
+                class="w-full py-2.5 border border-white/5 flex justify-between items-center rounded-lg p-4 mt-auto">
+                <span class="text-white text-sm">status</span>
+
+                <div
+                  class=" text-xs lg:text-sm xl:text-md rounded-md w-15.75 py-0.5 flex justify-center items-center bg-[#00bc7d]/5 {relationData.status ===
+                  'online'
+                    ? 'text-[#00bc7d] '
+                    : 'text-[#fa5757] '}">
+                  {relationData.enabled ? 'online' : 'offline'}
+                </div>
+              </div>
+
+              <div
+                class="w-full py-3 border border-white/5 flex justify-between items-center rounded-lg p-4">
+                <span class="text-white text-sm">interval</span>
+
+                <span class="text-sm flex items-center text-[#e75500]"
+                  >{relationData.interval_seconds}s</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       <div
-        class="col-span-8 lg:border flex flex-col gap-4 border-[#0D0D0D]/5 dark:border-white/5 p-5 lg:rounded-xl">
+        class="lg:border flex flex-col gap-4 border-[#0D0D0D]/5 dark:border-white/5 p-5 lg:rounded-xl {alert.check_id
+          ? 'col-span-8 '
+          : 'col-span-9'}">
         <div class="flex justify-between items-start text-sm w-full">
           <div class="flex flex-col gap-1 me-auto items-start">
             <span class="flex justify-center items-center text-white text-sm sm:text-lg"
